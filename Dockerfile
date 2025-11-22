@@ -10,11 +10,14 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install --production
 
-# Copy application files
+# Copy application files (including public directory)
 COPY . .
 
-# Create public directory if it doesn't exist
-RUN mkdir -p public
+# Ensure public directory exists and has index.html
+RUN mkdir -p public && \
+    if [ ! -f public/index.html ]; then \
+        echo '<!DOCTYPE html><html><head><title>GOAT Royalties</title></head><body><h1>GOAT Royalties Loading...</h1></body></html>' > public/index.html; \
+    fi
 
 # Expose port
 EXPOSE 3000

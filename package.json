@@ -2,7 +2,10 @@
   "name": "ms-money-penny-store",
   "version": "1.0.0",
   "description": "Ms Money Penny - Life Imitates Art Inc. E-Commerce Store",
-  "author": "DJSPEEDYGA - Life Imitates Art Inc.",
+  "author": {
+    "name": "DJSPEEDYGA - Life Imitates Art Inc.",
+    "email": "djspeedyga@lifeimitatesart.org"
+  },
   "main": "main.js",
   "scripts": {
     "start": "electron .",

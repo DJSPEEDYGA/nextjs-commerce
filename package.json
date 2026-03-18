@@ -1,11 +1,12 @@
 {
   "name": "ms-money-penny-store",
-  "version": "1.0.0",
-  "description": "Ms Money Penny - Life Imitates Art Inc. E-Commerce Store",
+  "version": "1.1.0",
+  "description": "Ms Money Penny - Life Imitates Art Inc. AI-Powered Store with Embedded Model Downloads, Tools & Runtimes",
   "author": {
     "name": "DJSPEEDYGA - Life Imitates Art Inc.",
     "email": "djspeedyga@lifeimitatesart.org"
   },
+  "homepage": "https://github.com/DJSPEEDYGA/nextjs-commerce",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -17,7 +18,7 @@
   "build": {
     "appId": "com.lifeimitatesart.msmoneypenny",
     "productName": "Ms Money Penny Store",
-    "copyright": "Copyright © 2024 Life Imitates Art Inc. Nonprofit",
+    "copyright": "Copyright © 2025 Life Imitates Art Inc. Nonprofit",
     "directories": {
       "output": "dist"
     },
@@ -26,6 +27,9 @@
       "preload.js",
       "static/**/*"
     ],
+    "extraMetadata": {
+      "description": "Ultimate AI-Powered Store — 50,000+ AI Models, Tools & Runtimes embedded. No login, no API keys."
+    },
     "win": {
       "target": [
         {
@@ -37,7 +41,8 @@
           "arch": ["x64"]
         }
       ],
-      "icon": "build/icon.ico"
+      "icon": "build/icon.ico",
+      "artifactName": "Ms-Money-Penny-Store-Setup-${version}.${ext}"
     },
     "mac": {
       "target": [
@@ -48,7 +53,8 @@
       ],
       "category": "public.app-category.shopping",
       "icon": "build/icon.icns",
-      "darkModeSupport": true
+      "darkModeSupport": true,
+      "artifactName": "Ms-Money-Penny-Store-${version}.${ext}"
     },
     "linux": {
       "target": [
@@ -66,7 +72,8 @@
         }
       ],
       "category": "Office",
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "artifactName": "Ms-Money-Penny-Store-${version}-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -75,7 +82,8 @@
       "createStartMenuShortcut": true,
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
-      "installerHeaderIcon": "build/icon.ico"
+      "installerHeaderIcon": "build/icon.ico",
+      "shortcutName": "Ms Money Penny Store"
     },
     "dmg": {
       "icon": "build/icon.icns",

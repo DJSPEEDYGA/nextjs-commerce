@@ -7,6 +7,7 @@ const path = require('path');
 const http = require('http');
 const WebSocket = require('ws');
 require('dotenv').config();
+const aiConfig = require('./lib/ai/ai-config');
 
 // AI & ML Components
 const nvidiaClient = require('./lib/nvidia/nvidia-nim-client');
@@ -158,9 +159,12 @@ app.get('/api/status', (req, res) => {
         status: 'online',
         message: 'SUPER GOAT ROYALTIES API is running',
         version: '3.0.0',
+        app: 'SUPER GOAT Royalties',
+        mode: aiConfig.demoMode ? 'demo' : 'live',
+        uptime: process.uptime(),
         features: {
             ai: true,
-            nvidia: true,
+            nvidia: !aiConfig.demoMode,
             rag: true,
             agents: true,
             websocket: true

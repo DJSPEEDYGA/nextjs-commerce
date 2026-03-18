@@ -71,6 +71,44 @@ Tagged releases automatically publish downloadable packages to GitHub Releases.
 
 ---
 
+## ⚡ Lightning AI — Model APIs
+
+Unified access to 14+ AI models from Lightning AI, OpenAI, and Google through a single API key with consolidated billing and usage tracking.
+
+| Model | Provider | Input ⚡/M | Context | Throughput |
+|---|---|---|---|---|
+| GPT OSS 20B | Lightning AI | 0.05 | 128K | 6.43 tok/s |
+| GPT OSS 120B | Lightning AI | 0.10 | 128K | 177.56 tok/s |
+| Llama 3.3 70B | Lightning AI | 0.30 | 128K | 60.23 tok/s |
+| DeepSeek V3.1 | Lightning AI | 0.32 | 164K | 90.23 tok/s |
+| NVIDIA Nemotron 3 Super 120B | Lightning AI | 1.40 | 256K | 376.15 tok/s |
+| GPT 5 nano | OpenAI | 0.05 | 400K | 107.33 tok/s |
+| Gemini 3 Flash | Google | 0.50 | 1M | 159.34 tok/s |
+
+📖 **[Full Model Catalog & Integration Guide →](lightning-ai/README.md)**
+
+**Quick start:**
+```bash
+cd lightning-ai && chmod +x scripts/setup.sh && ./scripts/setup.sh
+python scripts/model-selector.py --list-models
+python scripts/model-selector.py --task chat --budget 0.50
+```
+
+---
+
+## 🔗 AI Stack Integration Map
+
+| Component | Directory | Description |
+|---|---|---|
+| ⚡ Lightning AI Models | [`lightning-ai/`](lightning-ai/) | Unified model API gateway (14+ models) |
+| 🤖 NeMo Agent Toolkit | [`nemo-agent-toolkit/`](nemo-agent-toolkit/) | NVIDIA NAT 1.5 agent workflows |
+| 🧠 NVIDIA Nemotron | [`nvidia-nemotron/`](nvidia-nemotron/) | Nemotron-3-Nano-30B MoE model |
+| 🐚 OpenShell | [`openshell/`](openshell/) | Secure Python sandbox runtime |
+| 🗣️ NVIDIA Speech | [`nvidia-speech/`](nvidia-speech/) | ASR, TTS, voice agents |
+| 🤗 HuggingFace Models | [`huggingface-models/`](huggingface-models/) | 100+ trending models + LoRA art styles |
+
+---
+
 ## 📄 License
 
 Copyright © 2024 Life Imitates Art Inc. Nonprofit. All rights reserved.

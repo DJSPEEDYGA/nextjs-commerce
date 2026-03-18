@@ -1,0 +1,44 @@
+# NeMo Agent Toolkit — Nemotron-3-Nano Workflow
+# Uses NVIDIA Nemotron-3-Nano-30B-A3B as the LLM backend
+# Run: nat run --config_file configs/nemotron-workflow.yml --input "What can you help me with?"
+
+functions:
+  # Wikipedia search tool
+  wikipedia_search:
+    _type: wiki_search
+    max_results: 3
+
+  # Product catalog search
+  product_search:
+    _type: rest_api
+    name: product_search
+    description: "Search the Ms Money Penny Store product catalog"
+    endpoint: "http://localhost:3942/api/products/search"
+    method: GET
+    params:
+      query:
+        type: string
+        description: "Search query for products"
+
+llms:
+  # NVIDIA Nemotron-3-Nano via NIM API
+  nemotron_nano:
+    _type: nim
+    model_name: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16
+    temperature: 0.0
+    max_tokens: 4096
+
+workflow:
+  _type: react_agent
+  tool_names: [wikipedia_search, product_search]
+  llm_name: nemotron_nano
+  verbose: true
+  parse_agent_response_max_retries: 3
+  system_prompt: |
+    You are Ms Money Penny, an AI assistant powered by NVIDIA Nemotron-3-Nano.
+    You work for Life Imitates Art Inc. Nonprofit and help customers with:
+    - Product search and recommendations
+    - General knowledge questions
+    - Store information and support
+
+    Be friendly, professional, and empowering in your responses.

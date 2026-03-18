@@ -11,6 +11,7 @@ const aiConfig = require('./lib/ai/ai-config');
 
 // AI & ML Components
 const nvidiaClient = require('./lib/nvidia/nvidia-nim-client');
+const lightningClient = require('./lib/lightning/lightning-ai-client');
 const ragSystem = require('./lib/rag/rag-system');
 const agentManager = require('./lib/agents/autonomous-agent-manager');
 const {
@@ -158,17 +159,20 @@ app.get('/api/status', (req, res) => {
     res.json({
         status: 'online',
         message: 'SUPER GOAT ROYALTIES API is running',
-        version: '3.0.0',
+        version: '3.1.0',
         app: 'SUPER GOAT Royalties',
         mode: aiConfig.demoMode ? 'demo' : 'live',
         uptime: process.uptime(),
         features: {
             ai: true,
             nvidia: !aiConfig.demoMode,
+            lightning: !!aiConfig.lightning.apiKey,
             rag: true,
             agents: true,
             websocket: true
         },
+        lightningModels: Object.keys(aiConfig.lightning.models).length,
+        nvidiaModels: Object.keys(aiConfig.nvidia.models).length,
         timestamp: new Date().toISOString()
     });
 });
@@ -198,7 +202,10 @@ app.get('/api/dashboard', async (req, res) => {
             aiFeatures: {
                 ragEnabled: true,
                 agentsRunning: agentManager.getMetrics().activeAgents,
-                autonomousMode: agentManager.getMetrics().autonomousMode
+                autonomousMode: agentManager.getMetrics().autonomousMode,
+                lightningModels: Object.keys(aiConfig.lightning.models).length,
+                nvidiaModels: Object.keys(aiConfig.nvidia.models).length,
+                totalModels: Object.keys(aiConfig.lightning.models).length + Object.keys(aiConfig.nvidia.models).length
             }
         };
 
@@ -209,32 +216,229 @@ app.get('/api/dashboard', async (req, res) => {
     }
 });
 
-// ==================== AI & LLM ENDPOINTS ====================
+// ==================== LIGHTNING AI ENDPOINTS ====================
 
-// AI-powered revenue analysis
-app.get('/api/ai/revenue-analysis', async (req, res) => {
-    try {
-        const analysis = await nvidiaClient.analyzeRoyaltyData({
-            totalRevenue: revenueData.totalRevenue,
-            growthRate: revenueData.growthRate,
-            platforms: revenueData.platforms
+// Get all Lightning AI models with metadata
+app.get('/api/lightning/models', (req, res) => {
+    const { provider, sortBy, order } = req.query;
+    
+    let models = lightningClient.getAllModels();
+    
+    // Filter by provider
+    if (provider) {
+        models = models.filter(m => m.provider.toLowerCase() === provider.toLowerCase());
+    }
+    
+    // Sort
+    if (sortBy) {
+        const ascending = order !== 'desc';
+        models.sort((a, b) => {
+            const valA = a[sortBy] || 0;
+            const valB = b[sortBy] || 0;
+            return ascending ? valA - valB : valB - valA;
         });
+    }
 
-        res.json({ analysis });
+    res.json({
+        total: models.length,
+        mode: aiConfig.demoMode ? 'demo' : 'live',
+        models
+    });
+});
+
+// Get a specific model info
+app.get('/api/lightning/models/:key', (req, res) => {
+    const model = lightningClient.getModel(req.params.key);
+    if (!model) {
+        return res.status(404).json({ error: `Model "${req.params.key}" not found` });
+    }
+    res.json(model);
+});
+
+// Lightning AI chat completion
+app.post('/api/lightning/chat', async (req, res) => {
+    try {
+        const { messages, model, options } = req.body;
+        
+        if (!messages || !Array.isArray(messages)) {
+            return res.status(400).json({ error: 'messages array is required' });
+        }
+
+        const result = await lightningClient.chatCompletion(
+            messages,
+            model || 'llama-3.3-70b',
+            options || {}
+        );
+
+        res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// AI market predictions
+// Lightning AI text generation
+app.post('/api/lightning/generate', async (req, res) => {
+    try {
+        const { prompt, model, options } = req.body;
+        
+        if (!prompt) {
+            return res.status(400).json({ error: 'prompt is required' });
+        }
+
+        const content = await lightningClient.generateText(
+            prompt,
+            model || 'llama-3.3-70b',
+            options || {}
+        );
+
+        res.json({ content, model: model || 'llama-3.3-70b' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Smart routing - auto-select best model
+app.post('/api/lightning/smart-route', async (req, res) => {
+    try {
+        const { prompt, taskType, options } = req.body;
+        
+        if (!prompt) {
+            return res.status(400).json({ error: 'prompt is required' });
+        }
+
+        const content = await lightningClient.smartRoute(
+            prompt,
+            taskType || 'general',
+            options || {}
+        );
+
+        res.json({ content, taskType: taskType || 'general' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Compare models side-by-side
+app.post('/api/lightning/compare', async (req, res) => {
+    try {
+        const { prompt, models, options } = req.body;
+        
+        if (!prompt) {
+            return res.status(400).json({ error: 'prompt is required' });
+        }
+
+        const results = await lightningClient.compareModels(
+            prompt,
+            models || [],
+            options || {}
+        );
+
+        res.json({ results });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Lightning AI usage stats
+app.get('/api/lightning/usage', (req, res) => {
+    res.json(lightningClient.getUsageStats());
+});
+
+// ==================== UNIFIED AI CHAT ENDPOINT ====================
+
+// Universal chat - routes to best available provider
+app.post('/api/ai/chat', async (req, res) => {
+    try {
+        const { messages, model, provider, taskType, options } = req.body;
+        
+        if (!messages && !req.body.prompt) {
+            return res.status(400).json({ error: 'messages array or prompt is required' });
+        }
+
+        // If simple prompt provided, wrap in messages
+        const chatMessages = messages || [
+            { role: 'system', content: options?.systemPrompt || 'You are an AI assistant for the GOAT Royalties platform.' },
+            { role: 'user', content: req.body.prompt }
+        ];
+
+        let result;
+
+        // Route based on provider preference or smart route
+        if (provider === 'nvidia' || model?.startsWith('nvidia/')) {
+            // Use NVIDIA NIM
+            const lastMsg = chatMessages[chatMessages.length - 1]?.content || '';
+            const nvidiaModel = model?.replace('nvidia/', '') || 'mixtral-8x7b';
+            const content = await nvidiaClient.generateText(lastMsg, nvidiaModel, options || {});
+            result = { content, model: nvidiaModel, provider: 'nvidia' };
+        } else if (taskType) {
+            // Smart routing
+            const lastMsg = chatMessages[chatMessages.length - 1]?.content || '';
+            const content = await lightningClient.smartRoute(lastMsg, taskType, options || {});
+            result = { content, provider: 'lightning', taskType };
+        } else {
+            // Default: Lightning AI
+            result = await lightningClient.chatCompletion(
+                chatMessages,
+                model || 'llama-3.3-70b',
+                options || {}
+            );
+        }
+
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== AI & LLM ENDPOINTS (Enhanced) ====================
+
+// AI-powered revenue analysis (now with model selection)
+app.get('/api/ai/revenue-analysis', async (req, res) => {
+    try {
+        const { model } = req.query;
+        
+        // Try Lightning AI first, fallback to NVIDIA
+        let analysis;
+        if (model && aiConfig.lightning.models[model]) {
+            analysis = await lightningClient.analyzeRevenue({
+                totalRevenue: revenueData.totalRevenue,
+                growthRate: revenueData.growthRate,
+                platforms: revenueData.platforms
+            }, model);
+        } else {
+            analysis = await nvidiaClient.analyzeRoyaltyData({
+                totalRevenue: revenueData.totalRevenue,
+                growthRate: revenueData.growthRate,
+                platforms: revenueData.platforms
+            });
+        }
+
+        res.json({ analysis, model: model || 'default' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// AI market predictions (now with model selection)
 app.get('/api/ai/market-predictions', async (req, res) => {
     try {
-        const { genre, platform, timeframe } = req.query;
-        const predictions = await nvidiaClient.predictMarketTrends(
-            genre || 'Hip-Hop',
-            platform || 'Spotify',
-            timeframe || '6 months'
-        );
+        const { genre, platform, timeframe, model } = req.query;
+        
+        let predictions;
+        if (model && aiConfig.lightning.models[model]) {
+            predictions = await lightningClient.predictMarketTrends(
+                genre || 'Hip-Hop',
+                platform || 'Spotify',
+                timeframe || '6 months',
+                model
+            );
+        } else {
+            predictions = await nvidiaClient.predictMarketTrends(
+                genre || 'Hip-Hop',
+                platform || 'Spotify',
+                timeframe || '6 months'
+            );
+        }
 
         res.json({ predictions });
     } catch (error) {
@@ -242,14 +446,24 @@ app.get('/api/ai/market-predictions', async (req, res) => {
     }
 });
 
-// AI content recommendations
+// AI content recommendations (now with model selection)
 app.post('/api/ai/content-recommendations', async (req, res) => {
     try {
-        const { artistProfile, currentContent } = req.body;
-        const recommendations = await nvidiaClient.generateContentRecommendations(
-            artistProfile,
-            currentContent
-        );
+        const { artistProfile, currentContent, model } = req.body;
+        
+        let recommendations;
+        if (model && aiConfig.lightning.models[model]) {
+            recommendations = await lightningClient.generateContentStrategy(
+                artistProfile,
+                currentContent,
+                model
+            );
+        } else {
+            recommendations = await nvidiaClient.generateContentRecommendations(
+                artistProfile,
+                currentContent
+            );
+        }
 
         res.json({ recommendations });
     } catch (error) {
@@ -257,15 +471,26 @@ app.post('/api/ai/content-recommendations', async (req, res) => {
     }
 });
 
-// AI contract generation
+// AI contract generation (now with model selection)
 app.post('/api/ai/generate-contract', async (req, res) => {
     try {
-        const { contractType, parties, terms } = req.body;
-        const contract = await nvidiaClient.generateContractTerms(
-            contractType,
-            parties,
-            terms
-        );
+        const { contractType, parties, terms, model } = req.body;
+        
+        let contract;
+        if (model && aiConfig.lightning.models[model]) {
+            contract = await lightningClient.generateContract(
+                contractType,
+                parties,
+                terms,
+                model
+            );
+        } else {
+            contract = await nvidiaClient.generateContractTerms(
+                contractType,
+                parties,
+                terms
+            );
+        }
 
         res.json({ contract });
     } catch (error) {
@@ -366,7 +591,6 @@ app.get('/api/nvidia/models', (req, res) => {
 // Revenue predictions
 app.get('/api/revenue/predictions', async (req, res) => {
     try {
-        // Use AI for enhanced predictions
         const aiAnalysis = await nvidiaClient.analyzeRoyaltyData({
             totalRevenue: revenueData.totalRevenue,
             growthRate: revenueData.growthRate,
@@ -450,6 +674,7 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log('📊 Dashboard: http://localhost:' + PORT);
     console.log('🔌 API Status: http://localhost:' + PORT + '/api/status');
     console.log('🤖 AI Features: Enabled');
+    console.log('⚡ Lightning AI: ' + Object.keys(aiConfig.lightning.models).length + ' models loaded');
     console.log('🎯 NVIDIA NIM: Integrated');
     console.log('📚 RAG System: Active');
     console.log('🤝 Autonomous Agents: Running');

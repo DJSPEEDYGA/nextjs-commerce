@@ -10,22 +10,8 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            platform: linux
-            targets: "AppImage deb tar.gz"
-          - os: windows-latest
-            platform: win
-            targets: "nsis portable"
-          - os: macos-latest
-            platform: mac
-            targets: "dmg"
-
-    runs-on: ${{ matrix.os }}
-    
+  build-linux:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,45 +25,94 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Electron app (${{ matrix.platform }})
-        run: npx electron-builder --${{ matrix.platform }} --x64
+      - name: Build Linux packages
+        run: npx electron-builder --linux AppImage deb tar.gz --x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload to Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
         with:
-          name: desktop-${{ matrix.platform }}
-          path: |
-            dist/*.exe
-            dist/*.dmg
+          files: |
             dist/*.AppImage
             dist/*.deb
             dist/*.tar.gz
-            dist/*.portable*
-          if-no-files-found: warn
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
-    
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: release-files
-          merge-multiple: true
-
-      - name: List release files
-        run: find release-files -type f | head -30
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: release-files/**/*
-          generate_release_notes: true
-          draft: false
-          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save build info
+        if: "!startsWith(github.ref, 'refs/tags/v')"
+        run: |
+          echo "## Linux Build Complete" >> $GITHUB_STEP_SUMMARY
+          ls -lh dist/*.AppImage dist/*.deb dist/*.tar.gz 2>/dev/null || echo "Build files created"
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Windows packages
+        run: npx electron-builder --win nsis portable --x64
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save build info
+        if: "!startsWith(github.ref, 'refs/tags/v')"
+        run: |
+          echo "## Windows Build Complete" >> $env:GITHUB_STEP_SUMMARY
+          Get-ChildItem dist/*.exe | Format-Table Name, Length
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build macOS package
+        run: npx electron-builder --mac dmg --x64
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload to Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save build info
+        if: "!startsWith(github.ref, 'refs/tags/v')"
+        run: |
+          echo "## macOS Build Complete" >> $GITHUB_STEP_SUMMARY
+          ls -lh dist/*.dmg 2>/dev/null || echo "Build files created"

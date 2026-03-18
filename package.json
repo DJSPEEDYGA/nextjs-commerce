@@ -1,16 +1,18 @@
 {
   "name": "super-goat-royalties",
   "version": "3.0.0",
-  "description": "SUPER GOAT Royalties - Ultimate AI-Powered Creator Platform",
-  "main": "server.js",
+  "description": "SUPER GOAT Royalties - Ultimate AI-Powered Creator Platform with NVIDIA NIM, LangChain, RAG & Autonomous Agents",
+  "main": "electron-main.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
     "electron": "electron .",
+    "electron:dev": "NODE_ENV=development electron .",
     "electron:build": "electron-builder",
     "electron:build:win": "electron-builder --win",
     "electron:build:mac": "electron-builder --mac",
     "electron:build:linux": "electron-builder --linux",
+    "electron:build:all": "electron-builder --win --mac --linux",
     "test": "jest"
   },
   "keywords": [
@@ -25,7 +27,9 @@
     "creator-platform",
     "royalties",
     "nft",
-    "blockchain"
+    "blockchain",
+    "electron",
+    "desktop-app"
   ],
   "author": "DJSPEEDYGA",
   "license": "MIT",
@@ -46,7 +50,7 @@
     "pdf-parse": "^1.1.1",
     "mammoth": "^1.6.0",
     "cheerio": "^1.0.0-rc.12",
-    "node-cache": "^5.7.0",
+    "node-cache": "^5.1.2",
     "winston": "^3.11.0",
     "joi": "^17.11.0",
     "bcryptjs": "^2.4.3",
@@ -67,15 +71,19 @@
   "build": {
     "appId": "com.goatroyalties.superapp",
     "productName": "SUPER GOAT Royalties",
+    "copyright": "Copyright © 2024 DJSPEEDYGA",
     "directories": {
       "output": "dist"
     },
     "files": [
       "server.js",
+      "electron-main.js",
+      "preload.js",
       "public/**/*",
       "lib/**/*",
       "node_modules/**/*",
-      "package.json"
+      "package.json",
+      "favicon.ico"
     ],
     "win": {
       "target": [
@@ -88,7 +96,19 @@
           "arch": ["x64"]
         }
       ],
-      "icon": "public/assets/icon.ico"
+      "icon": "build/icon.ico",
+      "artifactName": "GOAT-Royalties-${version}-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
+    },
+    "portable": {
+      "artifactName": "GOAT-Royalties-${version}-Portable.${ext}"
     },
     "mac": {
       "target": [
@@ -97,16 +117,24 @@
           "arch": ["x64", "arm64"]
         }
       ],
-      "icon": "public/assets/icon.icns"
+      "icon": "build/icon.icns",
+      "artifactName": "GOAT-Royalties-${version}.${ext}",
+      "category": "public.app-category.music"
     },
     "linux": {
       "target": [
         {
           "target": "AppImage",
           "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
         }
       ],
-      "icon": "public/assets/icon.png"
+      "icon": "build/icon.png",
+      "artifactName": "GOAT-Royalties-${version}.${ext}",
+      "category": "Audio"
     }
   }
 }

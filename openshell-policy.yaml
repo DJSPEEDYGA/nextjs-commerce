@@ -1,0 +1,260 @@
+# SUPER GOAT Royalties — OpenShell Security Policy
+# ==================================================
+# Declarative policy for all SUPER GOAT AI agent sandboxes.
+# Enforced by OpenShell's defense-in-depth stack:
+#   - Landlock (filesystem isolation)
+#   - seccomp (syscall filtering)  
+#   - OPA (policy engine)
+#   - mTLS (network encryption)
+#
+# Usage:
+#   openshell sandbox create --policy openshell-policy.yaml -- node server.js
+
+version: "1.0"
+name: super-goat-royalties
+description: "Security policy for SUPER GOAT Royalties AI agent sandboxes"
+
+# Global defaults — applied to all sandboxes unless overridden
+defaults:
+  # Network policies
+  network_policies:
+    # Allow inference routing through OpenShell privacy router
+    - name: inference-local
+      action: allow
+      destination: "inference.local"
+      ports: [443]
+      protocol: https
+    
+    # Allow inter-sandbox communication for CONDUCTOR
+    - name: sandbox-mesh
+      action: allow
+      destination: "sandbox-*.local"
+      ports: [443]
+      protocol: https
+
+    # Block all other outbound by default
+    - name: deny-all-outbound
+      action: deny
+      destination: "*"
+      log: true
+
+  # Filesystem policies
+  filesystem_policies:
+    # Shared read-only data directory
+    - name: shared-data
+      action: readonly
+      paths:
+        - /data
+        - /etc/openshell
+
+    # Writable temp directory
+    - name: temp-write
+      action: readwrite
+      paths:
+        - /tmp
+    
+    # Block sensitive paths
+    - name: block-sensitive
+      action: deny
+      paths:
+        - /etc/passwd
+        - /etc/shadow
+        - /root
+        - /home/*/.ssh
+        - /proc/*/environ
+
+  # Resource limits
+  resources:
+    max_cpu: "2.0"
+    max_memory: "4GB"
+    max_disk: "10GB"
+    max_processes: 50
+    timeout: 3600
+
+# Per-agent sandbox overrides
+sandboxes:
+  # NOVA — Dashboard Strategy Agent
+  nova-dashboard:
+    inherits: defaults
+    network_policies:
+      - name: streaming-apis
+        action: allow
+        destination: "api.spotify.com"
+        ports: [443]
+      - name: apple-apis
+        action: allow
+        destination: "api.apple.com"
+        ports: [443]
+    resources:
+      max_cpu: "0.5"
+      max_memory: "512MB"
+
+  # CASHFLOW — Revenue Analysis Agent (extra financial isolation)
+  cashflow-revenue:
+    inherits: defaults
+    network_policies:
+      - name: payment-apis
+        action: allow
+        destination: "api.stripe.com"
+        ports: [443]
+      - name: paypal-apis
+        action: allow
+        destination: "api.paypal.com"
+        ports: [443]
+    filesystem_policies:
+      - name: financial-data
+        action: readonly
+        paths:
+          - /data/revenue
+          - /data/contracts
+      - name: no-write-except-tmp
+        action: deny
+        paths:
+          - /workspace
+    resources:
+      max_cpu: "1.0"
+      max_memory: "1GB"
+
+  # PIXEL — NFT & Digital Art Agent (GPU access)
+  pixel-nft:
+    inherits: defaults
+    network_policies:
+      - name: nft-marketplace
+        action: allow
+        destination: "api.opensea.io"
+        ports: [443]
+      - name: ipfs-storage
+        action: allow
+        destination: "ipfs.io"
+        ports: [443]
+      - name: arweave-storage
+        action: allow
+        destination: "arweave.net"
+        ports: [443]
+    filesystem_policies:
+      - name: art-workspace
+        action: readwrite
+        paths:
+          - /workspace/art
+          - /workspace/renders
+    resources:
+      max_cpu: "2.0"
+      max_memory: "2GB"
+      gpu: dedicated
+
+  # SAGE — Knowledge & RAG Agent (minimal network)
+  sage-knowledge:
+    inherits: defaults
+    # No additional network — inference.local only
+    filesystem_policies:
+      - name: knowledge-base
+        action: readonly
+        paths:
+          - /data/knowledge-base
+          - /data/embeddings
+    resources:
+      max_cpu: "1.0"
+      max_memory: "2GB"
+
+  # CONDUCTOR — Agent Orchestrator (inter-sandbox comms)
+  conductor-orchestrator:
+    inherits: defaults
+    network_policies:
+      - name: sandbox-control
+        action: allow
+        destination: "sandbox-*.local"
+        ports: [443, 8080]
+    filesystem_policies:
+      - name: orchestrator-workspace
+        action: readwrite
+        paths:
+          - /workspace
+          - /var/run/sandboxes
+    resources:
+      max_cpu: "2.0"
+      max_memory: "4GB"
+      gpu: dedicated
+
+  # LEXIS — Legal & Contract Agent (maximum isolation)
+  lexis-legal:
+    inherits: defaults
+    # No external network — inference.local only
+    filesystem_policies:
+      - name: contracts-readonly
+        action: readonly
+        paths:
+          - /data/contracts
+      - name: strict-no-write
+        action: deny
+        paths:
+          - /workspace
+          - /home
+    resources:
+      max_cpu: "1.0"
+      max_memory: "1GB"
+
+  # HARMONY — Team Collaboration Agent (external APIs)
+  harmony-collaboration:
+    inherits: defaults
+    network_policies:
+      - name: slack-api
+        action: allow
+        destination: "api.slack.com"
+        ports: [443]
+      - name: discord-api
+        action: allow
+        destination: "api.discord.com"
+        ports: [443]
+      - name: notion-api
+        action: allow
+        destination: "api.notion.so"
+        ports: [443]
+    resources:
+      max_cpu: "0.5"
+      max_memory: "512MB"
+
+  # ORACLE — Market Intelligence Agent (data APIs)
+  oracle-market:
+    inherits: defaults
+    network_policies:
+      - name: spotify-data
+        action: allow
+        destination: "api.spotify.com"
+        ports: [443]
+      - name: soundcharts
+        action: allow
+        destination: "api.soundcharts.com"
+        ports: [443]
+      - name: chartmetric
+        action: allow
+        destination: "api.chartmetric.com"
+        ports: [443]
+    resources:
+      max_cpu: "1.5"
+      max_memory: "2GB"
+
+  # GEAR — System Optimization Agent
+  gear-system:
+    inherits: defaults
+    # No external network — inference.local only
+    filesystem_policies:
+      - name: system-config
+        action: readonly
+        paths:
+          - /etc/openshell
+          - /data/config
+      - name: system-logs
+        action: readwrite
+        paths:
+          - /var/log
+    resources:
+      max_cpu: "0.5"
+      max_memory: "256MB"
+
+# Audit configuration
+audit:
+  enabled: true
+  log_blocked_requests: true
+  log_policy_violations: true
+  retention_days: 30
+  alert_threshold: 100  # Alert after 100 blocked requests per sandbox

@@ -13,6 +13,28 @@ const aiConfig = require('./lib/ai/ai-config');
 const nvidiaClient = require('./lib/nvidia/nvidia-nim-client');
 const ragSystem = require('./lib/rag/rag-system');
 const agentManager = require('./lib/agents/autonomous-agent-manager');
+
+// Multi-Provider & OpenShell Components
+const ProviderManager = require('./lib/providers/provider-manager');
+const OpenShellClient = require('./lib/nvidia/openshell-client');
+const InferenceRouter = require('./lib/nvidia/inference-router');
+const SandboxManager = require('./lib/agents/sandbox-manager');
+
+// Initialize multi-provider system
+const providerManager = new ProviderManager();
+const openshellClient = new OpenShellClient();
+const inferenceRouter = new InferenceRouter({
+    providerManager,
+    openshellClient,
+    demoMode: aiConfig.demoMode
+});
+const sandboxManager = new SandboxManager(openshellClient);
+
+// Initialize sandbox mappings
+sandboxManager.initializeAll().then(results => {
+    const deployed = results.filter(r => r.status === 'found').length;
+    console.log(`🐚 OpenShell: ${deployed}/${results.length} agent sandboxes mapped`);
+}).catch(err => console.warn('OpenShell init:', err.message));
 const {
     RevenueData,
     NFTPortfolio,
@@ -158,17 +180,26 @@ app.get('/api/status', (req, res) => {
     res.json({
         status: 'online',
         message: 'SUPER GOAT ROYALTIES API is running',
-        version: '3.0.0',
+        version: '3.1.0',
         app: 'SUPER GOAT Royalties',
         mode: aiConfig.demoMode ? 'demo' : 'live',
         uptime: process.uptime(),
         features: {
             ai: true,
-            nvidia: !aiConfig.demoMode,
+            nvidia: aiConfig.activeProviders.nvidia,
+            openrouter: aiConfig.activeProviders.openrouter,
+            openshell: aiConfig.activeProviders.openshell,
+            lightning: aiConfig.activeProviders.lightning,
+            huggingface: aiConfig.activeProviders.huggingface,
             rag: true,
             agents: true,
+            assistants: true,
+            multiProvider: true,
+            sandboxes: true,
+            inferenceRouting: true,
             websocket: true
         },
+        providers: providerManager.getAllProviders().map(p => ({ id: p.id, name: p.name, status: p.status })),
         timestamp: new Date().toISOString()
     });
 });
@@ -383,6 +414,155 @@ app.get('/api/assistants/tip/:assistantId', async (req, res) => {
     }
 });
 
+// ==================== PROVIDER MANAGEMENT ENDPOINTS ====================
+
+// Get all providers with status
+app.get('/api/providers', (req, res) => {
+    res.json({ providers: providerManager.getAllProviders() });
+});
+
+// Get provider stats
+app.get('/api/providers/stats', (req, res) => {
+    res.json(providerManager.getStats());
+});
+
+// Health check all providers
+app.get('/api/providers/health', async (req, res) => {
+    const health = await providerManager.healthCheck();
+    res.json(health);
+});
+
+// Set active provider
+app.post('/api/providers/active', (req, res) => {
+    try {
+        const { providerId } = req.body;
+        const result = providerManager.setActiveProvider(providerId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// ==================== MODEL CATALOG ENDPOINTS ====================
+
+// Get model catalog (from OpenRouter + all providers)
+app.get('/api/models', async (req, res) => {
+    try {
+        const options = {
+            search: req.query.search || null,
+            provider: req.query.provider || null,
+            category: req.query.category || null,
+            sort: req.query.sort || 'popular',
+            limit: parseInt(req.query.limit) || 50,
+            minContext: req.query.minContext ? parseInt(req.query.minContext) : null
+        };
+        const catalog = await providerManager.getModelCatalog(options);
+        res.json(catalog);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Chat with any model via unified routing
+app.post('/api/models/chat', async (req, res) => {
+    try {
+        const { model, messages, options } = req.body;
+        if (!messages || !Array.isArray(messages)) {
+            return res.status(400).json({ error: 'messages array is required' });
+        }
+        const result = await providerManager.chat(messages, { model, ...options });
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get model recommendation for a task
+app.get('/api/models/recommend/:taskType', (req, res) => {
+    const { taskType } = req.params;
+    const costTier = req.query.tier || 'balanced';
+    const model = inferenceRouter.getRecommendedModel(taskType, { costTier });
+    res.json({ taskType, costTier, recommendedModel: model });
+});
+
+// Inference routing — route through best provider
+app.post('/api/inference/route', async (req, res) => {
+    try {
+        const { model, messages, options } = req.body;
+        const result = await inferenceRouter.route({ model, messages, options });
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Inference routing analytics
+app.get('/api/inference/analytics', (req, res) => {
+    res.json(inferenceRouter.getAnalytics());
+});
+
+// ==================== NVIDIA OPENSHELL ENDPOINTS ====================
+
+// Gateway status
+app.get('/api/openshell/status', async (req, res) => {
+    const status = await openshellClient.getGatewayStatus();
+    res.json(status);
+});
+
+// List all sandboxes
+app.get('/api/openshell/sandboxes', async (req, res) => {
+    const sandboxes = await openshellClient.listSandboxes();
+    res.json({ sandboxes, total: sandboxes.length });
+});
+
+// Get sandbox for specific agent
+app.get('/api/openshell/sandboxes/agent/:agent', async (req, res) => {
+    const sandbox = await sandboxManager.getAgentSandbox(req.params.agent);
+    if (!sandbox) return res.status(404).json({ error: 'No sandbox profile for this agent' });
+    res.json(sandbox);
+});
+
+// Get sandbox dashboard (all agents + security)
+app.get('/api/openshell/dashboard', async (req, res) => {
+    const dashboard = await sandboxManager.getDashboard();
+    res.json(dashboard);
+});
+
+// Get security metrics
+app.get('/api/openshell/security', async (req, res) => {
+    const metrics = await openshellClient.getSecurityMetrics();
+    res.json(metrics);
+});
+
+// Get inference routing config
+app.get('/api/openshell/inference', async (req, res) => {
+    const config = await openshellClient.getInferenceConfig();
+    res.json(config);
+});
+
+// Get sandbox profiles
+app.get('/api/openshell/profiles', (req, res) => {
+    res.json({ profiles: sandboxManager.getProfiles() });
+});
+
+// Create sandbox for agent
+app.post('/api/openshell/sandboxes', async (req, res) => {
+    try {
+        const { agent } = req.body;
+        if (!agent) return res.status(400).json({ error: 'agent is required' });
+        const sandbox = await sandboxManager.deployAgent(agent);
+        res.json(sandbox);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Destroy sandbox
+app.delete('/api/openshell/sandboxes/:sandboxId', async (req, res) => {
+    const result = await openshellClient.destroySandbox(req.params.sandboxId);
+    res.json(result);
+});
+
 // ==================== NVIDIA NIM ENDPOINTS ====================
 
 // Generate text with NVIDIA NIM
@@ -487,11 +667,15 @@ app.use((err, req, res, next) => {
 
 // Start server
 server.listen(PORT, '0.0.0.0', () => {
-    console.log('🚀 SUPER GOAT ROYALTIES Server running on port', PORT);
+    console.log('🚀 SUPER GOAT ROYALTIES Server v3.1.0 running on port', PORT);
     console.log('📊 Dashboard: http://localhost:' + PORT);
     console.log('🔌 API Status: http://localhost:' + PORT + '/api/status');
-    console.log('🤖 AI Features: Enabled');
+    console.log('🤖 AI Assistants: 9 agents active');
     console.log('🎯 NVIDIA NIM: Integrated');
+    console.log('🌐 OpenRouter: 653+ models available');
+    console.log('🐚 NVIDIA OpenShell: Sandboxed agent execution');
+    console.log('⚡ Lightning AI: Model APIs');
+    console.log('🤗 Hugging Face: Open models');
     console.log('📚 RAG System: Active');
     console.log('🤝 Autonomous Agents: Running');
     console.log('📡 WebSocket: Connected');

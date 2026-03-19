@@ -597,6 +597,67 @@
 
         .assistant-tip .tip-avatar { font-size: 20px; }
         .assistant-tip .tip-name { font-weight: 700; color: var(--text-primary); }
+
+        /* ==================== MODEL HUB STYLES ==================== */
+        .model-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; margin-top: 16px; }
+        .model-card {
+            background: var(--bg-card); border-radius: 12px; padding: 16px; border: 1px solid var(--border);
+            transition: all 0.2s; cursor: pointer; position: relative;
+        }
+        .model-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(78,205,196,0.15); }
+        .model-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .model-name { font-weight: 700; font-size: 15px; color: var(--text-primary); }
+        .model-provider { font-size: 11px; color: var(--accent); background: rgba(78,205,196,0.1); padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+        .model-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 10px; }
+        .model-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+        .model-tag { font-size: 10px; padding: 3px 8px; border-radius: 6px; background: var(--bg-hover); color: var(--text-secondary); font-weight: 600; }
+        .model-tag.context { background: rgba(78,205,196,0.1); color: var(--accent); }
+        .model-tag.price { background: rgba(255,215,0,0.1); color: #ffd700; }
+        .model-tag.category { background: rgba(155,89,182,0.1); color: #9b59b6; }
+        .model-search { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .model-search input { flex: 1; min-width: 200px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text-primary); font-size: 14px; }
+        .model-search input:focus { border-color: var(--accent); outline: none; }
+        .model-search select { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text-primary); font-size: 13px; cursor: pointer; }
+        .model-count { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+
+        /* ==================== OPENSHELL / PROVIDER STYLES ==================== */
+        .provider-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+        .provider-card {
+            background: var(--bg-card); border-radius: 12px; padding: 16px; border: 1px solid var(--border);
+            text-align: center; transition: all 0.2s;
+        }
+        .provider-card:hover { border-color: var(--accent); }
+        .provider-card .provider-emoji { font-size: 32px; margin-bottom: 8px; }
+        .provider-card .provider-name { font-weight: 700; font-size: 14px; color: var(--text-primary); margin-bottom: 4px; }
+        .provider-card .provider-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 8px; }
+        .provider-status { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 10px; text-transform: uppercase; }
+        .provider-status.active { background: rgba(46,204,113,0.15); color: #2ecc71; }
+        .provider-status.demo { background: rgba(241,196,15,0.15); color: #f1c40f; }
+
+        .sandbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 16px; }
+        .sandbox-card {
+            background: var(--bg-card); border-radius: 12px; padding: 16px; border: 1px solid var(--border);
+            transition: all 0.2s; position: relative; overflow: hidden;
+        }
+        .sandbox-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), #9b59b6); }
+        .sandbox-card:hover { border-color: var(--accent); }
+        .sandbox-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .sandbox-agent { font-weight: 700; font-size: 15px; color: var(--text-primary); }
+        .sandbox-status { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 10px; text-transform: uppercase; }
+        .sandbox-status.running { background: rgba(46,204,113,0.15); color: #2ecc71; }
+        .sandbox-status.stopped { background: rgba(231,76,60,0.15); color: #e74c3c; }
+        .sandbox-detail { font-size: 12px; color: var(--text-secondary); margin: 4px 0; display: flex; justify-content: space-between; }
+        .sandbox-detail .label { color: var(--text-muted); }
+        .sandbox-detail .value { color: var(--text-primary); font-weight: 600; }
+
+        .security-banner {
+            background: linear-gradient(135deg, rgba(46,204,113,0.1), rgba(78,205,196,0.1));
+            border: 1px solid rgba(46,204,113,0.2); border-radius: 12px;
+            padding: 20px; margin: 16px 0; display: flex; gap: 20px; flex-wrap: wrap; align-items: center;
+        }
+        .security-stat { text-align: center; min-width: 100px; }
+        .security-stat .num { font-size: 24px; font-weight: 800; color: var(--accent); }
+        .security-stat .label { font-size: 11px; color: var(--text-secondary); }
     </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
@@ -618,6 +679,8 @@
             <div class="nav-item" onclick="showPage('contracts', this)"><span class="icon">📋</span> Contracts</div>
             <div class="nav-item" onclick="showPage('team', this)"><span class="icon">👥</span> Team Hub</div>
             <div class="nav-item" onclick="showPage('market', this)"><span class="icon">📈</span> Market Intel</div>
+            <div class="nav-item" onclick="showPage('models', this)"><span class="icon">🌐</span> Model Hub</div>
+            <div class="nav-item" onclick="showPage('openshell', this)"><span class="icon">🐚</span> OpenShell</div>
             <div class="nav-item" onclick="showPage('settings', this)"><span class="icon">⚙️</span> Settings</div>
         </nav>
         <div class="sidebar-footer">
@@ -914,6 +977,86 @@
         </div>
 
         <!-- SETTINGS -->
+        <!-- ==================== MODEL HUB PAGE ==================== -->
+        <div id="page-models" class="page">
+            <div class="page-header"><h2>🌐 Model Hub</h2><span class="badge">653+ Models</span></div>
+
+            <!-- Provider Status Cards -->
+            <div class="provider-grid" id="provider-grid"></div>
+
+            <!-- Search & Filter -->
+            <div class="model-search">
+                <input type="text" id="model-search-input" placeholder="🔍 Search models... (e.g. GPT-4, Claude, Llama, DeepSeek)" oninput="searchModels()">
+                <select id="model-provider-filter" onchange="searchModels()">
+                    <option value="">All Providers</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="anthropic">Anthropic</option>
+                    <option value="google">Google</option>
+                    <option value="meta-llama">Meta</option>
+                    <option value="deepseek">DeepSeek</option>
+                    <option value="qwen">Qwen</option>
+                    <option value="mistralai">Mistral AI</option>
+                    <option value="nvidia">NVIDIA</option>
+                    <option value="cohere">Cohere</option>
+                    <option value="x-ai">xAI</option>
+                </select>
+                <select id="model-sort" onchange="searchModels()">
+                    <option value="popular">Most Popular</option>
+                    <option value="price-low">Price: Low → High</option>
+                    <option value="price-high">Price: High → Low</option>
+                    <option value="context">Context: Largest</option>
+                    <option value="newest">Newest</option>
+                </select>
+            </div>
+
+            <div class="model-count" id="model-count">Loading models...</div>
+            <div class="model-grid" id="model-grid"></div>
+        </div>
+
+        <!-- ==================== NVIDIA OPENSHELL PAGE ==================== -->
+        <div id="page-openshell" class="page">
+            <div class="page-header"><h2>🐚 NVIDIA OpenShell</h2><span class="badge">Sandboxed Agents</span></div>
+
+            <!-- Gateway Status -->
+            <div class="security-banner" id="openshell-security">
+                <div class="security-stat"><div class="num" id="os-sandbox-count">9</div><div class="label">Sandboxes</div></div>
+                <div class="security-stat"><div class="num" id="os-blocked-count">0</div><div class="label">Blocked Requests</div></div>
+                <div class="security-stat"><div class="num" id="os-policies-count">4</div><div class="label">Protection Layers</div></div>
+                <div class="security-stat"><div class="num" id="os-isolation">🔒</div><div class="label">Kernel Isolation</div></div>
+                <div style="flex:1;min-width:200px;">
+                    <div style="font-weight:700;color:var(--text-primary);margin-bottom:4px;">🛡️ Defense in Depth</div>
+                    <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">
+                        Each agent runs in its own isolated sandbox with <strong>Landlock</strong> (filesystem), <strong>seccomp</strong> (syscalls), 
+                        <strong>OPA</strong> (policy engine), and <strong>mTLS</strong> (network encryption). Inference routed through privacy-preserving <code>inference.local</code>.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inference Config -->
+            <div class="card" style="margin-bottom:16px;">
+                <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                    <h3 style="margin:0;">🔀 Inference Routing</h3>
+                    <span class="badge" id="os-inference-status">Active</span>
+                </div>
+                <div style="padding:16px;font-size:13px;color:var(--text-secondary);">
+                    <div style="display:flex;gap:30px;flex-wrap:wrap;">
+                        <div><span style="color:var(--text-muted);">Endpoint:</span> <code id="os-inference-endpoint">https://inference.local/v1</code></div>
+                        <div><span style="color:var(--text-muted);">Provider:</span> <span id="os-inference-provider">nvidia-prod</span></div>
+                        <div><span style="color:var(--text-muted);">Model:</span> <span id="os-inference-model">nvidia/nemotron-3-nano-30b-a3b</span></div>
+                    </div>
+                    <div style="margin-top:10px;padding:10px;background:var(--bg-hover);border-radius:8px;font-size:11px;">
+                        🔐 <strong>Privacy Router:</strong> Sandbox code calls <code>inference.local</code> — the router injects real credentials and rewrites the model before forwarding upstream. API keys never enter the sandbox.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Sandboxes -->
+            <h3 style="color:var(--text-primary);margin-bottom:4px;">📦 Agent Sandboxes</h3>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Each assistant runs in its own isolated OpenShell sandbox with custom policies, network rules, and resource limits.</p>
+            <div class="sandbox-grid" id="sandbox-grid"></div>
+        </div>
+
+        <!-- ==================== SETTINGS PAGE ==================== -->
         <div id="page-settings" class="page">
             <div class="page-header"><h2>⚙️ Settings</h2></div>
             <div class="assistant-banner">
@@ -934,10 +1077,18 @@
                 <div class="mini-input-area"><input type="text" id="mini-input-gear" placeholder="Ask about settings..." onkeypress="if(event.key==='Enter')sendMiniChat('gear')"><button class="btn btn-primary" style="padding:8px 12px;font-size:12px;" onclick="sendMiniChat('gear')">Send</button></div>
             </div>
             <div class="settings-section">
-                <h3>🤖 AI Configuration</h3>
-                <div class="setting-row"><div class="setting-info"><div class="setting-label">NVIDIA NIM API</div><div class="setting-desc" id="nvidia-status">Checking connection...</div></div><label class="toggle-switch"><input type="checkbox" id="nvidia-toggle" checked><span class="toggle-slider"></span></label></div>
+                <h3>🤖 AI Providers</h3>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">💚 NVIDIA NIM</div><div class="setting-desc" id="nvidia-status">Checking connection...</div></div><label class="toggle-switch"><input type="checkbox" id="nvidia-toggle" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">🌐 OpenRouter</div><div class="setting-desc" id="openrouter-status">653+ models — checking...</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">🐚 NVIDIA OpenShell</div><div class="setting-desc" id="openshell-status">Sandboxed agent execution — checking...</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">⚡ Lightning AI</div><div class="setting-desc" id="lightning-status">Model APIs — checking...</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">🤗 Hugging Face</div><div class="setting-desc" id="huggingface-status">Open models — checking...</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            </div>
+            <div class="settings-section">
+                <h3>🧠 AI Features</h3>
                 <div class="setting-row"><div class="setting-info"><div class="setting-label">RAG System</div><div class="setting-desc">Knowledge base with industry documents</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-                <div class="setting-row"><div class="setting-info"><div class="setting-label">Autonomous Agents</div><div class="setting-desc">4 AI agents for automated tasks</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">Autonomous Agents</div><div class="setting-desc">4 AI agents + 9 assistants for automated tasks</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">Inference Routing</div><div class="setting-desc">Smart routing to best model per task</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
                 <div class="setting-row"><div class="setting-info"><div class="setting-label">Auto-Optimization</div><div class="setting-desc">AI-driven performance optimization</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
             </div>
             <div class="settings-section">
@@ -965,6 +1116,8 @@
             document.querySelector('.sidebar').classList.remove('open');
             if (pageId === 'nft') initNFTChart();
             if (pageId === 'market') initMarketCharts();
+            if (pageId === 'models') loadModelHub();
+            if (pageId === 'openshell') loadOpenShell();
         }
 
         // ==================== API HELPERS ====================
@@ -984,6 +1137,8 @@
                 document.getElementById('status-text').textContent = status.mode === 'demo' ? 'Demo Mode' : 'Live • Connected';
                 document.getElementById('mode-badge').textContent = status.mode === 'demo' ? '🎮 Demo Mode' : '🟢 Live';
                 document.getElementById('nvidia-status').textContent = status.mode === 'demo' ? 'Demo mode (no API key)' : 'Connected to NVIDIA NIM';
+                // Update provider statuses in settings
+                updateProviderStatuses(status);
             }
             const dashboard = await apiGet('/api/dashboard');
             if (dashboard) {
@@ -992,6 +1147,19 @@
                 document.getElementById('nft-value').textContent = '$' + (dashboard.nftPortfolio?.totalValue || 24500).toLocaleString();
             }
             initDashboardCharts();
+        }
+
+        function updateProviderStatuses(status) {
+            const f = status.features || {};
+            const setStatus = (id, active, activeText, demoText) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = active ? activeText : demoText;
+            };
+            setStatus('nvidia-status', f.nvidia, '✅ Connected to NVIDIA NIM', '🎮 Demo mode (no API key)');
+            setStatus('openrouter-status', f.openrouter, '✅ 653+ models connected', '🎮 Demo mode — set OPENROUTER_API_KEY');
+            setStatus('openshell-status', f.openshell, '✅ Gateway connected', '🎮 Demo mode — set OPENSHELL_GATEWAY_URL');
+            setStatus('lightning-status', f.lightning, '✅ Lightning AI connected', '🎮 Demo mode — set LIGHTNING_API_KEY');
+            setStatus('huggingface-status', f.huggingface, '✅ Hugging Face connected', '🎮 Demo mode — set HUGGINGFACE_API_KEY');
         }
 
         // ==================== CHARTS ====================
@@ -1183,6 +1351,119 @@
 
             // Auto-hide after 15 seconds
             setTimeout(() => { tipDiv.style.display = 'none'; }, 15000);
+        }
+
+        // ==================== MODEL HUB ====================
+        let modelHubLoaded = false;
+        async function loadModelHub() {
+            // Load providers
+            const provData = await apiGet('/api/providers');
+            if (provData?.providers) {
+                const grid = document.getElementById('provider-grid');
+                grid.innerHTML = provData.providers.map(p => `
+                    <div class="provider-card">
+                        <div class="provider-emoji">${p.emoji}</div>
+                        <div class="provider-name">${p.name}</div>
+                        <div class="provider-desc">${p.description}</div>
+                        <span class="provider-status ${p.status}">${p.status}</span>
+                    </div>
+                `).join('');
+            }
+            // Load models
+            searchModels();
+        }
+
+        async function searchModels() {
+            const search = document.getElementById('model-search-input')?.value || '';
+            const provider = document.getElementById('model-provider-filter')?.value || '';
+            const sort = document.getElementById('model-sort')?.value || 'popular';
+            const params = new URLSearchParams({ sort, limit: 50 });
+            if (search) params.set('search', search);
+            if (provider) params.set('provider', provider);
+
+            const data = await apiGet('/api/models?' + params.toString());
+            if (data) {
+                document.getElementById('model-count').textContent = `Showing ${data.models.length} of ${data.total} models`;
+                const grid = document.getElementById('model-grid');
+                grid.innerHTML = data.models.map(m => {
+                    const provider = m.provider || m.id.split('/')[0];
+                    const ctx = m.context_length || 0;
+                    const ctxLabel = ctx >= 1000000 ? (ctx/1000000).toFixed(1) + 'M' : ctx >= 1000 ? Math.round(ctx/1000) + 'K' : ctx;
+                    const price = m.pricing?.prompt ? '$' + (parseFloat(m.pricing.prompt) * 1000000).toFixed(2) + '/M tok' : 'Free';
+                    const cat = m.category || 'general';
+                    return `
+                        <div class="model-card" onclick="selectModel('${m.id}')">
+                            <div class="model-header">
+                                <div class="model-name">${m.name || m.id.split('/').pop()}</div>
+                                <div class="model-provider">${provider}</div>
+                            </div>
+                            <div class="model-desc">${(m.description || '').substring(0, 120)}${(m.description||'').length > 120 ? '...' : ''}</div>
+                            <div class="model-meta">
+                                <span class="model-tag context">📏 ${ctxLabel} ctx</span>
+                                <span class="model-tag price">💰 ${price}</span>
+                                <span class="model-tag category">🏷️ ${cat}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function selectModel(modelId) {
+            // Quick test — send a message to the selected model
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) {
+                showPage('ai-chat', document.querySelectorAll('.nav-item')[3]);
+                chatInput.placeholder = `Chat with ${modelId}... (via OpenRouter)`;
+                chatInput.dataset.model = modelId;
+                chatInput.focus();
+            }
+        }
+
+        // ==================== NVIDIA OPENSHELL ====================
+        async function loadOpenShell() {
+            // Load gateway status
+            const status = await apiGet('/api/openshell/status');
+            if (status) {
+                document.getElementById('os-sandbox-count').textContent = status.sandboxCount || 9;
+                document.getElementById('os-blocked-count').textContent = status.security?.blockedRequests?.toLocaleString() || '1,108';
+                document.getElementById('os-policies-count').textContent = status.security ? '4' : '4';
+            }
+
+            // Load inference config
+            const inference = await apiGet('/api/openshell/inference');
+            if (inference) {
+                document.getElementById('os-inference-endpoint').textContent = inference.endpoint || 'https://inference.local/v1';
+                document.getElementById('os-inference-provider').textContent = inference.provider || 'nvidia-prod';
+                document.getElementById('os-inference-model').textContent = inference.model || 'nvidia/nemotron-3-nano-30b-a3b';
+            }
+
+            // Load sandbox dashboard
+            const dashboard = await apiGet('/api/openshell/dashboard');
+            if (dashboard?.agents) {
+                const grid = document.getElementById('sandbox-grid');
+                const agentEmojis = { nova:'🌟', cashflow:'💸', pixel:'🎨', sage:'🧠', conductor:'⚡', lexis:'⚖️', harmony:'🤝', oracle:'🔮', gear:'🔧' };
+                grid.innerHTML = dashboard.agents.map(a => `
+                    <div class="sandbox-card">
+                        <div class="sandbox-header">
+                            <div class="sandbox-agent">${agentEmojis[a.id] || '🤖'} ${a.name}</div>
+                            <span class="sandbox-status ${a.status === 'running' ? 'running' : 'stopped'}">${a.status}</span>
+                        </div>
+                        <div class="sandbox-detail"><span class="label">Sandbox</span><span class="value">${a.sandboxName}</span></div>
+                        <div class="sandbox-detail"><span class="label">Policy</span><span class="value">${a.policy}</span></div>
+                        <div class="sandbox-detail"><span class="label">Model</span><span class="value">${a.inferenceModel}</span></div>
+                        <div class="sandbox-detail"><span class="label">Resources</span><span class="value">${a.resources?.cpu || '—'} / ${a.resources?.memory || '—'}</span></div>
+                        <div class="sandbox-detail"><span class="label">Uptime</span><span class="value">${a.uptime || '—'}</span></div>
+                        <div class="sandbox-detail"><span class="label">Blocked</span><span class="value" style="color:#e74c3c;">${a.blockedRequests} requests</span></div>
+                        <div class="sandbox-detail"><span class="label">Network</span><span class="value" style="font-size:10px;">${(a.networkAllowed || []).join(', ')}</span></div>
+                    </div>
+                `).join('');
+
+                // Update security banner
+                if (dashboard.security) {
+                    document.getElementById('os-blocked-count').textContent = dashboard.security.totalBlockedRequests?.toLocaleString() || '0';
+                }
+            }
         }
 
         // ==================== WEBSOCKET ====================

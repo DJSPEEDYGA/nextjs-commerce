@@ -2,7 +2,7 @@
 
 > Curated catalog of top trending AI models from [HuggingFace](https://huggingface.co/models) — reference for integration with the Ms Money Penny Store AI stack.
 > 
-> **Total Models on HuggingFace: 50,024+**
+> **Total Models on HuggingFace: 2,719,277+** | **Trending: 50,024+**
 > Updated: March 2026
 
 ---
@@ -21,6 +21,57 @@
 | [moonshotai/Kimi-K2.5](https://huggingface.co/moonshotai/Kimi-K2.5) | 1.1T | 3.17M | Moonshot |
 | [meta-llama/Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | 8B | 7.32M | Meta |
 | [MiniMaxAI/MiniMax-M2.5](https://huggingface.co/MiniMaxAI/MiniMax-M2.5) | 229B | 540k | MiniMax |
+
+---
+
+## ⭐ Top Trending Models — March 2026 (NEW)
+
+### NVIDIA Nemotron 3 Series
+| Model | Params | Downloads | Likes |
+|-------|--------|-----------|-------|
+| [nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16) | 124B | 36.8k | 253 |
+| [nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4) | 67B | 295k | 166 |
+| [nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-FP8) | 124B | 210k | 164 |
+| [nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16) | 4B | 1.53k | 35 |
+
+### Multimodal & Vision Models
+| Model | Params | Downloads | Likes |
+|-------|--------|-----------|-------|
+| [zai-org/GLM-OCR](https://huggingface.co/zai-org/GLM-OCR) | — | 2.74M | 1,350 |
+| [HauhauCS/Qwen3.5-35B-A3B-Uncensored-Aggressive](https://huggingface.co/HauhauCS/Qwen3.5-35B-A3B-Uncensored-HauhauCS-Aggressive) | 35B | 112k | 576 |
+| [HauhauCS/Qwen3.5-9B-Uncensored-Aggressive](https://huggingface.co/HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive) | 9B | 255k | 543 |
+| [RekaAI/reka-edge-2603](https://huggingface.co/RekaAI/reka-edge-2603) | 7B | 289 | 93 |
+| [baidu/Qianfan-OCR](https://huggingface.co/baidu/Qianfan-OCR) | 5B | — | 133 |
+| [google/translategemma-4b-it](https://huggingface.co/google/translategemma-4b-it) | 4B | 117k | 710 |
+| [InternVL-U/InternVL-U](https://huggingface.co/InternVL-U/InternVL-U) | — | 245 | 48 |
+
+### Image & Video Generation
+| Model | Task | Downloads | Likes |
+|-------|------|-----------|-------|
+| [black-forest-labs/FLUX.1-dev](https://huggingface.co/black-forest-labs/FLUX.1-dev) | Text-to-Image | 745k | 12,500 |
+| [Tongyi-MAI/Z-Image-Turbo](https://huggingface.co/Tongyi-MAI/Z-Image-Turbo) | Text-to-Image | 931k | 4,270 |
+| [black-forest-labs/FLUX.2-klein-9b-kv](https://huggingface.co/black-forest-labs/FLUX.2-klein-9b-kv) | Image-to-Image | 4.21k | 97 |
+| [Lightricks/LTX-2.3](https://huggingface.co/Lightricks/LTX-2.3) | Image-to-Video | 644k | 672 |
+| [FireRedTeam/FireRed-Image-Edit-1.1](https://huggingface.co/FireRedTeam/FireRed-Image-Edit-1.1) | Image-to-Image | 3.69k | 173 |
+| [Alissonerdx/BFS-Best-Face-Swap](https://huggingface.co/Alissonerdx/BFS-Best-Face-Swap) | Image-to-Image | 56.1k | 365 |
+
+### Speech & Audio
+| Model | Params | Downloads | Likes |
+|-------|--------|-----------|-------|
+| [fishaudio/s2-pro](https://huggingface.co/fishaudio/s2-pro) | 5B | 7k | 631 |
+| [HumeAI/tada-1b](https://huggingface.co/HumeAI/tada-1b) | 2B | 36.7k | 217 |
+| [HumeAI/tada-3b-ml](https://huggingface.co/HumeAI/tada-3b-ml) | 4B | 11.9k | 141 |
+| [ibm-granite/granite-4.0-1b-speech](https://huggingface.co/ibm-granite/granite-4.0-1b-speech) | 2B | 20.3k | 150 |
+
+### Reasoning & Enterprise
+| Model | Params | Downloads | Likes |
+|-------|--------|-----------|-------|
+| [Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled](https://huggingface.co/Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled) | 28B | 78.8k | 883 |
+| [Tesslate/OmniCoder-9B](https://huggingface.co/Tesslate/OmniCoder-9B) | — | 8.72k | 306 |
+| [Rakuten/RakutenAI-3.0](https://huggingface.co/Rakuten/RakutenAI-3.0) | 671B | 42 | — |
+| [miromind-ai/MiroThinker-1.7](https://huggingface.co/miromind-ai/MiroThinker-1.7) | 235B | 677 | 85 |
+| [mistralai/Leanstral-2603](https://huggingface.co/mistralai/Leanstral-2603) | — | 91 | 104 |
+| [circlestone-labs/Anima](https://huggingface.co/circlestone-labs/Anima) | — | 243k | 879 |
 
 ---
 
@@ -109,7 +160,7 @@
 
 | Category | Count |
 |----------|-------|
-| **Total Models** | 50,024+ |
+| **Total Models** | 2,719,277+ (50,024+ trending) |
 | **Tasks** | 18+ (Text Gen, Any-to-Any, Image-Text-to-Text, Image-to-Image, Text-to-Image, Text-to-Video, Text-to-Speech, +44 more) |
 | **Libraries** | 53+ (PyTorch, TensorFlow, JAX, Transformers, Diffusers, Safetensors, ONNX, GGUF, MLX, +42 more) |
 | **Apps** | 15+ (vLLM, llama.cpp, MLX LM, LM Studio, Ollama, Jan, Draw Things, +8 more) |

@@ -658,6 +658,82 @@
         .security-stat { text-align: center; min-width: 100px; }
         .security-stat .num { font-size: 24px; font-weight: 800; color: var(--accent); }
         .security-stat .label { font-size: 11px; color: var(--text-secondary); }
+
+        /* ==================== UE5 COPILOT STYLES ==================== */
+        .ue5-hero {
+            background: linear-gradient(135deg, rgba(155,89,182,0.15), rgba(78,205,196,0.1), rgba(231,76,60,0.1));
+            border: 1px solid rgba(155,89,182,0.3); border-radius: 16px;
+            padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden;
+        }
+        .ue5-hero::before {
+            content: '🔨'; position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
+            font-size: 64px; opacity: 0.15;
+        }
+        .ue5-hero-title { font-size: 22px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px; }
+        .ue5-hero-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+        .ue5-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+        .ue5-badge { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+        .ue5-badge.fab { background: rgba(155,89,182,0.2); color: #9b59b6; border: 1px solid rgba(155,89,182,0.3); }
+        .ue5-badge.free { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.2); }
+        .ue5-badge.source { background: rgba(78,205,196,0.15); color: var(--accent); border: 1px solid rgba(78,205,196,0.2); }
+        .ue5-badge.live { background: rgba(231,76,60,0.15); color: #e74c3c; border: 1px solid rgba(231,76,60,0.2); }
+
+        .ue5-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .ue5-tab {
+            padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600;
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .ue5-tab:hover { border-color: var(--accent); color: var(--text-primary); }
+        .ue5-tab.active { background: rgba(78,205,196,0.15); border-color: var(--accent); color: var(--accent); }
+
+        .blueprint-output {
+            background: #0d1117; border: 1px solid #30363d; border-radius: 10px;
+            padding: 16px; font-family: 'Courier New', monospace; font-size: 12px;
+            color: #e6edf3; line-height: 1.6; white-space: pre-wrap;
+            max-height: 500px; overflow-y: auto; margin-top: 12px;
+        }
+        .blueprint-output .bp-node { color: #79c0ff; }
+        .blueprint-output .bp-comment { color: #8b949e; }
+        .blueprint-output .bp-value { color: #a5d6ff; }
+        .blueprint-output .bp-tip { color: #ffd700; }
+
+        .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 12px; }
+        .template-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 14px; cursor: pointer; transition: all 0.2s;
+        }
+        .template-card:hover { border-color: #9b59b6; transform: translateY(-2px); }
+        .template-card .t-name { font-weight: 700; font-size: 14px; color: var(--text-primary); margin-bottom: 4px; }
+        .template-card .t-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 8px; }
+        .template-card .t-meta { display: flex; gap: 6px; }
+        .template-card .t-tag { font-size: 10px; padding: 2px 8px; border-radius: 6px; background: var(--bg-hover); color: var(--text-muted); font-weight: 600; }
+
+        .analyzer-score {
+            display: flex; align-items: center; gap: 20px; padding: 16px;
+            background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); margin-top: 12px;
+        }
+        .score-circle {
+            width: 70px; height: 70px; border-radius: 50%; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0;
+        }
+        .score-circle .grade { font-size: 24px; line-height: 1; }
+        .score-circle .score { font-size: 11px; }
+
+        .ue5-chat-area {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+            overflow: hidden;
+        }
+        .ue5-chat-messages {
+            padding: 16px; height: 320px; overflow-y: auto; display: flex;
+            flex-direction: column; gap: 12px;
+        }
+        .ue5-msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+        .ue5-msg.user { background: rgba(78,205,196,0.15); border: 1px solid rgba(78,205,196,0.2); align-self: flex-end; }
+        .ue5-msg.forge { background: rgba(155,89,182,0.1); border: 1px solid rgba(155,89,182,0.2); align-self: flex-start; white-space: pre-line; }
+        .ue5-input-area { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); }
+        .ue5-input-area input { flex: 1; background: var(--bg-hover); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text-primary); font-size: 13px; }
+        .ue5-input-area input:focus { border-color: #9b59b6; outline: none; }
     </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
@@ -681,6 +757,7 @@
             <div class="nav-item" onclick="showPage('market', this)"><span class="icon">📈</span> Market Intel</div>
             <div class="nav-item" onclick="showPage('models', this)"><span class="icon">🌐</span> Model Hub</div>
             <div class="nav-item" onclick="showPage('openshell', this)"><span class="icon">🐚</span> OpenShell</div>
+            <div class="nav-item" onclick="showPage('ue5', this)"><span class="icon">🔨</span> UE5 CoPilot</div>
             <div class="nav-item" onclick="showPage('settings', this)"><span class="icon">⚙️</span> Settings</div>
         </nav>
         <div class="sidebar-footer">
@@ -1056,6 +1133,136 @@
             <div class="sandbox-grid" id="sandbox-grid"></div>
         </div>
 
+        <!-- ==================== UE5 COPILOT PAGE ==================== -->
+        <div id="page-ue5" class="page">
+            <div class="page-header"><h2>🔨 Ultimate Engine CoPilot</h2><span class="badge" style="background:rgba(155,89,182,0.2);color:#9b59b6;">Featured on FAB</span></div>
+
+            <!-- FORGE Assistant Banner -->
+            <div class="assistant-banner">
+                <div class="assistant-avatar">🔨</div>
+                <div class="assistant-info">
+                    <div class="assistant-name">FORGE <span class="title-tag">Ultimate Engine CoPilot — UE5</span></div>
+                    <div class="assistant-greeting">FORGE reporting for duty! I turn your creative vision into Unreal Engine 5 reality — Blueprints, scenes, music visualizers, virtual concerts, NFT galleries. Featured on FAB by Epic Games. What are we building? 🔨</div>
+                </div>
+                <div class="assistant-actions">
+                    <button class="assistant-btn" onclick="getAssistantTip('forge')">💡 Tip</button>
+                    <button class="assistant-btn" onclick="ue5FocusChat()">💬 Ask FORGE</button>
+                </div>
+            </div>
+            <div class="assistant-tip" id="tip-forge" style="display:none;"><span class="tip-avatar">🔨</span><span><span class="tip-name">FORGE:</span> <span id="tip-forge-text"></span></span></div>
+
+            <!-- Hero Banner -->
+            <div class="ue5-hero">
+                <div class="ue5-hero-title">Ultimate Engine CoPilot v0.3.5</div>
+                <div class="ue5-hero-sub">One of the first AI Co-Pilots in Unreal Engine. Generate Blueprints from natural language, build complete scenes from a single command, analyze project architecture, and refactor code conversationally. The fastest growing and most flexible Co-Pilot on the market.</div>
+                <div class="ue5-badges">
+                    <span class="ue5-badge fab">🎮 Featured on FAB — Feb 5-9, 2026</span>
+                    <span class="ue5-badge free">✅ One-Time Purchase, Lifetime Updates</span>
+                    <span class="ue5-badge source">📦 Full C++ Source Code</span>
+                    <span class="ue5-badge live">⚡ Local LLM Support</span>
+                    <span class="ue5-badge free">🌐 653+ Models via OpenRouter</span>
+                </div>
+            </div>
+
+            <!-- Mode Tabs -->
+            <div class="ue5-tabs">
+                <div class="ue5-tab active" onclick="switchUE5Tab('generator', this)">🎯 Blueprint Generator</div>
+                <div class="ue5-tab" onclick="switchUE5Tab('scene', this)">🏗️ Scene Builder</div>
+                <div class="ue5-tab" onclick="switchUE5Tab('analyzer', this)">🔍 Blueprint Analyzer</div>
+                <div class="ue5-tab" onclick="switchUE5Tab('templates', this)">📦 Templates</div>
+                <div class="ue5-tab" onclick="switchUE5Tab('chat', this)">💬 Chat with FORGE</div>
+            </div>
+
+            <!-- Tab: Blueprint Generator -->
+            <div id="ue5-tab-generator" class="ue5-tab-content">
+                <div class="form-group">
+                    <label>Describe your Blueprint in plain English (any language)</label>
+                    <textarea id="ue5-bp-prompt" rows="3" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text-primary);font-size:13px;resize:vertical;" placeholder="e.g. 'Create a music visualizer that reacts to audio FFT data and deforms a mesh in real time' or 'Build a system that fetches my royalty data from an API and displays it on a HUD'"></textarea>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+                    <select id="ue5-complexity" style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text-primary);font-size:13px;">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate" selected>Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                    <select id="ue5-category" style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text-primary);font-size:13px;">
+                        <option value="general">General</option>
+                        <option value="audio">Audio/Music</option>
+                        <option value="ui">UI/HUD</option>
+                        <option value="character">Character/Avatar</option>
+                        <option value="environment">Environment</option>
+                        <option value="multiplayer">Multiplayer</option>
+                    </select>
+                    <input type="text" id="ue5-selected-node" placeholder="Insert after node (optional)..." style="flex:1;min-width:180px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text-primary);font-size:13px;">
+                    <button class="btn btn-primary" onclick="generateBlueprint()">🔨 Generate Blueprint</button>
+                </div>
+                <div id="ue5-bp-output" style="display:none;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <span style="font-size:12px;color:var(--text-secondary);">Generated Blueprint</span>
+                        <button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;" onclick="copyBlueprint()">📋 Copy</button>
+                    </div>
+                    <div class="blueprint-output" id="ue5-bp-result"></div>
+                    <div id="ue5-bp-meta" style="font-size:11px;color:var(--text-muted);margin-top:8px;"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Scene Builder -->
+            <div id="ue5-tab-scene" class="ue5-tab-content" style="display:none;">
+                <div class="form-group">
+                    <label>Describe your scene in one command</label>
+                    <textarea id="ue5-scene-cmd" rows="3" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text-primary);font-size:13px;resize:vertical;" placeholder="e.g. 'Build a night concert stage with 500 crowd NPCs, dynamic lighting, and audio-reactive effects' or 'Create an NFT gallery with interactive displays and hover previews'"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="buildScene()" style="margin-bottom:12px;">🏗️ Build Scene</button>
+                <div id="ue5-scene-output" style="display:none;">
+                    <div class="blueprint-output" id="ue5-scene-result"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Blueprint Analyzer -->
+            <div id="ue5-tab-analyzer" class="ue5-tab-content" style="display:none;">
+                <div class="form-group">
+                    <label>Paste your Blueprint description or code to analyze</label>
+                    <textarea id="ue5-analyze-input" rows="5" style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text-primary);font-size:13px;resize:vertical;" placeholder="Paste your Blueprint nodes, describe your current implementation, or type what you're doing in Event Tick..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="analyzeBlueprint()" style="margin-bottom:12px;">🔍 Analyze Blueprint</button>
+                <div id="ue5-analyze-output" style="display:none;">
+                    <div class="analyzer-score" id="ue5-score-card"></div>
+                    <div id="ue5-issues-list" style="margin-top:12px;"></div>
+                    <div id="ue5-integration-opps" style="margin-top:12px;"></div>
+                </div>
+                <div style="margin-top:16px;">
+                    <h4 style="color:var(--text-primary);margin-bottom:8px;">⚡ Quick Tips</h4>
+                    <div id="ue5-tips-list"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Templates -->
+            <div id="ue5-tab-templates" class="ue5-tab-content" style="display:none;">
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Pre-built Blueprint templates for SUPER GOAT creators. Click any template to load it into the generator.</p>
+                <div class="template-grid" id="ue5-template-grid"></div>
+            </div>
+
+            <!-- Tab: Chat with FORGE -->
+            <div id="ue5-tab-chat" class="ue5-tab-content" style="display:none;">
+                <div class="ue5-chat-area">
+                    <div class="ue5-chat-messages" id="ue5-chat-msgs">
+                        <div class="ue5-msg forge">🔨 FORGE here! I'm your Ultimate Engine CoPilot for Unreal Engine 5. I can help with anything UE5 — Blueprints, C++, materials, performance, audio systems, and integrating your creator data into immersive experiences. What are we building today?</div>
+                    </div>
+                    <div class="ue5-input-area">
+                        <input type="text" id="ue5-chat-input" placeholder="Ask FORGE anything about UE5..." onkeypress="if(event.key==='Enter')sendForgeChat()">
+                        <button class="btn btn-primary" onclick="sendForgeChat()" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);">🔨 Ask FORGE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connection Methods -->
+            <div class="settings-section" style="margin-top:20px;">
+                <h3>🔌 Connection Methods</h3>
+                <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Connect FORGE to any AI provider. Multiple methods for maximum flexibility.</p>
+                <div id="ue5-connections-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;"></div>
+            </div>
+        </div>
+
         <!-- ==================== SETTINGS PAGE ==================== -->
         <div id="page-settings" class="page">
             <div class="page-header"><h2>⚙️ Settings</h2></div>
@@ -1118,6 +1325,7 @@
             if (pageId === 'market') initMarketCharts();
             if (pageId === 'models') loadModelHub();
             if (pageId === 'openshell') loadOpenShell();
+            if (pageId === 'ue5') loadUE5();
         }
 
         // ==================== API HELPERS ====================
@@ -1462,6 +1670,268 @@
                 // Update security banner
                 if (dashboard.security) {
                     document.getElementById('os-blocked-count').textContent = dashboard.security.totalBlockedRequests?.toLocaleString() || '0';
+                }
+            }
+        }
+
+        // ==================== UE5 COPILOT / FORGE ====================
+
+        let ue5ActiveTab = 'generator';
+        let ue5BlueprintOutput = '';
+
+        function switchUE5Tab(tab, el) {
+            ue5ActiveTab = tab;
+            document.querySelectorAll('.ue5-tab').forEach(t => t.classList.remove('active'));
+            ['generator','scene','analyzer','templates','chat'].forEach(id => {
+                const c = document.getElementById('ue5-tab-' + id);
+                if (c) c.style.display = 'none';
+            });
+            if (el) el.classList.add('active');
+            const content = document.getElementById('ue5-tab-' + tab);
+            if (content) content.style.display = 'block';
+            if (tab === 'templates') loadUE5Templates();
+            if (tab === 'chat') {
+                setTimeout(() => document.getElementById('ue5-chat-input')?.focus(), 100);
+            }
+        }
+
+        async function generateBlueprint() {
+            const prompt = document.getElementById('ue5-bp-prompt')?.value?.trim();
+            if (!prompt) { alert('Please describe the Blueprint you want to generate.'); return; }
+            const category = document.getElementById('ue5-category')?.value || 'general';
+            const complexity = document.getElementById('ue5-complexity')?.value || 'intermediate';
+            const outputWrapper = document.getElementById('ue5-bp-output');
+            const outputEl = document.getElementById('ue5-bp-result');
+            const btn = document.querySelector('#ue5-tab-generator .btn-primary');
+            const origText = btn?.textContent;
+            if (btn) { btn.disabled = true; btn.textContent = '⚙️ Generating...'; }
+            if (outputWrapper) outputWrapper.style.display = 'none';
+
+            const result = await apiPost('/api/ue5/blueprint/generate', { prompt, category, complexity });
+
+            if (btn) { btn.disabled = false; btn.textContent = origText || '🔨 Generate Blueprint'; }
+            if (result?.blueprint) {
+                ue5BlueprintOutput = result.blueprint;
+                if (outputEl) outputEl.textContent = result.blueprint;
+                if (outputWrapper) outputWrapper.style.display = 'block';
+                const metaEl = document.getElementById('ue5-bp-meta');
+                if (metaEl && result.metadata) {
+                    metaEl.innerHTML =
+                        '<span style="margin-right:12px">📦 <strong>' + (result.metadata.nodeCount||'?') + '</strong> nodes</span>' +
+                        '<span style="margin-right:12px">📁 <strong>' + (result.metadata.category||category) + '</strong></span>' +
+                        '<span style="margin-right:12px">📊 <strong>' + (result.metadata.complexity||complexity) + '</strong></span>' +
+                        (result.metadata.generatedAt ? '<span>🕐 ' + new Date(result.metadata.generatedAt).toLocaleTimeString() + '</span>' : '');
+                }
+            } else {
+                if (outputEl) outputEl.textContent = '// Error generating Blueprint. Check console for details.';
+                if (outputWrapper) outputWrapper.style.display = 'block';
+            }
+        }
+
+        function copyBlueprint() {
+            if (!ue5BlueprintOutput) { alert('Generate a Blueprint first!'); return; }
+            const btn = document.querySelector('#ue5-bp-output .btn-secondary');
+            navigator.clipboard.writeText(ue5BlueprintOutput).then(() => {
+                if (btn) { btn.textContent = '✅ Copied!'; setTimeout(() => btn.textContent = '📋 Copy', 2000); }
+            }).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = ue5BlueprintOutput;
+                document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+                if (btn) { btn.textContent = '✅ Copied!'; setTimeout(() => btn.textContent = '📋 Copy', 2000); }
+            });
+        }
+
+        async function buildScene() {
+            const prompt = document.getElementById('ue5-scene-cmd')?.value?.trim();
+            if (!prompt) { alert('Please describe the scene you want to build.'); return; }
+            const btn = document.querySelector('#ue5-tab-scene .btn-primary');
+            const origText = btn?.textContent;
+            if (btn) { btn.disabled = true; btn.textContent = '⚙️ Building Scene...'; }
+            const outputWrapper = document.getElementById('ue5-scene-output');
+            const outputEl = document.getElementById('ue5-scene-result');
+            if (outputWrapper) outputWrapper.style.display = 'none';
+
+            const result = await apiPost('/api/ue5/scene/build', { command: prompt });
+
+            if (btn) { btn.disabled = false; btn.textContent = origText || '🏗️ Build Scene'; }
+            const sceneData = result?.scene || result?.layout || result?.sceneLayout || result;
+            if (sceneData) {
+                if (outputEl) outputEl.textContent = typeof sceneData === 'string' ? sceneData : JSON.stringify(sceneData, null, 2);
+                if (outputWrapper) outputWrapper.style.display = 'block';
+            }
+        }
+
+        async function analyzeBlueprint() {
+            const code = document.getElementById('ue5-analyze-input')?.value?.trim();
+            if (!code) { alert('Paste Blueprint code or a project description to analyze.'); return; }
+            const btn = document.querySelector('#ue5-tab-analyzer .btn-primary');
+            const origText = btn?.textContent;
+            if (btn) { btn.disabled = true; btn.textContent = '🔍 Analyzing...'; }
+            const outputWrapper = document.getElementById('ue5-analyze-output');
+            if (outputWrapper) outputWrapper.style.display = 'none';
+
+            const result = await apiPost('/api/ue5/blueprint/analyze', { blueprint: code });
+
+            if (btn) { btn.disabled = false; btn.textContent = origText || '🔍 Analyze Blueprint'; }
+            if (result) {
+                if (outputWrapper) outputWrapper.style.display = 'block';
+                const scoreCard = document.getElementById('ue5-score-card');
+                if (scoreCard) {
+                    const score = result.score ?? result.qualityScore ?? '--';
+                    // grade may be a string 'A' or an object {grade:'B', label:'Good', color:'#...'}
+                    const gradeRaw = result.grade || 'N/A';
+                    const grade = typeof gradeRaw === 'object' ? (gradeRaw.grade || 'N/A') : gradeRaw;
+                    const gc = gradeRaw?.color || (grade==='A'?'#27ae60':grade==='B'?'#2ecc71':grade==='C'?'#f39c12':grade==='D'?'#e67e22':'#e74c3c');
+                    scoreCard.innerHTML =
+                        '<div style="display:flex;align-items:center;gap:20px;padding:16px;background:var(--bg-card);border-radius:12px;border:1px solid var(--border);">' +
+                        '<div style="text-align:center;"><div style="font-size:48px;font-weight:700;color:' + gc + ';">' + grade + '</div><div style="font-size:11px;color:var(--text-secondary);">Grade</div></div>' +
+                        '<div style="text-align:center;"><div style="font-size:48px;font-weight:700;color:var(--accent);">' + score + '</div><div style="font-size:11px;color:var(--text-secondary);">Score /100</div></div>' +
+                        '<div style="flex:1;"><div style="font-size:13px;color:var(--text-primary);margin-bottom:4px;">' +
+                        (result.issues?.length ? '⚠️ ' + result.issues.length + ' issue' + (result.issues.length!==1?'s':'') + ' found' : '✅ No issues found') +
+                        '</div>' + (result.goatIntegration ? '<div style="font-size:12px;color:#f0a500;margin-top:4px;">🐐 GOAT integration opportunities detected</div>' : '') +
+                        '</div></div>';
+                }
+                const issuesEl = document.getElementById('ue5-issues-list');
+                if (issuesEl && result.issues && result.issues.length > 0) {
+                    issuesEl.innerHTML = '<h4 style="color:var(--text-primary);margin-bottom:8px;">⚠️ Issues Found</h4>' +
+                        result.issues.map(function(i) {
+                            const bc = i.severity==='critical'?'#e74c3c':i.severity==='high'?'#e67e22':'#f39c12';
+                            return '<div style="padding:10px 12px;margin-bottom:6px;border-radius:8px;border-left:3px solid ' + bc + ';background:var(--bg-card);">' +
+                                '<strong style="color:' + bc + ';">' + (i.severity||'info').toUpperCase() + '</strong>' +
+                                '<span style="font-size:13px;margin-left:8px;">' + (i.message||i.description||i.pattern||'') + '</span>' +
+                                (i.suggestion ? '<div style="font-size:11px;margin-top:4px;color:var(--text-secondary);">💡 ' + i.suggestion + '</div>' : '') +
+                                '</div>';
+                        }).join('');
+                }
+                const tipsEl = document.getElementById('ue5-tips-list');
+                if (tipsEl && result.tips) {
+                    tipsEl.innerHTML = result.tips.map(function(t) {
+                        return '<div style="padding:8px 12px;margin-bottom:5px;border-radius:8px;background:var(--bg-card);font-size:13px;border-left:3px solid var(--accent);">💡 ' + (typeof t==='string'?t:(t.tip||t.text||'')) + '</div>';
+                    }).join('');
+                }
+            }
+        }
+
+        async function loadUE5Templates() {
+            const grid = document.getElementById('ue5-template-grid');
+            if (!grid || grid.dataset.loaded === 'true') return;
+            grid.innerHTML = '<div style="text-align:center;padding:20px;opacity:0.6">⏳ Loading templates...</div>';
+
+            const result = await apiGet('/api/ue5/templates');
+            const templates = result?.templates || (Array.isArray(result) ? result : []);
+
+            if (templates.length === 0) {
+                grid.innerHTML = '<div style="text-align:center;padding:20px;opacity:0.6">No templates available.</div>';
+                return;
+            }
+
+            grid.innerHTML = templates.map(function(t) {
+                const tid = (t.id||t.name||'').replace(/'/g,"\\'");
+                return '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;" onclick="useTemplate(\'' + tid + '\')">' +
+                    '<div style="font-size:28px;margin-bottom:8px;">' + (t.icon||'📦') + '</div>' +
+                    '<div style="font-weight:600;font-size:13px;margin-bottom:4px;">' + t.name + '</div>' +
+                    '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;">' + (t.description||'') + '</div>' +
+                    '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">' +
+                    (t.tags||[]).map(function(tag){ return '<span style="background:rgba(255,215,0,0.15);color:#f0a500;padding:2px 6px;border-radius:4px;font-size:10px;">' + tag + '</span>'; }).join('') +
+                    '</div>' +
+                    '<button class="btn btn-primary" style="font-size:11px;padding:5px 12px;width:100%;" onclick="event.stopPropagation();useTemplate(\'' + tid + '\')">⚡ Use Template</button>' +
+                    '</div>';
+            }).join('');
+            grid.dataset.loaded = 'true';
+        }
+
+        async function useTemplate(templateId) {
+            const result = await apiGet('/api/ue5/templates/' + encodeURIComponent(templateId));
+            const template = result?.template || result;
+            if (template?.prompt) {
+                const bpPrompt = document.getElementById('ue5-bp-prompt');
+                if (bpPrompt) bpPrompt.value = template.prompt;
+                if (template.category) {
+                    const catEl = document.getElementById('ue5-category');
+                    if (catEl) catEl.value = template.category;
+                }
+            }
+            document.querySelectorAll('.ue5-tab').forEach(function(t) {
+                if (t.textContent.includes('Generator')) t.click();
+            });
+        }
+
+        async function sendForgeChat() {
+            const input = document.getElementById('ue5-chat-input');
+            const msg = input?.value?.trim();
+            if (!msg) return;
+            input.value = '';
+            const msgs = document.getElementById('ue5-chat-msgs');
+            if (msgs) {
+                const userDiv = document.createElement('div');
+                userDiv.className = 'ue5-msg user';
+                userDiv.textContent = msg;
+                msgs.appendChild(userDiv);
+                msgs.scrollTop = msgs.scrollHeight;
+            }
+            const thinkingId = 'forge-thinking-' + Date.now();
+            if (msgs) {
+                const thinkDiv = document.createElement('div');
+                thinkDiv.className = 'ue5-msg forge';
+                thinkDiv.id = thinkingId;
+                thinkDiv.textContent = '🔨 FORGE is thinking...';
+                msgs.appendChild(thinkDiv);
+                msgs.scrollTop = msgs.scrollHeight;
+            }
+            const result = await apiPost('/api/ue5/chat', { message: msg, history: [] });
+            const thinkingEl = document.getElementById(thinkingId);
+            if (thinkingEl) thinkingEl.remove();
+            if (msgs) {
+                const forgeDiv = document.createElement('div');
+                forgeDiv.className = 'ue5-msg forge';
+                const reply = result?.response || result?.message || '⚠️ FORGE encountered an error. Please try again.';
+                forgeDiv.innerHTML = '🔨 ' + reply.replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code style="background:rgba(255,255,255,0.1);padding:1px 4px;border-radius:3px;">$1</code>');
+                msgs.appendChild(forgeDiv);
+                msgs.scrollTop = msgs.scrollHeight;
+            }
+        }
+
+        function ue5FocusChat() {
+            document.querySelectorAll('.ue5-tab').forEach(function(t) {
+                if (t.textContent.includes('Chat')) t.click();
+            });
+        }
+
+        async function loadUE5() {
+            const info = await apiGet('/api/ue5/info');
+            const methodsEl = document.getElementById('ue5-connections-grid');
+            if (methodsEl && info?.connectionMethods) {
+                methodsEl.innerHTML = info.connectionMethods.map(function(m) {
+                    return '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;">' +
+                        '<div style="font-size:24px;margin-bottom:6px;">' + (m.icon||'🔗') + '</div>' +
+                        '<div style="font-weight:600;font-size:13px;margin-bottom:4px;">' + m.name + '</div>' +
+                        '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;">' + (m.description||'') + '</div>' +
+                        '<div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;">' +
+                        (m.free ? '<span style="background:rgba(39,174,96,0.2);color:#27ae60;padding:2px 6px;border-radius:4px;font-size:10px;">FREE</span>' : '') +
+                        (m.local ? '<span style="background:rgba(52,152,219,0.2);color:#3498db;padding:2px 6px;border-radius:4px;font-size:10px;">LOCAL</span>' : '') +
+                        '</div></div>';
+                }).join('');
+            }
+            const tipTextEl = document.getElementById('tip-forge-text');
+            if (tipTextEl && !tipTextEl.textContent) {
+                const forgeTips = [
+                    'Use the Blueprint Generator with the "Audio/Music" category for GOAT-ready audio visualizers!',
+                    'Try Analyze on your existing Blueprints to find performance issues before shipping.',
+                    'Scene Builder works great for generating virtual concert stage layouts.',
+                    'Chat with me to get help refactoring complex Blueprint logic into clean C++.',
+                    'Templates include a pre-built NFT Gallery and Revenue HUD — check them out!'
+                ];
+                tipTextEl.textContent = forgeTips[Math.floor(Math.random() * forgeTips.length)];
+                const tipForgeEl = document.getElementById('tip-forge');
+                if (tipForgeEl) tipForgeEl.style.display = 'flex';
+            }
+            const tipsEl = document.getElementById('ue5-tips-list');
+            if (tipsEl && tipsEl.children.length === 0) {
+                const quickTips = await apiGet('/api/ue5/tips');
+                if (quickTips?.tips) {
+                    tipsEl.innerHTML = quickTips.tips.map(function(t) {
+                        return '<div style="padding:8px 12px;margin-bottom:5px;border-radius:8px;background:var(--bg-card);font-size:13px;border-left:3px solid var(--accent);">💡 ' + (typeof t==='string'?t:(t.tip||t.text||'')) + '</div>';
+                    }).join('');
                 }
             }
         }

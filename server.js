@@ -20,6 +20,10 @@ const OpenShellClient = require('./lib/nvidia/openshell-client');
 const InferenceRouter = require('./lib/nvidia/inference-router');
 const SandboxManager = require('./lib/agents/sandbox-manager');
 
+// UE5 CoPilot Components
+const UE5CoPilot = require('./lib/ue5/ue5-copilot');
+const BlueprintAnalyzer = require('./lib/ue5/blueprint-analyzer');
+
 // Initialize multi-provider system
 const providerManager = new ProviderManager();
 const openshellClient = new OpenShellClient();
@@ -35,6 +39,11 @@ sandboxManager.initializeAll().then(results => {
     const deployed = results.filter(r => r.status === 'found').length;
     console.log(`🐚 OpenShell: ${deployed}/${results.length} agent sandboxes mapped`);
 }).catch(err => console.warn('OpenShell init:', err.message));
+
+// Initialize UE5 CoPilot
+const ue5CoPilot = new UE5CoPilot({ providerManager, demoMode: aiConfig.demoMode });
+const blueprintAnalyzer = new BlueprintAnalyzer({ demoMode: aiConfig.demoMode });
+console.log(`🔨 UE5 CoPilot: FORGE ready (v${ue5CoPilot.version}) — Featured on FAB by Epic Games`);
 const {
     RevenueData,
     NFTPortfolio,
@@ -180,7 +189,7 @@ app.get('/api/status', (req, res) => {
     res.json({
         status: 'online',
         message: 'SUPER GOAT ROYALTIES API is running',
-        version: '3.1.0',
+        version: '3.2.0',
         app: 'SUPER GOAT Royalties',
         mode: aiConfig.demoMode ? 'demo' : 'live',
         uptime: process.uptime(),
@@ -651,6 +660,103 @@ app.get('/api/market/trends', (req, res) => {
     });
 });
 
+// ==================== UE5 COPILOT ENDPOINTS ====================
+
+// Plugin info — version, features, FAB listing
+app.get('/api/ue5/info', (req, res) => {
+    res.json(ue5CoPilot.getPluginInfo());
+});
+
+// Generate a Blueprint from natural language
+app.post('/api/ue5/blueprint/generate', async (req, res) => {
+    try {
+        const { prompt, language, complexity, category, selectedNode, model } = req.body;
+        if (!prompt) return res.status(400).json({ error: 'prompt is required' });
+        const result = await ue5CoPilot.generateBlueprint(prompt, { language, complexity, category, selectedNode, model });
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Build a complete scene from a command
+app.post('/api/ue5/scene/build', async (req, res) => {
+    try {
+        const { command, options } = req.body;
+        if (!command) return res.status(400).json({ error: 'command is required' });
+        const result = await ue5CoPilot.buildScene(command, options || {});
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Analyze project architecture
+app.post('/api/ue5/project/analyze', async (req, res) => {
+    try {
+        const { projectData, options } = req.body;
+        const result = await ue5CoPilot.analyzeProject(projectData || {}, options || {});
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Refactor a Blueprint
+app.post('/api/ue5/blueprint/refactor', async (req, res) => {
+    try {
+        const { blueprint, instruction, options } = req.body;
+        if (!blueprint || !instruction) return res.status(400).json({ error: 'blueprint and instruction are required' });
+        const result = await ue5CoPilot.refactorBlueprint(blueprint, instruction, options || {});
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Chat with FORGE (conversational co-pilot)
+app.post('/api/ue5/chat', async (req, res) => {
+    try {
+        const { message, options } = req.body;
+        if (!message) return res.status(400).json({ error: 'message is required' });
+        const result = await ue5CoPilot.chat(message, options || {});
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Blueprint template library
+app.get('/api/ue5/templates', (req, res) => {
+    const filter = {
+        category: req.query.category || null,
+        complexity: req.query.complexity || null
+    };
+    const templates = ue5CoPilot.getTemplates(filter);
+    res.json({ templates, total: templates.length });
+});
+
+// Get a single template by ID
+app.get('/api/ue5/templates/:id', (req, res) => {
+    const templates = ue5CoPilot.getTemplates({});
+    const template = templates.find(t => t.id === req.params.id || t.name === req.params.id);
+    if (!template) return res.status(404).json({ error: 'Template not found' });
+    res.json({ template });
+});
+
+// Analyze a Blueprint for quality/performance
+app.post('/api/ue5/blueprint/analyze', (req, res) => {
+    const { blueprint } = req.body;
+    if (!blueprint) return res.status(400).json({ error: 'blueprint text is required' });
+    const result = blueprintAnalyzer.analyze(blueprint);
+    res.json(result);
+});
+
+// Blueprint quick tips
+app.get('/api/ue5/tips', (req, res) => {
+    res.json({ tips: blueprintAnalyzer.getQuickTips() });
+});
+
 // Catch-all route - serve index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -667,7 +773,7 @@ app.use((err, req, res, next) => {
 
 // Start server
 server.listen(PORT, '0.0.0.0', () => {
-    console.log('🚀 SUPER GOAT ROYALTIES Server v3.1.0 running on port', PORT);
+    console.log('🚀 SUPER GOAT ROYALTIES Server v3.2.0 running on port', PORT);
     console.log('📊 Dashboard: http://localhost:' + PORT);
     console.log('🔌 API Status: http://localhost:' + PORT + '/api/status');
     console.log('🤖 AI Assistants: 9 agents active');

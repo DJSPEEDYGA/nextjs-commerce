@@ -54,6 +54,7 @@ const faceAI       = require('./lib/security/facial-recognition');
 const avatarStudio = require('./lib/avatar/avatar-studio');
 const cyberWarfare = require('./lib/security/cyber-warfare');
 const ue5          = require('./lib/gaming/ue5-studio');
+const screenwriting = require('./lib/creative/screenwriting-studio');
 
 // ===================== INITIALIZE SYSTEMS =====================
 const bgChecker    = new BackgroundChecker();
@@ -73,6 +74,7 @@ console.log('👤 Facial Recognition: 5-provider AI system ready');
 console.log('🎭 Avatar Studio: DAZ3D + MetaHuman + FiveM ready');
 console.log('⚔️  Cyber Warfare Defense: 6-engine AV online');
 console.log('🎮 UE5 Studio: C++ Hub + FiveM + Blueprint Generator ready');
+console.log('✍️  Screenwriting Studio: 25 legendary writers + AI script generator ready');
 
 // ===================== API — STATUS =====================
 app.get('/api/status', (req, res) => {
@@ -99,7 +101,9 @@ app.get('/api/status', (req, res) => {
             socialFeed: true,
             musicIntegration: true,
             e2eEncryption: true,
-            zeroTrustArchitecture: true
+            zeroTrustArchitecture: true,
+            screenwritingStudio: true,
+            aiScriptGenerator: true
         },
         stats: {
             users: userDb.getUserCount(),
@@ -107,7 +111,9 @@ app.get('/api/status', (req, res) => {
             matches: matchmaker.getMatchCount(),
             securityScore: 99,
             threatsBlocked: cyberWarfare.getDashboard().stats.threatsBlocked,
-            faceScans: faceAI.getStats().stats.scans
+            faceScans: faceAI.getStats().stats.scans,
+            legendaryWriters: screenwriting.getStats().writers,
+            scriptsGenerated: screenwriting.getStats().scriptsGenerated
         },
         copyright: '© 2024 HARVEY L MILLER JR / JUAQUIN J MALPHURS / KEVIN W HALLINGQUEST'
     });
@@ -446,6 +452,69 @@ app.get('/api/gaming/stats', (req, res) => {
     } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
+// ===================== API — SCREENWRITING STUDIO (NEW) =====================
+// Get all writers (with optional filters: era, genre, country, search)
+app.get('/api/screenwriting/writers', (req, res) => {
+    try {
+        const { era, genre, country, search } = req.query;
+        res.json(screenwriting.getWriters({ era, genre, country, search }));
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get writer by ID
+app.get('/api/screenwriting/writer/:id', (req, res) => {
+    try {
+        const result = screenwriting.getWriterById(req.params.id);
+        if (!result.success) return res.status(404).json(result);
+        res.json(result);
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get script format templates
+app.get('/api/screenwriting/formats', (req, res) => {
+    try { res.json(screenwriting.getScriptFormats()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get story structure templates
+app.get('/api/screenwriting/templates', (req, res) => {
+    try { res.json(screenwriting.getStoryTemplates()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get screenwriting software database
+app.get('/api/screenwriting/software', (req, res) => {
+    try { res.json(screenwriting.getSoftware()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get genre database with writing tips
+app.get('/api/screenwriting/genres', (req, res) => {
+    try { res.json(screenwriting.getGenres()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get Oscar history (Best Screenplay)
+app.get('/api/screenwriting/oscars', (req, res) => {
+    try { res.json(screenwriting.getOscarHistory()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// AI Script Generator
+app.post('/api/screenwriting/generate', async (req, res) => {
+    try {
+        const { genre, template, title, logline, protagonist, setting } = req.body;
+        const script = await screenwriting.generateScript({ genre, template, title, logline, protagonist, setting });
+        res.json(script);
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Screenwriting stats
+app.get('/api/screenwriting/stats', (req, res) => {
+    try { res.json(screenwriting.getStats()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
 // ===================== API — SOCIAL FEED =====================
 app.get('/api/feed/:userId', async (req, res) => res.json({ feed: await userDb.getSocialFeed(req.params.userId) }));
 app.post('/api/feed/post', async (req, res) => res.json(await userDb.createPost(req.body)));
@@ -508,6 +577,8 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log(`👤 Face AI: http://localhost:${PORT}/api/face/stats`);
     console.log(`⚔️  Cyber Warfare: http://localhost:${PORT}/api/warfare/dashboard`);
     console.log(`🎮 Gaming Hub: http://localhost:${PORT}/api/gaming/cpp-books`);
+    console.log(`✍️  Screenwriting: http://localhost:${PORT}/api/screenwriting/writers`);
+    console.log(`📊 Stats: http://localhost:${PORT}/api/screenwriting/stats`);
 });
 
 module.exports = { app, server };

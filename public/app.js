@@ -303,7 +303,7 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const tabItems = document.querySelectorAll('.tab-item');
-  const tabMap = ['discover','matches','stars','faceid','avatar','cyber','gaming','feed','profile','security'];
+  const tabMap = ['discover','matches','stars','faceid','avatar','cyber','gaming','writing','feed','profile','security'];
   const idx = tabMap.indexOf(tab);
   if (idx >= 0 && tabItems[idx]) tabItems[idx].classList.add('active');
   const page = document.getElementById(`page-${tab}`);
@@ -944,6 +944,380 @@ function togglePosition(name, el) {
     showToast(`💞 Dating style updated: ${name}`, 'gold');
   }
 }
+
+// ===================== SCREENWRITING STUDIO =====================
+let activeWritingTab = 'writers';
+let writersCache = [];
+
+function switchWritingTab(tab, el) {
+  activeWritingTab = tab;
+  document.querySelectorAll('.writing-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.writing-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(`writing-panel-${tab}`);
+  if (panel) panel.classList.add('active');
+  // Lazy-load content
+  if (tab === 'writers' && !document.getElementById('writers-grid').innerHTML) loadWriters();
+  if (tab === 'formats' && !document.getElementById('formats-list').innerHTML) loadFormats();
+  if (tab === 'templates' && !document.getElementById('templates-list').innerHTML) loadTemplates();
+  if (tab === 'software' && !document.getElementById('software-list').innerHTML) loadSoftware();
+  if (tab === 'genres' && !document.getElementById('genres-list').innerHTML) loadGenres();
+  if (tab === 'oscars' && !document.getElementById('oscars-list').innerHTML) loadOscars();
+}
+
+// ---------- WRITERS ----------
+async function loadWriters() {
+  try {
+    const res = await fetch('/api/screenwriting/writers');
+    const data = await res.json();
+    if (data.success) {
+      writersCache = data.writers;
+      renderWriters(data.writers);
+      document.getElementById('writers-count').textContent = `🏆 ${data.total} Legendary Screenwriters`;
+    }
+  } catch(e) { console.error('Failed to load writers', e); }
+}
+
+function renderWriters(writers) {
+  const grid = document.getElementById('writers-grid');
+  grid.innerHTML = writers.map(w => `
+    <div class="writer-card" onclick="toggleWriterDetail(this)">
+      <div class="writer-card-header">
+        <div class="writer-rank">${w.rank}</div>
+        <div class="writer-info">
+          <div class="writer-name">${w.name}</div>
+          <div class="writer-era">${w.era} · ${w.years} · ${w.country}</div>
+        </div>
+        <div class="writer-emoji">${w.emoji}</div>
+      </div>
+      <div class="writer-scripts">
+        ${w.notableScripts.slice(0, 5).map(s => `<span class="writer-script-tag">🎬 ${s}</span>`).join('')}
+      </div>
+      <div class="writer-oscars">🏆 ${w.oscars.wins} Oscar Win${w.oscars.wins !== 1 ? 's' : ''} · ${w.oscars.nominations} Nomination${w.oscars.nominations !== 1 ? 's' : ''}</div>
+      <div class="writer-detail" style="display:none">
+        <div class="writer-quote">"${w.quote}"</div>
+        <div class="writer-bio">${w.bio}</div>
+        <div class="writer-legacy">✨ ${w.legacy}</div>
+        <div class="writer-genres">
+          ${w.genres.map(g => `<span class="writer-genre-tag">${g}</span>`).join('')}
+        </div>
+        ${w.notableScripts.length > 5 ? `<div class="writer-scripts" style="margin-top:8px">${w.notableScripts.slice(5).map(s => `<span class="writer-script-tag">🎬 ${s}</span>`).join('')}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleWriterDetail(card) {
+  const detail = card.querySelector('.writer-detail');
+  if (detail) {
+    detail.style.display = detail.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+function searchWriters(query) {
+  if (!writersCache.length) return;
+  const q = query.toLowerCase();
+  const filtered = writersCache.filter(w =>
+    w.name.toLowerCase().includes(q) ||
+    w.notableScripts.some(s => s.toLowerCase().includes(q)) ||
+    w.era.toLowerCase().includes(q) ||
+    w.genres.some(g => g.toLowerCase().includes(q))
+  );
+  renderWriters(filtered);
+  document.getElementById('writers-count').textContent = `🔍 ${filtered.length} writer${filtered.length !== 1 ? 's' : ''} found`;
+}
+
+function filterWriters() {
+  const era = document.getElementById('writer-era-filter').value;
+  const genre = document.getElementById('writer-genre-filter').value;
+  let filtered = writersCache;
+  if (era) filtered = filtered.filter(w => w.era.toLowerCase().includes(era.toLowerCase()));
+  if (genre) filtered = filtered.filter(w => w.genres.some(g => g.toLowerCase().includes(genre.toLowerCase())));
+  renderWriters(filtered);
+  document.getElementById('writers-count').textContent = `🔍 ${filtered.length} writer${filtered.length !== 1 ? 's' : ''} found`;
+}
+
+// ---------- FORMATS ----------
+async function loadFormats() {
+  try {
+    const res = await fetch('/api/screenwriting/formats');
+    const data = await res.json();
+    if (data.success) renderFormats(data.formats);
+  } catch(e) { console.error('Failed to load formats', e); }
+}
+
+function renderFormats(formats) {
+  const list = document.getElementById('formats-list');
+  // formats is an object keyed by type, convert to array
+  const fmtArr = typeof formats === 'object' && !Array.isArray(formats) ? Object.values(formats) : formats;
+  list.innerHTML = fmtArr.map(f => `
+    <div class="format-card">
+      <div class="format-header">
+        <div class="format-icon">📜</div>
+        <div>
+          <div class="format-title">${f.name}</div>
+          <div class="format-desc">${f.format || ''} · ${f.font || ''}</div>
+        </div>
+      </div>
+      ${f.pageCount ? `<div style="font-size:11px;color:var(--text2);margin-bottom:4px">📄 ${f.pageCount}</div>` : ''}
+      ${f.acts ? `<div style="font-size:11px;color:var(--text2);margin-bottom:4px">🎭 ${f.acts}</div>` : ''}
+      ${f.rule ? `<div style="font-size:11px;color:var(--gold);margin-bottom:8px;font-weight:600">💡 ${f.rule}</div>` : ''}
+      ${f.margins ? `<div style="font-size:11px;color:var(--text2);margin-bottom:8px">📐 Margins: Left ${f.margins.left}" · Right ${f.margins.right}" · Top ${f.margins.top}" · Bottom ${f.margins.bottom}"</div>` : ''}
+      ${f.elements ? `
+        <div class="format-elements">
+          ${f.elements.map(el => `
+            <div class="format-element">
+              <div class="format-el-name">${el.name}</div>
+              <div>
+                <div class="format-el-desc">${el.format || ''}</div>
+                ${el.example ? `<span class="format-el-example">${el.example}</span>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+}
+
+// ---------- TEMPLATES ----------
+async function loadTemplates() {
+  try {
+    const res = await fetch('/api/screenwriting/templates');
+    const data = await res.json();
+    if (data.success) renderTemplates(data.templates);
+  } catch(e) { console.error('Failed to load templates', e); }
+}
+
+function renderTemplates(templates) {
+  const list = document.getElementById('templates-list');
+  list.innerHTML = templates.map(t => `
+    <div class="template-card">
+      <div class="template-header">
+        <div class="template-icon">${t.icon || '🎭'}</div>
+        <div class="template-title">${t.name}</div>
+      </div>
+      <div class="template-origin">${t.source || ''} · ${t.beats || t.steps?.length || 0} beats</div>
+      ${t.bestFor ? `<div style="font-size:11px;color:var(--gold);margin-bottom:10px">🎯 Best for: ${t.bestFor}</div>` : ''}
+      ${t.examples && t.examples.length ? `<div style="font-size:11px;color:var(--text2);margin-bottom:10px">📽️ Examples: ${t.examples.join(', ')}</div>` : ''}
+      <div class="template-steps">
+        ${(t.steps || []).map((s, i) => `
+          <div class="template-step">
+            <div class="step-num">${i + 1}</div>
+            <div class="step-content">
+              <div class="step-name">${typeof s === 'string' ? s : (s.name || s.beat || '')}</div>
+              ${typeof s === 'object' && s.description ? `<div class="step-desc">${s.description}</div>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ---------- SOFTWARE ----------
+async function loadSoftware() {
+  try {
+    const res = await fetch('/api/screenwriting/software');
+    const data = await res.json();
+    if (data.success) renderSoftware(data.software);
+  } catch(e) { console.error('Failed to load software', e); }
+}
+
+function renderSoftware(software) {
+  const list = document.getElementById('software-list');
+  list.innerHTML = software.map(s => `
+    <div class="software-card${s.id === 'final_draft' ? ' recommended' : ''}">
+      <div class="software-header">
+        <div class="software-icon">${s.icon || '💻'}</div>
+        <div class="software-name">${s.name}</div>
+        <div class="software-price">${s.price}</div>
+      </div>
+      ${s.tier ? `<div style="font-size:11px;color:var(--gold);font-weight:700;margin-bottom:6px">⭐ ${s.tier}</div>` : ''}
+      ${s.verdict ? `<div class="software-desc">${s.verdict}</div>` : ''}
+      ${s.usedBy ? `<div style="font-size:11px;color:var(--green);margin-bottom:8px;font-weight:600">${s.usedBy}</div>` : ''}
+      ${s.features ? `
+        <div class="software-features">
+          ${s.features.slice(0, 8).map(f => `<span class="software-feat">✓ ${f}</span>`).join('')}
+          ${s.features.length > 8 ? `<span class="software-feat">+${s.features.length - 8} more</span>` : ''}
+        </div>
+      ` : ''}
+      ${s.formats ? `<div style="font-size:11px;color:var(--text2);margin-top:6px">📄 ${s.formats.join(' · ')}</div>` : ''}
+      ${s.platforms ? `<div class="software-platforms" style="margin-top:4px">🖥️ ${Array.isArray(s.platforms) ? s.platforms.join(' · ') : s.platforms}</div>` : ''}
+      ${s.url ? `<div style="margin-top:6px"><a href="${s.url}" target="_blank" style="font-size:11px;color:var(--gold);text-decoration:none">🔗 ${s.url}</a></div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ---------- GENRES ----------
+async function loadGenres() {
+  try {
+    const res = await fetch('/api/screenwriting/genres');
+    const data = await res.json();
+    if (data.success) renderGenres(data.genres);
+  } catch(e) { console.error('Failed to load genres', e); }
+}
+
+function renderGenres(genres) {
+  const list = document.getElementById('genres-list');
+  list.innerHTML = genres.map(g => `
+    <div class="genre-card">
+      <div class="genre-header">
+        <div class="genre-icon">${g.emoji || g.icon || '🎬'}</div>
+        <div class="genre-name">${g.name}</div>
+      </div>
+      <div class="genre-tips">${g.tips || ''}</div>
+      ${g.masters && g.masters.length ? `
+        <div class="genre-masters">
+          <div class="genre-masters-title">✍️ Master Writers</div>
+          <div class="genre-master-list">
+            ${g.masters.map(m => `<span class="genre-master-tag">${m}</span>`).join('')}
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+}
+
+// ---------- OSCARS ----------
+async function loadOscars() {
+  try {
+    const res = await fetch('/api/screenwriting/oscars');
+    const data = await res.json();
+    if (data.success) renderOscars(data.history);
+  } catch(e) { console.error('Failed to load Oscars', e); }
+}
+
+function renderOscars(history) {
+  const list = document.getElementById('oscars-list');
+  // Sort by year descending (most recent first)
+  const sorted = [...history].sort((a, b) => b.year - a.year);
+  list.innerHTML = sorted.map(y => `
+    <div class="oscar-year-card">
+      <div class="oscar-year-header">🏅 ${y.year} Academy Awards</div>
+      ${y.original ? `
+        <div class="oscar-category">
+          <div class="oscar-cat-title">✍️ Best Original Screenplay</div>
+          <div class="oscar-winner">🏆 ${y.original.title || y.original.winner || ''}</div>
+          <div class="oscar-writers">✍️ ${y.original.writer || y.original.writers || ''}</div>
+        </div>
+      ` : ''}
+      ${y.adapted ? `
+        <div class="oscar-category">
+          <div class="oscar-cat-title">📖 Best Adapted Screenplay</div>
+          <div class="oscar-winner">🏆 ${y.adapted.title || y.adapted.winner || ''}</div>
+          <div class="oscar-writers">✍️ ${y.adapted.writer || y.adapted.writers || ''}</div>
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+}
+
+// ---------- AI SCRIPT GENERATOR ----------
+async function generateScript() {
+  const title = document.getElementById('gen-title').value || 'UNTITLED PROJECT';
+  const logline = document.getElementById('gen-logline').value;
+  const genre = document.getElementById('gen-genre').value;
+  const template = document.getElementById('gen-template').value;
+  const protagonist = document.getElementById('gen-protagonist').value;
+  const setting = document.getElementById('gen-setting').value;
+
+  const output = document.getElementById('generated-script-output');
+  output.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text2)"><div style="font-size:40px;animation:pulse 1s infinite">✍️</div><div style="margin-top:10px">Generating screenplay...</div></div>';
+
+  try {
+    const res = await fetch('/api/screenwriting/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, logline, genre, template, protagonist, setting })
+    });
+    const data = await res.json();
+    if (data.success) {
+      renderGeneratedScript(data);
+      showToast(`🎬 Script "${data.metadata.title}" generated!`, 'gold');
+    } else {
+      output.innerHTML = '<div style="color:var(--red);padding:20px">❌ Generation failed. Try again.</div>';
+    }
+  } catch(e) {
+    output.innerHTML = '<div style="color:var(--red);padding:20px">❌ Network error. Try again.</div>';
+  }
+}
+
+function renderGeneratedScript(data) {
+  const m = data.metadata;
+  const output = document.getElementById('generated-script-output');
+  output.innerHTML = `
+    <div class="script-output">
+      <div class="script-output-title">🎬 ${m.title}</div>
+      <div class="script-output-logline">${m.logline}</div>
+      <div class="script-output-meta">
+        <span class="script-meta-tag">🎭 ${m.genre}</span>
+        <span class="script-meta-tag">📐 ${m.template}</span>
+        <span class="script-meta-tag">📄 ~${m.estimatedPages} pages</span>
+        <span class="script-meta-tag">💻 ${data.software}</span>
+      </div>
+
+      <div class="script-section">
+        <div class="script-section-title">📜 Title Page</div>
+        <div class="script-text">${(data.titlePage || '').replace(/\\n/g, '\n')}</div>
+      </div>
+
+      <div class="script-section">
+        <div class="script-section-title">🎬 Opening Scene</div>
+        <div class="script-text">${(data.openingScene || '').replace(/\\n/g, '\n')}</div>
+      </div>
+
+      <div class="script-section">
+        <div class="script-section-title">📐 Story Outline (${m.template})</div>
+        ${(data.outline || []).map((step, i) => `
+          <div class="script-outline-step">
+            <div class="step-num">${i + 1}</div>
+            <div class="step-content">
+              <div class="step-name">${step.name || step.beat || step}</div>
+              <div class="step-desc">${step.description || step.desc || ''}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="script-section">
+        <div class="script-section-title">👥 Character Breakdown</div>
+        ${(data.characterBreakdown || []).map(c => `
+          <div class="script-char">
+            <div class="script-char-role">${c.role}: ${c.name}</div>
+            <div class="script-char-arc">Arc: ${c.arc}</div>
+            <div class="script-char-tips">💡 ${c.tips}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      ${data.genreTips ? `
+        <div class="script-section">
+          <div class="script-section-title">🎯 Genre Tips</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5;white-space:pre-line">${data.genreTips}</div>
+        </div>
+      ` : ''}
+
+      ${data.masterStudy && data.masterStudy.length ? `
+        <div class="script-section">
+          <div class="script-section-title">📚 Study These Masters</div>
+          <div class="genre-master-list">
+            ${data.masterStudy.map(m => `<span class="genre-master-tag">${m}</span>`).join('')}
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+// ---------- AUTO-LOAD WRITERS WHEN TAB OPENS ----------
+const origSwitchTab = switchTab;
+switchTab = function(tab) {
+  origSwitchTab(tab);
+  if (tab === 'writing' && !document.getElementById('writers-grid').innerHTML) {
+    loadWriters();
+  }
+};
 
 // ===================== SPLASH =====================
 window.addEventListener('load', () => {

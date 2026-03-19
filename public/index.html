@@ -313,6 +313,117 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+/* ========== SCREENWRITING STUDIO STYLES ========== */
+.writing-tabs{display:flex;gap:0;background:var(--bg3);border-radius:12px;margin:12px 16px;padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.writing-tab{flex:0 0 auto;padding:8px 12px;text-align:center;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;color:var(--text2);white-space:nowrap}
+.writing-tab.active{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff}
+.writing-panel{display:none;padding:0 16px 20px}
+.writing-panel.active{display:block}
+.writing-search-bar{margin-bottom:12px}
+.writing-search-bar input{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;outline:none;transition:border .2s}
+.writing-search-bar input:focus{border-color:var(--gold)}
+.writing-filter-row{display:flex;gap:8px;margin-bottom:12px}
+.writing-filter-row select{flex:1;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px;outline:none;-webkit-appearance:none}
+.writing-count{font-size:12px;color:var(--text2);margin-bottom:10px;padding:0 4px}
+/* Writer Cards */
+.writer-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px;cursor:pointer;transition:transform .2s,border-color .2s}
+.writer-card:hover{transform:translateY(-2px);border-color:var(--gold)}
+.writer-card-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.writer-rank{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
+.writer-info{flex:1}
+.writer-name{font-size:15px;font-weight:700;line-height:1.2}
+.writer-era{font-size:11px;color:var(--text2);margin-top:2px}
+.writer-emoji{font-size:28px;flex-shrink:0}
+.writer-scripts{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.writer-script-tag{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.writer-oscars{font-size:11px;color:var(--gold);font-weight:600}
+.writer-quote{font-size:11px;color:var(--text2);font-style:italic;margin-top:8px;line-height:1.4;border-left:2px solid var(--gold);padding-left:10px}
+.writer-bio{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.5}
+.writer-legacy{font-size:12px;color:var(--gold);margin-top:6px;font-weight:600}
+.writer-genres{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.writer-genre-tag{background:rgba(245,158,11,.15);color:var(--gold);border-radius:6px;padding:2px 8px;font-size:10px;font-weight:600}
+/* Format Cards */
+.format-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.format-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.format-icon{font-size:32px}
+.format-title{font-size:15px;font-weight:700}
+.format-desc{font-size:12px;color:var(--text2);margin-top:2px}
+.format-elements{margin-top:10px}
+.format-element{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.format-element:last-child{border-bottom:none}
+.format-el-name{font-size:12px;font-weight:700;color:var(--gold);min-width:90px}
+.format-el-desc{font-size:12px;color:var(--text2);flex:1}
+.format-el-example{font-size:11px;color:var(--text2);font-style:italic;margin-top:3px;font-family:'Courier New',monospace;background:var(--bg3);padding:4px 8px;border-radius:4px;display:block}
+/* Template Cards */
+.template-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.template-header{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.template-icon{font-size:28px}
+.template-title{font-size:15px;font-weight:700}
+.template-origin{font-size:11px;color:var(--text2);margin-bottom:12px}
+.template-steps{counter-reset:step}
+.template-step{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.template-step:last-child{border-bottom:none}
+.step-num{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+.step-content{flex:1}
+.step-name{font-size:12px;font-weight:700}
+.step-desc{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.4}
+/* Software Cards */
+.software-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px;position:relative;overflow:hidden}
+.software-card.recommended{border-color:var(--gold)}
+.software-card.recommended::before{content:'⭐ RECOMMENDED';position:absolute;top:8px;right:-28px;background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:2px 32px;transform:rotate(45deg)}
+.software-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.software-icon{font-size:28px}
+.software-name{font-size:15px;font-weight:700}
+.software-price{font-size:13px;color:var(--gold);font-weight:700;margin-left:auto}
+.software-desc{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.4}
+.software-features{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.software-feat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.software-platforms{font-size:11px;color:var(--text2)}
+/* Genre Cards */
+.genre-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.genre-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.genre-icon{font-size:28px}
+.genre-name{font-size:15px;font-weight:700}
+.genre-tips{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px;white-space:pre-line}
+.genre-masters{margin-top:8px}
+.genre-masters-title{font-size:12px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.genre-master-list{display:flex;flex-wrap:wrap;gap:5px}
+.genre-master-tag{background:rgba(245,158,11,.15);color:var(--gold);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600}
+/* Oscar Cards */
+.oscar-year-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.oscar-year-header{font-size:18px;font-weight:800;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.oscar-category{margin-bottom:10px}
+.oscar-category:last-child{margin-bottom:0}
+.oscar-cat-title{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.oscar-winner{font-size:13px;font-weight:700;margin-bottom:2px}
+.oscar-film{font-size:12px;color:var(--gold);margin-bottom:2px}
+.oscar-writers{font-size:11px;color:var(--text2)}
+/* Script Generator */
+.script-generator-form{background:var(--card);border-radius:14px;padding:18px;border:1px solid var(--border);margin-bottom:16px}
+.gen-field{margin-bottom:14px}
+.gen-field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.gen-field input,.gen-field textarea,.gen-field select{width:100%;padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;outline:none;transition:border .2s;font-family:inherit}
+.gen-field input:focus,.gen-field textarea:focus,.gen-field select:focus{border-color:var(--gold)}
+.gen-field textarea{min-height:60px;resize:vertical}
+.gen-row{display:flex;gap:10px}
+.gen-row .gen-field{flex:1}
+.gen-submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#f59e0b,#ef4444);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:transform .15s,opacity .15s;margin-top:4px}
+.gen-submit-btn:active{transform:scale(.97);opacity:.9}
+/* Generated Script Output */
+.script-output{background:var(--card);border-radius:14px;padding:18px;border:1px solid var(--gold);margin-bottom:12px}
+.script-output-title{font-size:16px;font-weight:800;color:var(--gold);margin-bottom:4px}
+.script-output-logline{font-size:12px;color:var(--text2);margin-bottom:12px;font-style:italic}
+.script-output-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.script-meta-tag{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:11px;color:var(--text2)}
+.script-section{margin-bottom:16px}
+.script-section-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.script-text{font-family:'Courier New',monospace;font-size:12px;line-height:1.6;color:var(--text2);background:var(--bg3);border-radius:8px;padding:14px;white-space:pre-wrap;overflow-x:auto}
+.script-outline-step{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.script-outline-step:last-child{border-bottom:none}
+.script-char{background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px}
+.script-char-role{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase}
+.script-char-arc{font-size:11px;color:var(--text2);margin-top:2px}
+.script-char-tips{font-size:11px;color:var(--text2);margin-top:4px;font-style:italic}
 </style>
 </head>
 <body>
@@ -484,6 +595,116 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div class="gaming-panel" id="gaming-panel-fivem"><div id="fivem-servers-list"></div></div>
     <div class="gaming-panel" id="gaming-panel-blueprint"><div id="blueprint-list"></div></div>
   </div>
+  <!-- ==================== SCREENWRITING STUDIO PAGE ==================== -->
+  <div class="page" id="page-writing">
+    <div class="page-header">
+      <div><div class="page-title">✍️ Writing Studio</div><div class="page-sub">Hollywood Script Engine &bull; AI Powered</div></div>
+      <div class="header-badge" style="background:var(--grad1)">🎬 Pro</div>
+    </div>
+    <div class="writing-tabs">
+      <div class="writing-tab active" onclick="switchWritingTab('writers',this)">🏆 Writers</div>
+      <div class="writing-tab" onclick="switchWritingTab('formats',this)">📜 Formats</div>
+      <div class="writing-tab" onclick="switchWritingTab('templates',this)">🎭 Story</div>
+      <div class="writing-tab" onclick="switchWritingTab('software',this)">💻 Software</div>
+      <div class="writing-tab" onclick="switchWritingTab('genres',this)">🎬 Genres</div>
+      <div class="writing-tab" onclick="switchWritingTab('oscars',this)">🏅 Oscars</div>
+      <div class="writing-tab" onclick="switchWritingTab('generate',this)">🤖 AI Script</div>
+    </div>
+    <div class="writing-panel active" id="writing-panel-writers">
+      <div class="writing-search-bar">
+        <input type="text" id="writer-search" placeholder="🔍 Search writers, films, eras..." oninput="searchWriters(this.value)">
+      </div>
+      <div class="writing-filter-row">
+        <select id="writer-era-filter" onchange="filterWriters()">
+          <option value="">All Eras</option>
+          <option value="golden">Golden Age</option>
+          <option value="new hollywood">New Hollywood</option>
+          <option value="modern">Modern</option>
+          <option value="contemporary">Contemporary</option>
+        </select>
+        <select id="writer-genre-filter" onchange="filterWriters()">
+          <option value="">All Genres</option>
+          <option value="drama">Drama</option>
+          <option value="comedy">Comedy</option>
+          <option value="thriller">Thriller</option>
+          <option value="horror">Horror</option>
+          <option value="sci-fi">Sci-Fi</option>
+          <option value="action">Action</option>
+          <option value="romance">Romance</option>
+        </select>
+      </div>
+      <div id="writers-count" class="writing-count"></div>
+      <div id="writers-grid"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-formats">
+      <div id="formats-list"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-templates">
+      <div id="templates-list"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-software">
+      <div id="software-list"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-genres">
+      <div id="genres-list"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-oscars">
+      <div id="oscars-list"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-generate">
+      <div class="script-generator-form">
+        <div class="gen-field">
+          <label>🎬 Script Title</label>
+          <input type="text" id="gen-title" placeholder="e.g. The Last Rhythm">
+        </div>
+        <div class="gen-field">
+          <label>📝 Logline</label>
+          <textarea id="gen-logline" placeholder="A one-sentence summary of your story..."></textarea>
+        </div>
+        <div class="gen-row">
+          <div class="gen-field">
+            <label>🎭 Genre</label>
+            <select id="gen-genre">
+              <option value="drama">Drama</option>
+              <option value="comedy">Comedy</option>
+              <option value="thriller">Thriller</option>
+              <option value="horror">Horror</option>
+              <option value="scifi">Sci-Fi</option>
+              <option value="action">Action</option>
+              <option value="romance">Romance</option>
+              <option value="crime">Crime</option>
+              <option value="animation">Animation</option>
+              <option value="musical">Musical</option>
+            </select>
+          </div>
+          <div class="gen-field">
+            <label>📐 Structure</label>
+            <select id="gen-template">
+              <option value="three_act">Three-Act</option>
+              <option value="heros_journey">Hero's Journey</option>
+              <option value="save_the_cat">Save the Cat</option>
+              <option value="five_act_tv">Five-Act TV</option>
+              <option value="story_circle">Dan Harmon Circle</option>
+              <option value="music_biopic">Music Biopic GOAT</option>
+            </select>
+          </div>
+        </div>
+        <div class="gen-row">
+          <div class="gen-field">
+            <label>👤 Protagonist</label>
+            <input type="text" id="gen-protagonist" placeholder="e.g. Marcus">
+          </div>
+          <div class="gen-field">
+            <label>📍 Setting</label>
+            <input type="text" id="gen-setting" placeholder="e.g. Atlanta 2024">
+          </div>
+        </div>
+        <button class="gen-submit-btn" onclick="generateScript()">🚀 Generate Script</button>
+      </div>
+      <div id="generated-script-output"></div>
+    </div>
+  </div>
+
   <div class="page" id="page-feed">
     <div class="page-header">
       <div><div class="page-title">&#x1F4F1; Feed</div><div class="page-sub">Music &bull; Culture &bull; Love</div></div>
@@ -533,6 +754,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div class="tab-item" onclick="switchTab('avatar')"><div class="tab-icon">&#x1F3AD;</div><span>Avatar</span></div>
     <div class="tab-item" onclick="switchTab('cyber')"><div class="tab-icon">&#x2694;&#xFE0F;</div><span>Cyber</span></div>
     <div class="tab-item" onclick="switchTab('gaming')"><div class="tab-icon">&#x1F3AE;</div><span>UE5</span></div>
+    <div class="tab-item" onclick="switchTab('writing')"><div class="tab-icon">✍️</div><span>Writing</span></div>
     <div class="tab-item" onclick="switchTab('feed')"><div class="tab-icon">&#x1F4F1;</div><span>Feed</span></div>
     <div class="tab-item" onclick="switchTab('profile')"><div class="tab-icon">&#x1F451;</div><span>Profile</span></div>
   </div>

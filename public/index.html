@@ -412,6 +412,191 @@
             border-radius: 50%; animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ==================== AI ASSISTANTS ==================== */
+        .assistant-banner {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-hover));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .assistant-banner::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--success), var(--accent));
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+        .assistant-avatar {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .assistant-info { flex: 1; }
+
+        .assistant-name {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .assistant-name .title-tag {
+            font-size: 10px;
+            font-weight: 600;
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .assistant-greeting {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .assistant-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .assistant-btn {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .assistant-btn:hover { border-color: var(--accent); color: var(--accent-light); }
+
+        .assistant-chat-mini {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .assistant-chat-mini.open { display: block; }
+
+        .assistant-chat-mini .mini-header {
+            padding: 12px 16px;
+            background: var(--bg-hover);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .assistant-chat-mini .mini-close {
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        .assistant-chat-mini .mini-close:hover { color: var(--danger); }
+
+        .assistant-chat-mini .mini-messages {
+            padding: 12px 16px;
+            max-height: 250px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .assistant-chat-mini .mini-bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .assistant-chat-mini .mini-bubble.assistant-msg {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            align-self: flex-start;
+            max-width: 90%;
+        }
+
+        .assistant-chat-mini .mini-bubble.user-msg {
+            background: var(--accent);
+            color: white;
+            align-self: flex-end;
+            max-width: 85%;
+        }
+
+        .assistant-chat-mini .mini-input-area {
+            padding: 10px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+        }
+
+        .assistant-chat-mini .mini-input-area input {
+            flex: 1;
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .assistant-chat-mini .mini-input-area input:focus { border-color: var(--accent); }
+
+        .assistant-tip {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .assistant-tip .tip-avatar { font-size: 20px; }
+        .assistant-tip .tip-name { font-weight: 700; color: var(--text-primary); }
     </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
@@ -450,6 +635,23 @@
                 <h2>📊 Dashboard</h2>
                 <span class="badge" id="mode-badge">Loading...</span>
             </div>
+            <div class="assistant-banner" id="banner-nova">
+                <div class="assistant-avatar">🌟</div>
+                <div class="assistant-info">
+                    <div class="assistant-name">NOVA <span class="title-tag">Chief Strategy Officer</span></div>
+                    <div class="assistant-greeting">Hey there, creator! I keep my eye on everything — revenue, streams, NFTs, agents — so you don't miss a beat. Let's crush those goals! 🚀</div>
+                </div>
+                <div class="assistant-actions">
+                    <button class="assistant-btn" onclick="getAssistantTip('nova')">💡 Tip</button>
+                    <button class="assistant-btn" onclick="toggleMiniChat('nova')">💬 Ask NOVA</button>
+                </div>
+            </div>
+            <div class="assistant-tip" id="tip-nova" style="display:none;"><span class="tip-avatar">🌟</span><span><span class="tip-name">NOVA:</span> <span id="tip-nova-text"></span></span></div>
+            <div class="assistant-chat-mini" id="mini-chat-nova">
+                <div class="mini-header"><span>🌟 Chat with NOVA</span><span class="mini-close" onclick="toggleMiniChat('nova')">✕</span></div>
+                <div class="mini-messages" id="mini-msgs-nova"><div class="mini-bubble assistant-msg">🌟 What would you like to know about your dashboard metrics?</div></div>
+                <div class="mini-input-area"><input type="text" id="mini-input-nova" placeholder="Ask NOVA anything..." onkeypress="if(event.key==='Enter')sendMiniChat('nova')"><button class="btn btn-primary" style="padding:8px 12px;font-size:12px;" onclick="sendMiniChat('nova')">Send</button></div>
+            </div>
             <div class="grid grid-4" style="margin-bottom:24px;">
                 <div class="card stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="total-revenue">$0</div><div class="stat-label">Total Revenue</div><div class="stat-change positive">▲ 23.5% this quarter</div></div>
                 <div class="card stat-card"><div class="stat-icon">🎵</div><div class="stat-value" id="total-streams">0</div><div class="stat-label">Total Streams</div><div class="stat-change positive">▲ 18.7% growth</div></div>
@@ -466,6 +668,23 @@
         <!-- REVENUE -->
         <div id="page-revenue" class="page">
             <div class="page-header"><h2>💰 Revenue Analytics</h2><button class="btn btn-primary" onclick="analyzeRevenue()">🤖 AI Analysis</button></div>
+            <div class="assistant-banner">
+                <div class="assistant-avatar">💸</div>
+                <div class="assistant-info">
+                    <div class="assistant-name">CASHFLOW <span class="title-tag">Revenue Analyst</span></div>
+                    <div class="assistant-greeting">I track every dollar, every stream, every penny of royalty income across all your platforms. Let's talk money! 💰</div>
+                </div>
+                <div class="assistant-actions">
+                    <button class="assistant-btn" onclick="getAssistantTip('cashflow')">💡 Tip</button>
+                    <button class="assistant-btn" onclick="toggleMiniChat('cashflow')">💬 Ask CASHFLOW</button>
+                </div>
+            </div>
+            <div class="assistant-tip" id="tip-cashflow" style="display:none;"><span class="tip-avatar">💸</span><span><span class="tip-name">CASHFLOW:</span> <span id="tip-cashflow-text"></span></span></div>
+            <div class="assistant-chat-mini" id="mini-chat-cashflow">
+                <div class="mini-header"><span>💸 Chat with CASHFLOW</span><span class="mini-close" onclick="toggleMiniChat('cashflow')">✕</span></div>
+                <div class="mini-messages" id="mini-msgs-cashflow"><div class="mini-bubble assistant-msg">💸 Ready to dive into the numbers? Ask me about revenue, platform performance, or growth strategies!</div></div>
+                <div class="mini-input-area"><input type="text" id="mini-input-cashflow" placeholder="Ask about revenue..." onkeypress="if(event.key==='Enter')sendMiniChat('cashflow')"><button class="btn btn-primary" style="padding:8px 12px;font-size:12px;" onclick="sendMiniChat('cashflow')">Send</button></div>
+            </div>
             <div class="grid grid-3" style="margin-bottom:24px;">
                 <div class="card stat-card"><div class="stat-icon">📈</div><div class="stat-value">$4,230</div><div class="stat-label">Monthly Revenue</div></div>
                 <div class="card stat-card"><div class="stat-icon">🎯</div><div class="stat-value">$52,800</div><div class="stat-label">Annual Projected</div></div>
@@ -488,6 +707,23 @@
         <!-- NFT PORTFOLIO -->
         <div id="page-nft" class="page">
             <div class="page-header"><h2>🎨 NFT Portfolio</h2><button class="btn btn-primary">+ Mint New NFT</button></div>
+            <div class="assistant-banner">
+                <div class="assistant-avatar">🎨</div>
+                <div class="assistant-info">
+                    <div class="assistant-name">PIXEL <span class="title-tag">NFT & Digital Art Curator</span></div>
+                    <div class="assistant-greeting">Welcome to the gallery! I help you mint, manage, and maximize your digital collectibles. Every piece tells a story! ✨</div>
+                </div>
+                <div class="assistant-actions">
+                    <button class="assistant-btn" onclick="getAssistantTip('pixel')">💡 Tip</button>
+                    <button class="assistant-btn" onclick="toggleMiniChat('pixel')">💬 Ask PIXEL</button>
+                </div>
+            </div>
+            <div class="assistant-tip" id="tip-pixel" style="display:none;"><span class="tip-avatar">🎨</span><span><span class="tip-name">PIXEL:</span> <span id="tip-pixel-text"></span></span></div>
+            <div class="assistant-chat-mini" id="mini-chat-pixel">
+                <div class="mini-header"><span>🎨 Chat with PIXEL</span><span class="mini-close" onclick="toggleMiniChat('pixel')">✕</span></div>
+                <div class="mini-messages" id="mini-msgs-pixel"><div class="mini-bubble assistant-msg">🎨 Let's talk NFTs! Ask me about minting, pricing, blockchain selection, or collection strategy.</div></div>
+                <div class="mini-input-area"><input type="text" id="mini-input-pixel" placeholder="Ask about NFTs..." onkeypress="if(event.key==='Enter')sendMiniChat('pixel')"><button class="btn btn-primary" style="padding:8px 12px;font-size:12px;" onclick="sendMiniChat('pixel')">Send</button></div>
+            </div>
             <div class="grid grid-3" style="margin-bottom:24px;">
                 <div class="card stat-card"><div class="stat-icon">🖼️</div><div class="stat-value">12</div><div class="stat-label">Total NFTs</div></div>
                 <div class="card stat-card"><div class="stat-icon">💎</div><div class="stat-value">$24,500</div><div class="stat-label">Portfolio Value</div></div>
@@ -503,10 +739,21 @@
 
         <!-- AI CHAT -->
         <div id="page-ai-chat" class="page">
-            <div class="page-header"><h2>🤖 AI Chat Assistant</h2><span class="badge">RAG-Powered</span></div>
+            <div class="page-header"><h2>🧠 AI Chat — SAGE</h2><span class="badge">RAG-Powered</span></div>
+            <div class="assistant-banner">
+                <div class="assistant-avatar">🧠</div>
+                <div class="assistant-info">
+                    <div class="assistant-name">SAGE <span class="title-tag">Knowledge Architect</span></div>
+                    <div class="assistant-greeting">Greetings, seeker of knowledge! I'm connected to the RAG knowledge base with deep expertise in music business, royalties, platforms, contracts, and market trends. Ask me anything! 📚</div>
+                </div>
+                <div class="assistant-actions">
+                    <button class="assistant-btn" onclick="getAssistantTip('sage')">💡 Tip</button>
+                </div>
+            </div>
+            <div class="assistant-tip" id="tip-sage" style="display:none;"><span class="tip-avatar">🧠</span><span><span class="tip-name">SAGE:</span> <span id="tip-sage-text"></span></span></div>
             <div class="card chat-container">
                 <div class="chat-messages" id="chat-messages">
-                    <div class="chat-bubble ai">👋 Welcome to GOAT Royalties AI Assistant! I'm powered by NVIDIA NIM and RAG technology. Ask me about your revenue, market trends, contracts, content strategy, or anything else!</div>
+                    <div class="chat-bubble ai">🧠 <strong>SAGE here!</strong> I'm your Knowledge Architect, powered by NVIDIA NIM and RAG technology. I have deep expertise in music royalties, platform strategies, NFT monetization, contract law, and market trends. Ask me anything — I love a good question!</div>
                 </div>
                 <div class="chat-input-area">
                     <input type="text" id="chat-input" placeholder="Ask about revenue, trends, contracts, content strategy..." onkeypress="if(event.key==='Enter')sendChat()">
@@ -518,6 +765,23 @@
         <!-- AI AGENTS -->
         <div id="page-agents" class="page">
             <div class="page-header"><h2>⚡ Autonomous AI Agents</h2><button class="btn btn-secondary" onclick="refreshAgents()">🔄 Refresh Status</button></div>
+            <div class="assistant-banner">
+                <div class="assistant-avatar">⚡</div>
+                <div class="assistant-info">
+                    <div class="assistant-name">CONDUCTOR <span class="title-tag">Agent Orchestrator</span></div>
+                    <div class="assistant-greeting">All agents, report! I coordinate our four autonomous AI agents. Think of me as the maestro keeping this AI orchestra in perfect harmony! 🎼</div>
+                </div>
+                <div class="assistant-actions">
+                    <button class="assistant-btn" onclick="getAssistantTip('conductor')">💡 Tip</button>
+                    <button class="assistant-btn" onclick="toggleMiniChat('conductor')">💬 Ask CONDUCTOR</button>
+                </div>
+            </div>
+            <div class="assistant-tip" id="tip-conductor" style="display:none;"><span class="tip-avatar">⚡</span><span><span class="tip-name">CONDUCTOR:</span> <span id="tip-conductor-text"></span></span></div>
+            <div class="assistant-chat-mini" id="mini-chat-conductor">
+                <div class="mini-header"><span>⚡ Chat with CONDUCTOR</span><span class="mini-close" onclick="toggleMiniChat('conductor')">✕</span></div>
+                <div class="mini-messages" id="mini-msgs-conductor"><div class="mini-bubble assistant-msg">⚡ All agents standing by! Ask me about agent status, capabilities, or which agent to deploy for your task.</div></div>
+                <div class="mini-input-area"><input type="text" id="mini-input-conductor" placeholder="Ask about agents..." onkeypress="if(event.key==='Enter')sendMiniChat('conductor')"><button class="btn btn-primary" style="padding:8px 12px;font-size:12px;" onclick="sendMiniChat('conductor')">Send</button></div>
+            </div>
             <div class="grid grid-2">
                 <div class="agent-card">
                     <div class="agent-header"><span class="agent-name">📊 Royalty Tracker</span><span class="agent-status active">● Active</span></div>
@@ -550,6 +814,23 @@
         <!-- CONTRACTS -->
         <div id="page-contracts" class="page">
             <div class="page-header"><h2>📋 Smart Contracts</h2><button class="btn btn-primary" onclick="generateContract()">🤖 Generate Contract</button></div>
+            <div class="assistant-banner">
+                <div class="assistant-avatar">⚖️</div>
+                <div class="assistant-info">
+                    <div class="assistant-name">LEXIS <span class="title-tag">Legal & Contract Specialist</span></div>
+                    <div class="assistant-greeting">I draft, review, and analyze contracts so you keep what you earn. No fine print gets past me — your rights are my priority! 📜</div>
+                </div>
+                <div class="assistant-actions">
+                    <button class="assistant-btn" onclick="getAssistantTip('lexis')">💡 Tip</button>
+                    <button class="assistant-btn" onclick="toggleMiniChat('lexis')">💬 Ask LEXIS</button>
+                </div>
+            </div>
+            <div class="assistant-tip" id="tip-lexis" style="display:none;"><span class="tip-avatar">⚖️</span><span><span class="tip-name">LEXIS:</span> <span id="tip-lexis-text"></span></span></div>
+            <div class="assistant-chat-mini" id="mini-chat-lexis">
+                <div class="mini-header"><span>⚖️ Chat with LEXIS</span><span class="mini-close" onclick="toggleMiniChat('lexis')">✕</span></div>
+                <div class="mini-messages" id="mini-msgs-lexis"><div class="mini-bubble assistant-msg">⚖️ Need legal guidance? Ask me about contract terms, royalty splits, or compliance requirements.</div></div>
+                <div class="mini-input-area"><input type="text" id="mini-input-lexis" placeholder="Ask about contracts..." onkeypress="if(event.key==='Enter')sendMiniChat('lexis')"><button class="btn btn-primary" style="padding:8px 12px;font-size:12px;" onclick="sendMiniChat('lexis')">Send</button></div>
+            </div>
             <div class="grid grid-2" style="margin-bottom:24px;">
                 <div class="card">
                     <h3 style="margin-bottom:16px;">Create New Contract</h3>
@@ -575,6 +856,23 @@
         <!-- TEAM HUB -->
         <div id="page-team" class="page">
             <div class="page-header"><h2>👥 Team Hub</h2><button class="btn btn-primary">+ Add Member</button></div>
+            <div class="assistant-banner">
+                <div class="assistant-avatar">🤝</div>
+                <div class="assistant-info">
+                    <div class="assistant-name">HARMONY <span class="title-tag">Collaboration Coordinator</span></div>
+                    <div class="assistant-greeting">Welcome to the team space! I help manage your creative team, track contributions, and keep everyone in sync. Great music is made together! 🎶</div>
+                </div>
+                <div class="assistant-actions">
+                    <button class="assistant-btn" onclick="getAssistantTip('harmony')">💡 Tip</button>
+                    <button class="assistant-btn" onclick="toggleMiniChat('harmony')">💬 Ask HARMONY</button>
+                </div>
+            </div>
+            <div class="assistant-tip" id="tip-harmony" style="display:none;"><span class="tip-avatar">🤝</span><span><span class="tip-name">HARMONY:</span> <span id="tip-harmony-text"></span></span></div>
+            <div class="assistant-chat-mini" id="mini-chat-harmony">
+                <div class="mini-header"><span>🤝 Chat with HARMONY</span><span class="mini-close" onclick="toggleMiniChat('harmony')">✕</span></div>
+                <div class="mini-messages" id="mini-msgs-harmony"><div class="mini-bubble assistant-msg">🤝 Let's build your dream team! Ask me about collaboration agreements, credit splits, or team management.</div></div>
+                <div class="mini-input-area"><input type="text" id="mini-input-harmony" placeholder="Ask about team collaboration..." onkeypress="if(event.key==='Enter')sendMiniChat('harmony')"><button class="btn btn-primary" style="padding:8px 12px;font-size:12px;" onclick="sendMiniChat('harmony')">Send</button></div>
+            </div>
             <div class="grid grid-3">
                 <div class="card" style="text-align:center;padding:30px;"><div style="font-size:48px;margin-bottom:12px;">👤</div><h4>DJSPEEDYGA</h4><p style="color:var(--accent-light);font-size:13px;margin:6px 0;">Owner & Creator</p><p style="color:var(--text-muted);font-size:12px;">Full access • All platforms</p></div>
                 <div class="card" style="text-align:center;padding:30px;"><div style="font-size:48px;margin-bottom:12px;">🤖</div><h4>AI Manager</h4><p style="color:var(--success);font-size:13px;margin:6px 0;">Autonomous Agent</p><p style="color:var(--text-muted);font-size:12px;">4 agents active • Auto-optimization</p></div>
@@ -585,6 +883,23 @@
         <!-- MARKET INTEL -->
         <div id="page-market" class="page">
             <div class="page-header"><h2>📈 Market Intelligence</h2><button class="btn btn-primary" onclick="getMarketTrends()">🤖 AI Market Analysis</button></div>
+            <div class="assistant-banner">
+                <div class="assistant-avatar">🔮</div>
+                <div class="assistant-info">
+                    <div class="assistant-name">ORACLE <span class="title-tag">Market Intelligence Analyst</span></div>
+                    <div class="assistant-greeting">The future is calling... I see the patterns, the trends, the shifts in the music industry before they happen. Let me show you what's coming! 🌊</div>
+                </div>
+                <div class="assistant-actions">
+                    <button class="assistant-btn" onclick="getAssistantTip('oracle')">💡 Tip</button>
+                    <button class="assistant-btn" onclick="toggleMiniChat('oracle')">💬 Ask ORACLE</button>
+                </div>
+            </div>
+            <div class="assistant-tip" id="tip-oracle" style="display:none;"><span class="tip-avatar">🔮</span><span><span class="tip-name">ORACLE:</span> <span id="tip-oracle-text"></span></span></div>
+            <div class="assistant-chat-mini" id="mini-chat-oracle">
+                <div class="mini-header"><span>🔮 Chat with ORACLE</span><span class="mini-close" onclick="toggleMiniChat('oracle')">✕</span></div>
+                <div class="mini-messages" id="mini-msgs-oracle"><div class="mini-bubble assistant-msg">🔮 I see trends before they happen. Ask me about market forecasts, genre performance, or emerging platforms.</div></div>
+                <div class="mini-input-area"><input type="text" id="mini-input-oracle" placeholder="Ask about market trends..." onkeypress="if(event.key==='Enter')sendMiniChat('oracle')"><button class="btn btn-primary" style="padding:8px 12px;font-size:12px;" onclick="sendMiniChat('oracle')">Send</button></div>
+            </div>
             <div class="grid grid-2" style="margin-bottom:24px;">
                 <div class="chart-container"><h3>Genre Performance</h3><canvas id="genreChart" height="250"></canvas></div>
                 <div class="chart-container"><h3>Platform Market Share</h3><canvas id="marketShareChart" height="250"></canvas></div>
@@ -601,6 +916,23 @@
         <!-- SETTINGS -->
         <div id="page-settings" class="page">
             <div class="page-header"><h2>⚙️ Settings</h2></div>
+            <div class="assistant-banner">
+                <div class="assistant-avatar">🔧</div>
+                <div class="assistant-info">
+                    <div class="assistant-name">GEAR <span class="title-tag">System Optimization Engineer</span></div>
+                    <div class="assistant-greeting">Under the hood we go! I manage your AI configurations, platform connections, and app settings. Peak performance guaranteed! ⚙️</div>
+                </div>
+                <div class="assistant-actions">
+                    <button class="assistant-btn" onclick="getAssistantTip('gear')">💡 Tip</button>
+                    <button class="assistant-btn" onclick="toggleMiniChat('gear')">💬 Ask GEAR</button>
+                </div>
+            </div>
+            <div class="assistant-tip" id="tip-gear" style="display:none;"><span class="tip-avatar">🔧</span><span><span class="tip-name">GEAR:</span> <span id="tip-gear-text"></span></span></div>
+            <div class="assistant-chat-mini" id="mini-chat-gear">
+                <div class="mini-header"><span>🔧 Chat with GEAR</span><span class="mini-close" onclick="toggleMiniChat('gear')">✕</span></div>
+                <div class="mini-messages" id="mini-msgs-gear"><div class="mini-bubble assistant-msg">🔧 Need help with configuration? Ask me about API connections, performance tuning, or system settings.</div></div>
+                <div class="mini-input-area"><input type="text" id="mini-input-gear" placeholder="Ask about settings..." onkeypress="if(event.key==='Enter')sendMiniChat('gear')"><button class="btn btn-primary" style="padding:8px 12px;font-size:12px;" onclick="sendMiniChat('gear')">Send</button></div>
+            </div>
             <div class="settings-section">
                 <h3>🤖 AI Configuration</h3>
                 <div class="setting-row"><div class="setting-info"><div class="setting-label">NVIDIA NIM API</div><div class="setting-desc" id="nvidia-status">Checking connection...</div></div><label class="toggle-switch"><input type="checkbox" id="nvidia-toggle" checked><span class="toggle-slider"></span></label></div>
@@ -739,8 +1071,8 @@
             messages.scrollTop = messages.scrollHeight;
             const result = await apiPost('/api/rag/query', { query: msg });
             const el = document.getElementById(loadingId);
-            if (result && result.response) { el.textContent = result.response; }
-            else { el.textContent = '❌ Unable to get a response. Please check the server connection.'; }
+            if (result && result.response) { el.innerHTML = '🧠 <strong>SAGE:</strong> ' + escapeHtml(result.response); }
+            else { el.textContent = '🧠 SAGE: I apologize, I couldn\'t process that request. Please try again or check the server connection.'; }
             messages.scrollTop = messages.scrollHeight;
         }
 
@@ -801,6 +1133,57 @@
         }
 
         function escapeHtml(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+
+        // ==================== AI ASSISTANTS ====================
+        function toggleMiniChat(assistantId) {
+            const chat = document.getElementById('mini-chat-' + assistantId);
+            if (chat) chat.classList.toggle('open');
+        }
+
+        async function sendMiniChat(assistantId) {
+            const input = document.getElementById('mini-input-' + assistantId);
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const msgs = document.getElementById('mini-msgs-' + assistantId);
+            msgs.innerHTML += `<div class="mini-bubble user-msg">${escapeHtml(msg)}</div>`;
+            input.value = '';
+            msgs.scrollTop = msgs.scrollHeight;
+
+            const loadId = 'mload-' + Date.now();
+            msgs.innerHTML += `<div class="mini-bubble assistant-msg" id="${loadId}"><span class="loading-spinner"></span> Thinking...</div>`;
+            msgs.scrollTop = msgs.scrollHeight;
+
+            const result = await apiPost('/api/assistants/chat', { assistantId, message: msg });
+            const el = document.getElementById(loadId);
+            if (result && result.response) {
+                el.textContent = result.response;
+            } else if (result && result.assistant) {
+                el.textContent = `${result.assistant.emoji} I've processed your request. ${result.response || 'Try asking in a different way!'}`;
+            } else {
+                el.textContent = '❌ Could not reach the assistant. Please try again.';
+            }
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        async function getAssistantTip(assistantId) {
+            const tipDiv = document.getElementById('tip-' + assistantId);
+            const tipText = document.getElementById('tip-' + assistantId + '-text');
+            if (!tipDiv || !tipText) return;
+
+            tipDiv.style.display = 'flex';
+            tipText.textContent = 'Loading tip...';
+
+            const result = await apiGet('/api/assistants/tip/' + assistantId);
+            if (result && result.tip) {
+                tipText.textContent = result.tip;
+            } else {
+                tipText.textContent = 'Keep creating great content — the numbers will follow! 🚀';
+            }
+
+            // Auto-hide after 15 seconds
+            setTimeout(() => { tipDiv.style.display = 'none'; }, 15000);
+        }
 
         // ==================== WEBSOCKET ====================
         let ws;

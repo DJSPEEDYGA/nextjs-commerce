@@ -342,6 +342,47 @@ app.post('/api/agents/autonomous', (req, res) => {
     res.json({ success: true, autonomousMode: enabled });
 });
 
+// ==================== AI ASSISTANT ENDPOINTS ====================
+
+const assistantManager = require('./lib/agents/assistant-manager');
+
+// Get all assistants
+app.get('/api/assistants', (req, res) => {
+    res.json({ assistants: assistantManager.getAllAssistants() });
+});
+
+// Get assistant by section
+app.get('/api/assistants/section/:section', (req, res) => {
+    const assistant = assistantManager.getAssistantBySection(req.params.section);
+    if (!assistant) return res.status(404).json({ error: 'Assistant not found for this section' });
+    res.json(assistant);
+});
+
+// Chat with a specific assistant
+app.post('/api/assistants/chat', async (req, res) => {
+    try {
+        const { assistantId, message } = req.body;
+        if (!assistantId || !message) {
+            return res.status(400).json({ error: 'assistantId and message are required' });
+        }
+        const result = await assistantManager.chat(assistantId, message);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get a contextual tip from an assistant
+app.get('/api/assistants/tip/:assistantId', async (req, res) => {
+    try {
+        const result = await assistantManager.getTip(req.params.assistantId);
+        if (!result) return res.status(404).json({ error: 'Assistant not found' });
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // ==================== NVIDIA NIM ENDPOINTS ====================
 
 // Generate text with NVIDIA NIM

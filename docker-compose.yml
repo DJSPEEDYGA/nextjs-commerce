@@ -9,7 +9,7 @@ services:
     container_name: super-goat-royalties
     restart: unless-stopped
     ports:
-      - "3000时长80:3000"
+      - "3000:3000"
     environment:
       - NODE_ENV=production
       - PORT=3000

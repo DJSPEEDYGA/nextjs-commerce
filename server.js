@@ -51,11 +51,44 @@ const {
     MarketAnalysis
 } = require('./lib/models/data-models');
 
+const rateLimit = require('express-rate-limit');
+
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 const PORT = process.env.PORT || 3000;
+
+// Rate limiting - protect against abuse
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: { error: 'Too many requests, please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
+const aiLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 20, // AI endpoints: 20 requests per minute
+    message: { error: 'AI rate limit exceeded. Please wait before making more AI requests.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
+// Apply rate limiters
+app.use('/api/', apiLimiter);
+app.use('/api/ai/', aiLimiter);
+app.use('/api/rag/', aiLimiter);
+app.use('/api/agents/execute', aiLimiter);
+app.use('/api/assistants/chat', aiLimiter);
+app.use('/api/nvidia/generate', aiLimiter);
+app.use('/api/models/chat', aiLimiter);
+app.use('/api/gemini/chat', aiLimiter);
+app.use('/api/ace/chat', aiLimiter);
+app.use('/api/ue5/blueprint/generate', aiLimiter);
+app.use('/api/ue5/chat', aiLimiter);
+app.use('/api/inference/route', aiLimiter);
 
 // Initialize data models
 const revenueData = new RevenueData();

@@ -160,18 +160,22 @@
   <div class="goat-overlay"></div>
 
   <!-- Navigation -->
-  <nav class="nav">
-    <div class="nav-brand">
-      <a href="index.html" style="text-decoration:none;color:inherit;">
-        <span class="nav-logo">🐐</span>
-        <span>Ms Money Penny</span>
-      </a>
-    </div>
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="models.html">AI Models</a>
-      <a href="tools.html">Tools</a>
-      <a href="downloads.html">Downloads</a>
+  <nav class="top-nav">
+    <a href="index.html" class="logo">
+      <img src="logo.png" alt="Ms Money Penny">
+      <span>Ms Money Penny</span>
+      <span class="crown-badge">👑 GOAT</span>
+    </a>
+    <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">🏠 Home</a>
+      <a href="models.html">🧠 AI Models</a>
+      <a href="tools.html">🛠️ Tools</a>
+      <a href="downloads.html">📥 Downloads</a>
+      <a href="about.html">👑 About</a>
+      <a href="ai-dashboard.html">📊 Dashboard</a>
       <a href="index.html#store">🛒 Store</a>
     </div>
   </nav>
@@ -327,16 +331,20 @@
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <p>🐐 Ms Money Penny Store — <strong>Life Imitates Art Inc.</strong></p>
-      <p style="font-size:0.8rem;color:#4a5568;margin-top:8px;">
-        <a href="index.html" style="color:#4a5568;">Home</a> ·
-        <a href="models.html" style="color:#4a5568;">AI Models</a> ·
-        <a href="tools.html" style="color:#4a5568;">Tools</a> ·
-        <a href="downloads.html" style="color:#4a5568;">Downloads</a>
-      </p>
+  <footer class="site-footer">
+    <div class="footer-links">
+      <a href="index.html">🏠 Home</a>
+      <a href="models.html">🧠 AI Models</a>
+      <a href="tools.html">🛠️ Tools</a>
+      <a href="downloads.html">📥 Downloads</a>
+      <a href="about.html">👑 About</a>
+      <a href="ai-dashboard.html">📊 Dashboard</a>
+      <a href="unreal-copilot.html">🎮 UE5 CoPilot</a>
+      <a href="https://github.com/DJSPEEDYGA/nextjs-commerce" target="_blank">⭐ GitHub</a>
+      <a href="https://github.com/DJSPEEDYGA/nextjs-commerce/releases" target="_blank">📦 Releases</a>
     </div>
+    <p>🐐 Ms Money Penny Store v1.3.0 — Built with ❤️ by <a href="https://lifeimitatesart.org" target="_blank">Life Imitates Art Inc.</a></p>
+    <p style="margin-top:8px;font-size:0.8rem;color:var(--text-muted);">Powered by NVIDIA AI Stack • Lightning AI • HuggingFace • OpenClaw • Electron</p>
   </footer>
 
   <script>

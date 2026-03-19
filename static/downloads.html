@@ -28,12 +28,22 @@
   <div class="goat-bg-overlay"></div>
 
   <nav class="top-nav">
-    <a href="index.html" class="logo"><img src="logo.png" alt="MP"><span>Ms Money Penny Store</span></a>
-    <div class="nav-links">
+    <a href="index.html" class="logo">
+      <img src="logo.png" alt="Ms Money Penny">
+      <span>Ms Money Penny</span>
+      <span class="crown-badge">👑 GOAT</span>
+    </a>
+    <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
       <a href="index.html">🏠 Home</a>
       <a href="models.html">🧠 AI Models</a>
       <a href="tools.html">🛠️ Tools</a>
       <a href="downloads.html" class="active">📥 Downloads</a>
+      <a href="about.html">👑 About</a>
+      <a href="ai-dashboard.html">📊 Dashboard</a>
+      <a href="index.html#store">🛒 Store</a>
     </div>
   </nav>
 
@@ -341,6 +351,42 @@ echo "✅ All LoRA models downloaded!"</div>
       a.download = filename;
       a.click();
     }
+
+    // OS auto-detection — highlight platform card
+    (function() {
+      const ua = navigator.userAgent || '';
+      let os = 'linux';
+      if (ua.includes('Win')) os = 'windows';
+      else if (ua.includes('Mac')) os = 'mac';
+      const cards = document.querySelectorAll('.dl-section:last-of-type .tool-card');
+      const osMap = { windows: 0, mac: 1, linux: 2 };
+      const idx = osMap[os];
+      if (cards[idx]) {
+        cards[idx].style.borderColor = 'var(--gold)';
+        cards[idx].style.boxShadow = '0 0 24px rgba(212,160,60,0.2)';
+        cards[idx].style.transform = 'translateY(-4px)';
+        const label = document.createElement('div');
+        label.textContent = '⭐ Recommended for your system';
+        label.style.cssText = 'color:var(--gold);font-size:12px;font-weight:600;margin-top:10px;letter-spacing:0.3px;';
+        cards[idx].appendChild(label);
+      }
+    })();
+
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.dl-section, .dl-stat').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(15px)';
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      observer.observe(el);
+    });
   </script>
 
   <!-- Footer -->
@@ -350,10 +396,13 @@ echo "✅ All LoRA models downloaded!"</div>
       <a href="models.html">🧠 AI Models</a>
       <a href="tools.html">🛠️ Tools</a>
       <a href="downloads.html">📥 Downloads</a>
+      <a href="about.html">👑 About</a>
+      <a href="ai-dashboard.html">📊 Dashboard</a>
+      <a href="unreal-copilot.html">🎮 UE5 CoPilot</a>
       <a href="https://github.com/DJSPEEDYGA/nextjs-commerce" target="_blank">⭐ GitHub</a>
       <a href="https://github.com/DJSPEEDYGA/nextjs-commerce/releases" target="_blank">📦 Releases</a>
     </div>
-    <p>🐐 Ms Money Penny Store v1.2.0 — Built with ❤️ by <a href="https://lifeimitatesart.org" target="_blank">Life Imitates Art Inc.</a></p>
+    <p>🐐 Ms Money Penny Store v1.3.0 — Built with ❤️ by <a href="https://lifeimitatesart.org" target="_blank">Life Imitates Art Inc.</a></p>
     <p style="margin-top:8px;font-size:0.8rem;color:var(--text-muted);">Powered by NVIDIA AI Stack • Lightning AI • HuggingFace • OpenClaw • Electron</p>
   </footer>
 

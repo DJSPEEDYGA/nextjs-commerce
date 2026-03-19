@@ -27,13 +27,20 @@
   <nav class="top-nav">
     <a href="index.html" class="logo">
       <img src="logo.png" alt="Ms Money Penny">
-      <span>Ms Money Penny Store</span>
+      <span>Ms Money Penny</span>
+      <span class="crown-badge">👑 GOAT</span>
     </a>
-    <div class="nav-links">
+    <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
       <a href="index.html">🏠 Home</a>
       <a href="models.html">🧠 AI Models</a>
       <a href="tools.html" class="active">🛠️ Tools</a>
       <a href="downloads.html">📥 Downloads</a>
+      <a href="about.html">👑 About</a>
+      <a href="ai-dashboard.html">📊 Dashboard</a>
+      <a href="index.html#store">🛒 Store</a>
     </div>
   </nav>
 
@@ -52,7 +59,7 @@
     <main class="main-content" style="max-width:1200px;margin:0 auto">
 
       <!-- Platform Detection -->
-      <div style="background:var(--bg-card);border:2px solid var(--gold);border-radius:12px;padding:24px;margin-bottom:30px;text-align:center">
+      <div style="background:var(--bg-glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:2px solid var(--border-hover);border-radius:14px;padding:24px;margin-bottom:30px;text-align:center">
         <h2 style="margin-bottom:8px">🖥️ Your Platform: <span id="detectedOS" style="color:var(--gold)">Detecting...</span></h2>
         <p style="color:var(--text-secondary);margin-bottom:16px">Commands below auto-adjust for your operating system</p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
@@ -300,7 +307,7 @@
         <p>Complete guide to set up your servers for the ultimate AI model library</p>
       </div>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:30px">
+      <div style="background:var(--bg-glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:30px">
         <h3 style="color:var(--gold);margin-bottom:16px">Step 1: System Preparation</h3>
         <div class="cmd-box" style="margin-bottom:12px">
           <code>sudo apt update && sudo apt install -y git git-lfs python3 python3-pip nvidia-driver-535 nvidia-cuda-toolkit</code>
@@ -417,10 +424,13 @@
       <a href="models.html">🧠 AI Models</a>
       <a href="tools.html">🛠️ Tools</a>
       <a href="downloads.html">📥 Downloads</a>
+      <a href="about.html">👑 About</a>
+      <a href="ai-dashboard.html">📊 Dashboard</a>
+      <a href="unreal-copilot.html">🎮 UE5 CoPilot</a>
       <a href="https://github.com/DJSPEEDYGA/nextjs-commerce" target="_blank">⭐ GitHub</a>
       <a href="https://github.com/DJSPEEDYGA/nextjs-commerce/releases" target="_blank">📦 Releases</a>
     </div>
-    <p>🐐 Ms Money Penny Store v1.2.0 — Built with ❤️ by <a href="https://lifeimitatesart.org" target="_blank">Life Imitates Art Inc.</a></p>
+    <p>🐐 Ms Money Penny Store v1.3.0 — Built with ❤️ by <a href="https://lifeimitatesart.org" target="_blank">Life Imitates Art Inc.</a></p>
     <p style="margin-top:8px;font-size:0.8rem;color:var(--text-muted);">Powered by NVIDIA AI Stack • Lightning AI • HuggingFace • OpenClaw • Electron</p>
   </footer>
 

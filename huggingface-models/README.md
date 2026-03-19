@@ -1,6 +1,9 @@
 # HuggingFace Trending Models Reference
 
 > Curated catalog of top trending AI models from [HuggingFace](https://huggingface.co/models) — reference for integration with the Ms Money Penny Store AI stack.
+> 
+> **Total Models on HuggingFace: 50,023+**
+> Updated: March 2026
 
 ---
 
@@ -14,124 +17,125 @@
 | [Qwen/Qwen3.5-397B-A17B](https://huggingface.co/Qwen/Qwen3.5-397B-A17B) | 403B | 1.78M | Qwen |
 | [Qwen/Qwen3.5-27B](https://huggingface.co/Qwen/Qwen3.5-27B) | 28B | 1.52M | Qwen |
 | [Qwen/Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B) | 10B | 2.27M | Qwen |
-| [Qwen/Qwen3.5-4B](https://huggingface.co/Qwen/Qwen3.5-4B) | 5B | 1.26M | Qwen |
-| [Qwen/Qwen3.5-2B](https://huggingface.co/Qwen/Qwen3.5-2B) | 2B | 649k | Qwen |
-| [Qwen/Qwen3.5-0.8B](https://huggingface.co/Qwen/Qwen3.5-0.8B) | 0.9B | 1M | Qwen |
-| [Qwen/Qwen3.5-122B-A10B](https://huggingface.co/Qwen/Qwen3.5-122B-A10B) | 125B | 471k | Qwen |
-| [Qwen/Qwen3.5-35B-A3B](https://huggingface.co/Qwen/Qwen3.5-35B-A3B) | 36B | 1.94M | Qwen |
-| [Qwen/Qwen3-Coder-Next](https://huggingface.co/Qwen/Qwen3-Coder-Next) | 80B | 1.17M | Qwen |
 | [deepseek-ai/DeepSeek-V3.2](https://huggingface.co/deepseek-ai/DeepSeek-V3.2) | 685B | 269k | DeepSeek |
 | [moonshotai/Kimi-K2.5](https://huggingface.co/moonshotai/Kimi-K2.5) | 1.1T | 3.17M | Moonshot |
 | [meta-llama/Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | 8B | 7.32M | Meta |
-| [meta-llama/Llama-3.2-3B-Instruct](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct) | 3B | 4.65M | Meta |
-| [mistralai/Mistral-Small-4-119B-2603](https://huggingface.co/mistralai/Mistral-Small-4-119B-2603) | 119B | 1.87k | Mistral |
 | [MiniMaxAI/MiniMax-M2.5](https://huggingface.co/MiniMaxAI/MiniMax-M2.5) | 229B | 540k | MiniMax |
-| [stepfun-ai/Step-3.5-Flash](https://huggingface.co/stepfun-ai/Step-3.5-Flash) | 199B | 82.7k | StepFun |
-| [microsoft/bitnet-b1.58-2B-4T](https://huggingface.co/microsoft/bitnet-b1.58-2B-4T) | 2B | 11.6k | Microsoft |
-| [Nanbeige/Nanbeige4.1-3B](https://huggingface.co/Nanbeige/Nanbeige4.1-3B) | 4B | 719k | Nanbeige |
-| [Rakuten/RakutenAI-3.0](https://huggingface.co/Rakuten/RakutenAI-3.0) | 671B | 43 | Rakuten |
 
 ---
 
-## 🖼️ Image Generation & Editing Models
+## 🖼️ Trending Image-to-Image Models (NEW)
 
-| Model | Task | Downloads | Provider |
-|-------|------|-----------|----------|
-| [black-forest-labs/FLUX.1-dev](https://huggingface.co/black-forest-labs/FLUX.1-dev) | Text-to-Image | 745k | Black Forest Labs |
-| [black-forest-labs/FLUX.1-schnell](https://huggingface.co/black-forest-labs/FLUX.1-schnell) | Text-to-Image | 693k | Black Forest Labs |
-| [black-forest-labs/FLUX.2-dev](https://huggingface.co/black-forest-labs/FLUX.2-dev) | Image-to-Image | 948k | Black Forest Labs |
-| [black-forest-labs/FLUX.2-klein-9B](https://huggingface.co/black-forest-labs/FLUX.2-klein-9B) | Image-to-Image | 111k | Black Forest Labs |
-| [black-forest-labs/FLUX.2-klein-4B](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B) | Image-to-Image | 208k | Black Forest Labs |
-| [Qwen/Qwen-Image-2512](https://huggingface.co/Qwen/Qwen-Image-2512) | Text-to-Image | 60.7k | Qwen |
-| [Tongyi-MAI/Z-Image-Turbo](https://huggingface.co/Tongyi-MAI/Z-Image-Turbo) | Text-to-Image | 931k | Tongyi |
-| [stabilityai/stable-diffusion-xl-base-1.0](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0) | Text-to-Image | 2.26M | Stability AI |
-| [FireRedTeam/FireRed-Image-Edit-1.1](https://huggingface.co/FireRedTeam/FireRed-Image-Edit-1.1) | Image-to-Image | 3.69k | FireRed |
+| Model | Task | Updated | Downloads | Likes |
+|-------|------|---------|-----------|-------|
+| [prithivMLmods/QIE-2509-Object-Remover-Bbox-v3](https://huggingface.co/prithivMLmods/QIE-2509-Object-Remover-Bbox-v3) | Object Remover | 3 days ago | 632 | 9 |
+| [prithivMLmods/QIE-2511-Object-Remover-Bbox-v3](https://huggingface.co/prithivMLmods/QIE-2511-Object-Remover-Bbox-v3) | Object Remover | 3 days ago | 28 | 2 |
+| [Hyperccino/Qwen-Edit-2511-Anime-to-Photoreal-v1.1](https://huggingface.co/Hyperccino/Qwen-Edit-2511-Anime-to-Photoreal-v1.1) | Anime-to-Photo | 8 days ago | 48 | 2 |
+| [wan-world/Qwen-Image-Edit-2511-Multiple-Angles-LoRA](https://huggingface.co/wan-world/Qwen-Image-Edit-2511-Multiple-Angles-LoRA) | Multi-Angle Edit | 10 days ago | 64 | — |
 
 ---
 
-## 🎬 Video Generation Models
+## 🎨 Trending Text-to-Image / LoRA Models (NEW)
 
-| Model | Task | Downloads | Provider |
-|-------|------|-----------|----------|
-| [Lightricks/LTX-2.3](https://huggingface.co/Lightricks/LTX-2.3) | Image-to-Video | 644k | Lightricks |
-| [Wan-AI/Wan2.2-I2V-A14B](https://huggingface.co/Wan-AI/Wan2.2-I2V-A14B) | Image-to-Video | 12k | Wan AI |
-
----
-
-## 🗣️ Speech & Audio Models
-
-| Model | Task | Downloads | Provider |
-|-------|------|-----------|----------|
-| [fishaudio/s2-pro](https://huggingface.co/fishaudio/s2-pro) | Text-to-Speech | 7k | FishAudio |
-| [hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) | Text-to-Speech | 8.75M | Hexgrad |
-| [HumeAI/tada-1b](https://huggingface.co/HumeAI/tada-1b) | Text-to-Speech | 36.7k | Hume AI |
-| [HumeAI/tada-3b-ml](https://huggingface.co/HumeAI/tada-3b-ml) | Text-to-Speech | 11.9k | Hume AI |
-| [Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice) | Text-to-Speech | 1.14M | Qwen |
-| [openai/whisper-large-v3](https://huggingface.co/openai/whisper-large-v3) | Speech Recognition | 5.34M | OpenAI |
-| [nvidia/parakeet-tdt-0.6b-v3](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3) | Speech Recognition | 209k | NVIDIA |
-| [nvidia/nemotron-speech-streaming-en-0.6b](https://huggingface.co/nvidia/nemotron-speech-streaming-en-0.6b) | Speech Recognition | 37.4k | NVIDIA |
-| [mistralai/Voxtral-Mini-4B-Realtime-2602](https://huggingface.co/mistralai/Voxtral-Mini-4B-Realtime-2602) | Speech Recognition | 728k | Mistral |
-| [ibm-granite/granite-4.0-1b-speech](https://huggingface.co/ibm-granite/granite-4.0-1b-speech) | Speech Recognition | 20.3k | IBM |
-| [pyannote/speaker-diarization-3.1](https://huggingface.co/pyannote/speaker-diarization-3.1) | Speaker Diarization | 12.5M | Pyannote |
-| [nvidia/personaplex-7b-v1](https://huggingface.co/nvidia/personaplex-7b-v1) | Audio-to-Audio | 405k | NVIDIA |
-
----
-
-## 🔍 OCR & Vision Models
-
-| Model | Task | Downloads | Provider |
-|-------|------|-----------|----------|
-| [zai-org/GLM-OCR](https://huggingface.co/zai-org/GLM-OCR) | Image-to-Text | 2.74M | Zhipu AI |
-| [baidu/Qianfan-OCR](https://huggingface.co/baidu/Qianfan-OCR) | Image-Text-to-Text | 5B | Baidu |
-| [PaddlePaddle/PaddleOCR-VL-1.5](https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.5) | Image-Text-to-Text | 22.8k | PaddlePaddle |
-| [facebook/sam3](https://huggingface.co/facebook/sam3) | Mask Generation | 2.25M | Meta |
+| Model | Updated | Downloads |
+|-------|---------|-----------|
+| [mehmetrook/kucho-bg-style-lora](https://huggingface.co/mehmetrook/kucho-bg-style-lora) | 8 days ago | 5 |
+| [Jefke88/Miekewan](https://huggingface.co/Jefke88/Miekewan) | 8 days ago | 8 |
+| [lissShi/soviet_carpets_style_LoRA](https://huggingface.co/lissShi/soviet_carpets_style_LoRA) | 8 days ago | 14 |
+| [NxisZd/auroraSDXXL](https://huggingface.co/NxisZd/auroraSDXXL) | 8 days ago | 23 |
+| [yasso223/Reimature](https://huggingface.co/yasso223/Reimature) | 8 days ago | 25 |
+| [nikmarii/monet_style_LoRA](https://huggingface.co/nikmarii/monet_style_LoRA) | 8 days ago | 8 |
+| [Alia31566/my_style_LoRA](https://huggingface.co/Alia31566/my_style_LoRA) | 8 days ago | 4 |
+| [the1ian/Flux-uncensored](https://huggingface.co/the1ian/Flux-uncensored) | 8 days ago | 61 |
+| [thatboymentor/WAN2.2LORASforVVideo](https://huggingface.co/thatboymentor/WAN2.2LORASforVVideo) | 8 days ago | 19 |
+| [thatboymentor/Zimageturbo](https://huggingface.co/thatboymentor/Zimageturbo) | 8 days ago | 51 |
+| [forfindingbaddies/bekkabody-flux-lora](https://huggingface.co/forfindingbaddies/bekkabody-flux-lora) | 9 days ago | 12 |
+| [forfindingbaddies/bekkaface-flux-lora](https://huggingface.co/forfindingbaddies/bekkaface-flux-lora) | 9 days ago | 16 |
+| [Yarewyr/vexx](https://huggingface.co/Yarewyr/vexx) | 9 days ago | 17 |
+| [wavolegend/Jax](https://huggingface.co/wavolegend/Jax) | 8 days ago | 33 |
+| [malhotrasimran390/dUMB_B0T-5](https://huggingface.co/malhotrasimran390/dUMB_B0T-5) | 8 days ago | 45 |
+| [P0to/Sherry_Birkin_Requiem_RE9](https://huggingface.co/P0to/Sherry_Birkin_Requiem_Resident_Evil_9_Biohazard_Capcom) | 9 days ago | 14 |
+| [Jaytsh/FLUX-C](https://huggingface.co/Jaytsh/FLUX-C) | 9 days ago | 57 |
+| [pppiiinnneee/pirosmani_style_LoRA](https://huggingface.co/pppiiinnneee/pirosmani_style_LoRA) | 9 days ago | 5 |
+| [Clandido/scarlett-lora](https://huggingface.co/Clandido/scarlett-lora) | 10 days ago | 21 |
+| [aisubscriptions/repo](https://huggingface.co/aisubscriptions/repo) | 10 days ago | 35 |
+| [boca88888/kikky22](https://huggingface.co/boca88888/kikky22) | 10 days ago | 9 |
+| [debbeefernandez/claude-patientpartner](https://huggingface.co/debbeefernandez/claude-patientpartner) | 8 days ago | 4 |
+| [butterflygirl1234/Sienna](https://huggingface.co/butterflygirl1234/Sienna) | 8 days ago | — |
+| [VertelovFace/test](https://huggingface.co/VertelovFace/test) | 9 days ago | 15 |
+| [aiwizzz/test_1](https://huggingface.co/aiwizzz/test_1) | 9 days ago | 6 |
+| [TOR196196/123](https://huggingface.co/TOR196196/123) | 9 days ago | 18 |
 
 ---
 
-## 📐 Embeddings & Similarity Models
+## 📊 Platform Statistics (March 2026)
 
-| Model | Task | Downloads | Provider |
-|-------|------|-----------|----------|
-| [sentence-transformers/all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) | Sentence Similarity | 208M | SBERT |
-| [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3) | Sentence Similarity | 17.2M | BAAI |
-| [google/embeddinggemma-300m](https://huggingface.co/google/embeddinggemma-300m) | Sentence Similarity | 1.93M | Google |
-| [Qwen/Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B) | Feature Extraction | 4.63M | Qwen |
-| [perplexity-ai/pplx-embed-v1-0.6b](https://huggingface.co/perplexity-ai/pplx-embed-v1-0.6b) | Feature Extraction | 555k | Perplexity |
-
----
-
-## 🛠️ Supported Runtimes & Apps
-
-| Runtime | Description |
-|---------|-------------|
-| **vLLM** | High-throughput LLM serving |
-| **llama.cpp** | CPU/GPU inference for GGUF models |
-| **MLX LM** | Apple Silicon optimized inference |
-| **LM Studio** | Desktop GUI for local models |
-| **Ollama** | Simple local model management |
-| **Jan** | Open-source ChatGPT alternative |
-| **Draw Things** | Image generation on Apple devices |
-
-## ☁️ Inference Providers
-
-| Provider | Specialization |
-|----------|---------------|
-| **Groq** | Ultra-fast LPU inference |
-| **Cerebras** | Wafer-scale inference |
-| **SambaNova** | DataScale inference |
-| **Together AI** | Open model hosting |
-| **Novita** | GPU cloud inference |
-| **Nscale** | Scalable GPU infrastructure |
-| **fal** | Serverless AI inference |
-| **Hyperbolic** | Decentralized compute |
+| Category | Count |
+|----------|-------|
+| **Total Models** | 50,023+ |
+| **Tasks** | 18+ (Text Gen, Any-to-Any, Image-Text-to-Text, Image-to-Image, Text-to-Image, Text-to-Video, Text-to-Speech, +44 more) |
+| **Libraries** | 53+ (PyTorch, TensorFlow, JAX, Transformers, Diffusers, Safetensors, ONNX, GGUF, MLX, +42 more) |
+| **Apps** | 15+ (vLLM, llama.cpp, MLX LM, LM Studio, Ollama, Jan, Draw Things, +8 more) |
+| **Inference Providers** | 18+ (Groq, Novita, Cerebras, SambaNova, Nscale, fal, Hyperbolic, Together AI, +10 more) |
 
 ---
 
-## Integration Notes
+## 🔌 Inference Providers
 
-These models can be used with the Ms Money Penny Store through:
-1. **NVIDIA NIM** — Managed API for NVIDIA models
-2. **NeMo Agent Toolkit** — Workflow-based agent framework
-3. **OpenShell** — Secure sandbox for agent execution
-4. **vLLM / llama.cpp** — Self-hosted local inference
-5. **Ollama** — Simplified local model management
+| Provider | Type |
+|----------|------|
+| Groq | High-speed inference |
+| Novita | Cloud inference |
+| Cerebras | AI accelerator |
+| SambaNova | AI hardware |
+| Nscale | Scalable inference |
+| fal | Serverless AI |
+| Hyperbolic | GPU cloud |
+| Together AI | Collaborative inference |
+
+---
+
+## 🛠️ Supported Libraries
+
+| Library | Usage |
+|---------|-------|
+| PyTorch | Deep learning framework |
+| TensorFlow | ML framework |
+| JAX | High-performance ML |
+| Transformers | NLP/multimodal models |
+| Diffusers | Image generation |
+| sentence-transformers | Embeddings |
+| Safetensors | Safe model storage |
+| ONNX | Cross-platform models |
+| GGUF | Quantized models |
+| Transformers.js | Browser ML |
+| MLX | Apple Silicon ML |
+
+---
+
+## 📱 Compatible Applications
+
+| App | Description |
+|-----|-------------|
+| vLLM | High-throughput LLM serving |
+| llama.cpp | Local CPU/GPU inference |
+| MLX LM | Apple Silicon LLM |
+| LM Studio | Desktop LLM app |
+| Ollama | Local model runner |
+| Jan | Open-source AI assistant |
+| Draw Things | Image generation app |
+
+---
+
+## 🔗 Integration with Ms Money Penny Store
+
+All HuggingFace models accessible through the Ms Money Penny Store AI stack:
+
+- **Models Page**: Browse 50K+ models at `models.html#huggingface`
+- **LoRA Art Styles**: See `lora-art-styles/README.md` for FLUX/SDXL style transfer
+- **Text-to-Image**: See `text-to-image/README.md` for image generation
+- **Desktop App**: All models accessible from the Electron desktop app
+- **API Access**: Models via HuggingFace Inference API + 18 providers
+
+*Catalog maintained by DJSPEEDYGA — Life Imitates Art Inc.*
+*Powered by HuggingFace 🤗 + NVIDIA AI Stack ⚡*

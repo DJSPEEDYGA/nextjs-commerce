@@ -189,7 +189,7 @@ app.get('/api/status', (req, res) => {
     res.json({
         status: 'online',
         message: 'SUPER GOAT ROYALTIES API is running',
-        version: '3.2.0',
+        version: '4.0.0',
         app: 'SUPER GOAT Royalties',
         mode: aiConfig.demoMode ? 'demo' : 'live',
         uptime: process.uptime(),
@@ -757,6 +757,194 @@ app.get('/api/ue5/tips', (req, res) => {
     res.json({ tips: blueprintAnalyzer.getQuickTips() });
 });
 
+// ==================== GEMINI AI ENDPOINTS ====================
+const GeminiClient   = require('./lib/providers/gemini-client');
+const geminiClient   = new GeminiClient({ apiKey: process.env.GOOGLE_AI_KEY || process.env.GEMINI_API_KEY });
+
+app.get('/api/gemini/status', (req, res) => {
+    res.json(geminiClient.getStatus());
+});
+
+app.get('/api/gemini/models', (req, res) => {
+    res.json({ models: geminiClient.getModels() });
+});
+
+app.post('/api/gemini/chat', async (req, res) => {
+    const { messages, model, systemPrompt } = req.body;
+    if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: 'messages array is required' });
+    try {
+        const result = await geminiClient.chat(messages, { model, systemPrompt });
+        if (result.response && !result.content) result.content = result.response;
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ==================== NVIDIA ACE + STEERLM ENDPOINTS ====================
+const ACESteerlM   = require('./lib/nvidia/ace-steerlm');
+const aceClient    = new ACESteerlM();
+
+app.get('/api/ace/attributes', (req, res) => {
+    res.json({ attributes: aceClient.getAttributes() });
+});
+
+app.get('/api/ace/presets', (req, res) => {
+    res.json({ presets: aceClient.getPresets() });
+});
+
+app.post('/api/ace/chat', async (req, res) => {
+    const { messages, attributes, systemPrompt } = req.body;
+    if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: 'messages array is required' });
+    try {
+        const profile = attributes || { helpfulness:3, humor:1, creativity:2, toxicity:0, assertiveness:2, empathy:3, formality:2, detail:3 };
+        const result = await aceClient.steerChat(messages, profile, { systemPrompt });
+        if (result.response && !result.content) result.content = result.response;
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.post('/api/ace/preset-chat', async (req, res) => {
+    const { presetName, messages } = req.body;
+    if (!presetName || !messages) return res.status(400).json({ error: 'presetName and messages are required' });
+    try {
+        const result = await aceClient.getPresetChat(presetName, messages);
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ==================== DISTRIBUTION HUB ENDPOINTS ====================
+const DistributionHub = require('./lib/distribution/distribution-hub');
+const distHub         = new DistributionHub();
+
+app.get('/api/distribution/services', (req, res) => {
+    res.json({ services: distHub.getServices() });
+});
+
+app.get('/api/distribution/platforms', (req, res) => {
+    res.json({ platforms: distHub.getPlatforms() });
+});
+
+app.get('/api/distribution/catalog', (req, res) => {
+    res.json(distHub.getCatalog());
+});
+
+app.get('/api/distribution/royalties', (req, res) => {
+    res.json(distHub.getRoyalties());
+});
+
+app.get('/api/distribution/analytics', (req, res) => {
+    res.json(distHub.getAnalytics());
+});
+
+app.get('/api/distribution/tiktok', (req, res) => {
+    res.json(distHub.getTikTokAnalytics());
+});
+
+app.post('/api/distribution/distribute', async (req, res) => {
+    const { title, service, platforms } = req.body;
+    if (!title) return res.status(400).json({ error: 'title is required' });
+    try {
+        const result = await distHub.distributeTrack({ title, service, platforms });
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ==================== LLMOPS DASHBOARD ENDPOINTS ====================
+const LLMOpsMonitor = require('./lib/llmops/llmops-monitor');
+const llmops        = new LLMOpsMonitor();
+
+app.get('/api/llmops/dashboard', (req, res) => {
+    res.json(llmops.getDashboard());
+});
+
+app.get('/api/llmops/models', (req, res) => {
+    res.json({ models: llmops.getDashboard().models });
+});
+
+app.get('/api/llmops/security', (req, res) => {
+    res.json(llmops.getSecurityReport());
+});
+
+app.get('/api/llmops/rag', (req, res) => {
+    res.json(llmops.getRagStats());
+});
+
+app.get('/api/llmops/agents', (req, res) => {
+    res.json(llmops.getAgentHealth());
+});
+
+app.get('/api/llmops/monitors', (req, res) => {
+    res.json({ monitors: llmops.getMonitors() });
+});
+
+app.get('/api/llmops/model/:modelId', (req, res) => {
+    const metrics = llmops.getModelMetrics(req.params.modelId);
+    if (!metrics) return res.status(404).json({ error: 'Model not found' });
+    res.json(metrics);
+});
+
+// ==================== MUSIC RECOGNITION ENDPOINTS ====================
+const MusicRecognizer = require('./lib/music/music-recognizer');
+const musicRecognizer = new MusicRecognizer();
+
+app.get('/api/music/catalog', (req, res) => {
+    res.json(musicRecognizer.getCatalog());
+});
+
+app.get('/api/music/capabilities', (req, res) => {
+    res.json({ capabilities: musicRecognizer.getCapabilities() });
+});
+
+app.get('/api/music/stats', (req, res) => {
+    res.json(musicRecognizer.getStats());
+});
+
+app.get('/api/music/recent', (req, res) => {
+    res.json(musicRecognizer.getRecentRecognitions());
+});
+
+app.post('/api/music/recognize', async (req, res) => {
+    const { audioData, source, duration } = req.body;
+    try {
+        const result = await musicRecognizer.recognize(audioData || 'demo', { source: source || 'upload', duration: duration || 10 });
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.post('/api/music/analyze', async (req, res) => {
+    const { audioData, analysisTypes } = req.body;
+    try {
+        const result = await musicRecognizer.analyzeAudio(audioData || 'demo', analysisTypes);
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.post('/api/music/copyright-check', async (req, res) => {
+    const { audioData } = req.body;
+    try {
+        const result = await musicRecognizer.checkInfringement(audioData || 'demo');
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/music/similar/:trackId', (req, res) => {
+    const similar = musicRecognizer.findSimilar(req.params.trackId);
+    res.json({ similar });
+});
+
 // Catch-all route - serve index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -773,7 +961,7 @@ app.use((err, req, res, next) => {
 
 // Start server
 server.listen(PORT, '0.0.0.0', () => {
-    console.log('🚀 SUPER GOAT ROYALTIES Server v3.2.0 running on port', PORT);
+    console.log('🚀 SUPER GOAT ROYALTIES Server v4.0.0 ULTIMATE EDITION running on port', PORT);
     console.log('📊 Dashboard: http://localhost:' + PORT);
     console.log('🔌 API Status: http://localhost:' + PORT + '/api/status');
     console.log('🤖 AI Assistants: 9 agents active');

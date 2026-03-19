@@ -2,7 +2,7 @@
 
 > Curated catalog of top trending AI models from [HuggingFace](https://huggingface.co/models) — reference for integration with the Ms Money Penny Store AI stack.
 > 
-> **Total Models on HuggingFace: 50,023+**
+> **Total Models on HuggingFace: 50,024+**
 > Updated: March 2026
 
 ---
@@ -68,11 +68,48 @@
 
 ---
 
+## 🔥 Trending Text-to-Image Models — Page 2 (NEW)
+
+| Model | Updated | Downloads |
+|-------|---------|-----------|
+| [treeshark/leyendecker-v2.safetensors](https://huggingface.co/treeshark/leyendecker-v2.safetensors) | 10 days ago | 10 |
+| [NxisZd/auroraSDXL](https://huggingface.co/NxisZd/auroraSDXL) | 10 days ago | 16 |
+| [newdev43/model1](https://huggingface.co/newdev43/model1) | 10 days ago | 33 |
+| [User12902/lilypichu](https://huggingface.co/User12902/lilypichu) | 10 days ago | 12 |
+| [xavtropp/adapter_model_G18_S200](https://huggingface.co/xavtropp/adapter_model_G18_S200) | 11 days ago | 22 |
+| [dyamibleas/zimage](https://huggingface.co/dyamibleas/zimage) | 11 days ago | 17 |
+| [mmaks12/Lissa](https://huggingface.co/mmaks12/Lissa) | 11 days ago | 15 |
+| [rxbinkm/master](https://huggingface.co/rxbinkm/master) | 11 days ago | 8 |
+| [BBLennox/lennox](https://huggingface.co/BBLennox/lennox) | 11 days ago | 14 |
+| [lissShi/devon_rex_flat_LoRA](https://huggingface.co/lissShi/devon_rex_flat_LoRA) | 8 days ago | 12 |
+| [anaastaa/owl_cat_LoRA](https://huggingface.co/anaastaa/owl_cat_LoRA) | 11 days ago | 6 |
+| [Visual7/ohwx-woman-flux2-lora](https://huggingface.co/Visual7/ohwx-woman-flux2-lora) | 10 days ago | 8 |
+| [dyamibleas/jason](https://huggingface.co/dyamibleas/jason) | 12 days ago | 15 |
+| [NxisZd/nicegrils](https://huggingface.co/NxisZd/nicegrils) | 12 days ago | 34 |
+| [KleinKrieger/Ton618-Epic-Realism-Flux-LoRA](https://huggingface.co/KleinKrieger/Ton618-Epic-Realism-Flux-LoRA) | 12 days ago | 50 |
+| [AIYangXiao/DMU_Birds](https://huggingface.co/AIYangXiao/DMU_Birds) | 4 days ago | 5 |
+| [NxisZd/auroraFLUX1](https://huggingface.co/NxisZd/auroraFLUX1) | 12 days ago | 25 |
+| [Kakelaka/Smnth_v1_NSFW1](https://huggingface.co/Kakelaka/Smnth_v1_NSFW1) | 12 days ago | 82 |
+| [brainslum/characters](https://huggingface.co/brainslum/characters) | 12 days ago | 14 |
+| [AIYangXiao/SDXL_FT](https://huggingface.co/AIYangXiao/SDXL_FT) | 13 days ago | 3 |
+| [RassolFlex/z-image-turbo-kr1sv1ss_v1.2](https://huggingface.co/RassolFlex/z-image-turbo-kr1sv1ss_v1.2) | 13 days ago | 52 |
+| [CrimsonZockt/MinaSharonMyoiVerZwei-FLUXLORA](https://huggingface.co/CrimsonZockt/MinaSharonMyoiVerZwei-FLUXLORA) | 13 days ago | 6 |
+| [CrimsonZockt/YooJeongyeonVerZwei-FLUXLORA](https://huggingface.co/CrimsonZockt/YooJeongyeonVerZwei-FLUXLORA) | 13 days ago | 10 |
+| [CrimsonZockt/SanaMinatozakiVerZwei-FLUXLORA](https://huggingface.co/CrimsonZockt/SanaMinatozakiVerZwei-FLUXLORA) | 13 days ago | 8 |
+| [maxta336/zit-01](https://huggingface.co/maxta336/zit-01) | 13 days ago | 44 |
+| [thatboymentor/Flux-2klein-9b](https://huggingface.co/thatboymentor/Flux-2klein-9b) | 13 days ago | 24 |
+| [darrenfu/pantyhose_feet](https://huggingface.co/darrenfu/pantyhose_feet) | 11 days ago | 8 |
+| [zozozaza26/qsdqsdqsd](https://huggingface.co/zozozaza26/qsdqsdqsd) | 11 days ago | 13 |
+| [AIYangXiao/mask_Birds](https://huggingface.co/AIYangXiao/mask_Birds) | 12 days ago | 3 |
+| [AIYangXiao/base](https://huggingface.co/AIYangXiao/base) | 12 days ago | 5 |
+
+---
+
 ## 📊 Platform Statistics (March 2026)
 
 | Category | Count |
 |----------|-------|
-| **Total Models** | 50,023+ |
+| **Total Models** | 50,024+ |
 | **Tasks** | 18+ (Text Gen, Any-to-Any, Image-Text-to-Text, Image-to-Image, Text-to-Image, Text-to-Video, Text-to-Speech, +44 more) |
 | **Libraries** | 53+ (PyTorch, TensorFlow, JAX, Transformers, Diffusers, Safetensors, ONNX, GGUF, MLX, +42 more) |
 | **Apps** | 15+ (vLLM, llama.cpp, MLX LM, LM Studio, Ollama, Jan, Draw Things, +8 more) |

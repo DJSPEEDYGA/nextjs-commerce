@@ -1,0 +1,23 @@
+{
+  "name": "goat-connect-dating-app",
+  "version": "1.0.0",
+  "description": "GOAT Connect — AI-Powered Celebrity Dating App with Background Checks, Banking & Maximum Cybersecurity",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1",
+    "ws": "^8.16.0",
+    "uuid": "^9.0.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "express-rate-limit": "^7.1.5",
+    "morgan": "^1.10.0"
+  }
+}

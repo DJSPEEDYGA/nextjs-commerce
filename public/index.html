@@ -1,1699 +1,566 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- © 2024 HARVEY L MILLER JR / JUAQUIN J MALPHURS / KEVIN W HALLINGQUEST -->
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOAT Connect — AI-Powered Dating</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>GOAT Connect - Ultimate Edition</title>
 <style>
-  :root {
-    --bg-dark: #0a0a0f;
-    --bg-card: #12121a;
-    --bg-panel: #1a1a2e;
-    --accent-gold: #f5c518;
-    --accent-pink: #ff2d78;
-    --accent-purple: #7c3aed;
-    --accent-blue: #3b82f6;
-    --accent-green: #10b981;
-    --accent-cyan: #06b6d4;
-    --text-primary: #f0f0f0;
-    --text-secondary: #a0a0b8;
-    --text-muted: #606080;
-    --border: #2a2a3e;
-    --shadow: 0 8px 32px rgba(0,0,0,0.4);
-    --gradient-main: linear-gradient(135deg, #ff2d78, #7c3aed, #3b82f6);
-    --gradient-gold: linear-gradient(135deg, #f5c518, #ff6b35);
-    --gradient-dark: linear-gradient(180deg, #0a0a0f 0%, #12121a 100%);
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg-dark);
-    color: var(--text-primary);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ==================== SPLASH SCREEN ==================== */
-  #splash {
-    position: fixed; inset: 0; z-index: 9999;
-    background: var(--bg-dark);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  #splash.hidden { opacity: 0; pointer-events: none; transform: scale(1.05); }
-  .splash-logo {
-    font-size: 5rem; animation: pulse 2s infinite;
-  }
-  .splash-title {
-    font-size: 3rem; font-weight: 900; letter-spacing: -2px;
-    background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text; margin: 1rem 0 0.5rem;
-  }
-  .splash-sub {
-    font-size: 1rem; color: var(--text-secondary); letter-spacing: 4px; text-transform: uppercase;
-    margin-bottom: 3rem;
-  }
-  .splash-bar {
-    width: 260px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
-  }
-  .splash-progress {
-    height: 100%; background: var(--gradient-main); border-radius: 2px;
-    animation: load 2.2s ease forwards;
-  }
-  .splash-features {
-    display: flex; gap: 2rem; margin-top: 2.5rem;
-  }
-  .splash-feat {
-    display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
-    font-size: 0.75rem; color: var(--text-muted);
-  }
-  .splash-feat span { font-size: 1.5rem; }
-  @keyframes load { from { width: 0; } to { width: 100%; } }
-  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-
-  /* ==================== APP SHELL ==================== */
-  #app { display: none; min-height: 100vh; }
-  #app.visible { display: flex; flex-direction: column; }
-
-  /* ==================== TOP NAV ==================== */
-  .topnav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(10,10,15,0.92); backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 0.75rem 1.5rem;
-    display: flex; align-items: center; gap: 1rem;
-  }
-  .nav-logo { font-size: 1.5rem; font-weight: 900; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; flex: 1; }
-  .nav-logo small { font-size: 0.65rem; color: var(--text-muted); display: block; font-weight: 400; -webkit-text-fill-color: var(--text-muted); }
-  .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
-  .nav-badge {
-    background: var(--gradient-main); color: white; font-size: 0.7rem; font-weight: 700;
-    padding: 0.25rem 0.7rem; border-radius: 999px; letter-spacing: 1px;
-  }
-  .nav-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: var(--gradient-main); display: flex; align-items: center; justify-content: center;
-    font-size: 1rem; cursor: pointer; border: 2px solid var(--accent-gold);
-    transition: transform 0.2s;
-  }
-  .nav-avatar:hover { transform: scale(1.1); }
-
-  /* ==================== BOTTOM TAB BAR ==================== */
-  .tabbar {
-    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-    background: rgba(10,10,15,0.96); backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border);
-    display: flex; padding: 0.5rem 0 0.75rem;
-  }
-  .tab-btn {
-    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
-    background: none; border: none; cursor: pointer; color: var(--text-muted);
-    font-size: 0.65rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
-    padding: 0.4rem 0.25rem; border-radius: 12px; transition: all 0.2s;
-  }
-  .tab-btn .tab-icon { font-size: 1.4rem; transition: transform 0.2s; }
-  .tab-btn:hover { color: var(--text-primary); }
-  .tab-btn.active { color: var(--accent-pink); }
-  .tab-btn.active .tab-icon { transform: scale(1.2); }
-  .tab-btn .tab-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-pink); display: none; }
-  .tab-btn.active .tab-dot { display: block; }
-
-  /* ==================== PAGE SYSTEM ==================== */
-  .page { display: none; padding: 1.5rem; padding-bottom: 5.5rem; min-height: calc(100vh - 60px); }
-  .page.active { display: block; }
-
-  /* ==================== AUTH PAGES ==================== */
-  #auth-page {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: calc(100vh - 60px); padding: 2rem;
-  }
-  .auth-card {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px;
-    padding: 2.5rem; width: 100%; max-width: 420px; box-shadow: var(--shadow);
-  }
-  .auth-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
-  .auth-tab {
-    flex: 1; padding: 0.7rem; border-radius: 12px; border: 1px solid var(--border);
-    background: none; color: var(--text-secondary); cursor: pointer; font-weight: 600;
-    transition: all 0.2s;
-  }
-  .auth-tab.active { background: var(--gradient-main); color: white; border-color: transparent; }
-  .auth-logo { text-align: center; margin-bottom: 1.5rem; }
-  .auth-logo .logo-emoji { font-size: 3rem; }
-  .auth-logo h2 { font-size: 1.5rem; font-weight: 900; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .auth-logo p { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
-  .form-group { margin-bottom: 1.2rem; }
-  .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.4rem; letter-spacing: 0.5px; }
-  .form-input {
-    width: 100%; padding: 0.8rem 1rem; background: var(--bg-panel); border: 1px solid var(--border);
-    border-radius: 12px; color: var(--text-primary); font-size: 0.95rem;
-    transition: border-color 0.2s; outline: none;
-  }
-  .form-input:focus { border-color: var(--accent-pink); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-  .btn-primary {
-    width: 100%; padding: 0.9rem; border-radius: 14px; border: none; cursor: pointer;
-    background: var(--gradient-main); color: white; font-size: 1rem; font-weight: 700;
-    letter-spacing: 0.5px; transition: all 0.2s; box-shadow: 0 4px 20px rgba(255,45,120,0.3);
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(255,45,120,0.45); }
-  .btn-primary:active { transform: translateY(0); }
-  .auth-divider { text-align: center; color: var(--text-muted); font-size: 0.8rem; margin: 1rem 0; position: relative; }
-  .auth-divider::before, .auth-divider::after { content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: var(--border); }
-  .auth-divider::before { left: 0; } .auth-divider::after { right: 0; }
-  .social-btns { display: flex; gap: 0.7rem; }
-  .btn-social {
-    flex: 1; padding: 0.7rem; border-radius: 12px; border: 1px solid var(--border);
-    background: var(--bg-panel); color: var(--text-primary); cursor: pointer; font-size: 0.85rem;
-    font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.4rem;
-    transition: all 0.2s;
-  }
-  .btn-social:hover { border-color: var(--accent-pink); background: rgba(255,45,120,0.08); }
-  .bg-check-notice {
-    background: linear-gradient(135deg, rgba(245,197,24,0.1), rgba(255,107,53,0.1));
-    border: 1px solid rgba(245,197,24,0.3); border-radius: 12px;
-    padding: 0.9rem 1rem; margin-top: 1.2rem; display: flex; gap: 0.7rem; align-items: flex-start;
-    font-size: 0.8rem; color: var(--text-secondary);
-  }
-  .bg-check-notice .notice-icon { font-size: 1.2rem; flex-shrink: 0; }
-
-  /* ==================== DISCOVER / SWIPE PAGE ==================== */
-  .page-header { margin-bottom: 1.5rem; }
-  .page-header h1 { font-size: 1.8rem; font-weight: 900; }
-  .page-header p { color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem; }
-
-  .swipe-area {
-    display: flex; flex-direction: column; align-items: center; gap: 1rem;
-    max-width: 420px; margin: 0 auto;
-  }
-  .swipe-stack { position: relative; width: 100%; height: 500px; }
-  .swipe-card {
-    position: absolute; inset: 0; border-radius: 24px; overflow: hidden;
-    box-shadow: var(--shadow); cursor: grab; transition: transform 0.1s;
-    border: 1px solid var(--border);
-    user-select: none;
-  }
-  .swipe-card:active { cursor: grabbing; }
-  .swipe-card .card-bg {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center; font-size: 8rem;
-  }
-  .swipe-card .card-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.95) 40%, transparent 70%);
-  }
-  .swipe-card .card-content {
-    position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem;
-  }
-  .swipe-card .card-name { font-size: 1.6rem; font-weight: 900; }
-  .swipe-card .card-age { font-size: 1rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
-  .swipe-card .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.8rem; }
-  .card-tag {
-    padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600;
-    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
-  }
-  .card-tag.music { background: rgba(255,45,120,0.2); border-color: rgba(255,45,120,0.4); color: #ff7aaa; }
-  .card-tag.celeb { background: rgba(245,197,24,0.2); border-color: rgba(245,197,24,0.4); color: var(--accent-gold); }
-  .card-tag.verified { background: rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.4); color: #34d399; }
-  .swipe-card .card-music {
-    display: flex; align-items: center; gap: 0.6rem;
-    background: rgba(255,255,255,0.08); border-radius: 10px; padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
-  }
-  .card-music-icon { font-size: 1rem; animation: spin 3s linear infinite; }
-  @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-  .swipe-card .card-security {
-    display: flex; gap: 0.5rem; margin-top: 0.6rem;
-  }
-  .sec-badge {
-    font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 6px;
-    background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #34d399;
-  }
-
-  /* Card stacking effect */
-  .swipe-card:nth-child(2) { transform: scale(0.96) translateY(10px); z-index: 0; }
-  .swipe-card:nth-child(3) { transform: scale(0.92) translateY(20px); z-index: -1; }
-  .swipe-card:nth-child(1) { z-index: 2; }
-  .swipe-card.dragging { transition: none; z-index: 10; }
-  .swipe-card.swipe-left { transform: translateX(-150%) rotate(-30deg) !important; transition: transform 0.5s ease !important; }
-  .swipe-card.swipe-right { transform: translateX(150%) rotate(30deg) !important; transition: transform 0.5s ease !important; }
-
-  .like-indicator, .nope-indicator {
-    position: absolute; top: 2rem; padding: 0.5rem 1.2rem; border-radius: 12px;
-    font-size: 1.2rem; font-weight: 900; letter-spacing: 2px;
-    border: 3px solid; opacity: 0; pointer-events: none;
-    z-index: 20; transition: opacity 0.1s;
-  }
-  .like-indicator { right: 2rem; color: var(--accent-green); border-color: var(--accent-green); transform: rotate(10deg); }
-  .nope-indicator { left: 2rem; color: var(--accent-pink); border-color: var(--accent-pink); transform: rotate(-10deg); }
-
-  .swipe-actions {
-    display: flex; gap: 1rem; align-items: center; justify-content: center;
-    padding: 0.5rem 0;
-  }
-  .action-btn {
-    border: none; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s; font-size: 1.5rem;
-  }
-  .action-btn.skip { width: 58px; height: 58px; background: rgba(255,45,120,0.1); border: 2px solid rgba(255,45,120,0.4); color: var(--accent-pink); }
-  .action-btn.super { width: 50px; height: 50px; background: rgba(59,130,246,0.1); border: 2px solid rgba(59,130,246,0.4); color: var(--accent-blue); }
-  .action-btn.like { width: 58px; height: 58px; background: rgba(16,185,129,0.1); border: 2px solid rgba(16,185,129,0.4); color: var(--accent-green); }
-  .action-btn.boost { width: 50px; height: 50px; background: rgba(245,197,24,0.1); border: 2px solid rgba(245,197,24,0.4); color: var(--accent-gold); }
-  .action-btn:hover { transform: scale(1.15); }
-  .action-btn:active { transform: scale(0.95); }
-
-  .ai-match-bar {
-    width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-    padding: 1rem 1.2rem; display: flex; align-items: center; gap: 0.9rem;
-  }
-  .ai-match-icon { font-size: 1.5rem; }
-  .ai-match-text { flex: 1; }
-  .ai-match-text strong { display: block; font-size: 0.9rem; }
-  .ai-match-text span { font-size: 0.78rem; color: var(--text-secondary); }
-  .ai-match-score {
-    font-size: 1.4rem; font-weight: 900;
-    background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-
-  /* ==================== MATCHES PAGE ==================== */
-  .matches-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem; }
-  .match-card {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px;
-    overflow: hidden; cursor: pointer; transition: all 0.2s;
-  }
-  .match-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--accent-pink); }
-  .match-card-img {
-    height: 140px; display: flex; align-items: center; justify-content: center;
-    font-size: 5rem; position: relative;
-  }
-  .match-online { position: absolute; top: 0.6rem; right: 0.6rem; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-green); border: 2px solid var(--bg-card); }
-  .match-card-body { padding: 0.9rem; }
-  .match-name { font-weight: 700; font-size: 0.95rem; }
-  .match-meta { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; }
-  .match-compat {
-    display: flex; align-items: center; gap: 0.4rem; margin-top: 0.6rem;
-    font-size: 0.78rem; font-weight: 700; color: var(--accent-green);
-  }
-  .compat-bar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .compat-fill { height: 100%; background: var(--gradient-main); border-radius: 2px; }
-
-  .new-matches-row {
-    display: flex; gap: 0.8rem; overflow-x: auto; padding-bottom: 0.5rem; margin-bottom: 1.5rem;
-    scrollbar-width: none;
-  }
-  .new-matches-row::-webkit-scrollbar { display: none; }
-  .new-match-bubble {
-    flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
-    cursor: pointer;
-  }
-  .bubble-img {
-    width: 64px; height: 64px; border-radius: 50%; border: 3px solid transparent;
-    background-clip: padding-box; position: relative; display: flex; align-items: center; justify-content: center;
-    font-size: 2rem;
-    background: var(--bg-panel);
-    box-shadow: 0 0 0 3px var(--accent-pink), 0 0 0 5px var(--bg-dark);
-  }
-  .bubble-name { font-size: 0.7rem; color: var(--text-secondary); text-align: center; max-width: 64px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .section-title { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-
-  /* ==================== CELEBRITIES PAGE ==================== */
-  .celeb-header-banner {
-    background: linear-gradient(135deg, rgba(245,197,24,0.1), rgba(255,107,53,0.05));
-    border: 1px solid rgba(245,197,24,0.2); border-radius: 20px;
-    padding: 1.5rem; margin-bottom: 1.5rem; text-align: center;
-  }
-  .celeb-header-banner h2 { font-size: 1.5rem; font-weight: 900; }
-  .celeb-header-banner p { color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.3rem; }
-
-  .celeb-filter-row { display: flex; gap: 0.5rem; overflow-x: auto; scrollbar-width: none; margin-bottom: 1.5rem; padding-bottom: 0.3rem; }
-  .celeb-filter-row::-webkit-scrollbar { display: none; }
-  .filter-chip {
-    flex-shrink: 0; padding: 0.4rem 1rem; border-radius: 999px; border: 1px solid var(--border);
-    background: none; color: var(--text-secondary); font-size: 0.8rem; font-weight: 600;
-    cursor: pointer; transition: all 0.2s;
-  }
-  .filter-chip.active { background: var(--gradient-main); color: white; border-color: transparent; }
-  .filter-chip:hover:not(.active) { border-color: var(--accent-pink); color: var(--text-primary); }
-
-  .celeb-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-  .celeb-card {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
-    overflow: hidden; cursor: pointer; transition: all 0.2s;
-  }
-  .celeb-card:hover { transform: translateY(-4px); border-color: var(--accent-gold); box-shadow: 0 8px 32px rgba(245,197,24,0.15); }
-  .celeb-card-banner {
-    height: 100px; display: flex; align-items: center; justify-content: center;
-    font-size: 5rem; position: relative;
-  }
-  .celeb-verified { position: absolute; bottom: 0.4rem; right: 0.6rem; font-size: 0.75rem; background: rgba(59,130,246,0.9); color: white; padding: 0.15rem 0.4rem; border-radius: 6px; font-weight: 700; }
-  .celeb-card-body { padding: 1rem; }
-  .celeb-name { font-weight: 800; font-size: 1rem; }
-  .celeb-genre { font-size: 0.78rem; color: var(--accent-gold); font-weight: 600; margin: 0.2rem 0; }
-  .celeb-fans { font-size: 0.75rem; color: var(--text-muted); }
-  .celeb-actions { display: flex; gap: 0.5rem; margin-top: 0.8rem; }
-  .celeb-btn {
-    flex: 1; padding: 0.5rem; border-radius: 10px; border: 1px solid var(--border);
-    background: none; color: var(--text-secondary); cursor: pointer; font-size: 0.78rem; font-weight: 600;
-    transition: all 0.2s;
-  }
-  .celeb-btn.follow { background: var(--gradient-main); color: white; border-color: transparent; }
-  .celeb-btn:hover:not(.follow) { border-color: var(--accent-pink); color: var(--text-primary); }
-  .celeb-match-score {
-    display: flex; align-items: center; gap: 0.4rem; margin-top: 0.6rem;
-    font-size: 0.78rem; color: var(--text-secondary);
-  }
-  .celeb-match-pct { font-weight: 800; color: var(--accent-gold); }
-
-  /* ==================== FEED PAGE ==================== */
-  .feed-post {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
-    margin-bottom: 1rem; overflow: hidden;
-  }
-  .post-header { display: flex; align-items: center; gap: 0.8rem; padding: 1rem 1rem 0.6rem; }
-  .post-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--bg-panel); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; border: 2px solid var(--border); }
-  .post-meta { flex: 1; }
-  .post-name { font-weight: 700; font-size: 0.9rem; }
-  .post-time { font-size: 0.75rem; color: var(--text-muted); }
-  .post-more { color: var(--text-muted); cursor: pointer; font-size: 1.2rem; padding: 0.3rem; }
-  .post-content { padding: 0 1rem 0.8rem; font-size: 0.9rem; line-height: 1.6; color: var(--text-primary); }
-  .post-music-card {
-    margin: 0 1rem 0.8rem;
-    background: var(--bg-panel); border: 1px solid var(--border); border-radius: 14px;
-    padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.8rem;
-  }
-  .music-art { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--bg-dark); }
-  .music-info { flex: 1; }
-  .music-title { font-size: 0.85rem; font-weight: 700; }
-  .music-artist { font-size: 0.75rem; color: var(--text-secondary); }
-  .music-play { width: 36px; height: 36px; border-radius: 50%; background: var(--gradient-main); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: transform 0.2s; }
-  .music-play:hover { transform: scale(1.1); }
-  .post-dating-position {
-    margin: 0 1rem 0.8rem;
-    background: linear-gradient(135deg, rgba(255,45,120,0.08), rgba(124,58,237,0.08));
-    border: 1px solid rgba(255,45,120,0.2); border-radius: 14px;
-    padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.8rem;
-  }
-  .dating-pos-icon { font-size: 1.5rem; }
-  .dating-pos-info { flex: 1; }
-  .dating-pos-name { font-size: 0.85rem; font-weight: 700; color: var(--accent-pink); }
-  .dating-pos-genre { font-size: 0.75rem; color: var(--text-secondary); }
-  .post-actions { display: flex; gap: 0.5rem; padding: 0.5rem 0.8rem 0.8rem; border-top: 1px solid var(--border); }
-  .post-action-btn {
-    display: flex; align-items: center; gap: 0.4rem; background: none; border: none; cursor: pointer;
-    color: var(--text-muted); font-size: 0.82rem; padding: 0.5rem 0.7rem; border-radius: 10px;
-    transition: all 0.2s;
-  }
-  .post-action-btn:hover { background: rgba(255,45,120,0.08); color: var(--accent-pink); }
-  .post-action-btn.liked { color: var(--accent-pink); }
-  .post-action-btn span { font-size: 1rem; }
-
-  .create-post-btn {
-    display: flex; align-items: center; gap: 0.8rem;
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-    padding: 0.9rem 1rem; margin-bottom: 1.2rem; cursor: pointer; width: 100%;
-    transition: all 0.2s;
-  }
-  .create-post-btn:hover { border-color: var(--accent-pink); }
-  .create-post-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--gradient-main); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
-  .create-post-placeholder { color: var(--text-muted); font-size: 0.9rem; flex: 1; text-align: left; }
-  .create-post-actions { display: flex; gap: 0.5rem; }
-  .create-post-icon { font-size: 1.2rem; cursor: pointer; }
-
-  /* ==================== SECURITY PAGE ==================== */
-  .security-grade-card {
-    background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(6,182,212,0.08));
-    border: 1px solid rgba(16,185,129,0.3); border-radius: 24px;
-    padding: 2rem; text-align: center; margin-bottom: 1.5rem;
-  }
-  .grade-letter {
-    font-size: 5rem; font-weight: 900; line-height: 1;
-    background: linear-gradient(135deg, #10b981, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .grade-label { font-size: 1rem; font-weight: 700; color: var(--accent-green); margin-top: 0.3rem; }
-  .grade-sub { font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem; }
-  .security-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 1.5rem; }
-  .metric-chip {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
-    padding: 0.9rem 0.7rem; text-align: center;
-  }
-  .metric-chip .m-val { font-size: 1.3rem; font-weight: 900; }
-  .metric-chip .m-label { font-size: 0.68rem; color: var(--text-muted); margin-top: 0.2rem; }
-  .metric-chip.green .m-val { color: var(--accent-green); }
-  .metric-chip.blue .m-val { color: var(--accent-blue); }
-  .metric-chip.gold .m-val { color: var(--accent-gold); }
-
-  .encryption-layers {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
-    padding: 1.2rem; margin-bottom: 1.2rem;
-  }
-  .enc-layer {
-    display: flex; align-items: center; gap: 0.9rem; padding: 0.7rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .enc-layer:last-child { border-bottom: none; }
-  .enc-icon { font-size: 1.3rem; width: 36px; height: 36px; border-radius: 10px; background: rgba(16,185,129,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .enc-info { flex: 1; }
-  .enc-name { font-size: 0.88rem; font-weight: 700; }
-  .enc-desc { font-size: 0.72rem; color: var(--text-muted); }
-  .enc-status { font-size: 0.72rem; color: var(--accent-green); font-weight: 700; background: rgba(16,185,129,0.1); padding: 0.2rem 0.5rem; border-radius: 6px; }
-
-  .threat-log {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
-    padding: 1.2rem; margin-bottom: 1.2rem;
-  }
-  .threat-item {
-    display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.6rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .threat-item:last-child { border-bottom: none; }
-  .threat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 0.4rem; }
-  .threat-dot.blocked { background: var(--accent-green); }
-  .threat-dot.warning { background: var(--accent-gold); }
-  .threat-dot.info { background: var(--accent-blue); }
-  .threat-info { flex: 1; }
-  .threat-title { font-size: 0.85rem; font-weight: 600; }
-  .threat-time { font-size: 0.72rem; color: var(--text-muted); }
-  .threat-badge {
-    font-size: 0.68rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 6px;
-    flex-shrink: 0;
-  }
-  .threat-badge.blocked { background: rgba(16,185,129,0.15); color: var(--accent-green); }
-  .threat-badge.warning { background: rgba(245,197,24,0.15); color: var(--accent-gold); }
-
-  /* ==================== PROFILE PAGE ==================== */
-  .profile-hero {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px;
-    padding: 2rem; text-align: center; margin-bottom: 1.2rem;
-    background-image: linear-gradient(135deg, rgba(255,45,120,0.05), rgba(124,58,237,0.05));
-  }
-  .profile-avatar { font-size: 5rem; margin-bottom: 0.75rem; }
-  .profile-name { font-size: 1.5rem; font-weight: 900; }
-  .profile-handle { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem; }
-  .profile-badges { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.8rem; flex-wrap: wrap; }
-  .profile-badge {
-    font-size: 0.72rem; font-weight: 700; padding: 0.3rem 0.7rem; border-radius: 999px;
-    display: flex; align-items: center; gap: 0.3rem;
-  }
-  .profile-badge.verified { background: rgba(59,130,246,0.15); color: var(--accent-blue); border: 1px solid rgba(59,130,246,0.3); }
-  .profile-badge.bg-cleared { background: rgba(16,185,129,0.15); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); }
-  .profile-badge.banking { background: rgba(245,197,24,0.15); color: var(--accent-gold); border: 1px solid rgba(245,197,24,0.3); }
-  .profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.5rem; }
-  .profile-stat { text-align: center; }
-  .profile-stat .stat-val { font-size: 1.3rem; font-weight: 900; }
-  .profile-stat .stat-key { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.1rem; }
-
-  .profile-section {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
-    padding: 1.2rem; margin-bottom: 1rem;
-  }
-  .profile-section h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
-  .music-taste-bars { display: flex; flex-direction: column; gap: 0.7rem; }
-  .taste-bar { display: flex; align-items: center; gap: 0.8rem; }
-  .taste-label { font-size: 0.8rem; width: 80px; flex-shrink: 0; }
-  .taste-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-  .taste-fill { height: 100%; border-radius: 3px; background: var(--gradient-main); }
-  .taste-pct { font-size: 0.75rem; color: var(--text-muted); width: 32px; text-align: right; }
-
-  .dating-positions-list { display: flex; flex-direction: column; gap: 0.6rem; }
-  .dating-pos-item {
-    display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem;
-    background: var(--bg-panel); border-radius: 12px; cursor: pointer;
-    transition: all 0.2s;
-  }
-  .dating-pos-item:hover { background: rgba(255,45,120,0.08); }
-  .dating-pos-item .pos-icon { font-size: 1.5rem; width: 40px; height: 40px; border-radius: 10px; background: rgba(255,45,120,0.1); display: flex; align-items: center; justify-content: center; }
-  .dating-pos-item .pos-info { flex: 1; }
-  .dating-pos-item .pos-name { font-size: 0.85rem; font-weight: 700; }
-  .dating-pos-item .pos-genre { font-size: 0.72rem; color: var(--text-secondary); }
-  .pos-active { font-size: 0.7rem; color: var(--accent-green); font-weight: 700; }
-
-  /* ==================== AI ANALYSIS PANEL ==================== */
-  .ai-analysis-panel {
-    background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(59,130,246,0.08));
-    border: 1px solid rgba(124,58,237,0.3); border-radius: 20px;
-    padding: 1.2rem; margin-bottom: 1.2rem;
-  }
-  .ai-analysis-panel h3 { font-size: 0.85rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem; }
-  .ai-compat-score {
-    display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1rem;
-  }
-  .score-ring {
-    position: relative; width: 70px; height: 70px; flex-shrink: 0;
-  }
-  .score-ring svg { transform: rotate(-90deg); }
-  .score-ring .ring-bg { fill: none; stroke: var(--border); stroke-width: 6; }
-  .score-ring .ring-fill { fill: none; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 188; transition: stroke-dashoffset 1s ease; }
-  .score-ring .ring-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 900; }
-  .compat-breakdown { flex: 1; display: flex; flex-direction: column; gap: 0.4rem; }
-  .compat-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; }
-  .compat-item-label { flex: 1; color: var(--text-secondary); }
-  .compat-item-bar { width: 80px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .compat-item-fill { height: 100%; background: var(--gradient-main); border-radius: 2px; }
-  .compat-item-pct { width: 30px; text-align: right; font-weight: 700; }
-
-  /* ==================== MODAL / OVERLAY ==================== */
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 200;
-    background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-    display: flex; align-items: flex-end; justify-content: center;
-    opacity: 0; pointer-events: none; transition: opacity 0.3s;
-  }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal-sheet {
-    background: var(--bg-card); border-radius: 24px 24px 0 0;
-    padding: 1.5rem; width: 100%; max-width: 500px;
-    border: 1px solid var(--border); border-bottom: none;
-    transform: translateY(100%); transition: transform 0.3s ease;
-    max-height: 85vh; overflow-y: auto;
-  }
-  .modal-overlay.open .modal-sheet { transform: translateY(0); }
-  .modal-handle { width: 40px; height: 4px; border-radius: 2px; background: var(--border); margin: 0 auto 1.5rem; }
-
-  /* ==================== BACKGROUND CHECK MODAL ==================== */
-  .bg-packages { display: flex; flex-direction: column; gap: 0.7rem; }
-  .bg-package {
-    border: 1px solid var(--border); border-radius: 16px; padding: 1rem 1.2rem;
-    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 1rem;
-  }
-  .bg-package:hover, .bg-package.selected { border-color: var(--accent-pink); background: rgba(255,45,120,0.05); }
-  .bg-package.recommended { border-color: var(--accent-gold); background: rgba(245,197,24,0.05); }
-  .pkg-icon { font-size: 1.8rem; }
-  .pkg-info { flex: 1; }
-  .pkg-name { font-weight: 700; font-size: 0.9rem; }
-  .pkg-features { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; }
-  .pkg-price { font-size: 1.1rem; font-weight: 900; color: var(--accent-gold); }
-  .pkg-badge { font-size: 0.65rem; background: var(--accent-gold); color: black; padding: 0.15rem 0.4rem; border-radius: 6px; font-weight: 700; display: block; text-align: right; margin-bottom: 0.2rem; }
-
-  /* ==================== NOTIFICATION TOAST ==================== */
-  .toast-container {
-    position: fixed; top: 1rem; left: 50%; transform: translateX(-50%);
-    z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none;
-  }
-  .toast {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
-    padding: 0.8rem 1.2rem; display: flex; align-items: center; gap: 0.7rem;
-    box-shadow: var(--shadow); white-space: nowrap; font-size: 0.85rem;
-    animation: toastIn 0.3s ease, toastOut 0.3s ease 2.5s forwards;
-    pointer-events: all;
-  }
-  .toast.success { border-color: rgba(16,185,129,0.4); }
-  .toast.error { border-color: rgba(255,45,120,0.4); }
-  .toast.info { border-color: rgba(59,130,246,0.4); }
-  @keyframes toastIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-20px); } }
-
-  /* ==================== LOADING STATES ==================== */
-  .skeleton { background: linear-gradient(90deg, var(--bg-panel) 25%, var(--border) 50%, var(--bg-panel) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
-  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-  .loading-spinner {
-    width: 40px; height: 40px; border: 3px solid var(--border);
-    border-top-color: var(--accent-pink); border-radius: 50%;
-    animation: spin 0.8s linear infinite; margin: 2rem auto;
-  }
-
-  /* ==================== BANKING SECTION ==================== */
-  .banking-card {
-    background: linear-gradient(135deg, rgba(245,197,24,0.1), rgba(255,107,53,0.06));
-    border: 1px solid rgba(245,197,24,0.25); border-radius: 20px;
-    padding: 1.5rem; margin-bottom: 1rem;
-  }
-  .banking-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
-  .banking-card p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
-  .bank-institutions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-top: 1rem; }
-  .bank-inst {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 0.7rem 0.5rem; text-align: center; font-size: 0.7rem; font-weight: 600;
-    cursor: pointer; transition: all 0.2s;
-  }
-  .bank-inst:hover { border-color: var(--accent-gold); }
-  .bank-inst .bank-icon { font-size: 1.4rem; display: block; margin-bottom: 0.3rem; }
-
-  /* ==================== RESPONSIVE ==================== */
-  @media (max-width: 380px) {
-    .swipe-stack { height: 440px; }
-    .celeb-grid, .matches-grid { grid-template-columns: 1fr; }
-    .security-metrics { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media (min-width: 600px) {
-    .page { max-width: 600px; margin: 0 auto; }
-    .topnav { padding: 0.75rem 2rem; }
-  }
-
-  /* ==================== PULSE ANIMATION FOR LIVE INDICATORS ==================== */
-  .live-dot {
-    width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green);
-    display: inline-block; animation: livePulse 1.5s ease-in-out infinite;
-  }
-  @keyframes livePulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
-
-  .gradient-text { background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#FFD700;--purple:#8B5CF6;--pink:#EC4899;--blue:#3B82F6;--green:#10B981;--red:#EF4444;
+  --cyan:#06B6D4;--orange:#F97316;
+  --bg:#0A0A0F;--bg2:#12121A;--bg3:#1A1A27;--bg4:#22223A;
+  --card:#1E1E2E;--card2:#252535;--border:#2A2A3E;
+  --text:#F0F0FF;--text2:#A0A0C0;--text3:#606080;
+  --grad1:linear-gradient(135deg,#667eea,#764ba2);
+  --grad2:linear-gradient(135deg,#f093fb,#f5576c);
+  --grad3:linear-gradient(135deg,#4facfe,#00f2fe);
+  --grad4:linear-gradient(135deg,#43e97b,#38f9d7);
+  --grad5:linear-gradient(135deg,#fa709a,#fee140);
+  --grad6:linear-gradient(135deg,#a18cd1,#fbc2eb);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+#app{height:100vh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;overflow:hidden;background:var(--bg)}
+#splash{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:20px}
+.splash-logo{font-size:72px;animation:pulse 1.5s infinite}
+.splash-title{font-size:32px;font-weight:900;background:var(--grad5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.splash-sub{font-size:13px;color:var(--text2);letter-spacing:3px;text-transform:uppercase}
+.splash-bar{width:200px;height:4px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.splash-fill{height:100%;background:var(--grad5);border-radius:4px;animation:splashLoad 2.5s ease forwards}
+.splash-copy{position:absolute;bottom:40px;font-size:11px;color:var(--text3);text-align:center}
+@keyframes splashLoad{0%{width:0}100%{width:100%}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+#auth-page{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;z-index:900}
+.auth-hero{padding:60px 30px 30px;text-align:center}
+.auth-logo{font-size:56px;margin-bottom:12px}
+.auth-title{font-size:28px;font-weight:900;background:var(--grad5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.auth-sub{font-size:13px;color:var(--text2);margin-top:6px}
+.auth-tabs{display:flex;gap:0;background:var(--bg3);border-radius:12px;margin:0 24px 24px;padding:4px}
+.auth-tab{flex:1;padding:10px;text-align:center;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;color:var(--text2)}
+.auth-tab.active{background:var(--grad5);color:#fff}
+.auth-form{padding:0 24px 20px;display:flex;flex-direction:column;gap:14px}
+.auth-input{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-size:15px;outline:none;transition:.2s}
+.auth-input:focus{border-color:var(--purple);background:var(--bg4)}
+.auth-btn{background:var(--grad5);border:none;border-radius:12px;padding:15px;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.auth-notice{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.6}
+.auth-notice strong{color:var(--gold)}
+#main{flex:1;display:none;flex-direction:column;overflow:hidden}
+.page{flex:1;overflow-y:auto;display:none;flex-direction:column;padding-bottom:80px}
+.page.active{display:flex}
+.tab-bar{position:absolute;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:8px 0 calc(8px + var(--safe-bottom));z-index:100;max-width:430px}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;transition:.2s;opacity:.5;font-size:10px;color:var(--text2)}
+.tab-item.active{opacity:1;color:var(--gold)}
+.tab-icon{font-size:22px;line-height:1}
+.page-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--border)}
+.page-title{font-size:22px;font-weight:800}
+.page-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.header-badge{background:var(--grad5);color:#fff;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:700}
+.card{background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.section-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:16px 16px 8px}
+.divider{height:1px;background:var(--border);margin:8px 0}
+.fade-in{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* SWIPE */
+.discover-header{padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between}
+.swipe-area{flex:1;display:flex;align-items:center;justify-content:center;position:relative;padding:10px 16px 0;min-height:420px}
+.swipe-card{position:absolute;width:100%;max-width:360px;border-radius:24px;overflow:hidden;cursor:grab;transition:transform .15s;user-select:none;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.swipe-card:active{cursor:grabbing}
+.swipe-card-img{width:100%;height:420px;display:flex;align-items:center;justify-content:center;position:relative}
+.emoji-avatar{font-size:120px;text-align:center;padding-top:60px}
+.swipe-card-gradient{position:absolute;bottom:0;left:0;right:0;height:220px;background:linear-gradient(transparent,rgba(0,0,0,.92))}
+.swipe-card-info{position:absolute;bottom:0;left:0;right:0;padding:20px}
+.swipe-card-name{font-size:26px;font-weight:800;color:#fff}
+.swipe-card-meta{font-size:14px;color:rgba(255,255,255,.8);margin-top:4px}
+.swipe-card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.swipe-tag{background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border-radius:20px;padding:4px 10px;font-size:11px;color:#fff}
+.match-pct{position:absolute;top:16px;right:16px;background:var(--green);color:#fff;font-size:13px;font-weight:700;padding:6px 12px;border-radius:20px}
+.swipe-like{position:absolute;top:20px;left:16px;background:var(--green);color:#fff;font-size:18px;padding:8px 16px;border-radius:12px;font-weight:800;opacity:0;transition:.2s;transform:rotate(-15deg)}
+.swipe-nope{position:absolute;top:20px;right:16px;background:var(--red);color:#fff;font-size:18px;padding:8px 16px;border-radius:12px;font-weight:800;opacity:0;transition:.2s;transform:rotate(15deg)}
+.swipe-actions{display:flex;justify-content:center;gap:20px;padding:16px}
+.swipe-btn{width:64px;height:64px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;background:var(--bg2);transition:.2s}
+.swipe-btn:hover{transform:scale(1.1)}
+.swipe-btn.nope{border-color:var(--red)}
+.swipe-btn.super{border-color:var(--blue)}
+.swipe-btn.like{border-color:var(--green)}
+/* MATCHES */
+.match-new-row{padding:16px 16px 8px;overflow-x:auto;display:flex;gap:12px;scrollbar-width:none}
+.match-new-row::-webkit-scrollbar{display:none}
+.match-bubble{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:70px}
+.match-bubble-img{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;border:3px solid var(--gold);position:relative}
+.match-bubble-dot{position:absolute;bottom:2px;right:2px;width:14px;height:14px;background:var(--green);border-radius:50%;border:2px solid var(--bg)}
+.match-bubble-name{font-size:11px;color:var(--text2);text-align:center;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.match-grid{padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match-card{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+.match-card-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:64px}
+.match-card-body{padding:12px}
+.match-card-name{font-size:15px;font-weight:700}
+.match-card-sub{font-size:12px;color:var(--text2);margin-top:3px}
+.match-card-pct{display:inline-block;background:var(--grad4);color:#fff;font-size:11px;padding:3px 8px;border-radius:10px;font-weight:700;margin-top:6px}
+.match-card-msg{background:var(--grad5);border:none;border-radius:8px;padding:8px 12px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
+/* WORLD STARS */
+.stars-search{margin:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-size:14px;outline:none;width:calc(100% - 32px)}
+.genre-chips{padding:0 16px 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.genre-chips::-webkit-scrollbar{display:none}
+.genre-chip{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;white-space:nowrap;cursor:pointer;transition:.2s;color:var(--text2)}
+.genre-chip.active{background:var(--grad5);border-color:transparent;color:#fff;font-weight:600}
+.celeb-grid{padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.celeb-card{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:.2s}
+.celeb-card:hover{transform:translateY(-2px);border-color:var(--gold)}
+.celeb-card-top{height:130px;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative}
+.celeb-verified{position:absolute;top:8px;right:8px;font-size:16px}
+.celeb-tier{position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--gold);color:#000}
+.celeb-card-body{padding:10px 12px}
+.celeb-name{font-size:14px;font-weight:700}
+.celeb-genre{font-size:11px;color:var(--text2);margin-top:2px}
+.celeb-country{font-size:11px;color:var(--text3)}
+.celeb-follow{background:var(--grad5);border:none;border-radius:8px;padding:6px 10px;color:#fff;font-size:11px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
+.celeb-follow.following{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.celeb-pct{display:inline-block;background:var(--grad4);color:#fff;font-size:10px;padding:2px 7px;border-radius:8px;font-weight:700;margin-top:4px}
+.world-map-section{margin:0 16px 16px;background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--border)}
+.world-map-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.world-region{background:var(--bg3);border-radius:10px;padding:10px;text-align:center;cursor:pointer}
+.world-region-flag{font-size:24px}
+.world-region-name{font-size:11px;color:var(--text2);margin-top:4px}
+.world-region-count{font-size:16px;font-weight:800;color:var(--gold)}
+/* FACE ID */
+.face-hero{padding:24px;text-align:center}
+.face-circle{width:180px;height:180px;border-radius:50%;border:3px solid var(--purple);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:80px;background:var(--bg3);position:relative;overflow:hidden;transition:border-color .3s}
+.face-scan-line{position:absolute;left:0;right:0;height:2px;background:var(--green);animation:scanLine 2s linear infinite;box-shadow:0 0 8px var(--green)}
+@keyframes scanLine{0%{top:0}100%{top:100%}}
+.face-status{font-size:18px;font-weight:700;margin-bottom:8px;transition:color .3s}
+.face-sub{font-size:13px;color:var(--text2);line-height:1.6}
+.face-providers{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
+.face-provider{background:var(--card);border-radius:12px;padding:12px;border:1px solid var(--border);text-align:center}
+.face-provider-icon{font-size:28px;margin-bottom:6px}
+.face-provider-name{font-size:12px;font-weight:600}
+.face-provider-acc{font-size:11px;color:var(--green);margin-top:2px}
+.face-provider-status{font-size:10px;color:var(--text3)}
+.face-checks{padding:0 16px}
+.face-check-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border-radius:12px;margin-bottom:8px;border:1px solid var(--border)}
+.face-check-icon{font-size:24px;width:40px;text-align:center}
+.face-check-body{flex:1}
+.face-check-title{font-size:14px;font-weight:600}
+.face-check-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.face-check-badge{padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700}
+.badge-green{background:rgba(16,185,129,.2);color:var(--green)}
+.badge-blue{background:rgba(59,130,246,.2);color:var(--blue)}
+.badge-purple{background:rgba(139,92,246,.2);color:var(--purple)}
+.face-verify-btn{margin:16px;background:var(--grad1);border:none;border-radius:14px;padding:16px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;width:calc(100% - 32px);display:block}
+/* AVATAR */
+.avatar-preview{width:160px;height:160px;background:var(--grad1);border-radius:20px;margin:20px auto 16px;display:flex;align-items:center;justify-content:center;font-size:80px;border:2px solid var(--purple);position:relative;transition:all .3s}
+.avatar-preview-badge{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:10px;padding:3px 10px;border-radius:10px;font-weight:700;white-space:nowrap}
+.platform-tabs{display:flex;gap:8px;padding:0 16px 16px;overflow-x:auto;scrollbar-width:none}
+.platform-tab{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:8px 14px;font-size:12px;white-space:nowrap;cursor:pointer;transition:.2s}
+.platform-tab.active{background:var(--grad1);border-color:transparent;color:#fff;font-weight:600}
+.option-group{margin:0 16px 16px}
+.option-label{font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.option-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.option-row::-webkit-scrollbar{display:none}
+.option-btn{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:12px;white-space:nowrap;cursor:pointer;transition:.2s;color:var(--text2)}
+.option-btn.active{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:600}
+.anim-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 16px}
+.anim-btn{background:var(--card);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;border:1px solid var(--border);transition:.2s}
+.anim-btn:hover{border-color:var(--purple)}
+.anim-btn-icon{font-size:24px}
+.anim-btn-name{font-size:10px;color:var(--text2);margin-top:4px}
+.camera-grid{display:grid;grid-template-columns:1fr;gap:8px;padding:0 16px 16px}
+.camera-card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.camera-icon{font-size:28px}
+.camera-body{flex:1}
+.camera-name{font-size:14px;font-weight:700}
+.camera-spec{font-size:11px;color:var(--text2);margin-top:3px}
+.camera-price{font-size:12px;color:var(--gold);font-weight:700}
+.create-avatar-btn{margin:16px;background:var(--grad1);border:none;border-radius:14px;padding:16px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;width:calc(100% - 32px);display:block}
+/* CYBER */
+.cyber-grade{margin:16px;background:var(--card);border-radius:20px;padding:20px;border:1px solid var(--green);text-align:center}
+.cyber-grade-letter{font-size:72px;font-weight:900;background:var(--grad4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
+.stat-card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);text-align:center}
+.stat-num{font-size:24px;font-weight:900;color:var(--gold)}
+.stat-label{font-size:11px;color:var(--text2);margin-top:4px}
+.threat-monitor{margin:0 16px 16px;background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--border)}
+.threat-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.threat-live{background:var(--red);color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.threat-item{display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg3);border-radius:10px;margin-bottom:6px;border:1px solid var(--border)}
+.threat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.threat-body{flex:1}
+.threat-name{font-size:13px;font-weight:600}
+.threat-time{font-size:11px;color:var(--text3)}
+.threat-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:700}
+.threat-high{background:rgba(239,68,68,.2);color:var(--red)}
+.threat-med{background:rgba(249,115,22,.2);color:var(--orange)}
+.threat-low{background:rgba(16,185,129,.2);color:var(--green)}
+.av-engines{padding:0 16px 16px}
+.av-engine{display:flex;align-items:center;gap:10px;padding:10px;background:var(--card);border-radius:10px;margin-bottom:6px;border:1px solid var(--border)}
+.av-icon{font-size:20px;width:36px;text-align:center}
+.av-body{flex:1}
+.av-name{font-size:13px;font-weight:600}
+.av-sigs{font-size:11px;color:var(--text2)}
+.breach-check-form{padding:0 16px 16px}
+.breach-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-size:14px;outline:none;margin-bottom:10px}
+.breach-btn{background:var(--red);border:none;border-radius:12px;padding:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;width:100%}
+/* GAMING */
+.gaming-tabs{display:flex;gap:0;background:var(--bg3);border-radius:12px;margin:12px 16px;padding:4px}
+.gaming-tab{flex:1;padding:9px 8px;text-align:center;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;color:var(--text2)}
+.gaming-tab.active{background:var(--grad1);color:#fff}
+.gaming-panel{display:none;padding:0 16px}
+.gaming-panel.active{display:block}
+.book-card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:10px;display:flex;gap:12px}
+.book-cover{width:56px;height:72px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.book-body{flex:1}
+.book-title{font-size:14px;font-weight:700;line-height:1.3}
+.book-author{font-size:12px;color:var(--text2);margin-top:3px}
+.book-level{display:inline-block;font-size:10px;padding:2px 8px;border-radius:8px;margin-top:6px;font-weight:700}
+.level-beginner{background:rgba(16,185,129,.2);color:var(--green)}
+.level-intermediate{background:rgba(59,130,246,.2);color:var(--blue)}
+.level-advanced{background:rgba(139,92,246,.2);color:var(--purple)}
+.level-expert{background:rgba(239,68,68,.2);color:var(--red)}
+.ue5-tutorial{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:10px}
+.ue5-tut-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ue5-tut-title{font-size:14px;font-weight:700}
+.ue5-tut-meta{font-size:12px;color:var(--text2)}
+.ue5-features{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ue5-feature{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:3px 8px;font-size:11px;color:var(--text2)}
+.fivem-server{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:10px}
+.fivem-server-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.fivem-server-icon{font-size:28px}
+.fivem-server-name{font-size:14px;font-weight:700}
+.fivem-server-players{font-size:12px;color:var(--green)}
+.fivem-tags{display:flex;flex-wrap:wrap;gap:6px}
+.fivem-tag{background:var(--bg3);border-radius:8px;padding:3px 8px;font-size:11px;color:var(--text2)}
+.blueprint-card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--purple);margin-bottom:10px;cursor:pointer;transition:.2s}
+.blueprint-card:hover{border-color:var(--gold);transform:translateY(-1px)}
+.blueprint-title{font-size:14px;font-weight:700;color:var(--purple)}
+.blueprint-desc{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5}
+.blueprint-nodes{font-size:11px;color:var(--text3);margin-top:6px}
+.path-step{display:flex;gap:12px;margin-bottom:0}
+.path-line{display:flex;flex-direction:column;align-items:center}
+.path-dot{width:28px;height:28px;border-radius:50%;background:var(--grad1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.path-connector{width:2px;flex:1;background:var(--border);min-height:20px}
+.path-body{flex:1;padding-bottom:16px}
+.path-title{font-size:14px;font-weight:700}
+.path-desc{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5}
+.path-time{font-size:11px;color:var(--gold);margin-top:4px}
+/* FEED */
+.feed-post{background:var(--card);border-radius:16px;border:1px solid var(--border);margin:0 16px 12px;overflow:hidden}
+.feed-post-header{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.feed-avatar{width:40px;height:40px;border-radius:50%;background:var(--grad2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.feed-name{font-size:14px;font-weight:700}
+.feed-meta{font-size:12px;color:var(--text2)}
+.feed-pos{font-size:11px;color:var(--purple);font-weight:600;margin-top:1px}
+.feed-content{padding:0 14px 12px;font-size:14px;line-height:1.6}
+.feed-music{margin:0 14px 12px;background:var(--bg3);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;border:1px solid var(--border)}
+.feed-music-art{width:44px;height:44px;border-radius:8px;background:var(--grad5);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.feed-music-title{font-size:13px;font-weight:700}
+.feed-music-artist{font-size:12px;color:var(--text2)}
+.feed-music-play{width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;margin-left:auto;border:none}
+.feed-actions{display:flex;border-top:1px solid var(--border)}
+.feed-action{flex:1;padding:10px;text-align:center;font-size:12px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--text2)}
+.feed-action:hover{background:var(--bg3)}
+.feed-action.liked{color:var(--pink)}
+.create-post-btn{margin:16px;background:var(--grad5);border:none;border-radius:14px;padding:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;width:calc(100% - 32px);display:flex;align-items:center;justify-content:center;gap:8px}
+/* SECURITY */
+.sec-grade{margin:16px;background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(59,130,246,.1));border-radius:20px;padding:20px;border:1px solid var(--green);text-align:center}
+.sec-letter{font-size:80px;font-weight:900;background:var(--grad4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.enc-item{display:flex;align-items:center;gap:12px;padding:10px;background:var(--card);border-radius:10px;margin-bottom:6px;border:1px solid var(--border)}
+.enc-icon{font-size:20px;width:36px;text-align:center}
+.enc-body{flex:1}
+.enc-name{font-size:13px;font-weight:600}
+.enc-desc{font-size:11px;color:var(--text2);margin-top:2px}
+/* PROFILE */
+.profile-top{padding:24px 20px 16px;text-align:center}
+.profile-avatar{width:100px;height:100px;border-radius:50%;background:var(--grad5);display:flex;align-items:center;justify-content:center;font-size:48px;margin:0 auto 12px;border:3px solid var(--gold)}
+.profile-name{font-size:24px;font-weight:800}
+.profile-sub{font-size:13px;color:var(--text2);margin-top:4px}
+.profile-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:16px;overflow:hidden;margin:0 16px 16px}
+.profile-stat{background:var(--card);padding:14px;text-align:center}
+.profile-stat-num{font-size:20px;font-weight:800}
+.profile-stat-label{font-size:11px;color:var(--text2);margin-top:2px}
+.dna-bar-row{margin-bottom:10px;padding:0 16px}
+.dna-bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:5px}
+.dna-bar-track{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.dna-bar-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.pos-items{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:0 16px 16px}
+.pos-item{background:var(--card);border-radius:12px;padding:10px 12px;border:2px solid var(--border);cursor:pointer;transition:.2s;display:flex;align-items:center;gap:8px}
+.pos-item.active{border-color:var(--gold);background:rgba(255,215,0,.08)}
+.pos-emoji{font-size:20px}
+.pos-name{font-size:12px;font-weight:600}
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal-sheet{background:var(--bg2);border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:85vh;overflow-y:auto;padding:20px 20px calc(20px + var(--safe-bottom))}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:20px}
+.modal-btn{width:100%;padding:15px;border-radius:14px;border:none;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px}
+.modal-btn-primary{background:var(--grad5);color:#fff}
+.modal-btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.celeb-modal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.celeb-modal-stat{background:var(--bg3);border-radius:10px;padding:12px;text-align:center}
+.celeb-modal-stat-num{font-size:16px;font-weight:800;color:var(--gold)}
+.celeb-modal-stat-label{font-size:10px;color:var(--text3);margin-top:3px}
+.celeb-modal-bio{background:var(--bg3);border-radius:12px;padding:14px;margin-bottom:16px;font-size:13px;line-height:1.7;color:var(--text2)}
+/* TOAST */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:12px 20px;font-size:14px;font-weight:600;z-index:9999;transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:var(--green);color:var(--green)}
+.toast.error{border-color:var(--red);color:var(--red)}
+.toast.info{border-color:var(--blue);color:var(--blue)}
+.toast.gold{border-color:var(--gold);color:var(--gold)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 </style>
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
-
-<!-- ============================= SPLASH ============================= -->
-<div id="splash">
-  <div class="splash-logo">🐐</div>
-  <div class="splash-title">GOAT Connect</div>
-  <div class="splash-sub">AI-Powered Dating Platform</div>
-  <div class="splash-bar"><div class="splash-progress"></div></div>
-  <div class="splash-features">
-    <div class="splash-feat"><span>🔒</span>Max Security</div>
-    <div class="splash-feat"><span>🤖</span>AI Matching</div>
-    <div class="splash-feat"><span>🎵</span>Music DNA</div>
-    <div class="splash-feat"><span>⭐</span>Celebrities</div>
-    <div class="splash-feat"><span>🏦</span>Banking</div>
-  </div>
-</div>
-
-<!-- ============================= APP SHELL ============================= -->
 <div id="app">
-
-  <!-- TOP NAV -->
-  <nav class="topnav">
-    <div class="nav-logo">
-      🐐 GOAT Connect
-      <small>© 2024 Harvey Miller Jr / Juaquin Malphurs / Kevin Hallingquest</small>
-    </div>
-    <div class="nav-actions">
-      <span class="nav-badge">AI</span>
-      <div class="nav-avatar" onclick="showTab('profile')">😎</div>
-    </div>
-  </nav>
-
-  <!-- TOAST CONTAINER -->
-  <div class="toast-container" id="toastContainer"></div>
-
-  <!-- ===================== AUTH PAGE ===================== -->
-  <div id="auth-page">
-    <div class="auth-card">
-      <div class="auth-logo">
-        <div class="logo-emoji">🐐</div>
-        <h2>GOAT Connect</h2>
-        <p>Where music meets love • AI-powered matching</p>
-      </div>
-      <div class="auth-tabs">
-        <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
-        <button class="auth-tab" onclick="switchAuthTab('register')">Join Free</button>
-      </div>
-
-      <!-- LOGIN FORM -->
-      <div id="login-form">
-        <div class="form-group">
-          <label>EMAIL</label>
-          <input class="form-input" type="email" id="login-email" placeholder="your@email.com" value="demo@goatconnect.ai">
-        </div>
-        <div class="form-group">
-          <label>PASSWORD</label>
-          <input class="form-input" type="password" id="login-pass" placeholder="••••••••" value="password123">
-        </div>
-        <button class="btn-primary" onclick="doLogin()">🚀 Sign In</button>
-        <div class="auth-divider">or continue with</div>
-        <div class="social-btns">
-          <button class="btn-social" onclick="demoLogin()">🐐 Demo Mode</button>
-          <button class="btn-social" onclick="showToast('🎵 Music login coming soon!','info')">🎵 Music</button>
-        </div>
-      </div>
-
-      <!-- REGISTER FORM -->
-      <div id="register-form" style="display:none">
-        <div class="form-row">
-          <div class="form-group">
-            <label>FIRST NAME</label>
-            <input class="form-input" type="text" id="reg-first" placeholder="First">
-          </div>
-          <div class="form-group">
-            <label>AGE</label>
-            <input class="form-input" type="number" id="reg-age" placeholder="25" min="18">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>EMAIL</label>
-          <input class="form-input" type="email" id="reg-email" placeholder="your@email.com">
-        </div>
-        <div class="form-group">
-          <label>PASSWORD</label>
-          <input class="form-input" type="password" id="reg-pass" placeholder="Create password">
-        </div>
-        <div class="form-group">
-          <label>FAVORITE MUSIC GENRE</label>
-          <select class="form-input" id="reg-genre">
-            <option>Hip-Hop</option><option>R&B</option><option>Pop</option>
-            <option>Trap</option><option>Afrobeats</option><option>Electronic</option>
-            <option>Reggaeton</option><option>Jazz</option>
-          </select>
-        </div>
-        <button class="btn-primary" onclick="doRegister()">🐐 Create Account</button>
-        <div class="bg-check-notice">
-          <div class="notice-icon">🛡️</div>
-          <div>By creating an account you agree to a <strong>background check verification</strong> to keep our community safe. Background checks are powered by Checkr & Persona.</div>
-        </div>
-      </div>
-    </div>
+<div id="splash">
+  <div class="splash-logo">&#x1F495;</div>
+  <div class="splash-title">GOAT Connect</div>
+  <div class="splash-sub">Ultimate Edition v2.0</div>
+  <div class="splash-bar"><div class="splash-fill"></div></div>
+  <div class="splash-copy">&#xA9; 2024 HARVEY L MILLER JR &bull; DJ SPEEDY<br>All Rights Reserved</div>
+</div>
+<div id="auth-page">
+  <div class="auth-hero">
+    <div class="auth-logo">&#x1F495;</div>
+    <div class="auth-title">GOAT Connect</div>
+    <div class="auth-sub">The Ultimate Celebrity Fan Dating Platform</div>
   </div>
-
-  <!-- ===================== MAIN APP CONTENT ===================== -->
-  <div id="main-content" style="display:none">
-
-    <!-- PAGE: DISCOVER (SWIPE) -->
-    <div id="page-discover" class="page active">
-      <div class="page-header">
-        <h1>Discover 🔥</h1>
-        <p>AI-matched profiles • <span class="live-dot"></span> 2,847 online now</p>
-      </div>
-
-      <div class="swipe-area">
-        <div class="swipe-stack" id="swipeStack">
-          <!-- Cards injected by JS -->
-        </div>
-
-        <div class="swipe-actions">
-          <button class="action-btn skip" onclick="swipeCard('left')" title="Pass">✕</button>
-          <button class="action-btn super" onclick="swipeCard('super')" title="Super Like">⭐</button>
-          <button class="action-btn like" onclick="swipeCard('right')" title="Like">♥</button>
-          <button class="action-btn boost" onclick="showToast('⚡ Profile boosted!','success')" title="Boost">⚡</button>
-        </div>
-
-        <div class="ai-match-bar" id="aiMatchBar">
-          <div class="ai-match-icon">🤖</div>
-          <div class="ai-match-text">
-            <strong>AI Compatibility Analysis</strong>
-            <span id="aiMatchReason">Music taste: 94% match • Similar vibe</span>
-          </div>
-          <div class="ai-match-score" id="aiMatchScore">94%</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE: MATCHES -->
-    <div id="page-matches" class="page">
-      <div class="page-header">
-        <h1>Matches 💫</h1>
-        <p>Your connections await</p>
-      </div>
-
-      <div class="section-title">✨ New Matches <span style="color:var(--accent-pink);margin-left:auto;font-size:0.78rem;">See All</span></div>
-      <div class="new-matches-row" id="newMatchesRow"></div>
-
-      <div class="section-title">💬 Your Matches</div>
-      <div class="matches-grid" id="matchesGrid"></div>
-    </div>
-
-    <!-- PAGE: CELEBRITIES -->
-    <div id="page-celebs" class="page">
-      <div class="celeb-header-banner">
-        <h2>⭐ Celebrity Universe</h2>
-        <p>Follow your favorites • AI celebrity match • Fan community</p>
-      </div>
-
-      <div class="celeb-filter-row" id="celebFilters">
-        <button class="filter-chip active" onclick="filterCelebs('all',this)">All Stars</button>
-        <button class="filter-chip" onclick="filterCelebs('Hip-Hop',this)">Hip-Hop</button>
-        <button class="filter-chip" onclick="filterCelebs('R&B',this)">R&B</button>
-        <button class="filter-chip" onclick="filterCelebs('Trap',this)">Trap</button>
-        <button class="filter-chip" onclick="filterCelebs('Pop',this)">Pop</button>
-        <button class="filter-chip" onclick="filterCelebs('DJ',this)">DJ</button>
-      </div>
-
-      <div class="section-title">🎯 Your Celebrity Match</div>
-      <div id="celebMatchCard" style="margin-bottom:1.5rem;"></div>
-
-      <div class="section-title">⭐ All Celebrities</div>
-      <div class="celeb-grid" id="celebGrid"></div>
-    </div>
-
-    <!-- PAGE: FEED -->
-    <div id="page-feed" class="page">
-      <div class="page-header">
-        <h1>Feed 🎵</h1>
-        <p>Music, love & community vibes</p>
-      </div>
-
-      <button class="create-post-btn" onclick="showCreatePost()">
-        <div class="create-post-avatar">😎</div>
-        <div class="create-post-placeholder">Share your vibe, music or dating position...</div>
-        <div class="create-post-actions">
-          <span class="create-post-icon">🎵</span>
-          <span class="create-post-icon">📸</span>
-        </div>
-      </button>
-
-      <div id="feedPosts"></div>
-    </div>
-
-    <!-- PAGE: SECURITY -->
-    <div id="page-security" class="page">
-      <div class="page-header">
-        <h1>Security 🔒</h1>
-        <p>Maximum protection • 6-layer encryption</p>
-      </div>
-
-      <div class="security-grade-card">
-        <div class="grade-letter">A+</div>
-        <div class="grade-label">MAXIMUM SECURITY RATING</div>
-        <div class="grade-sub">AES-256-GCM • RSA-4096 • Signal Protocol • TLS 1.3</div>
-      </div>
-
-      <div class="security-metrics">
-        <div class="metric-chip green"><div class="m-val">6</div><div class="m-label">Encryption Layers</div></div>
-        <div class="metric-chip blue"><div class="m-val">0</div><div class="m-label">Breaches</div></div>
-        <div class="metric-chip gold"><div class="m-val">247</div><div class="m-label">Threats Blocked</div></div>
-      </div>
-
-      <div class="encryption-layers">
-        <div class="section-title" style="margin-bottom:0.5rem;">🔐 Encryption Stack</div>
-        <div class="enc-layer"><div class="enc-icon">🔑</div><div class="enc-info"><div class="enc-name">AES-256-GCM</div><div class="enc-desc">Message & data encryption</div></div><div class="enc-status">ACTIVE</div></div>
-        <div class="enc-layer"><div class="enc-icon">🛡️</div><div class="enc-info"><div class="enc-name">RSA-4096</div><div class="enc-desc">Key exchange & authentication</div></div><div class="enc-status">ACTIVE</div></div>
-        <div class="enc-layer"><div class="enc-icon">📡</div><div class="enc-info"><div class="enc-name">Signal Protocol Double Ratchet</div><div class="enc-desc">End-to-end messaging</div></div><div class="enc-status">ACTIVE</div></div>
-        <div class="enc-layer"><div class="enc-icon">🌐</div><div class="enc-info"><div class="enc-name">TLS 1.3</div><div class="enc-desc">Transport layer security</div></div><div class="enc-status">ACTIVE</div></div>
-        <div class="enc-layer"><div class="enc-icon">🔮</div><div class="enc-info"><div class="enc-name">Zero-Knowledge Proofs</div><div class="enc-desc">Privacy-preserving verification</div></div><div class="enc-status">ACTIVE</div></div>
-        <div class="enc-layer"><div class="enc-icon">⚡</div><div class="enc-info"><div class="enc-name">Argon2id Hashing</div><div class="enc-desc">Password protection</div></div><div class="enc-status">ACTIVE</div></div>
-      </div>
-
-      <div class="threat-log">
-        <div class="section-title" style="margin-bottom:0.5rem;">🚨 Live Threat Monitor</div>
-        <div id="threatLog"></div>
-      </div>
-
-      <div class="profile-section">
-        <h3>🤖 AI Threat Detection</h3>
-        <div class="dating-positions-list" id="aiThreatModels"></div>
-      </div>
-
-      <div class="banking-card">
-        <h3>🏦 Banking Verification</h3>
-        <p>Link your bank account to verify income and unlock premium matches. Powered by Plaid-style secure integration with 12 supported institutions.</p>
-        <div class="bank-institutions" id="bankList"></div>
-        <button class="btn-primary" style="margin-top:1rem;" onclick="linkBank()">🔗 Link Bank Account</button>
-      </div>
-    </div>
-
-    <!-- PAGE: PROFILE -->
-    <div id="page-profile" class="page">
-      <div class="profile-hero">
-        <div class="profile-avatar">😎</div>
-        <div class="profile-name" id="profileName">DJ Speedy</div>
-        <div class="profile-handle" id="profileHandle">@djspeedy • Miami, FL</div>
-        <div class="profile-badges">
-          <span class="profile-badge verified">✓ ID Verified</span>
-          <span class="profile-badge bg-cleared">🛡️ BG Cleared</span>
-          <span class="profile-badge banking">💳 Bank Linked</span>
-        </div>
-        <div class="profile-stats">
-          <div class="profile-stat"><div class="stat-val">247</div><div class="stat-key">Fans</div></div>
-          <div class="profile-stat"><div class="stat-val">94%</div><div class="stat-key">Match Rate</div></div>
-          <div class="profile-stat"><div class="stat-val">⭐ 4.9</div><div class="stat-key">Trust Score</div></div>
-        </div>
-      </div>
-
-      <div class="profile-section">
-        <h3>🎵 Music DNA</h3>
-        <div class="music-taste-bars">
-          <div class="taste-bar"><div class="taste-label">Hip-Hop</div><div class="taste-track"><div class="taste-fill" style="width:90%"></div></div><div class="taste-pct">90%</div></div>
-          <div class="taste-bar"><div class="taste-label">Trap</div><div class="taste-track"><div class="taste-fill" style="width:80%"></div></div><div class="taste-pct">80%</div></div>
-          <div class="taste-bar"><div class="taste-label">R&B</div><div class="taste-track"><div class="taste-fill" style="width:70%"></div></div><div class="taste-pct">70%</div></div>
-          <div class="taste-bar"><div class="taste-label">Electronic</div><div class="taste-track"><div class="taste-fill" style="width:45%"></div></div><div class="taste-pct">45%</div></div>
-          <div class="taste-bar"><div class="taste-label">Afrobeats</div><div class="taste-track"><div class="taste-fill" style="width:60%"></div></div><div class="taste-pct">60%</div></div>
-        </div>
-      </div>
-
-      <div class="profile-section">
-        <h3>💃 Dating Positions</h3>
-        <div class="dating-positions-list" id="datingPositionsList"></div>
-      </div>
-
-      <div class="ai-analysis-panel" id="profileAiPanel">
-        <h3>🤖 AI Compatibility Analysis</h3>
-        <div class="ai-compat-score">
-          <div class="score-ring">
-            <svg viewBox="0 0 70 70" width="70" height="70">
-              <circle class="ring-bg" cx="35" cy="35" r="30"/>
-              <circle class="ring-fill" cx="35" cy="35" r="30" stroke="url(#grad1)" stroke-dashoffset="47"/>
-            </svg>
-            <defs><linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff2d78"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs>
-            <div class="ring-text">75%</div>
-          </div>
-          <div class="compat-breakdown">
-            <div class="compat-item"><div class="compat-item-label">Music Taste</div><div class="compat-item-bar"><div class="compat-item-fill" style="width:94%"></div></div><div class="compat-item-pct">94%</div></div>
-            <div class="compat-item"><div class="compat-item-label">Personality</div><div class="compat-item-bar"><div class="compat-item-fill" style="width:78%"></div></div><div class="compat-item-pct">78%</div></div>
-            <div class="compat-item"><div class="compat-item-label">Dating Style</div><div class="compat-item-bar"><div class="compat-item-fill" style="width:82%"></div></div><div class="compat-item-pct">82%</div></div>
-            <div class="compat-item"><div class="compat-item-label">Trust Score</div><div class="compat-item-bar"><div class="compat-item-fill" style="width:98%"></div></div><div class="compat-item-pct">98%</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="profile-section">
-        <h3>⚙️ Account Settings</h3>
-        <div style="display:flex;flex-direction:column;gap:0.6rem;">
-          <button class="btn-social" onclick="showBgCheckModal()">🛡️ Background Check Status</button>
-          <button class="btn-social" onclick="showTab('security')">🔒 Security Settings</button>
-          <button class="btn-social" onclick="showToast('📍 Location updated','success')">📍 Update Location</button>
-          <button class="btn-social" style="color:var(--accent-pink);border-color:rgba(255,45,120,0.3);" onclick="doLogout()">🚪 Sign Out</button>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /main-content -->
-
-  <!-- ===================== BOTTOM TAB BAR ===================== -->
-  <div class="tabbar" id="tabbar">
-    <button class="tab-btn active" onclick="showTab('discover')" id="tab-discover">
-      <span class="tab-icon">🔥</span>
-      <span>Discover</span>
-      <span class="tab-dot"></span>
-    </button>
-    <button class="tab-btn" onclick="showTab('matches')" id="tab-matches">
-      <span class="tab-icon">💫</span>
-      <span>Matches</span>
-      <span class="tab-dot"></span>
-    </button>
-    <button class="tab-btn" onclick="showTab('feed')" id="tab-feed">
-      <span class="tab-icon">🎵</span>
-      <span>Feed</span>
-      <span class="tab-dot"></span>
-    </button>
-    <button class="tab-btn" onclick="showTab('celebs')" id="tab-celebs">
-      <span class="tab-icon">⭐</span>
-      <span>Stars</span>
-      <span class="tab-dot"></span>
-    </button>
-    <button class="tab-btn" onclick="showTab('security')" id="tab-security">
-      <span class="tab-icon">🔒</span>
-      <span>Security</span>
-      <span class="tab-dot"></span>
-    </button>
-    <button class="tab-btn" onclick="showTab('profile')" id="tab-profile">
-      <span class="tab-icon">😎</span>
-      <span>Profile</span>
-      <span class="tab-dot"></span>
-    </button>
+  <div class="auth-tabs">
+    <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
+    <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
   </div>
-
-</div><!-- /app -->
-
-<!-- ===================== BACKGROUND CHECK MODAL ===================== -->
-<div class="modal-overlay" id="bgCheckModal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:0.3rem;">🛡️ Background Check</h2>
-    <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:1.2rem;">Verified users get 3x more matches. Choose your verification level.</p>
-    <div class="bg-packages" id="bgPackages"></div>
-    <button class="btn-primary" style="margin-top:1.2rem;" onclick="startBgCheck()">Start Verification</button>
-    <button class="btn-social" style="margin-top:0.6rem;width:100%;" onclick="closeBgCheckModal()">Maybe Later</button>
+  <div class="auth-form" id="auth-form-login">
+    <input class="auth-input" type="email" placeholder="Email address" id="login-email" value="djspeedy@goatroyaltyapp.org"/>
+    <input class="auth-input" type="password" placeholder="Password" id="login-password" value="password123"/>
+    <button class="auth-btn" onclick="doLogin()">&#x1F513; Sign In</button>
+  </div>
+  <div class="auth-form" id="auth-form-register" style="display:none">
+    <input class="auth-input" type="text" placeholder="Full name" id="reg-name"/>
+    <input class="auth-input" type="email" placeholder="Email" id="reg-email"/>
+    <input class="auth-input" type="password" placeholder="Password (min 8 chars)" id="reg-password"/>
+    <div class="auth-notice"><strong>&#x1F6E1;&#xFE0F; Background Check Required</strong><br>All users must pass background check + facial recognition.<br><strong>&#x1F3E6; Banking Verification</strong> required for premium features.</div>
+    <button class="auth-btn" onclick="doRegister()">&#x1F680; Create Account</button>
   </div>
 </div>
-
-<!-- ===================== CELEB DETAIL MODAL ===================== -->
-<div class="modal-overlay" id="celebModal">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div id="celebModalContent"></div>
-    <button class="btn-social" style="margin-top:1rem;width:100%;" onclick="closeCelebModal()">Close</button>
+<div id="main">
+  <div class="page" id="page-discover">
+    <div class="discover-header">
+      <div><div style="font-size:22px;font-weight:800">&#x1F495; Discover</div><div style="font-size:12px;color:var(--text2)">AI-Powered Matching</div></div>
+      <div style="display:flex;gap:10px">
+        <div style="font-size:22px;cursor:pointer" onclick="showToast('Background Check: VERIFIED &#x2705;','success')">&#x1F50D;</div>
+        <div style="font-size:22px;cursor:pointer" onclick="switchTab('security')">&#x1F6E1;&#xFE0F;</div>
+      </div>
+    </div>
+    <div class="swipe-area" id="swipe-area"></div>
+    <div class="swipe-actions">
+      <div class="swipe-btn nope" onclick="swipe('left')">&#x2715;</div>
+      <div class="swipe-btn super" onclick="swipe('super')">&#x2B50;</div>
+      <div class="swipe-btn like" onclick="swipe('right')">&#x2665;</div>
+    </div>
+    <div style="text-align:center;font-size:12px;color:var(--text3);padding-bottom:4px">Swipe cards or use arrow keys</div>
+  </div>
+  <div class="page" id="page-matches">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F48C; Matches</div><div class="page-sub">Your connections</div></div>
+      <div class="header-badge">12 New</div>
+    </div>
+    <div class="section-label">New Matches</div>
+    <div class="match-new-row" id="match-bubbles"></div>
+    <div class="divider" style="margin:0 16px"></div>
+    <div class="section-label">All Matches</div>
+    <div class="match-grid" id="match-grid"></div>
+  </div>
+  <div class="page" id="page-stars">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F30D; World Stars</div><div class="page-sub">20+ Global Celebrities</div></div>
+      <div class="header-badge">Live</div>
+    </div>
+    <input class="stars-search" placeholder="Search celebrities, genres, cities..." id="celeb-search" oninput="filterCelebs()"/>
+    <div class="genre-chips" id="genre-chips"></div>
+    <div class="world-map-section">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">&#x1F5FA;&#xFE0F; Global Reach</div>
+      <div class="world-map-grid" id="world-map-grid"></div>
+    </div>
+    <div class="celeb-grid" id="celeb-grid"></div>
+  </div>
+  <div class="page" id="page-faceid">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F464; Face ID</div><div class="page-sub">AI Identity Verification</div></div>
+      <div class="header-badge" style="background:var(--grad4)">Secure</div>
+    </div>
+    <div class="face-hero">
+      <div class="face-circle" id="face-circle">
+        <div class="face-scan-line"></div>
+        <span id="face-emoji" style="position:relative;z-index:1">&#x1F464;</span>
+      </div>
+      <div class="face-status" id="face-status">Ready to Verify</div>
+      <div class="face-sub">5-Provider AI &bull; AWS Rekognition &bull; NVIDIA Deepfake Detector</div>
+    </div>
+    <button class="face-verify-btn" onclick="startFaceVerification()">&#x1F50D; Start Face Verification</button>
+    <div class="section-label">AI Providers</div>
+    <div class="face-providers" id="face-providers"></div>
+    <div class="section-label">Security Checks</div>
+    <div class="face-checks" id="face-checks"></div>
+    <div class="section-label">Privacy</div>
+    <div class="card" style="margin:0 16px 16px;font-size:12px;color:var(--text2);line-height:1.8">
+      &#x1F510; Face vectors encrypted with <strong style="color:var(--green)">Homomorphic Encryption</strong><br>
+      &#x2705; GDPR &bull; CCPA &bull; BIPA &bull; ISO 27001 Compliant
+    </div>
+  </div>
+  <div class="page" id="page-avatar">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F3AD; Avatar Studio</div><div class="page-sub">DAZ3D + MetaHuman + FiveM</div></div>
+      <div class="header-badge" style="background:var(--grad1)">UE5</div>
+    </div>
+    <div class="avatar-preview" id="avatar-preview">
+      <span id="avatar-emoji">&#x1F9D1;</span>
+      <div class="avatar-preview-badge" id="avatar-platform-badge">DAZ3D Genesis 9</div>
+    </div>
+    <div class="section-label">Platform</div>
+    <div class="platform-tabs" id="platform-tabs"></div>
+    <div class="section-label">Options</div>
+    <div class="option-group">
+      <div class="option-label">Gender</div>
+      <div class="option-row" id="opt-gender"></div>
+    </div>
+    <div class="option-group">
+      <div class="option-label">Style</div>
+      <div class="option-row" id="opt-style"></div>
+    </div>
+    <div class="section-label">Animations</div>
+    <div class="anim-grid" id="anim-grid"></div>
+    <div class="section-label">Hollywood Cameras</div>
+    <div class="camera-grid" id="camera-grid"></div>
+    <button class="create-avatar-btn" onclick="createAvatar()">&#x1F3AD; Create My Avatar</button>
+  </div>
+  <div class="page" id="page-cyber">
+    <div class="page-header">
+      <div><div class="page-title">&#x2694;&#xFE0F; Cyber Defense</div><div class="page-sub">Military-Grade Protection</div></div>
+      <div class="header-badge" style="background:var(--grad4)">A+</div>
+    </div>
+    <div class="cyber-grade">
+      <div class="cyber-grade-letter">A+</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:4px">Security Rating</div>
+      <div style="font-size:11px;color:var(--green);margin-top:6px">&#x2705; Zero active threats</div>
+    </div>
+    <div class="stats-grid" id="cyber-stats-grid"></div>
+    <div class="threat-monitor">
+      <div class="threat-title">Live Threat Monitor <span class="threat-live">LIVE</span></div>
+      <div id="threat-feed"></div>
+    </div>
+    <div class="av-engines">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">&#x1F6E1;&#xFE0F; 6-Engine Antivirus Suite</div>
+      <div id="av-engine-list"></div>
+    </div>
+    <div class="section-label">Breach Check</div>
+    <div class="breach-check-form">
+      <input class="breach-input" type="email" placeholder="Enter email to check for breaches..." id="breach-email"/>
+      <button class="breach-btn" onclick="checkBreach()">&#x1F50D; Check for Data Breaches</button>
+    </div>
+    <div class="section-label">Threat Intelligence</div>
+    <div id="threat-intel-list" style="padding:0 16px 16px"></div>
+  </div>
+  <div class="page" id="page-gaming">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F3AE; UE5 Studio</div><div class="page-sub">C++ &bull; FiveM &bull; Blueprints</div></div>
+      <div class="header-badge" style="background:var(--grad1)">Pro</div>
+    </div>
+    <div class="gaming-tabs">
+      <div class="gaming-tab active" onclick="switchGamingTab('cpp',this)">C++ Books</div>
+      <div class="gaming-tab" onclick="switchGamingTab('ue5',this)">UE5</div>
+      <div class="gaming-tab" onclick="switchGamingTab('fivem',this)">FiveM</div>
+      <div class="gaming-tab" onclick="switchGamingTab('blueprint',this)">Blueprints</div>
+    </div>
+    <div class="gaming-panel active" id="gaming-panel-cpp">
+      <div id="cpp-learning-path"></div>
+      <div id="cpp-books-list"></div>
+    </div>
+    <div class="gaming-panel" id="gaming-panel-ue5"><div id="ue5-tutorials-list"></div></div>
+    <div class="gaming-panel" id="gaming-panel-fivem"><div id="fivem-servers-list"></div></div>
+    <div class="gaming-panel" id="gaming-panel-blueprint"><div id="blueprint-list"></div></div>
+  </div>
+  <div class="page" id="page-feed">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F4F1; Feed</div><div class="page-sub">Music &bull; Culture &bull; Love</div></div>
+      <div class="header-badge">&#x1F525; Trending</div>
+    </div>
+    <button class="create-post-btn" onclick="openModal('modal-post')">&#x270F;&#xFE0F; Share your vibe...</button>
+    <div id="feed-posts"></div>
+  </div>
+  <div class="page" id="page-security">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F6E1;&#xFE0F; Security</div><div class="page-sub">Your Protection Status</div></div>
+    </div>
+    <div class="sec-grade">
+      <div class="sec-letter">A+</div>
+      <div style="font-size:14px;color:var(--text2);margin-top:4px">Overall Security Score</div>
+      <div style="font-size:13px;color:var(--green);margin-top:6px;font-weight:600">99/100 &bull; Zero Vulnerabilities</div>
+    </div>
+    <div style="font-size:14px;font-weight:700;padding:16px 16px 8px">&#x1F510; Encryption Stack</div>
+    <div id="enc-layers-list" style="padding:0 16px 16px"></div>
+  </div>
+  <div class="page" id="page-profile">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F451; Profile</div></div>
+      <div style="font-size:22px;cursor:pointer" onclick="showToast('Settings coming soon!','info')">&#x2699;&#xFE0F;</div>
+    </div>
+    <div class="profile-top">
+      <div class="profile-avatar">&#x1F3A4;</div>
+      <div class="profile-name">DJ Speedy</div>
+      <div class="profile-sub">&#x1F3A7; Hip-Hop Producer &bull; Atlanta, GA</div>
+      <div class="profile-badge">&#x2B50; GOAT Verified &#x2713;</div>
+    </div>
+    <div class="profile-stats">
+      <div class="profile-stat"><div class="profile-stat-num">247</div><div class="profile-stat-label">Matches</div></div>
+      <div class="profile-stat"><div class="profile-stat-num">18.4K</div><div class="profile-stat-label">Followers</div></div>
+      <div class="profile-stat"><div class="profile-stat-num">4.2K</div><div class="profile-stat-label">Likes</div></div>
+    </div>
+    <div style="font-size:14px;font-weight:700;padding:8px 16px 12px">&#x1F3B5; Music DNA</div>
+    <div id="music-dna-bars"></div>
+    <div style="font-size:14px;font-weight:700;padding:8px 16px 12px">&#x1F495; Dating Style</div>
+    <div class="pos-items" id="dating-positions"></div>
+  </div>
+  <div class="tab-bar">
+    <div class="tab-item active" onclick="switchTab('discover')"><div class="tab-icon">&#x1F495;</div><span>Discover</span></div>
+    <div class="tab-item" onclick="switchTab('matches')"><div class="tab-icon">&#x1F48C;</div><span>Matches</span></div>
+    <div class="tab-item" onclick="switchTab('stars')"><div class="tab-icon">&#x1F30D;</div><span>Stars</span></div>
+    <div class="tab-item" onclick="switchTab('faceid')"><div class="tab-icon">&#x1F464;</div><span>Face ID</span></div>
+    <div class="tab-item" onclick="switchTab('avatar')"><div class="tab-icon">&#x1F3AD;</div><span>Avatar</span></div>
+    <div class="tab-item" onclick="switchTab('cyber')"><div class="tab-icon">&#x2694;&#xFE0F;</div><span>Cyber</span></div>
+    <div class="tab-item" onclick="switchTab('gaming')"><div class="tab-icon">&#x1F3AE;</div><span>UE5</span></div>
+    <div class="tab-item" onclick="switchTab('feed')"><div class="tab-icon">&#x1F4F1;</div><span>Feed</span></div>
+    <div class="tab-item" onclick="switchTab('profile')"><div class="tab-icon">&#x1F451;</div><span>Profile</span></div>
   </div>
 </div>
-
-<!-- ===================== CREATE POST MODAL ===================== -->
-<div class="modal-overlay" id="createPostModal">
-  <div class="modal-sheet">
+<div class="modal-overlay" id="modal-celeb">
+  <div class="modal-sheet"><div class="modal-handle"></div><div id="celeb-modal-content"></div></div>
+</div>
+<div class="modal-overlay" id="modal-match">
+  <div class="modal-sheet" style="text-align:center">
     <div class="modal-handle"></div>
-    <h2 style="font-size:1.2rem;font-weight:900;margin-bottom:1rem;">✨ Share Your Vibe</h2>
-    <div class="form-group">
-      <label>WHAT'S ON YOUR MIND?</label>
-      <textarea class="form-input" id="postText" rows="3" placeholder="Share your vibe, music taste, dating energy..." style="resize:none;"></textarea>
-    </div>
-    <div class="form-group">
-      <label>🎵 ATTACH MUSIC</label>
-      <select class="form-input" id="postMusic">
-        <option value="">— Select a track —</option>
-        <option value="1">God's Plan - Drake</option>
-        <option value="2">Cardi B - WAP</option>
-        <option value="3">Travis Scott - SICKO MODE</option>
-        <option value="4">Nicki Minaj - Super Freaky Girl</option>
-        <option value="5">DJ Speedy - GOAT Anthem</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>💃 DATING POSITION</label>
-      <select class="form-input" id="postPosition">
-        <option value="">— Add dating position —</option>
-        <option value="1">The Trap Romantic</option>
-        <option value="2">The Afrobeats Lover</option>
-        <option value="3">The R&B Serenader</option>
-        <option value="4">The Hip-Hop Partner</option>
-        <option value="5">The Pop Dreamer</option>
-      </select>
-    </div>
-    <button class="btn-primary" onclick="submitPost()">🚀 Post</button>
-    <button class="btn-social" style="margin-top:0.6rem;width:100%;" onclick="closeCreatePost()">Cancel</button>
+    <div style="font-size:64px;animation:burst .6s ease">&#x1F389;</div>
+    <div class="modal-title" style="text-align:center">It's a Match!</div>
+    <div id="match-modal-names" style="font-size:14px;color:var(--text2);margin:8px 0 20px"></div>
+    <button class="modal-btn modal-btn-primary" onclick="closeModal('modal-match')">&#x1F48C; Send Message</button>
+    <button class="modal-btn modal-btn-secondary" onclick="closeModal('modal-match')">Keep Swiping</button>
   </div>
 </div>
-
-<script>
-// ============================== DATA ==============================
-const API = 'http://localhost:4001';
-
-const DEMO_PROFILES = [
-  { id:1, name:'Aaliyah J.', age:25, emoji:'👸', bio:'Hip-hop soul, midnight drives', music:'God\'s Plan – Drake', genre:'Hip-Hop', position:'The R&B Serenader', tags:['Verified','BG Clear','Hip-Hop'], compat:94, celeb:'Beyoncé vibes', colors:['#1a0520','#2d0838'] },
-  { id:2, name:'Marcus T.', age:28, emoji:'👨‍🎤', bio:'Trap music & deep conversations', music:'SICKO MODE – Travis Scott', genre:'Trap', position:'The Trap Romantic', tags:['Verified','Trap','Producer'], compat:87, celeb:'Travis Scott energy', colors:['#1a1500','#2d2300'] },
-  { id:3, name:'Zara K.', age:23, emoji:'💃', bio:'Afrobeats dancer, foodie, loyal', music:'Essence – WizKid', genre:'Afrobeats', position:'The Afrobeats Lover', tags:['BG Clear','Afrobeats','Dancer'], compat:91, celeb:'Rihanna vibes', colors:['#001a15','#002d24'] },
-  { id:4, name:'Devon R.', age:27, emoji:'🎧', bio:'DJ, music producer, good vibes', music:'GOAT Anthem – DJ Speedy', genre:'Hip-Hop', position:'The Hip-Hop Partner', tags:['Verified','DJ','Producer'], compat:96, celeb:'DJ Khaled energy', colors:['#001520','#002038'] },
-  { id:5, name:'Imani B.', age:24, emoji:'🌟', bio:'R&B lover, poet, art enthusiast', music:'Creepin\' – Metro Boomin', genre:'R&B', position:'The R&B Serenader', tags:['Verified','R&B','Artist'], compat:89, celeb:'SZA vibes', colors:['#200010','#380020'] },
-];
-
-const CELEBRITIES = [
-  { id:1, name:'Drake', emoji:'🦉', genre:'Hip-Hop', fans:'847K fans', verified:true, match:78, bio:'6 God. Hip-hop icon. Toronto made.' },
-  { id:2, name:'Beyoncé', emoji:'👸', genre:'R&B/Pop', fans:'2.1M fans', verified:true, match:65, bio:'Queen Bey. Legendary performer.' },
-  { id:3, name:'Cardi B', emoji:'💅', genre:'Hip-Hop', fans:'623K fans', verified:true, match:82, bio:'Bodak energy. Real & unfiltered.' },
-  { id:4, name:'Travis Scott', emoji:'🌵', genre:'Trap', fans:'512K fans', verified:true, match:71, bio:'Highest in the room. Astroworld.' },
-  { id:5, name:'Nicki Minaj', emoji:'👑', genre:'Hip-Hop', fans:'934K fans', verified:true, match:76, bio:'The Queen. Barbie world.' },
-  { id:6, name:'DJ Khaled', emoji:'🔑', genre:'Hip-Hop', fans:'445K fans', verified:true, match:88, bio:'Another one. We the best.' },
-  { id:7, name:'Megan Thee Stallion', emoji:'🐎', genre:'Hip-Hop', fans:'678K fans', verified:true, match:74, bio:'Hot girl summer. Real hot girl.' },
-  { id:8, name:'Post Malone', emoji:'🌹', genre:'Hip-Hop/Rock', fans:'521K fans', verified:true, match:69, bio:'Rockstar vibes. Stay away.' },
-  { id:9, name:'DJ Speedy', emoji:'⚡', genre:'Hip-Hop/DJ', fans:'127K fans', verified:true, match:99, bio:'Harvey Miller Jr. GOAT Royalties creator. Miami legend.', special:true },
-];
-
-const DATING_POSITIONS = [
-  { id:1, name:'The Trap Romantic', emoji:'💎', genre:'Trap', desc:'Intense, passionate, built different', active:false },
-  { id:2, name:'The Afrobeats Lover', emoji:'🌍', genre:'Afrobeats', desc:'Warm, rhythmic, soulful connection', active:true },
-  { id:3, name:'The R&B Serenader', emoji:'🎤', genre:'R&B', desc:'Deep feelings, smooth talker, devoted', active:false },
-  { id:4, name:'The Hip-Hop Partner', emoji:'🎧', genre:'Hip-Hop', desc:'Real, loyal, day-one energy', active:false },
-  { id:5, name:'The Pop Dreamer', emoji:'✨', genre:'Pop', desc:'Optimistic, fun, light-hearted love', active:false },
-  { id:6, name:'The Jazz Intellectual', emoji:'🎷', genre:'Jazz', desc:'Deep thinker, romantic, timeless', active:false },
-  { id:7, name:'The Electronic Nomad', emoji:'🚀', genre:'Electronic', desc:'Free spirit, adventurous, wired in', active:false },
-  { id:8, name:'The Reggaeton Fire', emoji:'🔥', genre:'Reggaeton', desc:'Passionate, fiery, dance floor ready', active:false },
-  { id:9, name:'The Gospel Soul', emoji:'🙏', genre:'Gospel', desc:'Faithful, pure, spiritually grounded', active:false },
-  { id:10, name:'The GOAT Energy', emoji:'🐐', genre:'All Genres', desc:'The ultimate — music is life', active:false },
-];
-
-const FEED_POSTS = [
-  { id:1, name:'Aaliyah J.', emoji:'👸', time:'2m ago', content:'Just matched with someone who vibes to the same Drake playlist 🎧 AI really out here doing the most 🐐', music:{title:"God's Plan", artist:'Drake', icon:'🦉'}, position:{name:'The R&B Serenader', genre:'R&B'}, likes:47, comments:12 },
-  { id:2, name:'DJ Speedy', emoji:'⭐', time:'15m ago', content:'GOAT Connect is built different fr. Background checked, encrypted, AI matched — this is the future of dating 🔒🤖', music:{title:'GOAT Anthem', artist:'DJ Speedy', icon:'⚡'}, likes:284, comments:67 },
-  { id:3, name:'Marcus T.', emoji:'👨‍🎤', time:'32m ago', content:'Trap music really is the love language fr. If you understand Travis Scott you understand me on a deeper level 🌵', music:{title:'SICKO MODE', artist:'Travis Scott', icon:'🌵'}, position:{name:'The Trap Romantic', genre:'Trap'}, likes:93, comments:28 },
-  { id:4, name:'Zara K.', emoji:'💃', time:'1h ago', content:'Afrobeats + good food + honest conversation = perfect first date. Change my mind 🌍', music:{title:'Essence', artist:'WizKid', icon:'🌍'}, position:{name:'The Afrobeats Lover', genre:'Afrobeats'}, likes:156, comments:41 },
-  { id:5, name:'Devon R.', emoji:'🎧', time:'2h ago', content:'The celebrity match feature is WILD 😂 it said I match 99% with DJ Speedy/Harvey Miller himself lmaooo 🐐⚡', likes:211, comments:55 },
-];
-
-const THREATS = [
-  { title:'Deepfake photo detected & blocked', time:'3 min ago', type:'blocked' },
-  { title:'Romance scam pattern identified', time:'18 min ago', type:'blocked' },
-  { title:'Suspicious login attempt from unknown device', time:'1 hr ago', type:'blocked' },
-  { title:'Bot behavior detected on new account', time:'2 hr ago', type:'blocked' },
-  { title:'Profile image verified as authentic', time:'3 hr ago', type:'warning' },
-];
-
-const AI_THREAT_MODELS = [
-  { name:'Deepfake Detection', emoji:'🤖', desc:'NVIDIA AI • 99.1% accuracy', status:'Active' },
-  { name:'Catfish Detector', emoji:'🐟', desc:'Cross-platform identity check', status:'Active' },
-  { name:'Romance Scam AI', emoji:'💸', desc:'Behavioral pattern analysis', status:'Active' },
-  { name:'Bot Fingerprinting', emoji:'🤖', desc:'Interaction velocity analysis', status:'Active' },
-  { name:'Sentiment Analysis', emoji:'🧠', desc:'Conversation health monitor', status:'Active' },
-  { name:'Face Liveness Check', emoji:'👁️', desc:'Anti-spoofing verification', status:'Active' },
-];
-
-const BANKS = [
-  { name:'Chase', icon:'🏦' },
-  { name:'Bank of America', icon:'🏛️' },
-  { name:'Wells Fargo', icon:'🐎' },
-  { name:'Citi', icon:'🌆' },
-  { name:'Capital One', icon:'💳' },
-  { name:'TD Bank', icon:'🟢' },
-  { name:'PNC', icon:'🔷' },
-  { name:'US Bank', icon:'🇺🇸' },
-  { name:'SunTrust', icon:'☀️' },
-];
-
-const BG_PACKAGES = [
-  { name:'Basic', icon:'🔍', price:'$4.99', features:'Identity • SSN • Address verification', rec:false },
-  { name:'Standard', icon:'🛡️', price:'$14.99', features:'Basic + Criminal + Sex Offender registry', rec:true },
-  { name:'Premium', icon:'⭐', price:'$29.99', features:'Standard + Financial + Credit + International', rec:false },
-  { name:'Celebrity', icon:'👑', price:'FREE', features:'Full background + Premium verification + Verified badge', rec:false },
-];
-
-// ============================== STATE ==============================
-let currentTab = 'discover';
-let currentCardIndex = 0;
-let isLoggedIn = false;
-let cardProfiles = [...DEMO_PROFILES];
-let likedProfiles = new Set();
-let followedCelebs = new Set();
-let likedPosts = new Set();
-let selectedBgPackage = 1;
-let dragState = { active:false, startX:0, startY:0, card:null };
-
-// ============================== INIT ==============================
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('splash').classList.add('hidden');
-    setTimeout(() => {
-      document.getElementById('splash').style.display = 'none';
-      document.getElementById('app').classList.add('visible');
-      // Auto-demo login for preview
-      demoLogin();
-    }, 800);
-  }, 2500);
-});
-
-// ============================== AUTH ==============================
-function switchAuthTab(tab) {
-  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
-  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'&&i===0)||(tab==='register'&&i===1)));
-}
-
-async function doLogin() {
-  const email = document.getElementById('login-email').value;
-  const pass = document.getElementById('login-pass').value;
-  if (!email || !pass) return showToast('❌ Please enter email & password','error');
-  showToast('🔄 Signing in...','info');
-  try {
-    const res = await fetch(`${API}/api/auth/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email,password:pass}) });
-    const data = await res.json();
-    if (data.success) {
-      showToast('✅ Welcome back!','success');
-      enterApp(data.user || { name:'User', id:1 });
-    } else { showToast('❌ ' + (data.error || 'Login failed'),'error'); }
-  } catch(e) { demoLogin(); }
-}
-
-function doRegister() {
-  const first = document.getElementById('reg-first').value;
-  const age = parseInt(document.getElementById('reg-age').value);
-  if (!first || !age) return showToast('❌ Please fill in all fields','error');
-  if (age < 18) return showToast('❌ Must be 18+ to join','error');
-  showToast('🛡️ Creating account & starting background check...','info');
-  setTimeout(() => {
-    showToast('✅ Account created! Background check initiated.','success');
-    enterApp({ name: first, id: Date.now() });
-  }, 1500);
-}
-
-function demoLogin() {
-  enterApp({ name: 'DJ Speedy', id: 1, demo: true });
-}
-
-function enterApp(user) {
-  isLoggedIn = true;
-  document.getElementById('auth-page').style.display = 'none';
-  document.getElementById('main-content').style.display = 'block';
-  document.getElementById('tabbar').style.display = 'flex';
-  document.getElementById('profileName').textContent = user.name || 'DJ Speedy';
-  initAllPages();
-}
-
-function doLogout() {
-  isLoggedIn = false;
-  document.getElementById('auth-page').style.display = 'flex';
-  document.getElementById('main-content').style.display = 'none';
-  showToast('👋 Signed out','info');
-}
-
-// ============================== TAB NAVIGATION ==============================
-function showTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  const page = document.getElementById(`page-${tab}`);
-  const btn = document.getElementById(`tab-${tab}`);
-  if (page) page.classList.add('active');
-  if (btn) btn.classList.add('active');
-}
-
-// ============================== INIT ALL PAGES ==============================
-function initAllPages() {
-  buildSwipeCards();
-  buildMatches();
-  buildCelebGrid();
-  buildFeed();
-  buildSecurityPage();
-  buildProfilePage();
-  showTab('discover');
-}
-
-// ============================== SWIPE CARDS ==============================
-function buildSwipeCards() {
-  const stack = document.getElementById('swipeStack');
-  stack.innerHTML = '';
-  const profiles = cardProfiles.slice(0, 3);
-  profiles.reverse().forEach((p, revI) => {
-    const i = profiles.length - 1 - revI;
-    const card = document.createElement('div');
-    card.className = 'swipe-card';
-    card.id = `card-${p.id}`;
-    card.style.background = `linear-gradient(135deg, ${p.colors[0]}, ${p.colors[1]})`;
-
-    const tagsHtml = p.tags.map(t => {
-      const cls = t==='Verified'||t==='BG Clear'?'verified':t==='Hip-Hop'||t==='Trap'||t==='R&B'||t==='Afrobeats'?'music':'celeb';
-      return `<span class="card-tag ${cls}">${t==='Verified'?'✓ ID Verified':t==='BG Clear'?'🛡️ BG Cleared':t}</span>`;
-    }).join('');
-
-    card.innerHTML = `
-      <div class="like-indicator">LIKE 💚</div>
-      <div class="nope-indicator">NOPE ✕</div>
-      <div class="card-bg">${p.emoji}</div>
-      <div class="card-overlay"></div>
-      <div class="card-content">
-        <div class="card-name">${p.name}</div>
-        <div class="card-age">Age ${p.age} • ${p.bio}</div>
-        <div class="card-tags">${tagsHtml}</div>
-        <div class="card-music">
-          <span class="card-music-icon">💿</span>
-          <span>${p.music}</span>
-        </div>
-        <div class="card-security">
-          <span class="sec-badge">🔒 Encrypted</span>
-          <span class="sec-badge">✓ Verified</span>
-          <span class="sec-badge">🤖 AI-Checked</span>
-        </div>
-      </div>`;
-
-    // Drag handling
-    card.addEventListener('mousedown', startDrag);
-    card.addEventListener('touchstart', startDrag, { passive: true });
-
-    if (i === 0) updateAiBar(p);
-    stack.appendChild(card);
-  });
-}
-
-function startDrag(e) {
-  const card = e.currentTarget;
-  if (!card.id.startsWith('card-')) return;
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  dragState = { active: true, startX: clientX, startY: clientY, card };
-  card.classList.add('dragging');
-
-  const onMove = (ev) => {
-    if (!dragState.active) return;
-    const cx = ev.touches ? ev.touches[0].clientX : ev.clientX;
-    const cy = ev.touches ? ev.touches[0].clientY : ev.clientY;
-    const dx = cx - dragState.startX;
-    const dy = cy - dragState.startY;
-    const rot = dx * 0.08;
-    card.style.transform = `translateX(${dx}px) translateY(${dy}px) rotate(${rot}deg)`;
-    const likeEl = card.querySelector('.like-indicator');
-    const nopeEl = card.querySelector('.nope-indicator');
-    likeEl.style.opacity = Math.max(0, dx / 80);
-    nopeEl.style.opacity = Math.max(0, -dx / 80);
-  };
-
-  const onEnd = (ev) => {
-    if (!dragState.active) return;
-    dragState.active = false;
-    card.classList.remove('dragging');
-    const dx = parseFloat(card.style.transform.match(/translateX\(([^p]+)px\)/)?.[1] || 0);
-    if (dx > 80) { completeSwipe(card, 'right'); }
-    else if (dx < -80) { completeSwipe(card, 'left'); }
-    else { card.style.transform = ''; card.querySelector('.like-indicator').style.opacity=0; card.querySelector('.nope-indicator').style.opacity=0; }
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('touchmove', onMove);
-    document.removeEventListener('mouseup', onEnd);
-    document.removeEventListener('touchend', onEnd);
-  };
-
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('touchmove', onMove, { passive: true });
-  document.addEventListener('mouseup', onEnd);
-  document.addEventListener('touchend', onEnd);
-}
-
-function swipeCard(dir) {
-  const stack = document.getElementById('swipeStack');
-  const topCard = stack.querySelector('.swipe-card:last-child');
-  if (!topCard) return;
-  completeSwipe(topCard, dir);
-}
-
-function completeSwipe(card, dir) {
-  if (dir === 'right' || dir === 'super') {
-    card.classList.add('swipe-right');
-    const profile = DEMO_PROFILES.find(p => card.id === `card-${p.id}`);
-    if (profile) likedProfiles.add(profile.id);
-    const msg = dir === 'super' ? `⭐ Super liked ${card.querySelector('.card-name').textContent}!` : `💚 Liked ${card.querySelector('.card-name').textContent}!`;
-    showToast(msg, 'success');
-    if (Math.random() > 0.5) setTimeout(() => showToast("💫 It's a match!", 'success'), 800);
-  } else {
-    card.classList.add('swipe-left');
-    showToast('✕ Passed', 'info');
-  }
-  setTimeout(() => {
-    card.remove();
-    cardProfiles.shift();
-    if (cardProfiles.length < 3) cardProfiles.push(DEMO_PROFILES[Math.floor(Math.random() * DEMO_PROFILES.length)]);
-    buildSwipeCards();
-  }, 500);
-}
-
-function updateAiBar(profile) {
-  document.getElementById('aiMatchScore').textContent = profile.compat + '%';
-  document.getElementById('aiMatchReason').textContent = `Music taste match • ${profile.celeb} • ${profile.genre}`;
-}
-
-// ============================== MATCHES ==============================
-function buildMatches() {
-  const newRow = document.getElementById('newMatchesRow');
-  const grid = document.getElementById('matchesGrid');
-
-  newRow.innerHTML = DEMO_PROFILES.map(p => `
-    <div class="new-match-bubble" onclick="showToast('💬 Opening chat with ${p.name}...','info')">
-      <div class="bubble-img">${p.emoji}</div>
-      <div class="bubble-name">${p.name.split(' ')[0]}</div>
-    </div>`).join('');
-
-  grid.innerHTML = DEMO_PROFILES.map(p => `
-    <div class="match-card" onclick="openMatchChat('${p.id}')">
-      <div class="match-card-img">
-        ${p.emoji}
-        <div class="match-online" style="${Math.random()>0.5?'':'background:var(--text-muted)'}"></div>
-      </div>
-      <div class="match-card-body">
-        <div class="match-name">${p.name}</div>
-        <div class="match-meta">${p.genre} • Age ${p.age}</div>
-        <div class="match-compat">
-          ${p.compat}%
-          <div class="compat-bar"><div class="compat-fill" style="width:${p.compat}%"></div></div>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function openMatchChat(id) {
-  const p = DEMO_PROFILES.find(x => x.id == id);
-  if (p) showToast(`💬 Chat with ${p.name} — Feature coming in v5.0!`, 'info');
-}
-
-// ============================== CELEBRITIES ==============================
-function buildCelebGrid(filter='all') {
-  // Celebrity match card
-  const matchCard = document.getElementById('celebMatchCard');
-  const topMatch = CELEBRITIES.find(c => c.id === 9); // DJ Speedy
-  matchCard.innerHTML = `
-    <div style="background:linear-gradient(135deg,rgba(245,197,24,0.1),rgba(255,107,53,0.08));border:1px solid rgba(245,197,24,0.3);border-radius:20px;padding:1.2rem;display:flex;align-items:center;gap:1rem;cursor:pointer;" onclick="openCelebModal(9)">
-      <div style="font-size:3.5rem;">${topMatch.emoji}</div>
-      <div style="flex:1;">
-        <div style="font-weight:800;font-size:1rem;">${topMatch.name}</div>
-        <div style="font-size:0.78rem;color:var(--accent-gold);font-weight:600;">${topMatch.genre}</div>
-        <div style="font-size:0.78rem;color:var(--text-secondary);margin-top:0.2rem;">${topMatch.bio}</div>
-        <div style="font-size:0.82rem;font-weight:800;color:var(--accent-gold);margin-top:0.4rem;">${topMatch.match}% Match 🐐</div>
-      </div>
-      <button class="celeb-btn follow" onclick="event.stopPropagation();toggleFollow(9,this)" style="width:auto;padding:0.5rem 1rem;">${followedCelebs.has(9)?'✓ Following':'+ Follow'}</button>
-    </div>`;
-
-  // Main grid
-  const filtered = filter === 'all' ? CELEBRITIES : CELEBRITIES.filter(c => c.genre.includes(filter) || (filter==='DJ' && c.genre.includes('DJ')));
-  document.getElementById('celebGrid').innerHTML = filtered.map(c => `
-    <div class="celeb-card" onclick="openCelebModal(${c.id})">
-      <div class="celeb-card-banner" style="background:${celebColor(c.genre)}">
-        ${c.emoji}
-        ${c.verified ? '<span class="celeb-verified">✓ Verified</span>' : ''}
-        ${c.special ? '<span class="celeb-verified" style="background:rgba(245,197,24,0.9);color:black;">GOAT</span>' : ''}
-      </div>
-      <div class="celeb-card-body">
-        <div class="celeb-name">${c.name}</div>
-        <div class="celeb-genre">${c.genre}</div>
-        <div class="celeb-fans">👥 ${c.fans}</div>
-        <div class="celeb-match-score">
-          <span>AI Match:</span>
-          <span class="celeb-match-pct">${c.match}%</span>
-        </div>
-        <div class="celeb-actions">
-          <button class="celeb-btn follow" onclick="event.stopPropagation();toggleFollow(${c.id},this)">${followedCelebs.has(c.id)?'✓ Following':'+ Follow'}</button>
-          <button class="celeb-btn" onclick="event.stopPropagation();showToast('💬 Fan chat coming soon!','info')">💬</button>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function celebColor(genre) {
-  if (genre.includes('Trap')) return 'linear-gradient(135deg,#1a1500,#2d2300)';
-  if (genre.includes('R&B')) return 'linear-gradient(135deg,#200010,#380020)';
-  if (genre.includes('Pop')) return 'linear-gradient(135deg,#001520,#002038)';
-  if (genre.includes('DJ')) return 'linear-gradient(135deg,#001a15,#002d24)';
-  return 'linear-gradient(135deg,#12001a,#200030)';
-}
-
-function filterCelebs(genre, btn) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  buildCelebGrid(genre);
-}
-
-function toggleFollow(id, btn) {
-  if (followedCelebs.has(id)) {
-    followedCelebs.delete(id);
-    btn.textContent = '+ Follow';
-    btn.classList.remove('follow');
-    showToast('Unfollowed', 'info');
-  } else {
-    followedCelebs.add(id);
-    btn.textContent = '✓ Following';
-    btn.classList.add('follow');
-    const c = CELEBRITIES.find(x => x.id === id);
-    showToast(`✨ Following ${c ? c.name : ''}!`, 'success');
-  }
-}
-
-function openCelebModal(id) {
-  const c = CELEBRITIES.find(x => x.id === id);
-  if (!c) return;
-  document.getElementById('celebModalContent').innerHTML = `
-    <div style="text-align:center;margin-bottom:1.2rem;">
-      <div style="font-size:5rem;">${c.emoji}</div>
-      <h2 style="font-size:1.6rem;font-weight:900;">${c.name}</h2>
-      <div style="color:var(--accent-gold);font-size:0.85rem;margin-top:0.3rem;">${c.genre} • ${c.fans}</div>
-      <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.5rem;">${c.bio}</p>
-    </div>
-    <div style="background:var(--bg-panel);border-radius:16px;padding:1rem;margin-bottom:1rem;">
-      <div style="font-size:0.8rem;font-weight:700;color:var(--text-secondary);margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:1px;">🤖 Your AI Match Score</div>
-      <div style="font-size:2.5rem;font-weight:900;background:var(--gradient-gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${c.match}%</div>
-      <div style="font-size:0.8rem;color:var(--text-secondary);">Based on music taste, personality & vibe analysis</div>
-    </div>
-    <button class="btn-primary" onclick="toggleFollow(${c.id},this)">${followedCelebs.has(c.id)?'✓ Following':'⭐ Follow ${c.name}'}</button>`;
-  document.getElementById('celebModal').classList.add('open');
-}
-
-function closeCelebModal() {
-  document.getElementById('celebModal').classList.remove('open');
-}
-
-// ============================== FEED ==============================
-function buildFeed() {
-  document.getElementById('feedPosts').innerHTML = FEED_POSTS.map(p => `
-    <div class="feed-post">
-      <div class="post-header">
-        <div class="post-avatar">${p.emoji}</div>
-        <div class="post-meta">
-          <div class="post-name">${p.name}</div>
-          <div class="post-time">${p.time}</div>
-        </div>
-        <div class="post-more" onclick="showToast('⋯ Post options','info')">⋯</div>
-      </div>
-      <div class="post-content">${p.content}</div>
-      ${p.music ? `
-        <div class="post-music-card">
-          <div class="music-art">${p.music.icon}</div>
-          <div class="music-info">
-            <div class="music-title">${p.music.title}</div>
-            <div class="music-artist">${p.music.artist}</div>
-          </div>
-          <button class="music-play" onclick="showToast('🎵 Playing ${p.music.title}...','info')">▶</button>
-        </div>` : ''}
-      ${p.position ? `
-        <div class="post-dating-position">
-          <div class="dating-pos-icon">💃</div>
-          <div class="dating-pos-info">
-            <div class="dating-pos-name">${p.position.name}</div>
-            <div class="dating-pos-genre">${p.position.genre} Energy</div>
-          </div>
-        </div>` : ''}
-      <div class="post-actions">
-        <button class="post-action-btn ${likedPosts.has(p.id)?'liked':''}" onclick="toggleLike(${p.id},this)">
-          <span>${likedPosts.has(p.id)?'❤️':'🤍'}</span> ${p.likes + (likedPosts.has(p.id)?1:0)}
-        </button>
-        <button class="post-action-btn" onclick="showToast('💬 Comments coming soon!','info')">
-          <span>💬</span> ${p.comments}
-        </button>
-        <button class="post-action-btn" onclick="showToast('🔗 Link copied!','success')">
-          <span>🔗</span> Share
-        </button>
-      </div>
-    </div>`).join('');
-}
-
-function toggleLike(id, btn) {
-  if (likedPosts.has(id)) {
-    likedPosts.delete(id);
-    btn.classList.remove('liked');
-  } else {
-    likedPosts.add(id);
-    btn.classList.add('liked');
-    showToast('❤️ Liked!', 'success');
-  }
-  buildFeed();
-}
-
-function showCreatePost() {
-  document.getElementById('createPostModal').classList.add('open');
-}
-function closeCreatePost() {
-  document.getElementById('createPostModal').classList.remove('open');
-}
-function submitPost() {
-  const text = document.getElementById('postText').value;
-  if (!text.trim()) return showToast('❌ Write something first!', 'error');
-  closeCreatePost();
-  showToast('✅ Posted to feed!', 'success');
-  document.getElementById('postText').value = '';
-}
-
-// ============================== SECURITY PAGE ==============================
-function buildSecurityPage() {
-  // Threat log
-  document.getElementById('threatLog').innerHTML = THREATS.map(t => `
-    <div class="threat-item">
-      <div class="threat-dot ${t.type}"></div>
-      <div class="threat-info">
-        <div class="threat-title">${t.title}</div>
-        <div class="threat-time">${t.time}</div>
-      </div>
-      <div class="threat-badge ${t.type}">${t.type === 'blocked' ? '✓ Blocked' : '⚠ Review'}</div>
-    </div>`).join('');
-
-  // AI threat models
-  document.getElementById('aiThreatModels').innerHTML = AI_THREAT_MODELS.map(m => `
-    <div class="dating-pos-item">
-      <div class="pos-icon">${m.emoji}</div>
-      <div class="pos-info">
-        <div class="pos-name">${m.name}</div>
-        <div class="pos-genre">${m.desc}</div>
-      </div>
-      <div class="pos-active">${m.status} ✓</div>
-    </div>`).join('');
-
-  // Banks
-  document.getElementById('bankList').innerHTML = BANKS.map(b => `
-    <div class="bank-inst" onclick="selectBank('${b.name}')">
-      <span class="bank-icon">${b.icon}</span>${b.name}
-    </div>`).join('');
-}
-
-function selectBank(name) {
-  showToast(`🏦 Connecting to ${name}...`, 'info');
-  setTimeout(() => showToast(`✅ ${name} linked securely!`, 'success'), 1500);
-}
-
-function linkBank() {
-  showToast('🔗 Launching secure bank link flow...', 'info');
-  setTimeout(() => showToast('✅ Bank account verified! +15% match boost unlocked 🎉', 'success'), 2000);
-}
-
-// ============================== PROFILE PAGE ==============================
-function buildProfilePage() {
-  document.getElementById('datingPositionsList').innerHTML = DATING_POSITIONS.map(p => `
-    <div class="dating-pos-item" onclick="toggleDatingPosition(${p.id}, this)">
-      <div class="pos-icon">${p.emoji}</div>
-      <div class="pos-info">
-        <div class="pos-name">${p.name}</div>
-        <div class="pos-genre">${p.genre} • ${p.desc}</div>
-      </div>
-      ${p.active ? '<div class="pos-active">Active ✓</div>' : ''}
-    </div>`).join('');
-}
-
-function toggleDatingPosition(id, el) {
-  const pos = DATING_POSITIONS.find(p => p.id === id);
-  if (!pos) return;
-  DATING_POSITIONS.forEach(p => p.active = false);
-  pos.active = true;
-  buildProfilePage();
-  showToast(`💃 Dating position: ${pos.name}`, 'success');
-}
-
-// ============================== BG CHECK MODAL ==============================
-function showBgCheckModal() {
-  document.getElementById('bgPackages').innerHTML = BG_PACKAGES.map((p, i) => `
-    <div class="bg-package ${p.rec?'recommended':''} ${selectedBgPackage===i?'selected':''}" onclick="selectBgPackage(${i},this)">
-      ${p.rec ? '<span class="pkg-badge">⭐ RECOMMENDED</span>' : ''}
-      <div class="pkg-icon">${p.icon}</div>
-      <div class="pkg-info">
-        <div class="pkg-name">${p.name}</div>
-        <div class="pkg-features">${p.features}</div>
-      </div>
-      <div class="pkg-price">${p.price}</div>
-    </div>`).join('');
-  document.getElementById('bgCheckModal').classList.add('open');
-}
-
-function closeBgCheckModal() {
-  document.getElementById('bgCheckModal').classList.remove('open');
-}
-
-function selectBgPackage(i, el) {
-  selectedBgPackage = i;
-  document.querySelectorAll('.bg-package').forEach((p,j) => p.classList.toggle('selected', j===i));
-}
-
-function startBgCheck() {
-  const pkg = BG_PACKAGES[selectedBgPackage];
-  closeBgCheckModal();
-  showToast(`🛡️ Starting ${pkg.name} background check via Checkr...`, 'info');
-  setTimeout(() => showToast('✅ Background check initiated! Results in 24-48 hrs.', 'success'), 1500);
-}
-
-// ============================== TOAST ==============================
-function showToast(msg, type='info') {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.textContent = msg;
-  container.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
-
-// ============================== LIVE DATA REFRESH ==============================
-async function fetchLiveData() {
-  try {
-    const res = await fetch(`${API}/api/match/feed/1`);
-    const data = await res.json();
-    if (data.success && data.profiles) {
-      // Could update swipe cards with live data
-    }
-  } catch(e) { /* Use demo data */ }
-}
-
-// Auto-refresh live data every 30s
-setInterval(fetchLiveData, 30000);
-
-// ============================== CLOSE MODALS ON OUTSIDE CLICK ==============================
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) {
-      overlay.classList.remove('open');
-    }
-  });
-});
-
-// ============================== KEYBOARD SHORTCUTS ==============================
-document.addEventListener('keydown', (e) => {
-  if (!isLoggedIn) return;
-  if (currentTab === 'discover') {
-    if (e.key === 'ArrowLeft') swipeCard('left');
-    if (e.key === 'ArrowRight') swipeCard('right');
-    if (e.key === 'ArrowUp') swipeCard('super');
-  }
-});
-
-console.log('🐐 GOAT Connect v1.0.0 — AI Dating Platform');
-console.log('© 2024 Harvey Miller Jr / Juaquin J Malphurs / Kevin W Hallingquest');
-console.log('Powered by Gemini AI + NVIDIA ACE + Signal Protocol E2E Encryption');
-</script>
+<div class="modal-overlay" id="modal-post">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#x270F;&#xFE0F; Create Post</div>
+    <textarea id="post-content" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;color:var(--text);font-size:14px;min-height:120px;outline:none;resize:none;margin-bottom:12px" placeholder="What's on your mind?"></textarea>
+    <button class="modal-btn modal-btn-primary" onclick="createPost()">&#x1F680; Post</button>
+    <button class="modal-btn modal-btn-secondary" onclick="closeModal('modal-post')">Cancel</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+</div>
+<script src="app.js"></script>
 </body>
 </html>

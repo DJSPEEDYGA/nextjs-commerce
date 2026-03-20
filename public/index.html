@@ -1020,6 +1020,23 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .breach-records{font-size:22px;font-weight:800;color:#ff4444;margin:6px 0}
 .breach-type{font-size:11px;color:var(--text2);margin-bottom:6px}
 .breach-lesson{font-size:11px;color:var(--text2);background:rgba(255,109,0,0.05);border-left:2px solid #ff6d00;padding:8px;line-height:1.4}
+/* ========== HUB NAVIGATION ========== */
+.hub-header{text-align:center;padding:30px 20px 20px}
+.hub-title{font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--gold),#ff6b6b,#7c4dff,#00ff41);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hub-sub{font-size:13px;color:var(--text2);margin-top:6px}
+.hub-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:10px 20px}
+.hub-tile{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .25s ease;position:relative;overflow:hidden}
+.hub-tile:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 8px 30px rgba(255,215,0,.15)}
+.hub-tile:active{transform:scale(.96)}
+.hub-tile-icon{font-size:44px;margin-bottom:10px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))}
+.hub-tile-name{font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px}
+.hub-tile-desc{font-size:11px;color:var(--text2);line-height:1.3}
+.hub-tile::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.hub-tile:hover::after{opacity:1}
+/* Back button for sub-pages */
+.back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);color:var(--gold);font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;margin-right:12px}
+.back-btn:hover{background:var(--gold);color:#000}
+.back-btn::before{content:'◀';font-size:10px}
 </style>
 </head>
 <body>
@@ -1055,12 +1072,139 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   </div>
 </div>
 <div id="main">
+  <!-- ========== CATEGORY HUB PAGES ========== -->
+  <div class="page active" id="page-dating">
+    <div class="hub-header">
+      <div class="hub-title">💕 Dating</div>
+      <div class="hub-sub">Find your perfect match</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="openSubPage('discover','dating')">
+        <div class="hub-tile-icon">💕</div>
+        <div class="hub-tile-name">Discover</div>
+        <div class="hub-tile-desc">AI-Powered Matching</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('matches','dating')">
+        <div class="hub-tile-icon">💌</div>
+        <div class="hub-tile-name">Matches</div>
+        <div class="hub-tile-desc">Your Connections</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('stars','dating')">
+        <div class="hub-tile-icon">🌍</div>
+        <div class="hub-tile-name">World Stars</div>
+        <div class="hub-tile-desc">30+ Global Celebrities</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('feed','dating')">
+        <div class="hub-tile-icon">📱</div>
+        <div class="hub-tile-name">Feed</div>
+        <div class="hub-tile-desc">Social Timeline</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-creative">
+    <div class="hub-header">
+      <div class="hub-title">🎨 Creative Studio</div>
+      <div class="hub-sub">Music · Writing · Avatar · Gaming</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="openSubPage('music','creative')">
+        <div class="hub-tile-icon">🎵</div>
+        <div class="hub-tile-name">Music Studio</div>
+        <div class="hub-tile-desc">Production · Royalties · Distribution</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('writing','creative')">
+        <div class="hub-tile-icon">✍️</div>
+        <div class="hub-tile-name">Writing Studio</div>
+        <div class="hub-tile-desc">Hollywood Script Engine</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('avatar','creative')">
+        <div class="hub-tile-icon">🎭</div>
+        <div class="hub-tile-name">Avatar Studio</div>
+        <div class="hub-tile-desc">DAZ3D · MetaHuman · FiveM</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('gaming','creative')">
+        <div class="hub-tile-icon">🎮</div>
+        <div class="hub-tile-name">UE5 Studio</div>
+        <div class="hub-tile-desc">C++ · FiveM · Blueprints</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-security">
+    <div class="hub-header">
+      <div class="hub-title">🛡️ Security Center</div>
+      <div class="hub-sub">Defense · Intelligence · Operations</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="openSubPage('cyber','security')">
+        <div class="hub-tile-icon">⚔️</div>
+        <div class="hub-tile-name">Cyber Defense</div>
+        <div class="hub-tile-desc">Military-Grade Protection</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('cyberops','security')">
+        <div class="hub-tile-icon">🔐</div>
+        <div class="hub-tile-name">Cyber Ops</div>
+        <div class="hub-tile-desc">PenTest · OWASP · Forensics</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('intel','security')">
+        <div class="hub-tile-icon">📡</div>
+        <div class="hub-tile-name">Intelligence</div>
+        <div class="hub-tile-desc">OSINT · Threats · Counter-Intel</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('secstatus','security')">
+        <div class="hub-tile-icon">🛡️</div>
+        <div class="hub-tile-name">Security Status</div>
+        <div class="hub-tile-desc">Grade · Encryption · Score</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-business">
+    <div class="hub-header">
+      <div class="hub-title">💰 Business Empire</div>
+      <div class="hub-sub">Royalties · Web3 · Revenue</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="openSubPage('empire','business')">
+        <div class="hub-tile-icon">🏰</div>
+        <div class="hub-tile-name">Royalty Empire</div>
+        <div class="hub-tile-desc">Brand · Merch · Venues · Revenue</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('web3','business')">
+        <div class="hub-tile-icon">🌐</div>
+        <div class="hub-tile-name">Web3 & Metaverse</div>
+        <div class="hub-tile-desc">NFTs · DeFi · $GOAT Token</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-me">
+    <div class="hub-header">
+      <div class="hub-title">👑 My Profile</div>
+      <div class="hub-sub">Identity · Settings · Security</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="openSubPage('profile','me')">
+        <div class="hub-tile-icon">👑</div>
+        <div class="hub-tile-name">Profile</div>
+        <div class="hub-tile-desc">Your GOAT Identity</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('faceid','me')">
+        <div class="hub-tile-icon">👤</div>
+        <div class="hub-tile-name">Face ID</div>
+        <div class="hub-tile-desc">AI Identity Verification</div>
+      </div>
+    </div>
+  </div>
+  <!-- ========== END CATEGORY HUBS ========== -->
+
   <div class="page" id="page-discover">
     <div class="discover-header">
       <div><div style="font-size:22px;font-weight:800">&#x1F495; Discover</div><div style="font-size:12px;color:var(--text2)">AI-Powered Matching</div></div>
       <div style="display:flex;gap:10px">
         <div style="font-size:22px;cursor:pointer" onclick="showToast('Background Check: VERIFIED &#x2705;','success')">&#x1F50D;</div>
-        <div style="font-size:22px;cursor:pointer" onclick="switchTab('security')">&#x1F6E1;&#xFE0F;</div>
+        <div style="font-size:22px;cursor:pointer" onclick="openSubPage('secstatus','security')">&#x1F6E1;&#xFE0F;</div>
       </div>
     </div>
     <div class="swipe-area" id="swipe-area"></div>
@@ -1575,9 +1719,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <button class="create-post-btn" onclick="openModal('modal-post')">&#x270F;&#xFE0F; Share your vibe...</button>
     <div id="feed-posts"></div>
   </div>
-  <div class="page" id="page-security">
+  <div class="page" id="page-secstatus">
     <div class="page-header">
-      <div><div class="page-title">&#x1F6E1;&#xFE0F; Security</div><div class="page-sub">Your Protection Status</div></div>
+      <div><div class="page-title">&#x1F6E1;&#xFE0F; Security Status</div><div class="page-sub">Your Protection Status</div></div>
     </div>
     <div class="sec-grade">
       <div class="sec-letter">A+</div>
@@ -1609,21 +1753,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div class="pos-items" id="dating-positions"></div>
   </div>
   <div class="tab-bar">
-    <div class="tab-item active" onclick="switchTab('discover')"><div class="tab-icon">&#x1F495;</div><span>Discover</span></div>
-    <div class="tab-item" onclick="switchTab('matches')"><div class="tab-icon">&#x1F48C;</div><span>Matches</span></div>
-    <div class="tab-item" onclick="switchTab('stars')"><div class="tab-icon">&#x1F30D;</div><span>Stars</span></div>
-    <div class="tab-item" onclick="switchTab('faceid')"><div class="tab-icon">&#x1F464;</div><span>Face ID</span></div>
-    <div class="tab-item" onclick="switchTab('avatar')"><div class="tab-icon">&#x1F3AD;</div><span>Avatar</span></div>
-    <div class="tab-item" onclick="switchTab('cyber')"><div class="tab-icon">&#x2694;&#xFE0F;</div><span>Cyber</span></div>
-    <div class="tab-item" onclick="switchTab('gaming')"><div class="tab-icon">&#x1F3AE;</div><span>UE5</span></div>
-    <div class="tab-item" onclick="switchTab('music')"><div class="tab-icon">🎵</div><span>Music</span></div>
-    <div class="tab-item" onclick="switchTab('writing')"><div class="tab-icon">✍️</div><span>Writing</span></div>
-    <div class="tab-item" onclick="switchTab('empire')"><div class="tab-icon">🏰</div><span>Empire</span></div>
-    <div class="tab-item" onclick="switchTab('cyberops')"><div class="tab-icon">🔐</div><span>CyberOps</span></div>
-    <div class="tab-item" onclick="switchTab('web3')"><div class="tab-icon">🌐</div><span>Web3</span></div>
-    <div class="tab-item" onclick="switchTab('intel')"><div class="tab-icon">📡</div><span>Intel</span></div>
-    <div class="tab-item" onclick="switchTab('feed')"><div class="tab-icon">&#x1F4F1;</div><span>Feed</span></div>
-    <div class="tab-item" onclick="switchTab('profile')"><div class="tab-icon">&#x1F451;</div><span>Profile</span></div>
+    <div class="tab-item active" onclick="switchMainTab('dating')"><div class="tab-icon">&#x1F495;</div><span>Dating</span></div>
+    <div class="tab-item" onclick="switchMainTab('creative')"><div class="tab-icon">&#x1F3A8;</div><span>Creative</span></div>
+    <div class="tab-item" onclick="switchMainTab('security')"><div class="tab-icon">&#x1F6E1;&#xFE0F;</div><span>Security</span></div>
+    <div class="tab-item" onclick="switchMainTab('business')"><div class="tab-icon">&#x1F4B0;</div><span>Business</span></div>
+    <div class="tab-item" onclick="switchMainTab('me')"><div class="tab-icon">&#x1F451;</div><span>Me</span></div>
   </div>
 </div>
 <div class="modal-overlay" id="modal-celeb">

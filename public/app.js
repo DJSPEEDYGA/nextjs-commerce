@@ -298,16 +298,67 @@ function initApp() {
 }
 
 // ===================== TABS =====================
+// ===================== MAIN TAB NAVIGATION =====================
+const MAIN_TABS = ['dating','creative','security','business','me'];
+const HUB_MAP = {
+  discover:'dating', matches:'dating', stars:'dating', feed:'dating',
+  music:'creative', writing:'creative', avatar:'creative', gaming:'creative',
+  cyber:'security', cyberops:'security', intel:'security', secstatus:'security',
+  empire:'business', web3:'business',
+  profile:'me', faceid:'me'
+};
+let currentHub = 'dating';
+let currentSubPage = null;
+
+function switchMainTab(hub) {
+  currentHub = hub;
+  currentSubPage = null;
+  // Highlight main tab
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  const tabItems = document.querySelectorAll('.tab-item');
+  const idx = MAIN_TABS.indexOf(hub);
+  if (idx >= 0 && tabItems[idx]) tabItems[idx].classList.add('active');
+  // Show hub page
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById(`page-${hub}`);
+  if (page) { page.classList.add('active'); page.classList.add('fade-in'); setTimeout(() => page.classList.remove('fade-in'), 400); }
+}
+
+function openSubPage(sub, parentHub) {
+  currentHub = parentHub || HUB_MAP[sub] || 'dating';
+  currentSubPage = sub;
+  // Highlight parent main tab
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  const tabItems = document.querySelectorAll('.tab-item');
+  const idx = MAIN_TABS.indexOf(currentHub);
+  if (idx >= 0 && tabItems[idx]) tabItems[idx].classList.add('active');
+  // Show sub-page
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById(`page-${sub}`);
+  if (page) {
+    page.classList.add('active'); page.classList.add('fade-in'); setTimeout(() => page.classList.remove('fade-in'), 400);
+    // Inject back button if not already there
+    const header = page.querySelector('.page-header, .discover-header');
+    if (header && !header.querySelector('.back-btn')) {
+      const btn = document.createElement('button');
+      btn.className = 'back-btn';
+      btn.textContent = 'Back';
+      btn.onclick = function() { switchMainTab(currentHub); };
+      header.insertBefore(btn, header.firstChild);
+    }
+  }
+  // Trigger legacy switchTab for lazy-loading
+  switchTab(sub);
+}
+
 function switchTab(tab) {
   currentTab = tab;
-  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const tabItems = document.querySelectorAll('.tab-item');
-  const tabMap = ['discover','matches','stars','faceid','avatar','cyber','gaming','music','writing','empire','cyberops','web3','intel','feed','profile','security'];
-  const idx = tabMap.indexOf(tab);
-  if (idx >= 0 && tabItems[idx]) tabItems[idx].classList.add('active');
-  const page = document.getElementById(`page-${tab}`);
-  if (page) { page.classList.add('active'); page.classList.add('fade-in'); setTimeout(() => page.classList.remove('fade-in'), 400); }
+  // Keep page visibility only if called from openSubPage (don't re-toggle)
+  if (!currentSubPage || currentSubPage !== tab) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById(`page-${tab}`);
+    if (page) { page.classList.add('active'); page.classList.add('fade-in'); setTimeout(() => page.classList.remove('fade-in'), 400); }
+  }
 }
 
 // ===================== SWIPE CARDS =====================

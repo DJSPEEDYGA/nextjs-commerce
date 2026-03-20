@@ -303,7 +303,7 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const tabItems = document.querySelectorAll('.tab-item');
-  const tabMap = ['discover','matches','stars','faceid','avatar','cyber','gaming','writing','feed','profile','security'];
+  const tabMap = ['discover','matches','stars','faceid','avatar','cyber','gaming','music','writing','empire','cyberops','web3','intel','feed','profile','security'];
   const idx = tabMap.indexOf(tab);
   if (idx >= 0 && tabItems[idx]) tabItems[idx].classList.add('active');
   const page = document.getElementById(`page-${tab}`);
@@ -945,6 +945,329 @@ function togglePosition(name, el) {
   }
 }
 
+// ===================== MUSIC PRODUCTION STUDIO =====================
+let activeMusicTab = 'beats';
+let beatsCache = [];
+
+function switchMusicTab(tab, el) {
+  activeMusicTab = tab;
+  document.querySelectorAll('.music-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.music-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(`music-panel-${tab}`);
+  if (panel) panel.classList.add('active');
+  if (tab === 'beats' && !document.getElementById('beats-grid').innerHTML) loadBeats();
+  if (tab === 'daws' && !document.getElementById('daws-list').innerHTML) loadDAWs();
+  if (tab === 'theory' && !document.getElementById('theory-list').innerHTML) loadTheory();
+  if (tab === 'royalties' && !document.getElementById('royalties-list').innerHTML) loadRoyalties();
+  if (tab === 'distro' && !document.getElementById('distro-list').innerHTML) loadDistro();
+  if (tab === 'equipment' && !document.getElementById('equipment-list').innerHTML) loadEquipment();
+  if (tab === 'grammys' && !document.getElementById('grammys-list').innerHTML) loadGrammys();
+}
+
+// ---------- BEATS ----------
+async function loadBeats() {
+  try {
+    const res = await fetch('/api/music/beats');
+    const data = await res.json();
+    if (data.success) {
+      beatsCache = data.beats;
+      renderBeats(data.beats);
+      document.getElementById('beats-count').textContent = `🔊 ${data.total} Genre Kits Available`;
+    }
+  } catch(e) { console.error('Failed to load beats', e); }
+}
+
+function renderBeats(beats) {
+  document.getElementById('beats-grid').innerHTML = beats.map(b => `
+    <div class="beat-card" onclick="toggleBeatDetail(this)">
+      <div class="beat-card-header">
+        <div class="beat-emoji">${b.emoji}</div>
+        <div class="beat-info">
+          <div class="beat-name">${b.name}</div>
+          <div class="beat-genre">${b.genre} · ${b.era}</div>
+        </div>
+        <div class="beat-bpm">${b.bpm.sweet} BPM</div>
+      </div>
+      <div class="beat-vibes">${b.vibes.map(v => `<span class="beat-vibe">${v}</span>`).join('')}</div>
+      <div class="beat-elements">${b.elements.slice(0, 4).map(e => `<span class="beat-el-tag">🎹 ${e}</span>`).join('')}</div>
+      <div class="beat-producers">🎤 ${b.producers.join(' · ')}</div>
+      <div class="beat-detail">
+        <div class="beat-tips">💡 ${b.tips}</div>
+        <div class="beat-artists">🎵 Artists: ${b.artists.join(', ')}</div>
+        <div style="margin-top:6px;font-size:11px;color:var(--text2)">🎹 Key: ${b.key} · BPM Range: ${b.bpm.min}–${b.bpm.max}</div>
+        <div class="beat-elements" style="margin-top:8px">${b.elements.map(e => `<span class="beat-el-tag">🎹 ${e}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleBeatDetail(card) {
+  const detail = card.querySelector('.beat-detail');
+  if (detail) detail.style.display = detail.style.display === 'none' || !detail.style.display ? 'block' : 'none';
+}
+
+function searchBeats(query) {
+  if (!beatsCache.length) return;
+  const q = query.toLowerCase();
+  const filtered = beatsCache.filter(b =>
+    b.name.toLowerCase().includes(q) || b.genre.toLowerCase().includes(q) ||
+    b.producers.some(p => p.toLowerCase().includes(q)) ||
+    b.vibes.some(v => v.toLowerCase().includes(q)) ||
+    b.elements.some(e => e.toLowerCase().includes(q))
+  );
+  renderBeats(filtered);
+  document.getElementById('beats-count').textContent = `🔍 ${filtered.length} kit${filtered.length !== 1 ? 's' : ''} found`;
+}
+
+// ---------- DAWs ----------
+async function loadDAWs() {
+  try {
+    const res = await fetch('/api/music/daws');
+    const data = await res.json();
+    if (data.success) renderDAWs(data.daws);
+  } catch(e) { console.error('Failed to load DAWs', e); }
+}
+
+function renderDAWs(daws) {
+  document.getElementById('daws-list').innerHTML = daws.map(d => `
+    <div class="daw-card${d.id === 'fl_studio' ? ' top-pick' : ''}">
+      <div class="daw-header">
+        <div class="daw-icon">${d.icon}</div>
+        <div class="daw-name">${d.name}</div>
+        <div class="daw-price">${d.price}</div>
+      </div>
+      <div class="daw-tier">⭐ ${d.tier}</div>
+      <div class="daw-verdict">${d.verdict}</div>
+      <div class="daw-features">${d.features.slice(0, 6).map(f => `<span class="daw-feat">✓ ${f}</span>`).join('')}${d.features.length > 6 ? `<span class="daw-feat">+${d.features.length - 6} more</span>` : ''}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">🎯 Best for: ${d.bestFor.join(', ')}</div>
+      <div class="daw-used-by">🎤 Used by: ${d.usedBy.join(', ')}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">🖥️ ${d.platforms.join(' · ')}</div>
+    </div>
+  `).join('');
+}
+
+// ---------- THEORY ----------
+async function loadTheory() {
+  try {
+    const res = await fetch('/api/music/theory');
+    const data = await res.json();
+    if (data.success) renderTheory(data.theory);
+  } catch(e) { console.error('Failed to load theory', e); }
+}
+
+function renderTheory(theory) {
+  const scales = Object.entries(theory.scales);
+  const progs = theory.chordProgressions;
+  document.getElementById('theory-list').innerHTML = `
+    <div class="theory-section">
+      <div class="theory-title">🎼 Scales & Modes</div>
+      ${scales.map(([name, s]) => `
+        <div class="scale-item">
+          <div class="scale-name">${name.replace(/_/g, ' ')}</div>
+          <div class="scale-mood">${s.mood}</div>
+          <div class="scale-use">${s.use}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="theory-section">
+      <div class="theory-title">🎹 Chord Progressions</div>
+      ${progs.map(p => `
+        <div class="prog-card">
+          <div class="prog-name">${p.name}</div>
+          <div class="prog-numerals">${p.numerals}</div>
+          <div class="prog-mood">💭 ${p.mood}</div>
+          <div class="prog-examples">📽️ ${p.examples.join(', ')}</div>
+          <div class="prog-genres">${p.genres.map(g => `<span class="prog-genre">${g}</span>`).join('')}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ---------- ROYALTIES ----------
+async function loadRoyalties() {
+  try {
+    const res = await fetch('/api/music/royalties');
+    const data = await res.json();
+    if (data.success) renderRoyalties(data.royalties);
+  } catch(e) { console.error('Failed to load royalties', e); }
+}
+
+function renderRoyalties(r) {
+  document.getElementById('royalties-list').innerHTML = `
+    <div class="royalty-section">
+      <div class="royalty-title">🎤 Performance Royalties</div>
+      <div class="royalty-desc">${r.performanceRoyalties.description}</div>
+      ${r.performanceRoyalties.pro.map(p => `
+        <div class="pro-card">
+          <div class="pro-name">${p.name}</div>
+          <div class="pro-info">${p.fullName} · ${p.members} members · Split: ${p.split}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="royalty-section">
+      <div class="royalty-title">💿 Mechanical Royalties</div>
+      <div class="royalty-desc">${r.mechanicalRoyalties.description}</div>
+      <div style="font-size:12px;color:#1DB954;font-weight:700;margin-top:6px">Rate: ${r.mechanicalRoyalties.rate}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">Streaming: ${r.mechanicalRoyalties.streaming}</div>
+    </div>
+    <div class="royalty-section">
+      <div class="royalty-title">🎬 Sync Royalties</div>
+      <div class="royalty-desc">${r.syncRoyalties.description}</div>
+      <div style="font-size:13px;color:#1DB954;font-weight:700;margin-top:6px">💵 Range: ${r.syncRoyalties.range}</div>
+    </div>
+    <div class="royalty-section">
+      <div class="royalty-title">🎵 Master Royalties</div>
+      <div class="royalty-desc">${r.masterRoyalties.description}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:6px">${r.masterRoyalties.typical}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">${r.masterRoyalties.independent}</div>
+      <div style="font-size:13px;color:#1DB954;font-weight:700;margin-top:8px">👑 ${r.masterRoyalties.tips}</div>
+    </div>
+  `;
+}
+
+// ---------- DISTRIBUTION ----------
+async function loadDistro() {
+  try {
+    const res = await fetch('/api/music/distribution');
+    const data = await res.json();
+    if (data.success) renderDistro(data.platforms);
+  } catch(e) { console.error('Failed to load distro', e); }
+}
+
+function renderDistro(platforms) {
+  document.getElementById('distro-list').innerHTML = platforms.map(p => `
+    <div class="distro-card">
+      <div class="distro-header">
+        <div class="distro-icon">${p.icon}</div>
+        <div class="distro-name">${p.name}</div>
+        <div class="distro-price">${p.price}</div>
+      </div>
+      <div class="distro-keep">💰 Keep ${p.keepRoyalties} of royalties · ⚡ ${p.speed} delivery · 🌐 ${p.stores}+ stores</div>
+      <div class="distro-features">${p.features.map(f => `<span class="distro-feat">✓ ${f}</span>`).join('')}</div>
+      <div style="font-size:11px;color:var(--text2)">🎯 Best for: ${p.bestFor}</div>
+    </div>
+  `).join('');
+}
+
+// ---------- EQUIPMENT ----------
+async function loadEquipment() {
+  try {
+    const res = await fetch('/api/music/equipment');
+    const data = await res.json();
+    if (data.success) renderEquipment(data.equipment);
+  } catch(e) { console.error('Failed to load equipment', e); }
+}
+
+function renderEquipment(equipment) {
+  document.getElementById('equipment-list').innerHTML = equipment.map(e => `
+    <div class="equip-card">
+      <div class="equip-header">
+        <div class="equip-icon">${e.icon}</div>
+        <div class="equip-name">${e.name}</div>
+        <div class="equip-price">${e.price}</div>
+      </div>
+      <div class="equip-tier">⭐ ${e.tier} · ${e.category}</div>
+      <div class="equip-verdict">${e.verdict}</div>
+      <div class="equip-features">${e.features.slice(0, 5).map(f => `<span class="equip-feat">✓ ${f}</span>`).join('')}${e.features.length > 5 ? `<span class="equip-feat">+${e.features.length - 5} more</span>` : ''}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">🎤 Used by: ${e.usedBy.join(', ')}</div>
+    </div>
+  `).join('');
+}
+
+// ---------- GRAMMYS ----------
+async function loadGrammys() {
+  try {
+    const res = await fetch('/api/music/grammys');
+    const data = await res.json();
+    if (data.success) renderGrammysMusic(data.history);
+  } catch(e) { console.error('Failed to load Grammys', e); }
+}
+
+function renderGrammysMusic(history) {
+  const sorted = [...history].sort((a, b) => b.year - a.year);
+  document.getElementById('grammys-list').innerHTML = sorted.map(y => `
+    <div class="grammy-card">
+      <div class="grammy-year">🏆 ${y.year} Grammy Awards</div>
+      <div class="grammy-cat">
+        <div class="grammy-cat-title">🎤 Best Rap Album</div>
+        <div class="grammy-winner">🏆 ${y.rapAlbum.title}</div>
+        <div class="grammy-artist">${y.rapAlbum.artist} · ${y.rapAlbum.label}</div>
+      </div>
+      <div class="grammy-cat">
+        <div class="grammy-cat-title">🎵 Record of the Year</div>
+        <div class="grammy-winner">${y.recordOfYear.title}</div>
+        <div class="grammy-artist">${y.recordOfYear.artist}</div>
+      </div>
+      <div class="grammy-cat">
+        <div class="grammy-cat-title">✍️ Song of the Year</div>
+        <div class="grammy-winner">${y.songOfYear.title}</div>
+        <div class="grammy-artist">${y.songOfYear.writer}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ---------- REVENUE CALCULATOR ----------
+async function calculateRevenue() {
+  const streams = parseInt(document.getElementById('rev-streams').value) || 0;
+  const output = document.getElementById('revenue-output');
+  output.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)"><div style="font-size:32px;animation:pulse 1s infinite">📊</div>Calculating...</div>';
+  try {
+    const res = await fetch('/api/music/calculate-revenue', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ streams })
+    });
+    const data = await res.json();
+    if (data.success) {
+      output.innerHTML = `
+        <div class="revenue-output">
+          <div style="font-size:16px;font-weight:800;color:#1DB954;margin-bottom:4px">📊 Revenue for ${data.streams.toLocaleString()} Streams</div>
+          <div style="display:flex;gap:10px;margin:12px 0;flex-wrap:wrap">
+            <div style="flex:1;min-width:80px;background:var(--bg3);border-radius:10px;padding:10px;text-align:center">
+              <div style="font-size:10px;color:var(--text2)">Low Est.</div>
+              <div style="font-size:16px;font-weight:800;color:var(--text)">${data.total.low}</div>
+            </div>
+            <div style="flex:1;min-width:80px;background:rgba(29,185,84,.15);border:1px solid #1DB954;border-radius:10px;padding:10px;text-align:center">
+              <div style="font-size:10px;color:#1DB954">Average</div>
+              <div style="font-size:16px;font-weight:800;color:#1DB954">${data.total.average}</div>
+            </div>
+            <div style="flex:1;min-width:80px;background:var(--bg3);border-radius:10px;padding:10px;text-align:center">
+              <div style="font-size:10px;color:var(--text2)">High Est.</div>
+              <div style="font-size:16px;font-weight:800;color:var(--text)">${data.total.high}</div>
+            </div>
+          </div>
+          <div style="font-size:13px;font-weight:700;margin:12px 0 8px">Platform Breakdown</div>
+          ${data.breakdown.map(p => `
+            <div class="revenue-platform">
+              <div class="rev-icon">${p.icon}</div>
+              <div class="rev-name">${p.platform}</div>
+              <div class="rev-amount">${p.estimated}</div>
+            </div>
+          `).join('')}
+          <div style="font-size:13px;font-weight:700;margin:16px 0 8px">🎯 Milestones</div>
+          ${data.milestones.map(m => `
+            <div class="milestone-row">
+              <div class="milestone-streams">${m.streams.toLocaleString()}</div>
+              <div class="milestone-rev">${m.revenue}</div>
+              <div class="milestone-status">${m.status}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      showToast(`📊 Revenue calculated: ${data.total.average} avg`, 'gold');
+    }
+  } catch(e) { output.innerHTML = '<div style="color:var(--red);padding:20px">❌ Calculation failed</div>'; }
+}
+
+// ---------- AUTO-LOAD BEATS WHEN TAB OPENS ----------
+const _origSwitchTabMusic = switchTab;
+switchTab = function(tab) {
+  _origSwitchTabMusic(tab);
+  if (tab === 'music' && !document.getElementById('beats-grid').innerHTML) loadBeats();
+};
+
 // ===================== SCREENWRITING STUDIO =====================
 let activeWritingTab = 'writers';
 let writersCache = [];
@@ -1311,11 +1634,1070 @@ function renderGeneratedScript(data) {
 }
 
 // ---------- AUTO-LOAD WRITERS WHEN TAB OPENS ----------
-const origSwitchTab = switchTab;
+const _origSwitchTabWriting = switchTab;
 switchTab = function(tab) {
-  origSwitchTab(tab);
+  _origSwitchTabWriting(tab);
   if (tab === 'writing' && !document.getElementById('writers-grid').innerHTML) {
     loadWriters();
+  }
+};
+
+// ===================== GOAT ROYALTY EMPIRE =====================
+
+function switchEmpireTab(panel) {
+  document.querySelectorAll('.empire-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.empire-panel').forEach(p => p.classList.remove('active'));
+  // Find and activate the correct tab button
+  document.querySelectorAll('.empire-tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(panel)) t.classList.add('active');
+  });
+  document.getElementById('empire-' + panel + '-panel').classList.add('active');
+  // Lazy-load data
+  if (panel === 'brand' && !document.getElementById('brand-display').innerHTML) loadBrand();
+  if (panel === 'merch' && !document.getElementById('merch-grid').innerHTML) loadMerch();
+  if (panel === 'venues' && !document.getElementById('venues-grid').innerHTML) loadVenues();
+  if (panel === 'revenue' && !document.getElementById('revenue-display').innerHTML) loadRevenue();
+  if (panel === 'contracts' && !document.getElementById('contracts-grid').innerHTML) loadContracts();
+  if (panel === 'legal' && !document.getElementById('legal-grid').innerHTML) loadLegal();
+  if (panel === 'social' && !document.getElementById('social-grid').innerHTML) loadSocial();
+}
+
+// --- Brand ---
+async function loadBrand() {
+  const el = document.getElementById('brand-display');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading brand...</div>';
+  try {
+    const res = await fetch('/api/empire/brand');
+    const data = await res.json();
+    if (data.success) renderBrand(data.brand);
+    else el.innerHTML = '<div style="color:#f44">Failed to load brand</div>';
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderBrand(brand) {
+  const el = document.getElementById('brand-display');
+  const divs = brand.divisions || [];
+  const colors = brand.colors || [];
+  let html = `
+    <div class="brand-hero">
+      <div class="brand-name">${brand.name}</div>
+      <div class="brand-tagline">${brand.motto || 'Entertainment Empire'}</div>
+      <div class="brand-divisions">
+        ${divs.map(d => `
+          <div class="division-card">
+            <div class="division-emoji">${d.emoji || '🏰'}</div>
+            <div class="division-name">${d.name}</div>
+            <div class="division-desc">${d.description || ''}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="brand-stats">
+        <div class="brand-stat"><div class="brand-stat-val">${divs.length}</div><div class="brand-stat-label">Divisions</div></div>
+        <div class="brand-stat"><div class="brand-stat-val">${brand.established || '2024'}</div><div class="brand-stat-label">Established</div></div>
+        <div class="brand-stat"><div class="brand-stat-val">∞</div><div class="brand-stat-label">Potential</div></div>
+      </div>
+    </div>`;
+  if (brand.mission) html += '<div style="background:var(--bg2);border-radius:12px;padding:16px;margin-top:12px;border:1px solid var(--border)"><div style="font-size:13px;font-weight:700;color:#FFD700;margin-bottom:6px">🎯 Mission</div><div style="font-size:12px;color:var(--text2);line-height:1.6">' + brand.mission + '</div></div>';
+  if (brand.founder) html += '<div style="background:var(--bg2);border-radius:12px;padding:16px;margin-top:8px;border:1px solid var(--border)"><div style="font-size:13px;font-weight:700;color:#FFD700;margin-bottom:6px">👑 Founder</div><div style="font-size:12px;color:var(--text2);line-height:1.6">' + brand.founder + '</div></div>';
+  if (brand.website) html += '<div style="background:var(--bg2);border-radius:12px;padding:16px;margin-top:8px;border:1px solid var(--border)"><div style="font-size:13px;font-weight:700;color:#FFD700;margin-bottom:6px">🌐 Website</div><div style="font-size:12px;color:var(--text2);line-height:1.6">' + brand.website + '</div></div>';
+  if (colors.length) html += '<div style="background:var(--bg2);border-radius:12px;padding:16px;margin-top:8px;border:1px solid var(--border)"><div style="font-size:13px;font-weight:700;color:#FFD700;margin-bottom:6px">🎨 Brand Colors</div><div style="display:flex;gap:8px;flex-wrap:wrap">' + colors.map(c => '<span style="background:rgba(255,215,0,0.1);border-radius:8px;padding:4px 12px;font-size:12px;color:var(--text2)">' + c + '</span>').join('') + '</div></div>';
+  el.innerHTML = html;
+}
+
+// --- Merch ---
+async function loadMerch() {
+  const el = document.getElementById('merch-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading merch...</div>';
+  try {
+    const res = await fetch('/api/empire/merch');
+    const data = await res.json();
+    if (data.success) renderMerch(data.catalog);
+    else el.innerHTML = '<div style="color:#f44">Failed to load merch</div>';
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderMerch(catalog) {
+  const el = document.getElementById('merch-grid');
+  let html = catalog.map(item => `
+    <div class="merch-card">
+      <div class="merch-header">
+        <div>
+          <span class="merch-emoji">${item.emoji || '🛍️'}</span>
+          <div class="merch-name">${item.name}</div>
+          <div class="merch-category">${item.category}</div>
+        </div>
+        <div class="merch-price">${item.price}</div>
+      </div>
+      <div class="merch-details">
+        <div class="merch-detail"><div class="merch-detail-val">${item.cost}</div><div class="merch-detail-label">Cost</div></div>
+        <div class="merch-detail"><div class="merch-detail-val">${item.margin}</div><div class="merch-detail-label">Margin</div></div>
+        <div class="merch-detail"><div class="merch-detail-val">${(item.sizes || []).length}</div><div class="merch-detail-label">Sizes</div></div>
+      </div>
+      <div class="merch-features">${(item.features || []).map(f => '<span class="merch-feature">' + f + '</span>').join('')}</div>
+      <div class="merch-colors">${(item.colors || []).map(c => '<span class="merch-color">' + c + '</span>').join('')}</div>
+    </div>
+  `).join('');
+  el.innerHTML = html;
+  // Show calculator & populate select
+  document.getElementById('merch-calc-section').style.display = 'block';
+  const sel = document.getElementById('merch-item-select');
+  sel.innerHTML = catalog.map(i => `<option value="${i.id}">${i.emoji} ${i.name} (${i.price})</option>`).join('');
+}
+
+// --- Merch Calculator ---
+async function calculateMerchRevenue() {
+  const itemId = document.getElementById('merch-item-select').value;
+  const units = parseInt(document.getElementById('merch-units').value) || 1000;
+  const el = document.getElementById('merch-calc-result');
+  el.innerHTML = '<div style="text-align:center;color:var(--text2)">Calculating...</div>';
+  try {
+    const res = await fetch('/api/empire/calculate-merch', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ units, itemId })
+    });
+    const data = await res.json();
+    if (data.success) {
+      el.innerHTML = `
+        <div class="merch-result-card">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:4px">${data.item} × ${data.units} units</div>
+          <div class="merch-result-val">${data.netProfit}</div>
+          <div class="merch-result-label">Net Profit</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px">
+            <div class="brand-stat"><div class="brand-stat-val" style="font-size:14px">${data.grossRevenue}</div><div class="brand-stat-label">Gross Revenue</div></div>
+            <div class="brand-stat"><div class="brand-stat-val" style="font-size:14px">${data.totalCost}</div><div class="brand-stat-label">Total Cost</div></div>
+          </div>
+          <div style="margin-top:8px;font-size:12px;color:#FFD700;font-weight:700">Margin: ${data.margin}</div>
+        </div>`;
+    } else el.innerHTML = '<div style="color:#f44">' + (data.error || 'Error') + '</div>';
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+// --- Venues ---
+async function loadVenues() {
+  const el = document.getElementById('venues-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading venues...</div>';
+  try {
+    const res = await fetch('/api/empire/venues');
+    const data = await res.json();
+    if (data.success) renderVenues(data.venues);
+    else el.innerHTML = '<div style="color:#f44">Failed to load venues</div>';
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderVenues(venues) {
+  const el = document.getElementById('venues-grid');
+  el.innerHTML = venues.map(v => `
+    <div class="venue-card">
+      <div class="venue-top">
+        <div>
+          <div class="venue-name">${v.emoji || '🏟️'} ${v.name}</div>
+          <div class="venue-location">📍 ${v.city || 'TBD'}</div>
+        </div>
+        <div class="venue-type">${v.tier || 'Venue'}</div>
+      </div>
+      <div class="venue-stats">
+        <div class="venue-stat"><div class="venue-stat-val">${v.capacity ? v.capacity.toLocaleString() : 'N/A'}</div><div class="venue-stat-label">Capacity</div></div>
+        <div class="venue-stat"><div class="venue-stat-val">${v.fee || 'N/A'}</div><div class="venue-stat-label">Venue Fee</div></div>
+        <div class="venue-stat"><div class="venue-stat-val">${v.bestFor ? '✓' : 'N/A'}</div><div class="venue-stat-label">Best For</div></div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--text2)">🎯 ${v.bestFor || ''}</div>
+      ${v.notable ? '<div style="margin-top:6px;font-size:11px;color:#FFD700">⭐ ' + v.notable + '</div>' : ''}
+    </div>
+  `).join('');
+}
+
+// --- Revenue Streams ---
+async function loadRevenue() {
+  const el = document.getElementById('revenue-display');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading revenue...</div>';
+  try {
+    const res = await fetch('/api/empire/revenue-streams');
+    const data = await res.json();
+    if (data.success) renderRevenue(data.streams);
+    else el.innerHTML = '<div style="color:#f44">Failed to load revenue</div>';
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderRevenue(streams) {
+  const el = document.getElementById('revenue-display');
+  const arr = Array.isArray(streams) ? streams : Object.values(streams);
+  let html = '<div class="revenue-chart">';
+  arr.forEach(s => {
+    const pct = parseInt(s.percentage) || 0;
+    html += `
+      <div class="revenue-bar">
+        <div class="revenue-label">${s.emoji || '💰'} ${s.name}</div>
+        <div class="revenue-track">
+          <div class="revenue-fill" style="width:${pct * 3.3}%">
+            <span class="revenue-pct">${pct}%</span>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text2);margin:-8px 0 12px 132px;line-height:1.4">${s.description || ''} ${s.growth ? '<span style="color:#00c853">' + s.growth + '</span>' : ''}</div>`;
+  });
+  html += '</div>';
+  html += '<div class="revenue-total"><div class="revenue-total-val">' + arr.length + ' Revenue Streams</div><div class="revenue-total-label">Diversified Income Model</div></div>';
+  el.innerHTML = html;
+}
+
+// --- Contracts ---
+async function loadContracts() {
+  const el = document.getElementById('contracts-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading contracts...</div>';
+  try {
+    const res = await fetch('/api/empire/contracts');
+    const data = await res.json();
+    if (data.success) renderContracts(data.contracts);
+    else el.innerHTML = '<div style="color:#f44">Failed to load contracts</div>';
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderContracts(contracts) {
+  const el = document.getElementById('contracts-grid');
+  el.innerHTML = contracts.map(c => {
+    const risk = (c.risk || '').toUpperCase();
+    const riskClass = risk.includes('HIGH') ? 'high' : risk.includes('MED') ? 'medium' : 'low';
+    return `
+      <div class="contract-card">
+        <div class="contract-top">
+          <div class="contract-name">${c.emoji || '📝'} ${c.name}</div>
+          <div class="contract-risk ${riskClass}">${c.risk || 'N/A'}</div>
+        </div>
+        ${c.warning ? '<div style="background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.3);border-radius:8px;padding:10px;margin-bottom:10px;font-size:11px;color:#ffc107">' + c.warning + '</div>' : ''}
+        <div class="contract-terms">${(c.keyTerms || []).map(t => '<span class="contract-term">' + t + '</span>').join('')}</div>
+        ${c.tips ? '<div style="margin-top:10px;font-size:11px;color:var(--text2);line-height:1.5">💡 ' + c.tips + '</div>' : ''}
+      </div>`;
+  }).join('');
+}
+
+// --- Legal ---
+async function loadLegal() {
+  const el = document.getElementById('legal-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading legal...</div>';
+  try {
+    const res = await fetch('/api/empire/legal');
+    const data = await res.json();
+    if (data.success) renderLegal(data.legal);
+    else el.innerHTML = '<div style="color:#f44">Failed to load legal</div>';
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderLegal(legal) {
+  const el = document.getElementById('legal-grid');
+  const arr = Array.isArray(legal) ? legal : Object.values(legal);
+  el.innerHTML = arr.map(l => `
+    <div class="legal-card">
+      <div class="legal-emoji">${l.emoji || '⚖️'}</div>
+      <div class="legal-topic">${l.topic || l.name || 'Legal Topic'}</div>
+      <div class="legal-desc">${l.summary || l.description || ''}</div>
+      ${l.keyPoints ? '<ul class="legal-points">' + l.keyPoints.map(p => '<li>' + p + '</li>').join('') + '</ul>' : ''}
+    </div>
+  `).join('');
+}
+
+// --- Social Strategy ---
+async function loadSocial() {
+  const el = document.getElementById('social-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading social...</div>';
+  try {
+    const res = await fetch('/api/empire/social');
+    const data = await res.json();
+    if (data.success) renderSocial(data.social);
+    else el.innerHTML = '<div style="color:#f44">Failed to load social</div>';
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderSocial(social) {
+  const el = document.getElementById('social-grid');
+  const arr = Array.isArray(social) ? social : Object.values(social);
+  el.innerHTML = arr.map(s => `
+    <div class="social-card">
+      <div class="social-top">
+        <div class="social-icon">${s.emoji || '📱'}</div>
+        <div>
+          <div class="social-name">${s.platform || s.name}</div>
+          <div class="social-audience">${s.followers || ''}</div>
+        </div>
+      </div>
+      <div class="social-strategy">${s.tips || ''}</div>
+      ${s.content ? '<div class="social-content">' + s.content.map(t => '<span class="social-type">' + t + '</span>').join('') + '</div>' : ''}
+      <div class="social-metrics">
+        <div class="social-metric"><div class="social-metric-val">${s.postFreq || 'N/A'}</div><div class="social-metric-label">Post Freq</div></div>
+        <div class="social-metric"><div class="social-metric-val">${s.bestTime || 'N/A'}</div><div class="social-metric-label">Best Time</div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// --- Pitch Generator ---
+async function generatePitch() {
+  const el = document.getElementById('pitch-output');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">🚀 Generating pitch deck...</div>';
+  const body = {
+    artistName: document.getElementById('pitch-artist').value || 'GOAT Royalty',
+    genre: document.getElementById('pitch-genre').value || 'Hip-Hop',
+    monthlyStreams: parseInt(document.getElementById('pitch-streams').value) || 500000,
+    socialFollowers: parseInt(document.getElementById('pitch-followers').value) || 100000,
+    fundingAsk: parseInt(document.getElementById('pitch-funding').value) || 500000
+  };
+  try {
+    const res = await fetch('/api/empire/generate-pitch', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.success) renderPitch(data.pitch);
+    else el.innerHTML = '<div style="color:#f44">' + (data.error || 'Error') + '</div>';
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderPitch(pitch) {
+  const el = document.getElementById('pitch-output');
+  let html = `
+    <div class="pitch-deck">
+      <div class="pitch-deck-header">
+        <div class="pitch-deck-title">${pitch.title || 'Investment Deck'}</div>
+        <div class="pitch-deck-sub">${new Date(pitch.timestamp).toLocaleDateString()}</div>
+      </div>`;
+  (pitch.sections || []).forEach(sec => {
+    html += `
+      <div class="pitch-section">
+        <div class="pitch-section-name">${sec.name}</div>
+        <div class="pitch-section-content">${(sec.content || '').replace(/\\n/g, '\n')}</div>
+      </div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// Empire auto-load on tab switch
+const _origSwitchTabEmpire = switchTab;
+switchTab = function(tab) {
+  _origSwitchTabEmpire(tab);
+  if (tab === 'empire' && !document.getElementById('brand-display').innerHTML) {
+    loadBrand();
+  }
+};
+
+// ===================== ADVANCED CYBER OPS =====================
+
+function switchCyberOpsTab(panel) {
+  document.querySelectorAll('.cop-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.cop-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.cop-tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(panel.substring(0,4))) t.classList.add('active');
+  });
+  document.getElementById('cop-' + panel + '-panel').classList.add('active');
+  if (panel === 'pentest' && !document.getElementById('pentest-grid').innerHTML) loadPenTestTools();
+  if (panel === 'owasp' && !document.getElementById('owasp-grid').innerHTML) loadOWASP();
+  if (panel === 'threats' && !document.getElementById('threats-display').innerHTML) loadThreatIntel();
+  if (panel === 'forensics' && !document.getElementById('forensics-grid').innerHTML) loadForensics();
+  if (panel === 'crypto' && !document.getElementById('crypto-display').innerHTML) loadCrypto();
+  if (panel === 'ir' && !document.getElementById('ir-display').innerHTML) loadIR();
+  if (panel === 'compliance' && !document.getElementById('compliance-grid').innerHTML) loadCompliance();
+  if (panel === 'certs' && !document.getElementById('certs-grid').innerHTML) loadCerts();
+}
+
+// --- PenTest Tools ---
+async function loadPenTestTools() {
+  const el = document.getElementById('pentest-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading tools...</div>';
+  try {
+    const res = await fetch('/api/cyberops/tools');
+    const data = await res.json();
+    if (data.success) renderPenTestTools(data.tools);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderPenTestTools(tools) {
+  document.getElementById('pentest-grid').innerHTML = tools.map(t => {
+    const diffClass = t.difficulty.toLowerCase();
+    return `
+    <div class="pentool-card">
+      <div class="pentool-top">
+        <div class="pentool-name">${t.emoji} ${t.name}</div>
+        <div class="pentool-cat">${t.category}</div>
+      </div>
+      <div class="pentool-desc">${t.description}</div>
+      <div class="pentool-cmds">${t.commands.map(c => '<div class="pentool-cmd">' + c + '</div>').join('')}</div>
+      <div class="pentool-meta">
+        <span class="pentool-diff ${diffClass}">${t.difficulty}</span>
+        <span class="pentool-power">Power: ${'🟢'.repeat(Math.ceil(t.power/2))} ${t.power}/10</span>
+      </div>
+      <div class="pentool-tip">💡 ${t.tip}</div>
+    </div>`;
+  }).join('');
+}
+
+// --- OWASP Top 10 ---
+async function loadOWASP() {
+  const el = document.getElementById('owasp-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading OWASP...</div>';
+  try {
+    const res = await fetch('/api/cyberops/owasp');
+    const data = await res.json();
+    if (data.success) renderOWASP(data.owasp);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderOWASP(owasp) {
+  document.getElementById('owasp-grid').innerHTML = owasp.map(o => {
+    const sevClass = o.severity.toLowerCase();
+    return `
+    <div class="owasp-card">
+      <div><span class="owasp-rank">${o.rank}</span><span class="owasp-name">${o.emoji} ${o.id}: ${o.name}</span><span class="owasp-severity ${sevClass}">${o.severity}</span></div>
+      <div class="owasp-desc">${o.description}</div>
+      <div class="owasp-section">
+        <div class="owasp-section-title">⚠️ Examples</div>
+        <div class="owasp-list">${o.examples.map(e => '<span class="owasp-item">' + e + '</span>').join('')}</div>
+      </div>
+      <div class="owasp-section">
+        <div class="owasp-section-title">✅ Prevention</div>
+        <div class="owasp-list">${o.prevention.map(p => '<span class="owasp-item owasp-prev">' + p + '</span>').join('')}</div>
+      </div>
+      ${o.prevalence ? '<div style="font-size:10px;color:var(--text2);margin-top:8px">📊 Prevalence: ' + o.prevalence + '</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+// --- Threat Intel ---
+async function loadThreatIntel() {
+  const el = document.getElementById('threats-display');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading threat intel...</div>';
+  try {
+    const res = await fetch('/api/cyberops/threat-intel');
+    const data = await res.json();
+    if (data.success) renderCyberOpsThreatIntel(data.intel);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderCyberOpsThreatIntel(intel) {
+  let html = '<div class="threat-section"><div class="threat-section-title">🎯 Active Threat Actors</div>';
+  intel.activeThreatActors.forEach(a => {
+    html += `<div class="threat-card">
+      <div class="threat-top"><div class="threat-name">${a.emoji} ${a.name}</div><div class="threat-danger">${a.dangerLevel}/10</div></div>
+      <div class="threat-origin">🌍 Origin: ${a.origin}</div>
+      <div class="threat-targets">🎯 Targets: ${a.targets}</div>
+      <div class="threat-ttps">⚔️ TTPs: ${a.ttps}</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  html += '<div class="threat-section"><div class="threat-section-title">🔥 Recent Critical CVEs</div>';
+  intel.recentCVEs.forEach(c => {
+    const cvssClass = c.cvss >= 9 ? 'crit' : 'high';
+    html += `<div class="cve-card">
+      <div class="cve-top"><div class="cve-id">${c.id}</div><div class="cve-cvss ${cvssClass}">CVSS ${c.cvss}</div></div>
+      <div class="cve-name">${c.name}</div>
+      <div class="cve-desc">${c.description}</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  html += '<div class="threat-section"><div class="threat-section-title">📊 Attack Vector Distribution</div>';
+  intel.attackVectors.forEach(v => {
+    html += `<div class="attack-vector">
+      <div class="av-emoji">${v.emoji}</div>
+      <div class="av-info"><div class="av-name">${v.name} ${v.trend}</div><div class="av-desc">${v.description}</div></div>
+      <div class="av-bar"><div class="av-fill" style="width:${v.percentage * 2.8}%"></div></div>
+      <div class="av-pct">${v.percentage}%</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  document.getElementById('threats-display').innerHTML = html;
+}
+
+// --- Forensics ---
+async function loadForensics() {
+  const el = document.getElementById('forensics-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading forensics...</div>';
+  try {
+    const res = await fetch('/api/cyberops/forensics');
+    const data = await res.json();
+    if (data.success) renderForensics(data.toolkit);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderForensics(toolkit) {
+  document.getElementById('forensics-grid').innerHTML = toolkit.map(t => `
+    <div class="forensic-card">
+      <div class="forensic-emoji">${t.emoji}</div>
+      <div class="forensic-name">${t.name}</div>
+      <div class="forensic-cat">${t.category}</div>
+      <div class="forensic-desc">${t.description}</div>
+      <div class="forensic-caps">${t.capabilities.map(c => '<span class="forensic-cap">' + c + '</span>').join('')}</div>
+      <div class="forensic-use">🎯 ${t.useCase}</div>
+    </div>
+  `).join('');
+}
+
+// --- Cryptography ---
+async function loadCrypto() {
+  const el = document.getElementById('crypto-display');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading cryptography...</div>';
+  try {
+    const res = await fetch('/api/cyberops/crypto');
+    const data = await res.json();
+    if (data.success) renderCrypto(data.crypto);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderCrypto(crypto) {
+  let html = '<div style="margin-bottom:16px"><div style="font-size:14px;font-weight:700;color:#7c4dff;margin-bottom:12px">🔐 Algorithms</div>';
+  crypto.algorithms.forEach(a => {
+    const recClass = a.recommendation.includes('DEPRECATED') ? 'deprecated' : a.recommendation.includes('FUTURE') ? 'future' : '';
+    html += `<div class="crypto-card">
+      <div class="crypto-top"><div class="crypto-name">${a.emoji} ${a.name}</div><div class="crypto-rec ${recClass}">${a.recommendation}</div></div>
+      <div class="crypto-meta">
+        <div class="crypto-meta-item"><div class="crypto-meta-val">${a.type}</div><div class="crypto-meta-label">Type</div></div>
+        <div class="crypto-meta-item"><div class="crypto-meta-val">${a.strength}</div><div class="crypto-meta-label">Strength</div></div>
+        <div class="crypto-meta-item"><div class="crypto-meta-val">${a.speed}</div><div class="crypto-meta-label">Speed</div></div>
+      </div>
+      <div class="crypto-use">📋 ${a.useCase}</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  html += '<div><div style="font-size:14px;font-weight:700;color:#7c4dff;margin-bottom:12px">🌐 Protocols</div>';
+  crypto.protocols.forEach(p => {
+    html += `<div class="protocol-card">
+      <div class="protocol-name">${p.name}</div>
+      <div class="protocol-status">${p.status}</div>
+      <div class="protocol-desc">${p.description}</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  document.getElementById('crypto-display').innerHTML = html;
+}
+
+// --- Incident Response ---
+async function loadIR() {
+  const el = document.getElementById('ir-display');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading IR...</div>';
+  try {
+    const res = await fetch('/api/cyberops/incident-response');
+    const data = await res.json();
+    if (data.success) renderIR(data.ir);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderIR(ir) {
+  let html = '<div style="margin-bottom:16px"><div style="font-size:14px;font-weight:700;color:#00ff41;margin-bottom:12px">📋 NIST IR Phases</div>';
+  ir.phases.forEach(p => {
+    html += `<div class="ir-phase" data-phase="Phase ${p.phase}">
+      <div class="ir-phase-name">${p.emoji} ${p.name}</div>
+      <div class="ir-phase-desc">${p.description}</div>
+      <ul class="ir-tasks">${p.tasks.map(t => '<li>' + t + '</li>').join('')}</ul>
+    </div>`;
+  });
+  html += '</div>';
+
+  html += '<div><div style="font-size:14px;font-weight:700;color:#ff4444;margin-bottom:12px">🚨 Severity Levels</div>';
+  ir.severityLevels.forEach(s => {
+    html += `<div class="severity-card">
+      <div class="severity-emoji">${s.emoji}</div>
+      <div style="flex:1">
+        <div class="severity-level">${s.level}</div>
+        <div class="severity-response">Response: ${s.response}</div>
+        <div class="severity-desc">${s.description}</div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+
+  document.getElementById('ir-display').innerHTML = html;
+}
+
+// --- Compliance ---
+async function loadCompliance() {
+  const el = document.getElementById('compliance-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading compliance...</div>';
+  try {
+    const res = await fetch('/api/cyberops/compliance');
+    const data = await res.json();
+    if (data.success) renderCompliance(data.frameworks);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderCompliance(frameworks) {
+  document.getElementById('compliance-grid').innerHTML = frameworks.map(f => `
+    <div class="compliance-card">
+      <div class="compliance-top">
+        <div class="compliance-name">${f.emoji} ${f.name}</div>
+        <div class="compliance-diff">${f.difficulty}</div>
+      </div>
+      <div class="compliance-desc">${f.description}</div>
+      <div class="compliance-meta">
+        <div class="compliance-meta-item"><div class="compliance-meta-val">${f.industry}</div><div class="compliance-meta-label">Industry</div></div>
+        <div class="compliance-meta-item"><div class="compliance-meta-val">${f.timeline}</div><div class="compliance-meta-label">Timeline</div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// --- Certifications ---
+async function loadCerts() {
+  const el = document.getElementById('certs-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading certs...</div>';
+  try {
+    const res = await fetch('/api/cyberops/certs');
+    const data = await res.json();
+    if (data.success) renderCerts(data.certs);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderCerts(certs) {
+  document.getElementById('certs-grid').innerHTML = certs.map(c => {
+    const lvlClass = c.level.toLowerCase();
+    return `
+    <div class="cert-card">
+      <div class="cert-top">
+        <div class="cert-name">${c.emoji} ${c.name}</div>
+        <div class="cert-level ${lvlClass}">${c.level}</div>
+      </div>
+      <div class="cert-desc">${c.description}</div>
+      <div class="cert-meta">
+        <div class="cert-meta-item"><div class="cert-meta-val">${c.salary}</div><div class="cert-meta-label">Salary Range</div></div>
+        <div class="cert-meta-item"><div class="cert-meta-val">${c.examCost}</div><div class="cert-meta-label">Exam Cost</div></div>
+        <div class="cert-meta-item"><div class="cert-meta-val">${c.prereq}</div><div class="cert-meta-label">Prerequisites</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// --- Attack Simulator ---
+async function runSimulation() {
+  const el = document.getElementById('sim-output');
+  const scenario = document.getElementById('sim-scenario').value;
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:#00ff41">⚔️ Running simulation...</div>';
+  try {
+    const res = await fetch('/api/cyberops/simulate', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ scenario })
+    });
+    const data = await res.json();
+    if (data.success) renderSimulation(data.simulation);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderSimulation(sim) {
+  let html = `<div class="sim-result">
+    <div class="sim-header">
+      <div class="sim-title">${sim.emoji} ${sim.scenario}</div>
+      <div class="sim-meta">${sim.difficulty} | MITRE ATT&CK: ${sim.mitreAttack}</div>
+    </div>`;
+  sim.results.forEach(r => {
+    html += `<div class="sim-step">
+      <div class="sim-step-num">${r.step}</div>
+      <div class="sim-step-action">${r.action}</div>
+      <div class="sim-step-status">${r.status}</div>
+      <div class="sim-step-dur">${r.duration}</div>
+    </div>`;
+  });
+  html += `<div class="sim-verdict">
+    <div class="sim-verdict-score">${sim.overallScore}</div>
+    <div class="sim-verdict-text">${sim.recommendation}</div>
+  </div></div>`;
+  document.getElementById('sim-output').innerHTML = html;
+}
+
+// CyberOps auto-load on tab switch
+const _origSwitchTabCyberOps = switchTab;
+switchTab = function(tab) {
+  _origSwitchTabCyberOps(tab);
+  if (tab === 'cyberops' && !document.getElementById('pentest-grid').innerHTML) {
+    loadPenTestTools();
+  }
+};
+
+// ===================== METAVERSE & WEB3 =====================
+
+function switchWeb3Tab(panel) {
+  document.querySelectorAll('.w3-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.w3-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.w3-tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(panel.substring(0,4))) t.classList.add('active');
+  });
+  document.getElementById('w3-' + panel + '-panel').classList.add('active');
+  if (panel === 'nfts' && !document.getElementById('nfts-grid').innerHTML) loadNFTs();
+  if (panel === 'wallet' && !document.getElementById('wallet-display').innerHTML) loadWallet();
+  if (panel === 'contracts' && !document.getElementById('contracts-display').innerHTML) loadSmartContracts();
+  if (panel === 'venues' && !document.getElementById('vvenues-grid').innerHTML) loadVirtualVenues();
+  if (panel === 'token' && !document.getElementById('token-display').innerHTML) loadToken();
+  if (panel === 'defi' && !document.getElementById('defi-grid').innerHTML) loadDeFi();
+  if (panel === 'explorer' && !document.getElementById('explorer-display').innerHTML) loadExplorer();
+  if (panel === 'learn' && !document.getElementById('learn-grid').innerHTML) loadWeb3Learn();
+}
+
+// --- NFTs ---
+async function loadNFTs() {
+  const el = document.getElementById('nfts-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading NFTs...</div>';
+  try {
+    const res = await fetch('/api/web3/nfts');
+    const data = await res.json();
+    if (data.success) renderNFTs(data.collections);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderNFTs(collections) {
+  document.getElementById('nfts-grid').innerHTML = collections.map(c => `
+    <div class="nft-card">
+      <div class="nft-header">
+        <div class="nft-name">${c.emoji} ${c.name}</div>
+        <div class="nft-chain">${c.chain} · ${c.standard}</div>
+      </div>
+      <div class="nft-desc">${c.description}</div>
+      <div class="nft-stats">
+        <div class="nft-stat"><div class="nft-stat-val">${c.supply.toLocaleString()}</div><div class="nft-stat-label">Supply</div></div>
+        <div class="nft-stat"><div class="nft-stat-val">${c.minted.toLocaleString()}</div><div class="nft-stat-label">Minted</div></div>
+        <div class="nft-stat"><div class="nft-stat-val">${c.floorPrice}</div><div class="nft-stat-label">Floor</div></div>
+        <div class="nft-stat"><div class="nft-stat-val">${c.volume}</div><div class="nft-stat-label">Volume</div></div>
+      </div>
+      <div class="nft-utils">${c.utilities.map(u => '<span class="nft-util">' + u + '</span>').join('')}</div>
+      <div class="nft-rarity">${Object.entries(c.rarity).map(([k,v]) => '<span class="nft-rarity-tier">' + k + ': ' + v + '</span>').join('')}</div>
+      <button class="nft-mint-btn" onclick="mintNFT('${c.id}')">🎨 Mint ${c.name}</button>
+      <div id="mint-result-${c.id}"></div>
+    </div>
+  `).join('');
+}
+
+async function mintNFT(collectionId) {
+  const el = document.getElementById('mint-result-' + collectionId);
+  el.innerHTML = '<div style="text-align:center;color:#7c4dff;padding:8px">⏳ Minting...</div>';
+  try {
+    const res = await fetch('/api/web3/mint', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ collectionId, quantity: 1 })
+    });
+    const data = await res.json();
+    if (data.success) {
+      const m = data.mint;
+      el.innerHTML = '<div class="mint-result"><div class="mint-result-title">✅ Minted Successfully!</div><div class="mint-result-detail">Token: ' + m.tokenIds.join(', ') + ' | Rarity: ' + m.rarity + '<br>Gas: ' + m.gasUsed + ' | TX: ' + m.transactionHash.substring(0,16) + '...</div></div>';
+    } else el.innerHTML = '<div style="color:#f44;padding:8px">' + data.error + '</div>';
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+// --- Wallet ---
+async function loadWallet() {
+  const el = document.getElementById('wallet-display');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading wallet...</div>';
+  try {
+    const res = await fetch('/api/web3/wallet');
+    const data = await res.json();
+    if (data.success) renderWallet(data.wallet);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderWallet(wallet) {
+  let html = '<div class="wallet-section"><div class="wallet-section-title">⛓️ Supported Chains</div>';
+  wallet.supported.forEach(c => {
+    html += '<div class="chain-card"><div class="chain-emoji">' + c.emoji + '</div><div style="flex:1"><div class="chain-name">' + c.name + ' <span class="chain-type">' + c.type + '</span></div><div class="chain-cap">Market Cap: ' + c.marketCap + '</div><div class="chain-use">' + c.useCase + '</div></div></div>';
+  });
+  html += '</div>';
+  html += '<div class="wallet-section"><div class="wallet-section-title">🛡️ Security Features</div>';
+  wallet.securityFeatures.forEach(f => {
+    html += '<div class="security-feat">' + f + '</div>';
+  });
+  html += '</div>';
+  document.getElementById('wallet-display').innerHTML = html;
+}
+
+// --- Smart Contracts ---
+async function loadSmartContracts() {
+  const el = document.getElementById('contracts-display');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading contracts...</div>';
+  try {
+    const res = await fetch('/api/web3/contracts');
+    const data = await res.json();
+    if (data.success) renderSmartContracts(data.contracts);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderSmartContracts(contracts) {
+  document.getElementById('contracts-display').innerHTML = contracts.map(c => `
+    <div class="sc-card">
+      <div class="sc-top"><div class="sc-name">${c.emoji} ${c.name}</div><div class="sc-lang">${c.language}</div></div>
+      <div class="sc-desc">${c.description}</div>
+      <div class="sc-features">${c.features.map(f => '<span class="sc-feat">' + f + '</span>').join('')}</div>
+      <div class="sc-meta"><span>⛽ ${c.gas}</span><span class="sc-audit">${c.auditStatus}</span></div>
+    </div>
+  `).join('');
+}
+
+// --- Virtual Venues ---
+async function loadVirtualVenues() {
+  const el = document.getElementById('vvenues-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading venues...</div>';
+  try {
+    const res = await fetch('/api/web3/venues');
+    const data = await res.json();
+    if (data.success) renderVirtualVenues(data.venues);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderVirtualVenues(venues) {
+  document.getElementById('vvenues-grid').innerHTML = venues.map(v => `
+    <div class="vv-card">
+      <div class="vv-header"><div class="vv-name">${v.emoji} ${v.name}</div><div class="vv-type">${v.type}</div></div>
+      <div class="vv-desc">${v.description}</div>
+      <div class="vv-stats">
+        <div class="vv-stat"><div class="vv-stat-val">${v.capacity.toLocaleString()}</div><div class="vv-stat-label">Capacity</div></div>
+        <div class="vv-stat"><div class="vv-stat-val">${v.tech}</div><div class="vv-stat-label">Tech Stack</div></div>
+        <div class="vv-stat"><div class="vv-stat-val">${v.ticketPrice}</div><div class="vv-stat-label">Ticket</div></div>
+      </div>
+      <div class="vv-features">${v.features.map(f => '<span class="vv-feat">' + f + '</span>').join('')}</div>
+    </div>
+  `).join('');
+}
+
+// --- Token Economy ---
+async function loadToken() {
+  const el = document.getElementById('token-display');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading token...</div>';
+  try {
+    const res = await fetch('/api/web3/token');
+    const data = await res.json();
+    if (data.success) renderToken(data.economy);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderToken(economy) {
+  const t = economy.token;
+  let html = '<div class="token-hero"><div class="token-name">' + t.emoji + ' ' + t.name + '</div><div class="token-symbol">' + t.symbol + '</div><div class="token-price">' + t.price + '</div><div class="token-mcap">Market Cap: ' + t.marketCap + ' | Holders: ' + t.holders + '</div></div>';
+  html += '<div class="token-dist">';
+  economy.distribution.forEach(d => {
+    html += '<div class="token-dist-bar"><div class="token-dist-label">' + d.emoji + ' ' + d.name + '</div><div class="token-dist-track"><div class="token-dist-fill" style="width:' + (d.percentage * 3.3) + '%"><span class="token-dist-pct">' + d.percentage + '%</span></div></div></div>';
+  });
+  html += '</div>';
+  html += '<div style="margin-top:16px"><div style="font-size:13px;font-weight:700;color:#7c4dff;margin-bottom:8px">🔧 Token Utilities</div><div class="token-utils">' + economy.utilities.map(u => '<span class="token-util-item">' + u + '</span>').join('') + '</div></div>';
+  document.getElementById('token-display').innerHTML = html;
+}
+
+// --- DeFi ---
+async function loadDeFi() {
+  const el = document.getElementById('defi-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading DeFi...</div>';
+  try {
+    const res = await fetch('/api/web3/defi');
+    const data = await res.json();
+    if (data.success) renderDeFi(data.defi);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderDeFi(defi) {
+  document.getElementById('defi-grid').innerHTML = defi.map(d => `
+    <div class="defi-card">
+      <div class="defi-top"><div class="defi-name">${d.emoji} ${d.name}</div><div class="defi-apy">${d.apy}</div></div>
+      <div class="defi-desc">${d.description}</div>
+      <div class="defi-meta">
+        <div class="defi-meta-item"><div class="defi-meta-val">${d.minStake}</div><div class="defi-meta-label">Min Stake</div></div>
+        <div class="defi-meta-item"><div class="defi-meta-val">${d.lockPeriod}</div><div class="defi-meta-label">Lock Period</div></div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--text2)">💰 ${d.rewards}</div>
+    </div>
+  `).join('');
+}
+
+// --- Explorer ---
+async function loadExplorer() {
+  const el = document.getElementById('explorer-display');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading explorer...</div>';
+  try {
+    const res = await fetch('/api/web3/explorer');
+    const data = await res.json();
+    if (data.success) renderExplorer(data.explorer);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderExplorer(explorer) {
+  const s = explorer.networkStats;
+  let html = '<div class="explorer-stats">';
+  html += '<div class="explorer-stat"><div class="explorer-stat-val">' + s.totalTransactions + '</div><div class="explorer-stat-label">Transactions</div></div>';
+  html += '<div class="explorer-stat"><div class="explorer-stat-val">' + s.uniqueWallets + '</div><div class="explorer-stat-label">Wallets</div></div>';
+  html += '<div class="explorer-stat"><div class="explorer-stat-val">' + s.nftsMinted + '</div><div class="explorer-stat-label">NFTs Minted</div></div>';
+  html += '<div class="explorer-stat"><div class="explorer-stat-val">' + s.totalValueLocked + '</div><div class="explorer-stat-label">TVL</div></div>';
+  html += '<div class="explorer-stat"><div class="explorer-stat-val">' + s.goatBurned + '</div><div class="explorer-stat-label">Burned</div></div>';
+  html += '<div class="explorer-stat"><div class="explorer-stat-val">' + s.activeContracts + '</div><div class="explorer-stat-label">Contracts</div></div>';
+  html += '</div>';
+  html += '<div style="font-size:13px;font-weight:700;color:#7c4dff;margin-bottom:10px">📋 Recent Transactions</div>';
+  explorer.recentTransactions.forEach(tx => {
+    html += '<div class="tx-card"><div class="tx-hash">' + tx.hash + '</div><div class="tx-type">' + tx.type + '</div><div class="tx-amount">' + tx.amount + '</div><div class="tx-parties">' + tx.from + ' → ' + tx.to + '</div><div class="tx-time">' + tx.time + '</div></div>';
+  });
+  document.getElementById('explorer-display').innerHTML = html;
+}
+
+// --- Web3 Learn ---
+async function loadWeb3Learn() {
+  const el = document.getElementById('learn-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading lessons...</div>';
+  try {
+    const res = await fetch('/api/web3/learn');
+    const data = await res.json();
+    if (data.success) renderWeb3Learn(data.lessons);
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+function renderWeb3Learn(lessons) {
+  document.getElementById('learn-grid').innerHTML = lessons.map(l => {
+    const diffClass = l.difficulty.toLowerCase();
+    return '<div class="learn-card"><div class="learn-top"><div class="learn-topic">' + l.emoji + ' ' + l.topic + '</div><div class="learn-diff ' + diffClass + '">' + l.difficulty + '</div></div><div class="learn-desc">' + l.description + '</div></div>';
+  }).join('');
+}
+
+// Web3 auto-load on tab switch
+const _origSwitchTabWeb3 = switchTab;
+switchTab = function(tab) {
+  _origSwitchTabWeb3(tab);
+  if (tab === 'web3' && !document.getElementById('nfts-grid').innerHTML) {
+    loadNFTs();
+  }
+};
+
+// ===================== INTELLIGENCE NETWORK =====================
+
+function switchIntelTab(panel) {
+  document.querySelectorAll('.intel-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.intel-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.intel-tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(panel.substring(0,4))) t.classList.add('active');
+  });
+  document.getElementById('intel-' + panel + '-panel').classList.add('active');
+  if (panel === 'osint' && !document.getElementById('osint-grid').innerHTML) loadOSINTTools();
+  if (panel === 'profiles' && !document.getElementById('profiles-grid').innerHTML) loadThreatProfiles();
+  if (panel === 'comms' && !document.getElementById('comms-grid').innerHTML) loadEncryptedComms();
+  if (panel === 'soceng' && !document.getElementById('soceng-display').innerHTML) loadSocialEng();
+  if (panel === 'privacy' && !document.getElementById('privacy-grid').innerHTML) loadPrivacyTools();
+  if (panel === 'countersurv' && !document.getElementById('countersurv-grid').innerHTML) loadCounterSurv();
+  if (panel === 'breaches' && !document.getElementById('breaches-grid').innerHTML) loadBreaches();
+}
+
+async function loadOSINTTools() {
+  const el = document.getElementById('osint-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading OSINT tools...</div>';
+  try {
+    const res = await fetch('/api/intel/osint-tools');
+    const data = await res.json();
+    if (data.success) el.innerHTML = data.tools.map(t => `
+      <div class="osint-card">
+        <div class="osint-top"><div class="osint-name">${t.emoji} ${t.name}</div><div class="osint-cat">${t.category}</div></div>
+        <div class="osint-desc">${t.description}</div>
+        <div class="osint-caps">${t.capabilities.map(c => '<span class="osint-cap">' + c + '</span>').join('')}</div>
+        <div class="osint-meta"><span>💰 ${t.license}</span><span>📊 ${t.difficulty}</span></div>
+      </div>
+    `).join('');
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+async function loadThreatProfiles() {
+  const el = document.getElementById('profiles-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading profiles...</div>';
+  try {
+    const res = await fetch('/api/intel/threat-profiles');
+    const data = await res.json();
+    if (data.success) el.innerHTML = data.profiles.map(p => `
+      <div class="profile-card">
+        <div class="profile-top"><div class="profile-type">${p.emoji} ${p.type}</div><div class="profile-danger">${p.dangerLevel}/10</div></div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:6px">🎯 Motivation: ${p.motivation}</div>
+        <div class="profile-section"><div class="profile-section-title">⚠️ Indicators</div><div class="profile-items">${p.indicators.map(i => '<span class="profile-item">' + i + '</span>').join('')}</div></div>
+        <div class="profile-defense">🛡️ Defense: ${p.defense}</div>
+      </div>
+    `).join('');
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+async function loadEncryptedComms() {
+  const el = document.getElementById('comms-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading comms...</div>';
+  try {
+    const res = await fetch('/api/intel/encrypted-comms');
+    const data = await res.json();
+    if (data.success) el.innerHTML = data.comms.map(c => `
+      <div class="comm-card">
+        <div class="comm-top"><div class="comm-name">${c.emoji} ${c.name}</div><div class="comm-rating">${c.rating}/10</div></div>
+        <div class="comm-enc">🔐 ${c.encryption}</div>
+        <div class="comm-features">${c.features.map(f => '<span class="comm-feat">' + f + '</span>').join('')}</div>
+        <div class="comm-platforms">📱 ${c.platforms.join(' · ')}</div>
+        <div class="comm-verdict">${c.verdict}</div>
+      </div>
+    `).join('');
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+async function loadSocialEng() {
+  const el = document.getElementById('soceng-display');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading social engineering...</div>';
+  try {
+    const res = await fetch('/api/intel/social-engineering');
+    const data = await res.json();
+    if (data.success) {
+      const se = data.socialEng;
+      let html = '<div class="soceng-stats">';
+      Object.entries(se.stats).forEach(([k,v]) => {
+        const label = k.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
+        html += '<div class="soceng-stat"><div class="soceng-stat-val">' + v + '</div><div class="soceng-stat-label">' + label + '</div></div>';
+      });
+      html += '</div>';
+      se.techniques.forEach(t => {
+        html += '<div class="soceng-card"><div class="soceng-name">' + t.emoji + ' ' + t.name + '</div><div class="soceng-desc">' + t.description + '</div><div class="soceng-defense">🛡️ ' + t.defense + '</div></div>';
+      });
+      el.innerHTML = html;
+    }
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+async function loadPrivacyTools() {
+  const el = document.getElementById('privacy-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading privacy tools...</div>';
+  try {
+    const res = await fetch('/api/intel/privacy-tools');
+    const data = await res.json();
+    if (data.success) el.innerHTML = data.tools.map(t => `
+      <div class="priv-card">
+        <div class="priv-top"><div class="priv-name">${t.emoji} ${t.name}</div><div class="priv-rec">${t.recommendation}</div></div>
+        <div class="priv-desc">${t.description}</div>
+      </div>
+    `).join('');
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+async function loadCounterSurv() {
+  const el = document.getElementById('countersurv-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading counter-surveillance...</div>';
+  try {
+    const res = await fetch('/api/intel/counter-surveillance');
+    const data = await res.json();
+    if (data.success) el.innerHTML = data.measures.map(m => `
+      <div class="cs-card">
+        <div class="cs-threat">${m.emoji} ${m.threat}</div>
+        <div class="cs-section"><div class="cs-section-title">🔍 Detection</div><div class="cs-items">${m.detection.map(d => '<span class="cs-item">' + d + '</span>').join('')}</div></div>
+        <div class="cs-counter">🛡️ ${m.countermeasure}</div>
+      </div>
+    `).join('');
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+async function loadBreaches() {
+  const el = document.getElementById('breaches-grid');
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Loading breaches...</div>';
+  try {
+    const res = await fetch('/api/intel/breaches');
+    const data = await res.json();
+    if (data.success) el.innerHTML = data.breaches.map(b => {
+      const impactClass = b.impact.toLowerCase();
+      return '<div class="breach-card"><div class="breach-top"><div class="breach-name">' + b.emoji + ' ' + b.name + '</div><div class="breach-impact ' + impactClass + '">' + b.impact + '</div></div><div class="breach-records">' + b.records + ' records</div><div class="breach-type">Type: ' + b.type + '</div><div class="breach-lesson">📝 ' + b.lesson + '</div></div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="color:#f44">Error: ' + e.message + '</div>'; }
+}
+
+// Intel auto-load on tab switch
+const _origSwitchTabIntel = switchTab;
+switchTab = function(tab) {
+  _origSwitchTabIntel(tab);
+  if (tab === 'intel' && !document.getElementById('osint-grid').innerHTML) {
+    loadOSINTTools();
   }
 };
 

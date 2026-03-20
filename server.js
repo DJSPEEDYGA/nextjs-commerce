@@ -55,6 +55,11 @@ const avatarStudio = require('./lib/avatar/avatar-studio');
 const cyberWarfare = require('./lib/security/cyber-warfare');
 const ue5          = require('./lib/gaming/ue5-studio');
 const screenwriting = require('./lib/creative/screenwriting-studio');
+const musicStudio  = require('./lib/music/music-production-studio');
+const empire       = require('./lib/business/royalty-empire');
+const cyberOps     = require('./lib/security/advanced-cyber-ops');
+const metaverse    = require('./lib/web3/metaverse-engine');
+const osint        = require('./lib/intelligence/osint-network');
 
 // ===================== INITIALIZE SYSTEMS =====================
 const bgChecker    = new BackgroundChecker();
@@ -75,12 +80,13 @@ console.log('🎭 Avatar Studio: DAZ3D + MetaHuman + FiveM ready');
 console.log('⚔️  Cyber Warfare Defense: 6-engine AV online');
 console.log('🎮 UE5 Studio: C++ Hub + FiveM + Blueprint Generator ready');
 console.log('✍️  Screenwriting Studio: 25 legendary writers + AI script generator ready');
+console.log('🎵 Music Studio: ' + musicStudio.getStats().genreKits + ' genre kits + ' + musicStudio.getStats().daws + ' DAWs + royalty engine ready');
 
 // ===================== API — STATUS =====================
 app.get('/api/status', (req, res) => {
     res.json({
         app: 'GOAT Connect',
-        version: '2.0.0-ULTIMATE',
+        version: '3.0.0-ROYALTY',
         status: 'running',
         features: {
             backgroundChecks: true,
@@ -103,7 +109,39 @@ app.get('/api/status', (req, res) => {
             e2eEncryption: true,
             zeroTrustArchitecture: true,
             screenwritingStudio: true,
-            aiScriptGenerator: true
+            aiScriptGenerator: true,
+            musicProductionStudio: true,
+            royaltyEngine: true,
+            beatGenerator: true,
+            streamingAnalytics: true,
+            goatRoyaltyEmpire: true,
+            merchEngine: true,
+            tourVenues: true,
+            contractTemplates: true,
+            entertainmentLaw: true,
+            investorPitchGen: true,
+            advancedCyberOps: true,
+            penTestToolkit: true,
+            owaspScanner: true,
+            threatIntelligence: true,
+            digitalForensics: true,
+            cryptographyEngine: true,
+            incidentResponse: true,
+            complianceFrameworks: true,
+            attackSimulator: true,
+            metaverseEngine: true,
+            nftMarketplace: true,
+            cryptoWallet: true,
+            smartContracts: true,
+            virtualVenues: true,
+            tokenEconomy: true,
+            defiProducts: true,
+            blockchainExplorer: true,
+            osintNetwork: true,
+            threatProfiling: true,
+            encryptedComms: true,
+            counterSurveillance: true,
+            breachMonitor: true
         },
         stats: {
             users: userDb.getUserCount(),
@@ -113,7 +151,21 @@ app.get('/api/status', (req, res) => {
             threatsBlocked: cyberWarfare.getDashboard().stats.threatsBlocked,
             faceScans: faceAI.getStats().stats.scans,
             legendaryWriters: screenwriting.getStats().writers,
-            scriptsGenerated: screenwriting.getStats().scriptsGenerated
+            scriptsGenerated: screenwriting.getStats().scriptsGenerated,
+            genreKits: musicStudio.getStats().genreKits,
+            daws: musicStudio.getStats().daws,
+            djEquipment: musicStudio.getStats().equipment,
+            empireDivisions: empire.getStats().divisions,
+            merchItems: empire.getStats().merchItems,
+            tourVenues: empire.getStats().venues,
+            penTestTools: cyberOps.getStats().penTestTools,
+            owaspCategories: cyberOps.getStats().owaspCategories,
+            threatActors: cyberOps.getStats().threatActors,
+            nftCollections: metaverse.getStats().nftCollections,
+            virtualVenues: metaverse.getStats().virtualVenues,
+            supportedChains: metaverse.getStats().supportedChains,
+            osintTools: osint.getStats().osintTools,
+            breachRecords: osint.getStats().breachRecords
         },
         copyright: '© 2024 HARVEY L MILLER JR / JUAQUIN J MALPHURS / KEVIN W HALLINGQUEST'
     });
@@ -452,6 +504,111 @@ app.get('/api/gaming/stats', (req, res) => {
     } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
+// ===================== API — MUSIC PRODUCTION STUDIO (NEW) =====================
+// Get beat library (with optional filters: genre, mood, bpm)
+app.get('/api/music/beats', (req, res) => {
+    try {
+        const { genre, mood, bpm } = req.query;
+        res.json(musicStudio.getBeats({ genre, mood, bpm }));
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get beat kit by ID
+app.get('/api/music/beat/:id', (req, res) => {
+    try {
+        const result = musicStudio.getBeatById(req.params.id);
+        if (!result.success) return res.status(404).json(result);
+        res.json(result);
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get DAW database
+app.get('/api/music/daws', (req, res) => {
+    try { res.json(musicStudio.getDAWs()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get music theory (scales, chord progressions)
+app.get('/api/music/theory', (req, res) => {
+    try { res.json(musicStudio.getTheory()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get royalty info
+app.get('/api/music/royalties', (req, res) => {
+    try { res.json(musicStudio.getRoyaltyInfo()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get distribution platforms
+app.get('/api/music/distribution', (req, res) => {
+    try { res.json(musicStudio.getDistribution()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get streaming rates
+app.get('/api/music/streaming-rates', (req, res) => {
+    try { res.json(musicStudio.getStreamingRates()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Calculate streaming revenue
+app.post('/api/music/calculate-revenue', (req, res) => {
+    try {
+        const { streams } = req.body;
+        if (!streams || streams < 0) return res.status(400).json({ error: 'Invalid stream count' });
+        res.json(musicStudio.calculateStreamingRevenue(parseInt(streams)));
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Calculate royalty splits
+app.post('/api/music/calculate-splits', (req, res) => {
+    try {
+        const { totalRevenue, splits } = req.body;
+        if (!totalRevenue || !splits) return res.status(400).json({ error: 'Missing totalRevenue or splits' });
+        res.json(musicStudio.calculateRoyaltySplit(parseFloat(totalRevenue), splits));
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// AI Beat Generator
+app.post('/api/music/generate-beat', async (req, res) => {
+    try {
+        const { genre, mood, bpm, key } = req.body;
+        const beat = await musicStudio.generateBeat({ genre, mood, bpm, key });
+        res.json(beat);
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get DJ equipment database
+app.get('/api/music/equipment', (req, res) => {
+    try { res.json(musicStudio.getEquipment()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get Grammy history
+app.get('/api/music/grammys', (req, res) => {
+    try { res.json(musicStudio.getGrammys()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get industry contacts
+app.get('/api/music/industry', (req, res) => {
+    try { res.json(musicStudio.getIndustry()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Get sample clearance info
+app.get('/api/music/sample-clearance', (req, res) => {
+    try { res.json(musicStudio.getSampleClearance()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Music stats
+app.get('/api/music/stats', (req, res) => {
+    try { res.json(musicStudio.getStats()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
 // ===================== API — SCREENWRITING STUDIO (NEW) =====================
 // Get all writers (with optional filters: era, genre, country, search)
 app.get('/api/screenwriting/writers', (req, res) => {
@@ -512,6 +669,221 @@ app.post('/api/screenwriting/generate', async (req, res) => {
 // Screenwriting stats
 app.get('/api/screenwriting/stats', (req, res) => {
     try { res.json(screenwriting.getStats()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ===================== API — ADVANCED CYBER OPS (NEW) =====================
+
+app.get('/api/cyberops/tools', (req, res) => {
+    try { res.json(cyberOps.getPenTestTools(req.query)); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/cyberops/tool/:id', (req, res) => {
+    try { res.json(cyberOps.getToolById(req.params.id)); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/cyberops/owasp', (req, res) => {
+    try { res.json(cyberOps.getOWASP()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/cyberops/threat-intel', (req, res) => {
+    try { res.json(cyberOps.getThreatIntel()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/cyberops/forensics', (req, res) => {
+    try { res.json(cyberOps.getForensics()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/cyberops/crypto', (req, res) => {
+    try { res.json(cyberOps.getCryptography()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/cyberops/incident-response', (req, res) => {
+    try { res.json(cyberOps.getIncidentResponse()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/cyberops/compliance', (req, res) => {
+    try { res.json(cyberOps.getCompliance()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/cyberops/certs', (req, res) => {
+    try { res.json(cyberOps.getCertifications()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/cyberops/simulate', (req, res) => {
+    try { res.json(cyberOps.runSimulation(req.body.scenario)); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/cyberops/stats', (req, res) => {
+    try { res.json({ success: true, stats: cyberOps.getStats() }); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ===================== API — OSINT & INTELLIGENCE NETWORK (NEW) =====================
+
+app.get('/api/intel/osint-tools', (req, res) => {
+    try { res.json(osint.getOSINTTools(req.query)); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/intel/threat-profiles', (req, res) => {
+    try { res.json(osint.getThreatProfiles()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/intel/encrypted-comms', (req, res) => {
+    try { res.json(osint.getEncryptedComms()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/intel/social-engineering', (req, res) => {
+    try { res.json(osint.getSocialEngineering()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/intel/privacy-tools', (req, res) => {
+    try { res.json(osint.getPrivacyTools()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/intel/counter-surveillance', (req, res) => {
+    try { res.json(osint.getCounterSurveillance()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/intel/breaches', (req, res) => {
+    try { res.json(osint.getBreachDatabase()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/intel/stats', (req, res) => {
+    try { res.json({ success: true, stats: osint.getStats() }); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ===================== API — METAVERSE & WEB3 ENGINE (NEW) =====================
+
+app.get('/api/web3/nfts', (req, res) => {
+    try { res.json(metaverse.getNFTCollections()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/web3/nft/:id', (req, res) => {
+    try { res.json(metaverse.getNFTById(req.params.id)); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/web3/wallet', (req, res) => {
+    try { res.json(metaverse.getWallet()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/web3/contracts', (req, res) => {
+    try { res.json(metaverse.getSmartContracts()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/web3/venues', (req, res) => {
+    try { res.json(metaverse.getVirtualVenues()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/web3/token', (req, res) => {
+    try { res.json(metaverse.getTokenEconomy()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/web3/defi', (req, res) => {
+    try { res.json(metaverse.getDeFi()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/web3/explorer', (req, res) => {
+    try { res.json(metaverse.getBlockchainExplorer()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/web3/learn', (req, res) => {
+    try { res.json(metaverse.getWeb3Learning()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/web3/mint', (req, res) => {
+    try {
+        const { collectionId, quantity } = req.body;
+        res.json(metaverse.mintNFT(collectionId, quantity));
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/web3/stats', (req, res) => {
+    try { res.json({ success: true, stats: metaverse.getStats() }); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ===================== API — GOAT ROYALTY EMPIRE (NEW) =====================
+
+app.get('/api/empire/brand', (req, res) => {
+    try { res.json(empire.getBrand()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/empire/merch', (req, res) => {
+    try { res.json(empire.getMerch()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/empire/venues', (req, res) => {
+    try { res.json(empire.getVenues()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/empire/revenue-streams', (req, res) => {
+    try { res.json(empire.getRevenueStreams()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/empire/contracts', (req, res) => {
+    try { res.json(empire.getContracts()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/empire/legal', (req, res) => {
+    try { res.json(empire.getLegal()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/empire/social', (req, res) => {
+    try { res.json(empire.getSocial()); }
+    catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/empire/generate-pitch', (req, res) => {
+    try {
+        const result = empire.generatePitch(req.body);
+        res.json(result);
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/empire/calculate-merch', (req, res) => {
+    try {
+        const { units, itemId } = req.body;
+        const result = empire.calculateMerchRevenue(units, itemId);
+        res.json(result);
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/empire/stats', (req, res) => {
+    try { res.json({ success: true, stats: empire.getStats() }); }
     catch(e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -577,6 +949,11 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log(`👤 Face AI: http://localhost:${PORT}/api/face/stats`);
     console.log(`⚔️  Cyber Warfare: http://localhost:${PORT}/api/warfare/dashboard`);
     console.log(`🎮 Gaming Hub: http://localhost:${PORT}/api/gaming/cpp-books`);
+    console.log(`📡 Intel: http://localhost:${PORT}/api/intel/stats`);
+    console.log(`🌐 Web3: http://localhost:${PORT}/api/web3/stats`);
+    console.log(`🔐 Cyber Ops: http://localhost:${PORT}/api/cyberops/stats`);
+    console.log(`🏰 Empire: http://localhost:${PORT}/api/empire/stats`);
+    console.log(`🎵 Music Studio: http://localhost:${PORT}/api/music/stats`);
     console.log(`✍️  Screenwriting: http://localhost:${PORT}/api/screenwriting/writers`);
     console.log(`📊 Stats: http://localhost:${PORT}/api/screenwriting/stats`);
 });

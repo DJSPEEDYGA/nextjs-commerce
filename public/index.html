@@ -424,6 +424,602 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .script-char-role{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase}
 .script-char-arc{font-size:11px;color:var(--text2);margin-top:2px}
 .script-char-tips{font-size:11px;color:var(--text2);margin-top:4px;font-style:italic}
+/* ========== MUSIC PRODUCTION STUDIO STYLES ========== */
+.music-tabs{display:flex;gap:0;background:var(--bg3);border-radius:12px;margin:12px 16px;padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.music-tab{flex:0 0 auto;padding:8px 12px;text-align:center;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;color:var(--text2);white-space:nowrap}
+.music-tab.active{background:linear-gradient(135deg,#1DB954,#191414);color:#fff}
+.music-panel{display:none;padding:0 16px 20px}
+.music-panel.active{display:block}
+.music-search-bar{margin-bottom:12px}
+.music-search-bar input{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;outline:none;transition:border .2s}
+.music-search-bar input:focus{border-color:#1DB954}
+.music-count{font-size:12px;color:var(--text2);margin-bottom:10px;padding:0 4px}
+.beat-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px;cursor:pointer;transition:transform .2s,border-color .2s}
+.beat-card:hover{transform:translateY(-2px);border-color:#1DB954}
+.beat-card-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.beat-emoji{font-size:32px;flex-shrink:0}
+.beat-info{flex:1}
+.beat-name{font-size:15px;font-weight:700}
+.beat-genre{font-size:11px;color:var(--text2)}
+.beat-bpm{background:rgba(29,185,84,.2);color:#1DB954;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;flex-shrink:0}
+.beat-elements{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.beat-el-tag{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.beat-producers{font-size:11px;color:#1DB954;font-weight:600;margin-bottom:4px}
+.beat-vibes{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.beat-vibe{background:rgba(29,185,84,.12);color:#1DB954;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:600}
+.beat-detail{display:none}
+.beat-tips{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.5;border-left:2px solid #1DB954;padding-left:10px}
+.beat-artists{font-size:11px;color:var(--text2);margin-top:6px}
+.daw-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px;position:relative;overflow:hidden}
+.daw-card.top-pick{border-color:#1DB954}
+.daw-card.top-pick::before{content:'🏆 TOP PICK';position:absolute;top:8px;right:-24px;background:#1DB954;color:#000;font-size:9px;font-weight:800;padding:2px 30px;transform:rotate(45deg)}
+.daw-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.daw-icon{font-size:28px}
+.daw-name{font-size:15px;font-weight:700}
+.daw-price{font-size:13px;color:#1DB954;font-weight:700;margin-left:auto}
+.daw-tier{font-size:11px;color:#1DB954;font-weight:700;margin-bottom:6px}
+.daw-verdict{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.4}
+.daw-features{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.daw-feat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.daw-used-by{font-size:11px;color:var(--text2);margin-top:4px}
+.theory-section{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.theory-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.scale-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.scale-item:last-child{border-bottom:none}
+.scale-name{font-size:13px;font-weight:700;min-width:100px;color:#1DB954}
+.scale-mood{font-size:11px;color:var(--text2);flex:1}
+.scale-use{font-size:10px;color:var(--text2);font-style:italic}
+.prog-card{background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:8px}
+.prog-name{font-size:13px;font-weight:700;color:#1DB954}
+.prog-numerals{font-size:14px;font-weight:700;margin:4px 0;font-family:'Courier New',monospace}
+.prog-mood{font-size:11px;color:var(--text2)}
+.prog-examples{font-size:11px;color:var(--text2);margin-top:4px}
+.prog-genres{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.prog-genre{background:rgba(29,185,84,.12);color:#1DB954;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:600}
+.royalty-section{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.royalty-title{font-size:15px;font-weight:700;color:#1DB954;margin-bottom:8px}
+.royalty-desc{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.4}
+.pro-card{background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.pro-name{font-size:13px;font-weight:700;min-width:60px}
+.pro-info{font-size:11px;color:var(--text2);flex:1}
+.distro-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.distro-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.distro-icon{font-size:24px}
+.distro-name{font-size:15px;font-weight:700}
+.distro-price{font-size:13px;color:#1DB954;font-weight:700;margin-left:auto}
+.distro-keep{font-size:12px;color:#1DB954;font-weight:700;margin-bottom:6px}
+.distro-features{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.distro-feat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.equip-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.equip-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.equip-icon{font-size:28px}
+.equip-name{font-size:15px;font-weight:700}
+.equip-price{font-size:13px;color:#1DB954;font-weight:700;margin-left:auto}
+.equip-tier{font-size:11px;color:#1DB954;font-weight:700;margin-bottom:6px}
+.equip-verdict{font-size:12px;color:var(--text2);margin-bottom:8px;line-height:1.4}
+.equip-features{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.equip-feat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.grammy-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.grammy-year{font-size:18px;font-weight:800;color:#1DB954;margin-bottom:10px}
+.grammy-cat{margin-bottom:8px}
+.grammy-cat:last-child{margin-bottom:0}
+.grammy-cat-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.grammy-winner{font-size:13px;font-weight:700}
+.grammy-artist{font-size:12px;color:#1DB954}
+.revenue-calc-form{background:var(--card);border-radius:14px;padding:18px;border:1px solid var(--border);margin-bottom:16px}
+.revenue-output{background:var(--card);border-radius:14px;padding:18px;border:1px solid #1DB954;margin-bottom:12px}
+.revenue-platform{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.revenue-platform:last-child{border-bottom:none}
+.rev-icon{font-size:20px;width:28px;text-align:center}
+.rev-name{font-size:13px;font-weight:600;flex:1}
+.rev-amount{font-size:13px;font-weight:700;color:#1DB954}
+.milestone-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.milestone-row:last-child{border-bottom:none}
+.milestone-streams{font-size:12px;font-weight:600;min-width:90px}
+.milestone-rev{font-size:12px;color:var(--text2);flex:1}
+.milestone-status{font-size:14px}
+
+/* ==================== EMPIRE STYLES ==================== */
+.empire-tabs{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.empire-tabs::-webkit-scrollbar{display:none}
+.empire-tab{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .3s}
+.empire-tab.active{background:linear-gradient(135deg,#FFD700,#B8860B);color:#000;border-color:#FFD700;box-shadow:0 0 12px rgba(255,215,0,0.4)}
+.empire-panel{display:none;padding:0 16px 16px}
+.empire-panel.active{display:block}
+
+/* Brand Display */
+.brand-hero{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);border-radius:16px;padding:24px;margin-bottom:16px;text-align:center;border:2px solid #FFD700;position:relative;overflow:hidden}
+.brand-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,215,0,0.1),transparent);animation:empireRotate 8s linear infinite}
+@keyframes empireRotate{to{transform:rotate(360deg)}}
+.brand-name{font-size:22px;font-weight:800;background:linear-gradient(135deg,#FFD700,#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;position:relative}
+.brand-tagline{font-size:13px;color:#FFD700;opacity:0.8;margin-bottom:16px;position:relative}
+.brand-divisions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;position:relative}
+.division-card{background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px;text-align:center;transition:all .3s}
+.division-card:hover{border-color:#FFD700;transform:translateY(-2px);box-shadow:0 4px 12px rgba(255,215,0,0.2)}
+.division-emoji{font-size:28px;margin-bottom:6px}
+.division-name{font-size:12px;font-weight:700;color:#FFD700}
+.division-desc{font-size:10px;color:var(--text2);margin-top:4px}
+.brand-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;position:relative}
+.brand-stat{background:rgba(255,215,0,0.06);border-radius:10px;padding:10px;text-align:center}
+.brand-stat-val{font-size:18px;font-weight:800;color:#FFD700}
+.brand-stat-label{font-size:10px;color:var(--text2);margin-top:2px}
+
+/* Merch Grid */
+.merch-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.merch-card:hover{border-color:#FFD700;box-shadow:0 0 12px rgba(255,215,0,0.15)}
+.merch-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.merch-emoji{font-size:32px}
+.merch-name{font-size:15px;font-weight:700;color:var(--text)}
+.merch-category{font-size:11px;color:#FFD700;font-weight:600}
+.merch-price{font-size:20px;font-weight:800;color:#FFD700}
+.merch-details{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.merch-detail{text-align:center;background:rgba(255,215,0,0.06);border-radius:8px;padding:8px}
+.merch-detail-val{font-size:14px;font-weight:700;color:var(--text)}
+.merch-detail-label{font-size:9px;color:var(--text2);text-transform:uppercase}
+.merch-features{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.merch-feature{background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:4px 10px;font-size:10px;color:#FFD700}
+.merch-colors{display:flex;gap:6px;margin-top:8px}
+.merch-color{background:rgba(255,215,0,0.08);border-radius:8px;padding:4px 10px;font-size:11px;color:var(--text2)}
+.merch-calculator{background:var(--bg2);border:1px solid #FFD700;border-radius:14px;padding:20px;margin-top:16px}
+.merch-calculator h3{color:#FFD700;margin-bottom:12px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.calc-row label{font-size:13px;color:var(--text2);min-width:100px}
+.calc-row select,.calc-row input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:13px}
+#merch-calc-result{margin-top:12px}
+.merch-result-card{background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(255,165,0,0.05));border:1px solid #FFD700;border-radius:12px;padding:16px;text-align:center}
+.merch-result-val{font-size:28px;font-weight:800;color:#FFD700}
+.merch-result-label{font-size:11px;color:var(--text2)}
+
+/* Venue Cards */
+.venue-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;transition:all .3s}
+.venue-card:hover{border-color:#FFD700;transform:translateY(-2px)}
+.venue-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.venue-name{font-size:16px;font-weight:700;color:var(--text)}
+.venue-type{font-size:11px;font-weight:600;color:#FFD700;background:rgba(255,215,0,0.1);padding:4px 10px;border-radius:12px}
+.venue-location{font-size:12px;color:var(--text2);margin-bottom:8px}
+.venue-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.venue-stat{text-align:center;background:rgba(255,215,0,0.06);border-radius:8px;padding:8px}
+.venue-stat-val{font-size:14px;font-weight:700;color:#FFD700}
+.venue-stat-label{font-size:9px;color:var(--text2);text-transform:uppercase}
+.venue-features{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.venue-feat{background:rgba(255,215,0,0.08);border-radius:8px;padding:3px 8px;font-size:10px;color:var(--text2)}
+
+/* Revenue Streams */
+.revenue-chart{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px}
+.revenue-bar{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.revenue-label{font-size:12px;font-weight:600;color:var(--text);min-width:120px}
+.revenue-track{flex:1;height:24px;background:rgba(255,215,0,0.08);border-radius:12px;overflow:hidden;position:relative}
+.revenue-fill{height:100%;background:linear-gradient(90deg,#FFD700,#FFA500);border-radius:12px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;transition:width 1s ease}
+.revenue-pct{font-size:11px;font-weight:700;color:#000}
+.revenue-total{text-align:center;margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(184,134,11,0.1));border-radius:12px;border:1px solid #FFD700}
+.revenue-total-val{font-size:28px;font-weight:800;color:#FFD700}
+.revenue-total-label{font-size:11px;color:var(--text2)}
+
+/* Contracts */
+.contract-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.contract-card:hover{border-color:#FFD700}
+.contract-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.contract-name{font-size:15px;font-weight:700;color:var(--text)}
+.contract-risk{font-size:11px;font-weight:600;padding:4px 10px;border-radius:12px}
+.contract-risk.low{background:rgba(0,200,83,0.15);color:#00c853}
+.contract-risk.medium{background:rgba(255,193,7,0.15);color:#ffc107}
+.contract-risk.high{background:rgba(244,67,54,0.15);color:#f44336}
+.contract-desc{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5}
+.contract-terms{display:flex;flex-wrap:wrap;gap:6px}
+.contract-term{background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.15);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--text2)}
+.contract-duration{font-size:11px;color:#FFD700;margin-top:8px;font-weight:600}
+
+/* Legal */
+.legal-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.legal-card:hover{border-color:#FFD700}
+.legal-emoji{font-size:28px;margin-bottom:8px}
+.legal-topic{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.legal-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.legal-points{list-style:none;padding:0}
+.legal-points li{font-size:11px;color:var(--text2);padding:4px 0;padding-left:16px;position:relative}
+.legal-points li::before{content:'⚖️';position:absolute;left:0;font-size:10px}
+
+/* Social Strategy */
+.social-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.social-card:hover{border-color:#FFD700;transform:translateY(-2px)}
+.social-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.social-icon{font-size:32px}
+.social-name{font-size:16px;font-weight:700;color:var(--text)}
+.social-audience{font-size:11px;color:#FFD700;font-weight:600}
+.social-strategy{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.social-content{display:flex;flex-wrap:wrap;gap:6px}
+.social-type{background:rgba(255,215,0,0.1);border-radius:12px;padding:4px 10px;font-size:10px;color:#FFD700}
+.social-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.social-metric{text-align:center;background:rgba(255,215,0,0.06);border-radius:8px;padding:8px}
+.social-metric-val{font-size:14px;font-weight:700;color:#FFD700}
+.social-metric-label{font-size:9px;color:var(--text2)}
+
+/* Pitch Output */
+.pitch-form{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.pitch-form h3{color:#FFD700;margin-bottom:16px}
+.pitch-field{margin-bottom:12px}
+.pitch-field label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:600}
+.pitch-field input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-size:14px;box-sizing:border-box}
+.pitch-field input:focus{border-color:#FFD700;outline:none;box-shadow:0 0 8px rgba(255,215,0,0.3)}
+.empire-action-btn{width:100%;padding:14px;background:linear-gradient(135deg,#FFD700,#B8860B);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;margin-top:8px}
+.empire-action-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(255,215,0,0.4)}
+.pitch-deck{background:var(--bg2);border:2px solid #FFD700;border-radius:16px;overflow:hidden;margin-top:16px}
+.pitch-deck-header{background:linear-gradient(135deg,#FFD700,#B8860B);padding:20px;text-align:center}
+.pitch-deck-title{font-size:18px;font-weight:800;color:#000}
+.pitch-deck-sub{font-size:12px;color:rgba(0,0,0,0.6)}
+.pitch-section{padding:16px;border-bottom:1px solid var(--border)}
+.pitch-section:last-child{border-bottom:none}
+.pitch-section-name{font-size:14px;font-weight:700;color:#FFD700;margin-bottom:8px}
+.pitch-section-content{font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-line}
+
+/* ==================== CYBER OPS STYLES ==================== */
+.cyber-ops-tabs{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cyber-ops-tabs::-webkit-scrollbar{display:none}
+.cop-tab{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .3s}
+.cop-tab.active{background:linear-gradient(135deg,#00ff41,#008f11);color:#000;border-color:#00ff41;box-shadow:0 0 12px rgba(0,255,65,0.4)}
+.cop-panel{display:none;padding:0 16px 16px}
+.cop-panel.active{display:block}
+
+/* PenTest Tool Cards */
+.pentool-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s;position:relative;overflow:hidden}
+.pentool-card:hover{border-color:#00ff41;box-shadow:0 0 12px rgba(0,255,65,0.15)}
+.pentool-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:#00ff41}
+.pentool-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.pentool-name{font-size:16px;font-weight:700;color:#00ff41}
+.pentool-cat{font-size:10px;font-weight:600;color:#000;background:#00ff41;padding:3px 10px;border-radius:12px}
+.pentool-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.pentool-cmds{background:#0a0a0a;border:1px solid #333;border-radius:8px;padding:10px;margin-bottom:8px;font-family:'Courier New',monospace}
+.pentool-cmd{font-size:11px;color:#00ff41;padding:3px 0;border-bottom:1px solid #1a1a1a}
+.pentool-cmd:last-child{border-bottom:none}
+.pentool-cmd::before{content:'$ ';color:#666}
+.pentool-meta{display:flex;gap:12px;margin-top:8px}
+.pentool-diff{font-size:11px;padding:3px 10px;border-radius:8px}
+.pentool-diff.beginner{background:rgba(0,200,83,0.15);color:#00c853}
+.pentool-diff.intermediate{background:rgba(255,193,7,0.15);color:#ffc107}
+.pentool-diff.advanced{background:rgba(244,67,54,0.15);color:#f44336}
+.pentool-power{font-size:11px;color:var(--text2)}
+.pentool-tip{font-size:11px;color:var(--text2);background:rgba(0,255,65,0.05);border-left:2px solid #00ff41;padding:8px;margin-top:8px;line-height:1.4}
+
+/* OWASP Cards */
+.owasp-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.owasp-card:hover{border-color:#ff4444}
+.owasp-rank{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:linear-gradient(135deg,#ff4444,#cc0000);color:#fff;border-radius:50%;font-size:12px;font-weight:800;margin-right:8px}
+.owasp-name{font-size:15px;font-weight:700;color:var(--text);display:inline}
+.owasp-severity{font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px;float:right}
+.owasp-severity.critical{background:rgba(244,67,54,0.2);color:#f44336}
+.owasp-severity.high{background:rgba(255,152,0,0.2);color:#ff9800}
+.owasp-severity.medium{background:rgba(255,193,7,0.2);color:#ffc107}
+.owasp-desc{font-size:12px;color:var(--text2);line-height:1.5;margin:10px 0}
+.owasp-section{margin-top:10px}
+.owasp-section-title{font-size:11px;font-weight:700;color:#ff4444;margin-bottom:6px}
+.owasp-list{display:flex;flex-wrap:wrap;gap:6px}
+.owasp-item{background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.15);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--text2)}
+.owasp-prev{background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.15);color:#00c853}
+
+/* Threat Intel */
+.threat-section{margin-bottom:20px}
+.threat-section-title{font-size:14px;font-weight:700;color:#ff4444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.threat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;transition:all .3s}
+.threat-card:hover{border-color:#ff4444}
+.threat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.threat-name{font-size:14px;font-weight:700;color:var(--text)}
+.threat-danger{font-size:20px;font-weight:800;color:#ff4444}
+.threat-origin{font-size:11px;color:#00ff41;margin-bottom:4px}
+.threat-targets{font-size:11px;color:var(--text2)}
+.threat-ttps{font-size:11px;color:var(--text2);margin-top:4px;font-style:italic}
+.cve-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.cve-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.cve-id{font-size:13px;font-weight:700;font-family:'Courier New',monospace;color:#ff4444}
+.cve-cvss{font-size:12px;font-weight:800;padding:3px 10px;border-radius:8px}
+.cve-cvss.crit{background:rgba(244,67,54,0.2);color:#f44336}
+.cve-cvss.high{background:rgba(255,152,0,0.2);color:#ff9800}
+.cve-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.cve-desc{font-size:11px;color:var(--text2);line-height:1.4}
+.attack-vector{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.attack-vector:last-child{border-bottom:none}
+.av-emoji{font-size:24px}
+.av-info{flex:1}
+.av-name{font-size:13px;font-weight:700;color:var(--text)}
+.av-desc{font-size:10px;color:var(--text2)}
+.av-bar{width:100px;height:8px;background:rgba(255,68,68,0.1);border-radius:4px;overflow:hidden}
+.av-fill{height:100%;background:linear-gradient(90deg,#ff4444,#ff8800);border-radius:4px}
+.av-pct{font-size:12px;font-weight:700;color:#ff4444;min-width:40px;text-align:right}
+
+/* Forensics */
+.forensic-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.forensic-card:hover{border-color:#00bcd4}
+.forensic-emoji{font-size:32px;margin-bottom:8px}
+.forensic-name{font-size:15px;font-weight:700;color:#00bcd4}
+.forensic-cat{font-size:11px;color:var(--text2);margin-bottom:6px}
+.forensic-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.forensic-caps{display:flex;flex-wrap:wrap;gap:6px}
+.forensic-cap{background:rgba(0,188,212,0.1);border:1px solid rgba(0,188,212,0.2);border-radius:8px;padding:4px 10px;font-size:10px;color:#00bcd4}
+.forensic-use{font-size:11px;color:var(--text2);margin-top:8px;font-style:italic}
+
+/* Crypto */
+.crypto-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;transition:all .3s}
+.crypto-card:hover{border-color:#7c4dff}
+.crypto-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.crypto-name{font-size:14px;font-weight:700;color:var(--text)}
+.crypto-rec{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(0,200,83,0.15);color:#00c853}
+.crypto-rec.deprecated{background:rgba(244,67,54,0.15);color:#f44336}
+.crypto-rec.future{background:rgba(124,77,255,0.15);color:#7c4dff}
+.crypto-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.crypto-meta-item{text-align:center;background:rgba(124,77,255,0.06);border-radius:8px;padding:6px}
+.crypto-meta-val{font-size:12px;font-weight:700;color:#7c4dff}
+.crypto-meta-label{font-size:9px;color:var(--text2)}
+.crypto-use{font-size:11px;color:var(--text2);line-height:1.4}
+.protocol-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.protocol-name{font-size:14px;font-weight:700;color:#7c4dff}
+.protocol-status{font-size:11px;color:#00ff41;font-weight:600;margin-bottom:4px}
+.protocol-desc{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* IR */
+.ir-phase{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.ir-phase::before{content:attr(data-phase);position:absolute;top:0;right:0;background:#00ff41;color:#000;font-size:10px;font-weight:800;padding:4px 12px;border-radius:0 0 0 12px}
+.ir-phase-name{font-size:16px;font-weight:700;color:#00ff41;margin-bottom:4px}
+.ir-phase-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.ir-tasks{list-style:none;padding:0}
+.ir-tasks li{font-size:11px;color:var(--text2);padding:4px 0 4px 20px;position:relative}
+.ir-tasks li::before{content:'▸';position:absolute;left:0;color:#00ff41}
+.severity-card{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
+.severity-emoji{font-size:24px}
+.severity-level{font-size:13px;font-weight:700;color:var(--text)}
+.severity-response{font-size:11px;color:#ff4444;font-weight:600}
+.severity-desc{font-size:10px;color:var(--text2)}
+
+/* Compliance */
+.compliance-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.compliance-card:hover{border-color:#448aff}
+.compliance-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.compliance-name{font-size:15px;font-weight:700;color:#448aff}
+.compliance-diff{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(68,138,255,0.15);color:#448aff}
+.compliance-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.compliance-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.compliance-meta-item{background:rgba(68,138,255,0.06);border-radius:8px;padding:8px;text-align:center}
+.compliance-meta-val{font-size:12px;font-weight:700;color:#448aff}
+.compliance-meta-label{font-size:9px;color:var(--text2)}
+
+/* Certs */
+.cert-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.cert-card:hover{border-color:#FFD700}
+.cert-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cert-name{font-size:15px;font-weight:700;color:var(--text)}
+.cert-level{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px}
+.cert-level.entry{background:rgba(0,200,83,0.15);color:#00c853}
+.cert-level.intermediate{background:rgba(255,193,7,0.15);color:#ffc107}
+.cert-level.advanced{background:rgba(255,152,0,0.15);color:#ff9800}
+.cert-level.expert{background:rgba(244,67,54,0.15);color:#f44336}
+.cert-level.specialist{background:rgba(124,77,255,0.15);color:#7c4dff}
+.cert-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.cert-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cert-meta-item{background:rgba(255,215,0,0.06);border-radius:8px;padding:8px;text-align:center}
+.cert-meta-val{font-size:12px;font-weight:700;color:#FFD700}
+.cert-meta-label{font-size:9px;color:var(--text2)}
+
+/* Simulation */
+.sim-form{background:var(--bg2);border:1px solid #00ff41;border-radius:14px;padding:20px;margin-bottom:16px}
+.sim-form h3{color:#00ff41;margin-bottom:8px}
+.sim-form select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-size:14px;margin-bottom:12px}
+.cop-action-btn{width:100%;padding:14px;background:linear-gradient(135deg,#00ff41,#008f11);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s}
+.cop-action-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,255,65,0.4)}
+.sim-result{background:var(--bg2);border:2px solid #00ff41;border-radius:16px;overflow:hidden;margin-top:16px}
+.sim-header{background:linear-gradient(135deg,#00ff41,#008f11);padding:16px;text-align:center}
+.sim-title{font-size:16px;font-weight:800;color:#000}
+.sim-meta{font-size:11px;color:rgba(0,0,0,0.6)}
+.sim-step{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.sim-step:last-child{border-bottom:none}
+.sim-step-num{width:28px;height:28px;background:rgba(0,255,65,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#00ff41}
+.sim-step-action{flex:1;font-size:12px;color:var(--text)}
+.sim-step-status{font-size:12px;font-weight:600}
+.sim-step-dur{font-size:10px;color:var(--text2)}
+.sim-verdict{padding:16px;text-align:center;background:rgba(0,255,65,0.05)}
+.sim-verdict-score{font-size:22px;font-weight:800;color:#00ff41}
+.sim-verdict-text{font-size:12px;color:var(--text2);margin-top:4px}
+
+/* ==================== WEB3 STYLES ==================== */
+.w3-tabs{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.w3-tabs::-webkit-scrollbar{display:none}
+.w3-tab{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .3s}
+.w3-tab.active{background:linear-gradient(135deg,#7c4dff,#448aff);color:#fff;border-color:#7c4dff;box-shadow:0 0 12px rgba(124,77,255,0.4)}
+.w3-panel{display:none;padding:0 16px 16px}
+.w3-panel.active{display:block}
+
+/* NFT Cards */
+.nft-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;transition:all .3s;position:relative;overflow:hidden}
+.nft-card:hover{border-color:#7c4dff;box-shadow:0 0 20px rgba(124,77,255,0.2)}
+.nft-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7c4dff,#448aff,#00bcd4)}
+.nft-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.nft-name{font-size:17px;font-weight:700;color:var(--text)}
+.nft-chain{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(124,77,255,0.15);color:#7c4dff}
+.nft-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px}
+.nft-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.nft-stat{text-align:center;background:rgba(124,77,255,0.06);border-radius:10px;padding:8px 4px}
+.nft-stat-val{font-size:13px;font-weight:700;color:#7c4dff}
+.nft-stat-label{font-size:9px;color:var(--text2);text-transform:uppercase}
+.nft-utils{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.nft-util{background:rgba(124,77,255,0.08);border:1px solid rgba(124,77,255,0.2);border-radius:10px;padding:4px 10px;font-size:10px;color:#b388ff}
+.nft-rarity{display:flex;gap:8px;flex-wrap:wrap}
+.nft-rarity-tier{font-size:10px;color:var(--text2);background:rgba(124,77,255,0.05);border-radius:8px;padding:3px 8px}
+.nft-mint-btn{width:100%;padding:12px;background:linear-gradient(135deg,#7c4dff,#448aff);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;transition:all .3s}
+.nft-mint-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(124,77,255,0.4)}
+.mint-result{margin-top:10px;background:rgba(124,77,255,0.1);border:1px solid #7c4dff;border-radius:12px;padding:14px;text-align:center}
+.mint-result-title{font-size:14px;font-weight:700;color:#7c4dff;margin-bottom:4px}
+.mint-result-detail{font-size:11px;color:var(--text2)}
+
+/* Wallet */
+.wallet-section{margin-bottom:16px}
+.wallet-section-title{font-size:14px;font-weight:700;color:#7c4dff;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.chain-card{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;transition:all .3s}
+.chain-card:hover{border-color:#7c4dff}
+.chain-emoji{font-size:28px}
+.chain-name{font-size:14px;font-weight:700;color:var(--text)}
+.chain-type{font-size:10px;color:#7c4dff;font-weight:600}
+.chain-cap{font-size:11px;color:var(--text2)}
+.chain-use{font-size:10px;color:var(--text2)}
+.security-feat{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)}
+.security-feat:last-child{border-bottom:none}
+.security-feat::before{content:'🛡️';font-size:14px}
+
+/* Smart Contracts */
+.sc-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.sc-card:hover{border-color:#7c4dff}
+.sc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sc-name{font-size:15px;font-weight:700;color:var(--text)}
+.sc-lang{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(124,77,255,0.15);color:#7c4dff}
+.sc-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.sc-features{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.sc-feat{background:rgba(124,77,255,0.08);border-radius:8px;padding:4px 10px;font-size:10px;color:#b388ff}
+.sc-meta{display:flex;gap:12px;font-size:11px;color:var(--text2)}
+.sc-audit{font-weight:600}
+
+/* Virtual Venues */
+.vv-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;transition:all .3s;position:relative;overflow:hidden}
+.vv-card:hover{border-color:#7c4dff;transform:translateY(-2px)}
+.vv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.vv-name{font-size:17px;font-weight:700;color:var(--text)}
+.vv-type{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(124,77,255,0.15);color:#7c4dff}
+.vv-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.vv-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.vv-stat{text-align:center;background:rgba(124,77,255,0.06);border-radius:10px;padding:8px}
+.vv-stat-val{font-size:13px;font-weight:700;color:#7c4dff}
+.vv-stat-label{font-size:9px;color:var(--text2)}
+.vv-features{display:flex;flex-wrap:wrap;gap:6px}
+.vv-feat{background:rgba(124,77,255,0.08);border-radius:8px;padding:4px 10px;font-size:10px;color:#b388ff}
+
+/* Token Economy */
+.token-hero{background:linear-gradient(135deg,#1a0a3e,#2d1b69,#1a0a3e);border:2px solid #7c4dff;border-radius:16px;padding:24px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden}
+.token-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(124,77,255,0.1),transparent);animation:empireRotate 10s linear infinite}
+.token-name{font-size:24px;font-weight:800;color:#7c4dff;position:relative}
+.token-symbol{font-size:14px;color:#b388ff;position:relative}
+.token-price{font-size:32px;font-weight:800;color:#00ff41;margin:12px 0;position:relative}
+.token-mcap{font-size:12px;color:var(--text2);position:relative}
+.token-dist{margin-top:16px}
+.token-dist-bar{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.token-dist-label{font-size:12px;font-weight:600;color:var(--text);min-width:130px}
+.token-dist-track{flex:1;height:20px;background:rgba(124,77,255,0.08);border-radius:10px;overflow:hidden}
+.token-dist-fill{height:100%;background:linear-gradient(90deg,#7c4dff,#448aff);border-radius:10px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.token-dist-pct{font-size:10px;font-weight:700;color:#fff}
+.token-utils{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.token-util-item{background:rgba(124,77,255,0.1);border:1px solid rgba(124,77,255,0.2);border-radius:10px;padding:6px 12px;font-size:11px;color:#b388ff}
+
+/* DeFi */
+.defi-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.defi-card:hover{border-color:#7c4dff}
+.defi-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.defi-name{font-size:15px;font-weight:700;color:var(--text)}
+.defi-apy{font-size:14px;font-weight:800;color:#00ff41;background:rgba(0,255,65,0.1);padding:4px 12px;border-radius:12px}
+.defi-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.defi-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.defi-meta-item{background:rgba(124,77,255,0.06);border-radius:10px;padding:10px;text-align:center}
+.defi-meta-val{font-size:12px;font-weight:700;color:#7c4dff}
+.defi-meta-label{font-size:9px;color:var(--text2)}
+
+/* Explorer */
+.explorer-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.explorer-stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.explorer-stat-val{font-size:14px;font-weight:700;color:#7c4dff}
+.explorer-stat-label{font-size:9px;color:var(--text2)}
+.tx-card{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:6px;font-size:11px}
+.tx-hash{font-family:'Courier New',monospace;color:#7c4dff;min-width:80px}
+.tx-type{font-weight:600;color:var(--text);min-width:90px}
+.tx-amount{color:#00ff41;font-weight:600;min-width:80px}
+.tx-parties{color:var(--text2);flex:1}
+.tx-time{color:var(--text2);min-width:60px;text-align:right}
+
+/* Learn */
+.learn-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.learn-card:hover{border-color:#7c4dff}
+.learn-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.learn-topic{font-size:15px;font-weight:700;color:var(--text)}
+.learn-diff{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px}
+.learn-diff.beginner{background:rgba(0,200,83,0.15);color:#00c853}
+.learn-diff.intermediate{background:rgba(255,193,7,0.15);color:#ffc107}
+.learn-diff.advanced{background:rgba(244,67,54,0.15);color:#f44336}
+.learn-desc{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* ==================== INTEL STYLES ==================== */
+.intel-tabs{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.intel-tabs::-webkit-scrollbar{display:none}
+.intel-tab{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .3s}
+.intel-tab.active{background:linear-gradient(135deg,#ff6d00,#ff9100);color:#000;border-color:#ff6d00;box-shadow:0 0 12px rgba(255,109,0,0.4)}
+.intel-panel{display:none;padding:0 16px 16px}
+.intel-panel.active{display:block}
+
+/* OSINT Tool Cards */
+.osint-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s;border-left:3px solid #ff6d00}
+.osint-card:hover{border-color:#ff6d00}
+.osint-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.osint-name{font-size:16px;font-weight:700;color:#ff6d00}
+.osint-cat{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(255,109,0,0.15);color:#ff6d00}
+.osint-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.osint-caps{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.osint-cap{background:rgba(255,109,0,0.08);border:1px solid rgba(255,109,0,0.2);border-radius:8px;padding:4px 10px;font-size:10px;color:#ffab40}
+.osint-meta{display:flex;gap:12px;font-size:11px;color:var(--text2)}
+
+/* Threat Profiles */
+.profile-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.profile-card:hover{border-color:#ff6d00}
+.profile-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.profile-type{font-size:16px;font-weight:700;color:var(--text)}
+.profile-danger{font-size:18px;font-weight:800;color:#ff4444}
+.profile-section{margin-top:10px}
+.profile-section-title{font-size:11px;font-weight:700;color:#ff6d00;margin-bottom:6px}
+.profile-items{display:flex;flex-wrap:wrap;gap:6px}
+.profile-item{background:rgba(255,109,0,0.08);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--text2)}
+.profile-defense{font-size:11px;color:var(--text2);background:rgba(0,200,83,0.06);border-left:2px solid #00c853;padding:8px;margin-top:8px;line-height:1.4}
+
+/* Encrypted Comms */
+.comm-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.comm-card:hover{border-color:#ff6d00}
+.comm-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.comm-name{font-size:16px;font-weight:700;color:var(--text)}
+.comm-rating{font-size:14px;font-weight:800;color:#ff6d00}
+.comm-enc{font-size:11px;color:#ffab40;font-weight:600;margin-bottom:8px}
+.comm-features{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.comm-feat{background:rgba(255,109,0,0.08);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--text2)}
+.comm-platforms{font-size:11px;color:var(--text2);margin-bottom:6px}
+.comm-verdict{font-size:12px;font-weight:600;color:#ff6d00}
+
+/* Social Engineering */
+.soceng-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.soceng-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+.soceng-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.soceng-defense{font-size:11px;color:var(--text2);background:rgba(0,200,83,0.06);border-left:2px solid #00c853;padding:8px;line-height:1.4}
+.soceng-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.soceng-stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.soceng-stat-val{font-size:16px;font-weight:800;color:#ff4444}
+.soceng-stat-label{font-size:9px;color:var(--text2)}
+
+/* Privacy Tools */
+.priv-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.priv-card:hover{border-color:#ff6d00}
+.priv-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.priv-name{font-size:15px;font-weight:700;color:var(--text)}
+.priv-rec{font-size:11px;font-weight:600;color:#ff6d00}
+.priv-desc{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* Counter-Surveillance */
+.cs-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.cs-threat{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
+.cs-section{margin-top:8px}
+.cs-section-title{font-size:11px;font-weight:700;color:#ff6d00;margin-bottom:4px}
+.cs-items{display:flex;flex-wrap:wrap;gap:6px}
+.cs-item{background:rgba(255,109,0,0.08);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--text2)}
+.cs-counter{font-size:11px;color:var(--text2);background:rgba(255,109,0,0.05);border-left:2px solid #ff6d00;padding:8px;margin-top:8px;line-height:1.4}
+
+/* Breach Cards */
+.breach-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.breach-card:hover{border-color:#ff4444}
+.breach-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.breach-name{font-size:15px;font-weight:700;color:var(--text)}
+.breach-impact{font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px}
+.breach-impact.catastrophic{background:rgba(244,67,54,0.2);color:#f44336}
+.breach-impact.critical{background:rgba(255,152,0,0.2);color:#ff9800}
+.breach-impact.high{background:rgba(255,193,7,0.2);color:#ffc107}
+.breach-records{font-size:22px;font-weight:800;color:#ff4444;margin:6px 0}
+.breach-type{font-size:11px;color:var(--text2);margin-bottom:6px}
+.breach-lesson{font-size:11px;color:var(--text2);background:rgba(255,109,0,0.05);border-left:2px solid #ff6d00;padding:8px;line-height:1.4}
 </style>
 </head>
 <body>
@@ -595,6 +1191,47 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div class="gaming-panel" id="gaming-panel-fivem"><div id="fivem-servers-list"></div></div>
     <div class="gaming-panel" id="gaming-panel-blueprint"><div id="blueprint-list"></div></div>
   </div>
+  <!-- ==================== MUSIC PRODUCTION STUDIO PAGE ==================== -->
+  <div class="page" id="page-music">
+    <div class="page-header">
+      <div><div class="page-title">🎵 Music Studio</div><div class="page-sub">Production &bull; Royalties &bull; Distribution</div></div>
+      <div class="header-badge" style="background:linear-gradient(135deg,#1DB954,#191414)">🎧 Pro</div>
+    </div>
+    <div class="music-tabs">
+      <div class="music-tab active" onclick="switchMusicTab('beats',this)">🔊 Beats</div>
+      <div class="music-tab" onclick="switchMusicTab('daws',this)">🎛️ DAWs</div>
+      <div class="music-tab" onclick="switchMusicTab('theory',this)">🎼 Theory</div>
+      <div class="music-tab" onclick="switchMusicTab('royalties',this)">💰 Royalties</div>
+      <div class="music-tab" onclick="switchMusicTab('distro',this)">📡 Distro</div>
+      <div class="music-tab" onclick="switchMusicTab('equipment',this)">🎧 Gear</div>
+      <div class="music-tab" onclick="switchMusicTab('grammys',this)">🏆 Grammys</div>
+      <div class="music-tab" onclick="switchMusicTab('revenue',this)">📊 Revenue</div>
+    </div>
+    <div class="music-panel active" id="music-panel-beats">
+      <div class="music-search-bar">
+        <input type="text" id="beat-search" placeholder="🔍 Search genres, moods, producers..." oninput="searchBeats(this.value)">
+      </div>
+      <div id="beats-count" class="music-count"></div>
+      <div id="beats-grid"></div>
+    </div>
+    <div class="music-panel" id="music-panel-daws"><div id="daws-list"></div></div>
+    <div class="music-panel" id="music-panel-theory"><div id="theory-list"></div></div>
+    <div class="music-panel" id="music-panel-royalties"><div id="royalties-list"></div></div>
+    <div class="music-panel" id="music-panel-distro"><div id="distro-list"></div></div>
+    <div class="music-panel" id="music-panel-equipment"><div id="equipment-list"></div></div>
+    <div class="music-panel" id="music-panel-grammys"><div id="grammys-list"></div></div>
+    <div class="music-panel" id="music-panel-revenue">
+      <div class="revenue-calc-form">
+        <div class="gen-field">
+          <label>🎵 Total Streams</label>
+          <input type="number" id="rev-streams" placeholder="e.g. 1000000" value="1000000">
+        </div>
+        <button class="gen-submit-btn" style="background:linear-gradient(135deg,#1DB954,#191414)" onclick="calculateRevenue()">📊 Calculate Revenue</button>
+      </div>
+      <div id="revenue-output"></div>
+    </div>
+  </div>
+
   <!-- ==================== SCREENWRITING STUDIO PAGE ==================== -->
   <div class="page" id="page-writing">
     <div class="page-header">
@@ -705,6 +1342,231 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     </div>
   </div>
 
+  <!-- ==================== EMPIRE PAGE ==================== -->
+  <div class="page" id="page-empire">
+    <div class="page-header">
+      <div><div class="page-title">🏰 GOAT Royalty Empire</div><div class="page-sub">Business &bull; Merch &bull; Touring &bull; Contracts</div></div>
+    </div>
+
+    <!-- Empire Sub-tabs -->
+    <div class="empire-tabs">
+      <button class="empire-tab active" onclick="switchEmpireTab('brand')">👑 Brand</button>
+      <button class="empire-tab" onclick="switchEmpireTab('merch')">🛍️ Merch</button>
+      <button class="empire-tab" onclick="switchEmpireTab('venues')">🏟️ Venues</button>
+      <button class="empire-tab" onclick="switchEmpireTab('revenue')">💰 Revenue</button>
+      <button class="empire-tab" onclick="switchEmpireTab('contracts')">📝 Contracts</button>
+      <button class="empire-tab" onclick="switchEmpireTab('legal')">⚖️ Legal</button>
+      <button class="empire-tab" onclick="switchEmpireTab('social')">📱 Social</button>
+      <button class="empire-tab" onclick="switchEmpireTab('pitch')">🚀 Pitch</button>
+    </div>
+
+    <!-- Brand Panel -->
+    <div class="empire-panel active" id="empire-brand-panel">
+      <div id="brand-display"></div>
+    </div>
+
+    <!-- Merch Panel -->
+    <div class="empire-panel" id="empire-merch-panel">
+      <div id="merch-grid"></div>
+      <div class="merch-calculator" id="merch-calc-section" style="display:none;">
+        <h3>💵 Merch Revenue Calculator</h3>
+        <div class="calc-row">
+          <label>Item:</label>
+          <select id="merch-item-select"></select>
+        </div>
+        <div class="calc-row">
+          <label>Units to sell:</label>
+          <input type="number" id="merch-units" value="1000" min="1">
+        </div>
+        <button class="empire-action-btn" onclick="calculateMerchRevenue()">Calculate Revenue</button>
+        <div id="merch-calc-result"></div>
+      </div>
+    </div>
+
+    <!-- Venues Panel -->
+    <div class="empire-panel" id="empire-venues-panel">
+      <div id="venues-grid"></div>
+    </div>
+
+    <!-- Revenue Panel -->
+    <div class="empire-panel" id="empire-revenue-panel">
+      <div id="revenue-display"></div>
+    </div>
+
+    <!-- Contracts Panel -->
+    <div class="empire-panel" id="empire-contracts-panel">
+      <div id="contracts-grid"></div>
+    </div>
+
+    <!-- Legal Panel -->
+    <div class="empire-panel" id="empire-legal-panel">
+      <div id="legal-grid"></div>
+    </div>
+
+    <!-- Social Panel -->
+    <div class="empire-panel" id="empire-social-panel">
+      <div id="social-grid"></div>
+    </div>
+
+    <!-- Pitch Generator Panel -->
+    <div class="empire-panel" id="empire-pitch-panel">
+      <div class="pitch-form">
+        <h3>🚀 Investor Pitch Generator</h3>
+        <div class="pitch-field">
+          <label>Artist / Company Name:</label>
+          <input type="text" id="pitch-artist" placeholder="e.g. DJ Speedy">
+        </div>
+        <div class="pitch-field">
+          <label>Genre:</label>
+          <input type="text" id="pitch-genre" placeholder="e.g. Hip-Hop, R&B">
+        </div>
+        <div class="pitch-field">
+          <label>Monthly Streams:</label>
+          <input type="number" id="pitch-streams" placeholder="e.g. 500000" value="500000">
+        </div>
+        <div class="pitch-field">
+          <label>Social Followers:</label>
+          <input type="number" id="pitch-followers" placeholder="e.g. 100000" value="100000">
+        </div>
+        <div class="pitch-field">
+          <label>Funding Ask ($):</label>
+          <input type="number" id="pitch-funding" placeholder="e.g. 500000" value="500000">
+        </div>
+        <button class="empire-action-btn" onclick="generatePitch()">🚀 Generate Pitch Deck</button>
+      </div>
+      <div id="pitch-output"></div>
+    </div>
+  </div>
+
+  <!-- ==================== CYBER OPS PAGE ==================== -->
+  <div class="page" id="page-cyberops">
+    <div class="page-header">
+      <div><div class="page-title">🔐 Advanced Cyber Ops</div><div class="page-sub">PenTest &bull; OWASP &bull; Threat Intel &bull; Forensics</div></div>
+    </div>
+
+    <div class="cyber-ops-tabs">
+      <button class="cop-tab active" onclick="switchCyberOpsTab('pentest')">💀 PenTest</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('owasp')">🔟 OWASP</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('threats')">🎯 Threats</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('forensics')">🔬 Forensics</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('crypto')">🔐 Crypto</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('ir')">🚨 IR</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('compliance')">📋 Compliance</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('certs')">🏆 Certs</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('simulate')">⚔️ Simulate</button>
+    </div>
+
+    <!-- PenTest Panel -->
+    <div class="cop-panel active" id="cop-pentest-panel">
+      <div id="pentest-grid"></div>
+    </div>
+
+    <!-- OWASP Panel -->
+    <div class="cop-panel" id="cop-owasp-panel">
+      <div id="owasp-grid"></div>
+    </div>
+
+    <!-- Threats Panel -->
+    <div class="cop-panel" id="cop-threats-panel">
+      <div id="threats-display"></div>
+    </div>
+
+    <!-- Forensics Panel -->
+    <div class="cop-panel" id="cop-forensics-panel">
+      <div id="forensics-grid"></div>
+    </div>
+
+    <!-- Crypto Panel -->
+    <div class="cop-panel" id="cop-crypto-panel">
+      <div id="crypto-display"></div>
+    </div>
+
+    <!-- Incident Response Panel -->
+    <div class="cop-panel" id="cop-ir-panel">
+      <div id="ir-display"></div>
+    </div>
+
+    <!-- Compliance Panel -->
+    <div class="cop-panel" id="cop-compliance-panel">
+      <div id="compliance-grid"></div>
+    </div>
+
+    <!-- Certifications Panel -->
+    <div class="cop-panel" id="cop-certs-panel">
+      <div id="certs-grid"></div>
+    </div>
+
+    <!-- Attack Simulator Panel -->
+    <div class="cop-panel" id="cop-simulate-panel">
+      <div class="sim-form">
+        <h3>⚔️ Attack Simulation Engine</h3>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Run simulated attack scenarios to test your defenses.</p>
+        <select id="sim-scenario">
+          <option value="">🎲 Random Scenario</option>
+          <option value="Phishing">🎣 Phishing Campaign</option>
+          <option value="Active Directory">🏢 Active Directory Attack</option>
+          <option value="Web Application">🕸️ Web Application Exploit</option>
+          <option value="Ransomware">🔒 Ransomware Simulation</option>
+          <option value="Social Engineering">🎭 Social Engineering</option>
+        </select>
+        <button class="cop-action-btn" onclick="runSimulation()">⚔️ Launch Simulation</button>
+      </div>
+      <div id="sim-output"></div>
+    </div>
+  </div>
+
+  <!-- ==================== WEB3 PAGE ==================== -->
+  <div class="page" id="page-web3">
+    <div class="page-header">
+      <div><div class="page-title">🌐 Metaverse & Web3</div><div class="page-sub">NFTs &bull; Crypto &bull; DeFi &bull; Metaverse</div></div>
+    </div>
+
+    <div class="w3-tabs">
+      <button class="w3-tab active" onclick="switchWeb3Tab('nfts')">🖼️ NFTs</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('wallet')">💳 Wallet</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('contracts')">📜 Contracts</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('venues')">🏟️ Venues</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('token')">🐐 Token</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('defi')">💱 DeFi</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('explorer')">⛓️ Explorer</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('learn')">📚 Learn</button>
+    </div>
+
+    <div class="w3-panel active" id="w3-nfts-panel"><div id="nfts-grid"></div></div>
+    <div class="w3-panel" id="w3-wallet-panel"><div id="wallet-display"></div></div>
+    <div class="w3-panel" id="w3-contracts-panel"><div id="contracts-display"></div></div>
+    <div class="w3-panel" id="w3-venues-panel"><div id="vvenues-grid"></div></div>
+    <div class="w3-panel" id="w3-token-panel"><div id="token-display"></div></div>
+    <div class="w3-panel" id="w3-defi-panel"><div id="defi-grid"></div></div>
+    <div class="w3-panel" id="w3-explorer-panel"><div id="explorer-display"></div></div>
+    <div class="w3-panel" id="w3-learn-panel"><div id="learn-grid"></div></div>
+  </div>
+
+  <!-- ==================== INTEL PAGE ==================== -->
+  <div class="page" id="page-intel">
+    <div class="page-header">
+      <div><div class="page-title">📡 Intelligence Network</div><div class="page-sub">OSINT &bull; Threats &bull; Privacy &bull; Counter-Intel</div></div>
+    </div>
+
+    <div class="intel-tabs">
+      <button class="intel-tab active" onclick="switchIntelTab('osint')">🕸️ OSINT</button>
+      <button class="intel-tab" onclick="switchIntelTab('profiles')">🎯 Profiles</button>
+      <button class="intel-tab" onclick="switchIntelTab('comms')">🔒 Comms</button>
+      <button class="intel-tab" onclick="switchIntelTab('soceng')">🎭 SocEng</button>
+      <button class="intel-tab" onclick="switchIntelTab('privacy')">🛡️ Privacy</button>
+      <button class="intel-tab" onclick="switchIntelTab('countersurv')">📷 Counter</button>
+      <button class="intel-tab" onclick="switchIntelTab('breaches')">💀 Breaches</button>
+    </div>
+
+    <div class="intel-panel active" id="intel-osint-panel"><div id="osint-grid"></div></div>
+    <div class="intel-panel" id="intel-profiles-panel"><div id="profiles-grid"></div></div>
+    <div class="intel-panel" id="intel-comms-panel"><div id="comms-grid"></div></div>
+    <div class="intel-panel" id="intel-soceng-panel"><div id="soceng-display"></div></div>
+    <div class="intel-panel" id="intel-privacy-panel"><div id="privacy-grid"></div></div>
+    <div class="intel-panel" id="intel-countersurv-panel"><div id="countersurv-grid"></div></div>
+    <div class="intel-panel" id="intel-breaches-panel"><div id="breaches-grid"></div></div>
+  </div>
+
   <div class="page" id="page-feed">
     <div class="page-header">
       <div><div class="page-title">&#x1F4F1; Feed</div><div class="page-sub">Music &bull; Culture &bull; Love</div></div>
@@ -754,7 +1616,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div class="tab-item" onclick="switchTab('avatar')"><div class="tab-icon">&#x1F3AD;</div><span>Avatar</span></div>
     <div class="tab-item" onclick="switchTab('cyber')"><div class="tab-icon">&#x2694;&#xFE0F;</div><span>Cyber</span></div>
     <div class="tab-item" onclick="switchTab('gaming')"><div class="tab-icon">&#x1F3AE;</div><span>UE5</span></div>
+    <div class="tab-item" onclick="switchTab('music')"><div class="tab-icon">🎵</div><span>Music</span></div>
     <div class="tab-item" onclick="switchTab('writing')"><div class="tab-icon">✍️</div><span>Writing</span></div>
+    <div class="tab-item" onclick="switchTab('empire')"><div class="tab-icon">🏰</div><span>Empire</span></div>
+    <div class="tab-item" onclick="switchTab('cyberops')"><div class="tab-icon">🔐</div><span>CyberOps</span></div>
+    <div class="tab-item" onclick="switchTab('web3')"><div class="tab-icon">🌐</div><span>Web3</span></div>
+    <div class="tab-item" onclick="switchTab('intel')"><div class="tab-icon">📡</div><span>Intel</span></div>
     <div class="tab-item" onclick="switchTab('feed')"><div class="tab-icon">&#x1F4F1;</div><span>Feed</span></div>
     <div class="tab-item" onclick="switchTab('profile')"><div class="tab-icon">&#x1F451;</div><span>Profile</span></div>
   </div>

@@ -305,7 +305,7 @@ const HUB_MAP = {
   music:'creative', writing:'creative', avatar:'creative', gaming:'creative',
   cyber:'security', cyberops:'security', intel:'security', secstatus:'security',
   empire:'business', web3:'business',
-  profile:'me', faceid:'me'
+  profile:'me', faceid:'me', localstorage:'me'
 };
 let currentHub = 'dating';
 let currentSubPage = null;
@@ -2752,7 +2752,121 @@ switchTab = function(tab) {
   }
 };
 
-// ===================== SPLASH =====================
+// ===================== LOCAL STORAGE UI =====================
+let storageLoaded = false;
+
+async function loadStorageUI() {
+  if (storageLoaded) return;
+  storageLoaded = true;
+  
+  try {
+    // Load stats
+    const statsRes = await fetch('/api/storage/stats');
+    const statsData = await statsRes.json();
+    
+    // Load storage info
+    const infoRes = await fetch('/api/storage/info');
+    const infoData = await infoRes.json();
+    
+    // Load config
+    const configRes = await fetch('/api/storage/config');
+    const configData = await configRes.json();
+    
+    if (statsData.success) {
+      const s = statsData.stats;
+      document.getElementById('storage-overview').innerHTML = `
+        <div class="storage-card">
+          <div class="storage-card-title">📊 Storage Overview</div>
+          <div class="storage-row"><span class="storage-key">📂 Path</span><span class="storage-val">${s.storagePath}</span></div>
+          <div class="storage-row"><span class="storage-key">📁 Total Files</span><span class="storage-val">${s.totalFiles}</span></div>
+          <div class="storage-row"><span class="storage-key">💾 Used Space</span><span class="storage-val">${s.totalSize}</span></div>
+          <div class="storage-row"><span class="storage-key">📦 Max Storage</span><span class="storage-val">${s.maxStorage}</span></div>
+          <div class="storage-row"><span class="storage-key">📈 Usage</span><span class="storage-val">${s.usedPercent}</span></div>
+          <div class="storage-row"><span class="storage-key">💾 Last Save</span><span class="storage-val">${s.lastSave || 'Never'}</span></div>
+          <div class="storage-row"><span class="storage-key">📦 Last Backup</span><span class="storage-val">${s.lastBackup || 'Never'}</span></div>
+          <div class="storage-bar"><div class="storage-bar-fill" style="width:${Math.min(parseFloat(s.usedPercent), 100)}%"></div></div>
+          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+            <span style="font-size:10px;background:#00c853;color:#000;padding:3px 8px;border-radius:10px;font-weight:700">🔒 OFFLINE</span>
+            <span style="font-size:10px;background:#2196F3;color:#fff;padding:3px 8px;border-radius:10px;font-weight:700">🚫 NO TRACKING</span>
+            <span style="font-size:10px;background:#FF6D00;color:#000;padding:3px 8px;border-radius:10px;font-weight:700">💾 LOCAL ONLY</span>
+            <span style="font-size:10px;background:#7c4dff;color:#fff;padding:3px 8px;border-radius:10px;font-weight:700">🛡️ ZERO CLOUD</span>
+          </div>
+        </div>
+      `;
+    }
+    
+    if (infoData.success) {
+      const dirs = infoData.storage.directories.filter(d => d.name !== 'root');
+      document.getElementById('storage-dirs').innerHTML = `
+        <div class="storage-card">
+          <div class="storage-card-title">📁 Storage Directories</div>
+          ${dirs.map(d => `
+            <div class="storage-dir">
+              <span class="storage-dir-name">📂 ${d.name}</span>
+              <span class="storage-dir-info">${d.files} files · ${d.size}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    if (configData.success) {
+      const c = configData.config;
+      document.getElementById('storage-config').innerHTML = `
+        <div class="storage-card">
+          <div class="storage-card-title">⚙️ Configuration</div>
+          <div class="storage-row"><span class="storage-key">Version</span><span class="storage-val">${c.version}</span></div>
+          <div class="storage-row"><span class="storage-key">App</span><span class="storage-val">${c.appName}</span></div>
+          <div class="storage-row"><span class="storage-key">Owner</span><span class="storage-val">${c.owner}</span></div>
+          <div class="storage-row"><span class="storage-key">Auto-Save</span><span class="storage-val">${c.autoSave ? '✅ ON' : '❌ OFF'}</span></div>
+          <div class="storage-row"><span class="storage-key">Auto-Backup</span><span class="storage-val">${c.autoBackup ? '✅ ON' : '❌ OFF'}</span></div>
+          <div class="storage-row"><span class="storage-key">Offline Mode</span><span class="storage-val">${c.offlineMode ? '✅ ALWAYS' : '❌ OFF'}</span></div>
+          <div class="storage-row"><span class="storage-key">No Tracking</span><span class="storage-val">${c.noTracking ? '✅ GUARANTEED' : '❌'}</span></div>
+          <div class="storage-row"><span class="storage-key">No Analytics</span><span class="storage-val">${c.noAnalytics ? '✅ GUARANTEED' : '❌'}</span></div>
+          <div class="storage-row"><span class="storage-key">No External Calls</span><span class="storage-val">${c.noExternalCalls ? '✅ ZERO' : '❌'}</span></div>
+          <div class="storage-row"><span class="storage-key">Encryption</span><span class="storage-val">${c.encryptLocal ? '🔐 ON' : '🔓 Optional'}</span></div>
+        </div>
+      `;
+    }
+  } catch(e) {
+    document.getElementById('storage-overview').innerHTML = '<div style="color:#f44;padding:20px">Error loading storage: ' + e.message + '</div>';
+  }
+}
+
+async function doBackup() {
+  showToast('📦 Creating backup...', 'info');
+  try {
+    const res = await fetch('/api/storage/backup', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      showToast('✅ Backup complete: ' + data.backupId, 'success');
+      storageLoaded = false;
+      loadStorageUI();
+    }
+  } catch(e) { showToast('❌ Backup failed: ' + e.message, 'error'); }
+}
+
+async function doExport() {
+  showToast('📤 Exporting all data...', 'info');
+  try {
+    const res = await fetch('/api/storage/export', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      showToast('✅ Export saved: ' + data.exportId, 'success');
+      storageLoaded = false;
+      loadStorageUI();
+    }
+  } catch(e) { showToast('❌ Export failed: ' + e.message, 'error'); }
+}
+
+// Wire storage tab into switchTab chain
+const _origSwitchTabStorage = switchTab;
+switchTab = function(tab) {
+  _origSwitchTabStorage(tab);
+  if (tab === 'localstorage') loadStorageUI();
+};
+
+// ===================== SPLASH — OFFLINE EDITION (NO LOGIN) =====================
 window.addEventListener('load', () => {
   setTimeout(() => {
     const splash = document.getElementById('splash');
@@ -2760,11 +2874,12 @@ window.addEventListener('load', () => {
     splash.style.opacity = '0';
     setTimeout(() => {
       splash.style.display = 'none';
-      const auth = document.getElementById('auth-page');
-      auth.style.display = 'flex';
-      auth.style.flexDirection = 'column';
-      // Auto-demo login after 1.5s
-      setTimeout(() => doLogin(), 1500);
+      // OFFLINE MODE — Skip auth, go straight to app
+      document.getElementById('auth-page').style.display = 'none';
+      document.getElementById('main').style.display = 'flex';
+      document.getElementById('main').style.flexDirection = 'column';
+      showToast('🐐 GOAT Connect OFFLINE — Your data, your rules', 'success');
+      initApp();
     }, 500);
-  }, 2500);
+  }, 2000);
 });

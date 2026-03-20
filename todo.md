@@ -1,13 +1,33 @@
-# 🐐 GOAT ROYALTY APP — Tab Consolidation
+# 🐐 GOAT ROYALTY APP — FULL OFFLINE MODE
 
-## Consolidate 15 Tabs → 5 Main Tabs with Sub-Navigation
-- [x] Design the grouping structure (5 main categories)
-- [x] Rebuild the bottom tab bar HTML (5 main tabs)
-- [x] Create category landing pages with sub-nav grids
-- [x] Add CSS for new navigation system
-- [x] Update switchTab logic and category navigation JS
-- [x] Wire all existing pages into new category system
-- [x] Fix page-security ID conflict (renamed old to page-secstatus)
-- [x] Fix renderThreatIntel name collision
-- [x] Test all categories and sub-pages in browser
+## Phase 1: Core Offline Infrastructure
+- [ ] Create local storage engine (SQLite + JSON file store)
+- [ ] Create configurable storage path system (point to any drive)
+- [ ] Remove all external API dependencies
+- [ ] Remove all login/email/auth requirements
+- [ ] Auto-boot straight into the app
+
+## Phase 2: Local Data Engine
+- [ ] Bundle all celebrity data locally (no API calls)
+- [ ] Local music/beats data engine
+- [ ] Local security/cyber data engine
+- [ ] Local business/empire data engine
+- [ ] Local Web3 simulation engine (no blockchain needed)
+- [ ] Local OSINT reference database
+
+## Phase 3: Local File Storage & Export
+- [ ] Save all generated content to local filesystem
+- [ ] Import/export system for bulk data
+- [ ] Configurable storage path (10TB drive support)
+- [ ] Auto-save everything locally
+
+## Phase 4: Privacy & Zero-Dependency
+- [ ] Strip ALL external URLs/CDN references
+- [ ] No analytics, no tracking, no telemetry
+- [ ] All assets bundled locally
+- [ ] Add offline status indicator
+- [ ] Update server to show OFFLINE EDITION branding
+
+## Phase 5: Test & Push
+- [ ] Full offline test (no internet)
 - [ ] Push to GitHub

@@ -1,0 +1,602 @@
+/* ============================================================
+   GOAT STUDIO DAW - Professional Audio Workstation Styles
+   Part of SUPER GOAT ROYALTIES v4.0.0
+   ============================================================ */
+
+/* DAW Layout */
+.daw-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #0a0a0a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #1a1a2e;
+}
+
+/* Transport Bar */
+.daw-transport {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    background: linear-gradient(180deg, #1a1a2e, #12121e);
+    border-bottom: 1px solid #2a2a3e;
+    flex-shrink: 0;
+}
+
+.transport-controls {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.transport-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 6px;
+    background: #2a2a3e;
+    color: #aaa;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.transport-btn:hover {
+    background: #3a3a4e;
+    color: #fff;
+}
+
+.transport-btn.active {
+    background: #dc2626;
+    color: #fff;
+    box-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
+}
+
+.transport-btn.play-btn.active {
+    background: #16a34a;
+    box-shadow: 0 0 12px rgba(22, 163, 74, 0.4);
+}
+
+.transport-btn.record-btn.active {
+    background: #dc2626;
+    animation: pulse-record 1s ease-in-out infinite;
+}
+
+@keyframes pulse-record {
+    0%, 100% { box-shadow: 0 0 8px rgba(220, 38, 38, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.8); }
+}
+
+.transport-display {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 0 16px;
+}
+
+.transport-time {
+    font-family: 'Courier New', monospace;
+    font-size: 22px;
+    color: #4ade80;
+    background: #0a0a14;
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid #1a3a1a;
+    letter-spacing: 2px;
+    min-width: 160px;
+    text-align: center;
+}
+
+.transport-bpm {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.transport-bpm input {
+    width: 50px;
+    background: #0a0a14;
+    border: 1px solid #3a2a1a;
+    border-radius: 4px;
+    color: #f59e0b;
+    text-align: center;
+    padding: 4px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.transport-time-sig {
+    color: #818cf8;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 8px;
+    background: #0a0a14;
+    border: 1px solid #2a2a4e;
+    border-radius: 4px;
+}
+
+.transport-key {
+    color: #f472b6;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Toolbar */
+.daw-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: #111118;
+    border-bottom: 1px solid #1a1a2e;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.toolbar-group {
+    display: flex;
+    gap: 4px;
+    padding-right: 12px;
+    border-right: 1px solid #2a2a3e;
+    margin-right: 4px;
+}
+
+.toolbar-group:last-child {
+    border-right: none;
+}
+
+.toolbar-btn {
+    padding: 5px 10px;
+    border: 1px solid #2a2a3e;
+    border-radius: 4px;
+    background: transparent;
+    color: #888;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.toolbar-btn:hover {
+    background: #2a2a3e;
+    color: #fff;
+}
+
+.toolbar-btn.active {
+    background: #818cf8;
+    color: #fff;
+    border-color: #818cf8;
+}
+
+/* Timeline & Tracks */
+.daw-workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.track-headers {
+    width: 200px;
+    flex-shrink: 0;
+    background: #0e0e16;
+    border-right: 1px solid #1a1a2e;
+    overflow-y: auto;
+}
+
+.track-header {
+    height: 80px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #1a1a2e;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.track-header:hover {
+    background: #16161e;
+}
+
+.track-header.selected {
+    background: #1a1a30;
+    border-left: 3px solid #818cf8;
+}
+
+.track-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.track-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.track-controls {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.track-ctrl-btn {
+    width: 22px;
+    height: 18px;
+    border: 1px solid #333;
+    border-radius: 3px;
+    background: transparent;
+    color: #666;
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.track-ctrl-btn:hover { background: #333; color: #fff; }
+.track-ctrl-btn.muted { background: #dc2626; color: #fff; border-color: #dc2626; }
+.track-ctrl-btn.soloed { background: #f59e0b; color: #000; border-color: #f59e0b; }
+.track-ctrl-btn.armed { background: #dc2626; color: #fff; border-color: #dc2626; animation: pulse-record 1.5s infinite; }
+
+.track-volume {
+    width: 60px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #333;
+    border-radius: 2px;
+    outline: none;
+    margin-left: 4px;
+}
+
+.track-volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #818cf8;
+    cursor: pointer;
+}
+
+/* Timeline Canvas */
+.timeline-area {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+}
+
+.timeline-ruler {
+    height: 24px;
+    background: #111118;
+    border-bottom: 1px solid #2a2a3e;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+}
+
+.timeline-tracks {
+    position: relative;
+}
+
+.timeline-track {
+    height: 80px;
+    border-bottom: 1px solid #1a1a2e;
+    position: relative;
+    background: #0c0c14;
+}
+
+.timeline-track:nth-child(even) {
+    background: #0e0e18;
+}
+
+.audio-clip {
+    position: absolute;
+    top: 4px;
+    height: calc(100% - 8px);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: grab;
+    transition: box-shadow 0.2s;
+}
+
+.audio-clip:hover {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+.audio-clip .clip-name {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 2px 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.audio-clip .waveform {
+    height: calc(100% - 18px);
+    opacity: 0.6;
+}
+
+/* Playhead */
+.playhead {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: #dc2626;
+    z-index: 20;
+    pointer-events: none;
+    box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);
+}
+
+.playhead::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -5px;
+    width: 12px;
+    height: 10px;
+    background: #dc2626;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* Piano Roll */
+.piano-roll {
+    display: flex;
+    height: 300px;
+    background: #0a0a14;
+    border-top: 1px solid #2a2a3e;
+}
+
+.piano-keys {
+    width: 48px;
+    flex-shrink: 0;
+    background: #111;
+    overflow-y: auto;
+}
+
+.piano-key {
+    height: 16px;
+    border-bottom: 1px solid #222;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 4px;
+    font-size: 8px;
+    color: #666;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.piano-key:hover { background: #2a2a3e; }
+.piano-key.white { background: #1a1a1a; }
+.piano-key.black { background: #000; color: #555; }
+.piano-key.playing { background: #818cf8; color: #fff; }
+
+.piano-grid {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+}
+
+.note-block {
+    position: absolute;
+    height: 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: 0.85;
+    transition: opacity 0.1s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.note-block:hover {
+    opacity: 1;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+}
+
+/* Mixer */
+.daw-mixer {
+    display: flex;
+    gap: 2px;
+    padding: 12px;
+    background: #0a0a14;
+    border-top: 1px solid #2a2a3e;
+    overflow-x: auto;
+}
+
+.mixer-channel {
+    width: 70px;
+    flex-shrink: 0;
+    background: #12121e;
+    border-radius: 6px;
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.mixer-channel.master {
+    background: #1a1a30;
+    border: 1px solid #818cf8;
+    width: 80px;
+}
+
+.mixer-label {
+    font-size: 9px;
+    color: #888;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.mixer-fader-container {
+    height: 120px;
+    width: 8px;
+    background: #222;
+    border-radius: 4px;
+    position: relative;
+}
+
+.mixer-fader {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to top, #16a34a, #4ade80);
+    border-radius: 4px;
+    transition: height 0.1s;
+}
+
+.mixer-fader.hot {
+    background: linear-gradient(to top, #dc2626, #f59e0b, #4ade80);
+}
+
+.mixer-meter {
+    width: 4px;
+    height: 120px;
+    background: #111;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.mixer-meter-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to top, #16a34a 0%, #4ade80 60%, #f59e0b 80%, #dc2626 100%);
+    border-radius: 2px;
+    transition: height 0.05s;
+}
+
+.mixer-pan {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: conic-gradient(from -90deg, #333 0deg, #818cf8 180deg, #333 360deg);
+    position: relative;
+    cursor: pointer;
+}
+
+.mixer-pan::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 8px;
+    background: #fff;
+    border-radius: 1px;
+}
+
+.mixer-db {
+    font-size: 9px;
+    color: #4ade80;
+    font-family: 'Courier New', monospace;
+}
+
+/* Effect Rack */
+.effect-rack {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    padding: 8px;
+}
+
+.effect-slot {
+    width: 60px;
+    height: 28px;
+    background: #1a1a2e;
+    border: 1px solid #2a2a3e;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.effect-slot:hover { border-color: #818cf8; color: #aaa; }
+.effect-slot.active { background: #1a2a3e; border-color: #3b82f6; color: #3b82f6; }
+
+/* Cue List (Film Scoring) */
+.cue-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.cue-item {
+    display: grid;
+    grid-template-columns: 40px 1fr 120px 120px 80px;
+    gap: 8px;
+    padding: 6px 12px;
+    border-bottom: 1px solid #1a1a2e;
+    font-size: 11px;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.cue-item:hover {
+    background: #16161e;
+}
+
+.cue-number {
+    color: #f59e0b;
+    font-weight: 700;
+}
+
+.cue-name {
+    color: #e0e0e0;
+}
+
+.cue-timecode {
+    color: #4ade80;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+}
+
+.cue-status {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.cue-status.pending { background: #f59e0b22; color: #f59e0b; }
+.cue-status.recording { background: #dc262622; color: #dc2626; }
+.cue-status.complete { background: #16a34a22; color: #16a34a; }
+
+/* Responsive DAW */
+@media (max-width: 768px) {
+    .track-headers { width: 120px; }
+    .mixer-channel { width: 50px; }
+    .transport-display { gap: 8px; }
+    .transport-time { font-size: 16px; min-width: 120px; }
+    .daw-toolbar { padding: 6px 12px; }
+}

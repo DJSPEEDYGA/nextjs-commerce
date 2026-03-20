@@ -3,1068 +3,474 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUPER GOAT Royalties v3.2 - AI Model Hub</title>
+    <title>SUPER GOAT ROYALTIES v4.0 | The Greatest Of All Time Music Platform</title>
+    <link rel="stylesheet" href="css/goat-studio.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root {
-            --bg-primary: #0a0a1a;
-            --bg-secondary: #12122a;
-            --bg-card: #1a1a3e;
-            --bg-card-hover: #222255;
-            --border: #2a2a5a;
-            --text-primary: #e8e8ff;
-            --text-secondary: #a0a0cc;
-            --text-muted: #6a6a99;
-            --accent-purple: #8b5cf6;
-            --accent-cyan: #06b6d4;
-            --accent-gold: #f59e0b;
-            --accent-green: #22c55e;
-            --accent-red: #ef4444;
-            --accent-pink: #ec4899;
-            --accent-blue: #3b82f6;
-            --gradient-main: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
-            --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        /* ---- HEADER ---- */
-        .header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .logo h1 {
-            font-size: 20px;
-            background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-        .logo .version {
-            font-size: 11px;
-            background: var(--accent-purple);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-        .nav {
-            display: flex;
-            gap: 4px;
-        }
-        .nav button {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .nav button:hover { background: var(--bg-card); color: var(--text-primary); }
-        .nav button.active { background: var(--accent-purple); color: white; }
-        .mode-badge {
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            background: var(--accent-gold);
-            color: #000;
-            font-weight: 700;
-        }
-        .mode-badge.live { background: var(--accent-green); }
-        /* ---- STATS BAR ---- */
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            padding: 16px 24px;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-        }
-        .stat-item {
-            text-align: center;
-            padding: 8px;
-        }
-        .stat-value {
-            font-size: 22px;
-            font-weight: 800;
-            background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        /* ---- MAIN CONTENT ---- */
-        .main { padding: 24px; max-width: 1600px; margin: 0 auto; }
-        .section { display: none; }
-        .section.active { display: block; }
-        .section-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        /* ---- PROVIDER CARDS ---- */
-        .providers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 14px;
-            margin-bottom: 32px;
-        }
-        .provider-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-        .provider-card:hover {
-            border-color: var(--accent-purple);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(139,92,246,0.15);
-        }
-        .provider-card .icon { font-size: 28px; margin-bottom: 8px; }
-        .provider-card .name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-        .provider-card .desc { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4; }
-        .provider-card .meta { display: flex; gap: 8px; flex-wrap: wrap; }
-        .provider-card .badge {
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 8px;
-            background: rgba(139,92,246,0.2);
-            color: var(--accent-purple);
-            font-weight: 600;
-        }
-        .provider-card .badge.speed-ultra { background: rgba(239,68,68,0.2); color: var(--accent-red); }
-        .provider-card .badge.speed-fast { background: rgba(34,197,94,0.2); color: var(--accent-green); }
-        .provider-card .badge.local { background: rgba(245,158,11,0.2); color: var(--accent-gold); }
-        .provider-card .api-dot {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-red);
-        }
-        .provider-card .api-dot.connected { background: var(--accent-green); }
-        /* ---- CATEGORY TABS ---- */
-        .category-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .category-tab {
-            padding: 8px 16px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .category-tab:hover { border-color: var(--accent-purple); color: var(--text-primary); }
-        .category-tab.active { background: var(--accent-purple); border-color: var(--accent-purple); color: white; }
-        .category-tab .count { font-size: 11px; opacity: 0.7; }
-        /* ---- MODEL GRID ---- */
-        .models-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 14px;
-        }
-        .model-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            transition: all 0.2s;
-        }
-        .model-card:hover {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 4px 16px rgba(6,182,212,0.1);
-        }
-        .model-card .model-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-        }
-        .model-card .model-name { font-size: 14px; font-weight: 700; }
-        .model-card .model-author { font-size: 11px; color: var(--text-muted); }
-        .model-card .model-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.5; }
-        .model-card .model-meta {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-        .model-card .meta-item {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-        .model-card .meta-item span { color: var(--text-primary); font-weight: 600; }
-        .model-card .model-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
-        .model-card .tag {
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 6px;
-            background: rgba(6,182,212,0.15);
-            color: var(--accent-cyan);
-        }
-        .model-card .tag.trending { background: rgba(245,158,11,0.2); color: var(--accent-gold); }
-        .model-card .providers-row {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-        .model-card .prov-badge {
-            font-size: 9px;
-            padding: 2px 6px;
-            border-radius: 6px;
-            background: rgba(139,92,246,0.15);
-            color: var(--accent-purple);
-        }
-        /* ---- SEARCH BAR ---- */
-        .search-bar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            align-items: center;
-        }
-        .search-bar input {
-            flex: 1;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 16px;
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
-        }
-        .search-bar input:focus { border-color: var(--accent-purple); }
-        .search-bar input::placeholder { color: var(--text-muted); }
-        .search-bar select {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 12px;
-            color: var(--text-primary);
-            font-size: 13px;
-            outline: none;
-            cursor: pointer;
-        }
-        /* ---- LIGHTNING MODELS ---- */
-        .lightning-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 14px;
-        }
-        .lightning-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            transition: all 0.2s;
-        }
-        .lightning-card:hover {
-            border-color: var(--accent-gold);
-            box-shadow: 0 4px 16px rgba(245,158,11,0.1);
-        }
-        .lightning-card .lm-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-        .lightning-card .lm-provider { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
-        .lightning-card .lm-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-        .lightning-card .lm-stat { font-size: 11px; color: var(--text-muted); }
-        .lightning-card .lm-stat span { color: var(--accent-gold); font-weight: 700; }
-        .lightning-card .lm-tags { display: flex; gap: 4px; flex-wrap: wrap; }
-        .lightning-card .lm-tag {
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 6px;
-            background: rgba(245,158,11,0.15);
-            color: var(--accent-gold);
-        }
-        /* ---- CHAT SECTION ---- */
-        .chat-container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 16px;
-            height: calc(100vh - 240px);
-            min-height: 500px;
-        }
-        .chat-sidebar {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            overflow-y: auto;
-        }
-        .chat-sidebar h3 { font-size: 14px; margin-bottom: 12px; color: var(--text-secondary); }
-        .chat-sidebar .provider-select, .chat-sidebar .model-select {
-            width: 100%;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 8px;
-            color: var(--text-primary);
-            font-size: 12px;
-            margin-bottom: 12px;
-            outline: none;
-        }
-        .chat-main {
-            display: flex;
-            flex-direction: column;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-        }
-        .chat-message {
-            margin-bottom: 16px;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-message.user { align-items: flex-end; }
-        .chat-message .bubble {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 13px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-        .chat-message.user .bubble {
-            background: var(--accent-purple);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-        .chat-message.assistant .bubble {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border-bottom-left-radius: 4px;
-        }
-        .chat-message .msg-meta { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
-        .chat-input-row {
-            display: flex;
-            gap: 8px;
-            padding: 12px 16px;
-            border-top: 1px solid var(--border);
-        }
-        .chat-input-row input {
-            flex: 1;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 14px;
-            color: var(--text-primary);
-            font-size: 13px;
-            outline: none;
-        }
-        .chat-input-row input:focus { border-color: var(--accent-purple); }
-        .chat-input-row button {
-            background: var(--gradient-main);
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .chat-input-row button:hover { opacity: 0.9; }
-        /* ---- DASHBOARD ---- */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px;
-        }
-        .dash-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-        }
-        .dash-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: var(--text-secondary); }
-        .dash-card .dash-value { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
-        .dash-card .dash-sub { font-size: 12px; color: var(--text-muted); }
-        .revenue-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        .revenue-bar .platform-name { font-size: 12px; width: 90px; color: var(--text-secondary); }
-        .revenue-bar .bar-bg {
-            flex: 1;
-            height: 8px;
-            background: var(--bg-secondary);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .revenue-bar .bar-fill {
-            height: 100%;
-            border-radius: 4px;
-            background: var(--gradient-main);
-            transition: width 0.5s;
-        }
-        .revenue-bar .amount { font-size: 12px; color: var(--accent-green); width: 70px; text-align: right; }
-        /* ---- LOCAL RUNNERS ---- */
-        .local-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
-        }
-        .local-panel h3 { font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .local-runners {
-            display: flex;
-            gap: 16px;
-        }
-        .runner-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            background: var(--bg-secondary);
-            font-size: 13px;
-        }
-        .runner-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-red);
-        }
-        .runner-dot.active { background: var(--accent-green); }
-        /* ---- AGENTS ---- */
-        .agents-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 14px;
-        }
-        .agent-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-        }
-        .agent-card .agent-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-        .agent-card .agent-status {
-            display: inline-block;
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 8px;
-            background: rgba(34,197,94,0.2);
-            color: var(--accent-green);
-            margin-bottom: 8px;
-        }
-        .agent-card .agent-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
-        /* ---- SCROLLBAR ---- */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
-        /* ---- RESPONSIVE ---- */
-        @media (max-width: 768px) {
-            .chat-container { grid-template-columns: 1fr; }
-            .chat-sidebar { display: none; }
-            .stats-bar { grid-template-columns: repeat(3, 1fr); }
-            .providers-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-        }
+:root {
+    --bg-primary: #060608;
+    --bg-secondary: #0c0c14;
+    --bg-tertiary: #12121e;
+    --bg-card: #16161e;
+    --bg-elevated: #1a1a2e;
+    --border: #1e1e30;
+    --border-light: #2a2a3e;
+    --text-primary: #f0f0f0;
+    --text-secondary: #a0a0b0;
+    --text-muted: #666680;
+    --red: #dc2626;
+    --red-glow: rgba(220,38,38,0.3);
+    --gold: #f59e0b;
+    --gold-glow: rgba(245,158,11,0.3);
+    --green: #16a34a;
+    --green-light: #4ade80;
+    --blue: #3b82f6;
+    --purple: #818cf8;
+    --pink: #f472b6;
+    --cyan: #22d3ee;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg-primary); color:var(--text-primary); min-height:100vh; overflow-x:hidden; }
+
+.top-nav { display:flex; align-items:center; justify-content:space-between; padding:0 24px; height:56px; background:linear-gradient(180deg,#12121e,#0a0a14); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:1000; }
+.nav-brand { display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px; }
+.nav-brand .goat-icon { font-size:24px; }
+.nav-brand .version { font-size:10px; color:var(--gold); background:rgba(245,158,11,0.15); padding:2px 8px; border-radius:10px; }
+.nav-links { display:flex; gap:2px; }
+.nav-link { padding:8px 14px; border-radius:var(--radius-sm); color:var(--text-secondary); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; border:none; background:none; white-space:nowrap; }
+.nav-link:hover { color:#fff; background:var(--bg-elevated); }
+.nav-link.active { color:#fff; background:var(--red); }
+.nav-status { display:flex; align-items:center; gap:12px; font-size:11px; }
+.status-dot { width:8px; height:8px; border-radius:50%; background:var(--green-light); box-shadow:0 0 6px var(--green-light); animation:pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1}50%{opacity:0.5} }
+
+.stats-bar { display:flex; gap:0; padding:0 24px; background:var(--bg-secondary); border-bottom:1px solid var(--border); overflow-x:auto; }
+.stat-item { padding:10px 20px; text-align:center; border-right:1px solid var(--border); flex-shrink:0; }
+.stat-item:last-child { border-right:none; }
+.stat-value { font-size:18px; font-weight:800; color:var(--gold); }
+.stat-label { font-size:9px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+
+.main-content { padding:20px 24px; }
+.section { display:none; }
+.section.active { display:block; }
+.section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+.section-title { font-size:24px; font-weight:800; display:flex; align-items:center; gap:10px; }
+.section-subtitle { color:var(--text-muted); font-size:13px; margin-top:4px; }
+
+.card-grid { display:grid; gap:16px; }
+.card-grid.cols-2 { grid-template-columns:repeat(auto-fill,minmax(400px,1fr)); }
+.card-grid.cols-3 { grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card-grid.cols-4 { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); }
+.card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; transition:all 0.3s; }
+.card:hover { border-color:var(--border-light); transform:translateY(-2px); box-shadow:var(--shadow); }
+.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.card-title { font-size:15px; font-weight:700; }
+.card-desc { font-size:12px; color:var(--text-secondary); line-height:1.5; }
+
+.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; text-transform:uppercase; }
+.badge-red { background:rgba(220,38,38,0.15); color:var(--red); }
+.badge-gold { background:rgba(245,158,11,0.15); color:var(--gold); }
+.badge-green { background:rgba(22,163,74,0.15); color:var(--green-light); }
+.badge-blue { background:rgba(59,130,246,0.15); color:var(--blue); }
+.badge-purple { background:rgba(129,140,248,0.15); color:var(--purple); }
+.badge-pink { background:rgba(244,114,182,0.15); color:var(--pink); }
+
+.btn { padding:8px 16px; border-radius:var(--radius-sm); font-size:12px; font-weight:700; cursor:pointer; border:none; transition:all 0.2s; }
+.btn-primary { background:var(--red); color:#fff; }
+.btn-primary:hover { background:#b91c1c; box-shadow:0 0 16px var(--red-glow); }
+.btn-gold { background:var(--gold); color:#000; }
+.btn-gold:hover { background:#d97706; }
+.btn-outline { background:transparent; border:1px solid var(--border-light); color:var(--text-secondary); }
+.btn-outline:hover { background:var(--bg-elevated); color:#fff; }
+.btn-sm { padding:5px 10px; font-size:11px; }
+
+.search-bar { display:flex; gap:8px; margin-bottom:16px; }
+.search-input { flex:1; padding:10px 16px; background:var(--bg-tertiary); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-primary); font-size:13px; outline:none; transition:border-color 0.2s; }
+.search-input:focus { border-color:var(--purple); }
+.filter-tabs { display:flex; gap:4px; margin-bottom:16px; flex-wrap:wrap; }
+.filter-tab { padding:6px 14px; border-radius:20px; font-size:11px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:transparent; color:var(--text-muted); transition:all 0.2s; }
+.filter-tab:hover { border-color:var(--purple); color:var(--text-primary); }
+.filter-tab.active { background:var(--purple); border-color:var(--purple); color:#fff; }
+
+.data-table { width:100%; border-collapse:collapse; font-size:12px; }
+.data-table th { text-align:left; padding:10px 12px; background:var(--bg-tertiary); color:var(--text-muted); font-size:10px; text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); position:sticky; top:0; }
+.data-table td { padding:10px 12px; border-bottom:1px solid var(--border); color:var(--text-secondary); }
+.data-table tr:hover td { background:var(--bg-elevated); color:var(--text-primary); }
+
+.notification-panel { position:fixed; right:20px; top:70px; width:320px; max-height:400px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); z-index:999; display:none; overflow:hidden; }
+.notification-panel.open { display:block; }
+.notification-header { padding:12px 16px; border-bottom:1px solid var(--border); font-weight:700; font-size:13px; display:flex; justify-content:space-between; }
+.notification-list { max-height:340px; overflow-y:auto; }
+.notification-item { padding:10px 16px; border-bottom:1px solid var(--border); display:flex; gap:10px; align-items:flex-start; }
+.notification-item:hover { background:var(--bg-elevated); }
+.notification-text { font-size:12px; color:var(--text-secondary); }
+.notification-time { font-size:10px; color:var(--text-muted); margin-top:2px; }
+
+.chat-container { display:flex; flex-direction:column; height:500px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.chat-messages { flex:1; overflow-y:auto; padding:16px; }
+.chat-msg { margin-bottom:12px; display:flex; gap:10px; }
+.chat-msg.user { justify-content:flex-end; }
+.chat-msg.user .msg-bubble { background:var(--red); color:#fff; border-radius:12px 12px 2px 12px; }
+.chat-msg.ai .msg-bubble { background:var(--bg-elevated); border-radius:12px 12px 12px 2px; }
+.msg-bubble { padding:10px 14px; max-width:75%; font-size:13px; line-height:1.5; }
+.chat-input-area { display:flex; gap:8px; padding:12px 16px; border-top:1px solid var(--border); background:var(--bg-tertiary); }
+.chat-input { flex:1; padding:10px 14px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-primary); font-size:13px; outline:none; }
+.chat-input:focus { border-color:var(--purple); }
+
+.revenue-bar-container { margin-bottom:12px; }
+.revenue-bar-label { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+.revenue-bar-track { height:8px; background:var(--bg-tertiary); border-radius:4px; overflow:hidden; }
+.revenue-bar-fill { height:100%; border-radius:4px; transition:width 1s ease; }
+
+.daw-section-wrapper { background:var(--bg-secondary); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; }
+
+.loading-spinner { display:inline-block; width:20px; height:20px; border:2px solid var(--border-light); border-top-color:var(--red); border-radius:50%; animation:spin 0.8s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+@media (max-width:768px) {
+    .nav-links { overflow-x:auto; }
+    .card-grid.cols-2,.card-grid.cols-3,.card-grid.cols-4 { grid-template-columns:1fr; }
+    .top-nav { padding:0 12px; }
+    .main-content { padding:12px; }
+    .section-title { font-size:18px; }
+}
     </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="header">
-    <div class="logo">
-        <h1>🐐 SUPER GOAT Royalties</h1>
-        <span class="version">v3.2</span>
+<nav class="top-nav">
+    <div class="nav-brand">
+        <span class="goat-icon">🐐</span>
+        <span>SUPER GOAT ROYALTIES</span>
+        <span class="version">v4.0</span>
     </div>
-    <nav class="nav">
-        <button class="active" onclick="showSection('models')">🤗 Model Hub</button>
-        <button onclick="showSection('lightning')">⚡ Lightning AI</button>
-        <button onclick="showSection('chat')">💬 AI Chat</button>
-        <button onclick="showSection('dashboard')">📊 Dashboard</button>
-        <button onclick="showSection('agents')">🤖 Agents</button>
-    </nav>
-    <span class="mode-badge" id="modeBadge">DEMO</span>
-</header>
+    <div class="nav-links">
+        <button class="nav-link active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</button>
+        <button class="nav-link" data-section="daw"><i class="fas fa-sliders-h"></i> GOAT Studio</button>
+        <button class="nav-link" data-section="catalog"><i class="fas fa-music"></i> Catalog</button>
+        <button class="nav-link" data-section="models"><i class="fas fa-cube"></i> Model Hub</button>
+        <button class="nav-link" data-section="chat"><i class="fas fa-comments"></i> AI Chat</button>
+        <button class="nav-link" data-section="agents"><i class="fas fa-robot"></i> Agents</button>
+        <button class="nav-link" data-section="api-docs"><i class="fas fa-book"></i> API</button>
+    </div>
+    <div class="nav-status">
+        <div class="status-dot"></div>
+        <span id="wsStatus">Connecting...</span>
+        <button class="btn btn-sm btn-outline" onclick="toggleNotifications()"><i class="fas fa-bell"></i> <span id="notifCount">0</span></button>
+    </div>
+</nav>
 
-<!-- STATS BAR -->
 <div class="stats-bar">
-    <div class="stat-item">
-        <div class="stat-value" id="statTotal">63</div>
-        <div class="stat-label">Total AI Models</div>
+    <div class="stat-item"><div class="stat-value" id="statModels">63</div><div class="stat-label">AI Models</div></div>
+    <div class="stat-item"><div class="stat-value" id="statProviders">16</div><div class="stat-label">HF Providers</div></div>
+    <div class="stat-item"><div class="stat-value" id="statLightning">14</div><div class="stat-label">Lightning</div></div>
+    <div class="stat-item"><div class="stat-value" id="statCatalog">0</div><div class="stat-label">Catalog Works</div></div>
+    <div class="stat-item"><div class="stat-value" id="statRevenue">$0</div><div class="stat-label">Revenue</div></div>
+    <div class="stat-item"><div class="stat-value" id="statSounds">29</div><div class="stat-label">DAW Sounds</div></div>
+    <div class="stat-item"><div class="stat-value" id="statUptime">0s</div><div class="stat-label">Uptime</div></div>
+</div>
+
+<div class="notification-panel" id="notifPanel">
+    <div class="notification-header"><span><i class="fas fa-bell"></i> Notifications</span><button class="btn btn-sm btn-outline" onclick="clearNotifications()">Clear</button></div>
+    <div class="notification-list" id="notifList"></div>
+</div>
+
+<div class="main-content">
+
+<!-- DASHBOARD -->
+<div class="section active" id="section-dashboard">
+    <div class="section-header">
+        <div><div class="section-title">📊 Dashboard</div><div class="section-subtitle">Harvey L. Miller (DJ Speedy) — Real-time royalty analytics & AI insights</div></div>
+        <button class="btn btn-primary" onclick="refreshDashboard()"><i class="fas fa-sync"></i> Refresh</button>
     </div>
-    <div class="stat-item">
-        <div class="stat-value" id="statProviders">16</div>
-        <div class="stat-label">HF Providers</div>
+    <div class="card-grid cols-4" style="margin-bottom:20px">
+        <div class="card" style="border-left:3px solid var(--gold)"><div class="card-header"><span class="card-title">Total Revenue</span><span style="font-size:20px">💰</span></div><div style="font-size:28px;font-weight:800;color:var(--gold)" id="dashRevenue">$233,600</div><div style="color:var(--green-light);font-size:12px;margin-top:4px"><i class="fas fa-arrow-up"></i> <span id="dashGrowth">23.5</span>% growth</div></div>
+        <div class="card" style="border-left:3px solid var(--purple)"><div class="card-header"><span class="card-title">ASCAP Works</span><span style="font-size:20px">📀</span></div><div style="font-size:28px;font-weight:800;color:var(--purple)" id="dashWorks">438</div><div style="color:var(--text-muted);font-size:12px;margin-top:4px">Registered compositions</div></div>
+        <div class="card" style="border-left:3px solid var(--cyan)"><div class="card-header"><span class="card-title">Total Streams</span><span style="font-size:20px">🎧</span></div><div style="font-size:28px;font-weight:800;color:var(--cyan)">8.5M</div><div style="color:var(--text-muted);font-size:12px;margin-top:4px">Across all platforms</div></div>
+        <div class="card" style="border-left:3px solid var(--pink)"><div class="card-header"><span class="card-title">NFT Portfolio</span><span style="font-size:20px">🖼️</span></div><div style="font-size:28px;font-weight:800;color:var(--pink)" id="dashNFT">$156,000</div><div style="color:var(--text-muted);font-size:12px;margin-top:4px">4 items, 3 chains</div></div>
     </div>
-    <div class="stat-item">
-        <div class="stat-value" id="statLightning">14</div>
-        <div class="stat-label">Lightning Models</div>
-    </div>
-    <div class="stat-item">
-        <div class="stat-value" id="statRegistry">40</div>
-        <div class="stat-label">Registry Models</div>
-    </div>
-    <div class="stat-item">
-        <div class="stat-value" id="statRevenue">$233K</div>
-        <div class="stat-label">Total Revenue</div>
-    </div>
-    <div class="stat-item">
-        <div class="stat-value" id="statCategories">6</div>
-        <div class="stat-label">Categories</div>
+    <div class="card-grid cols-2">
+        <div class="card"><div class="card-title" style="margin-bottom:16px">💵 Platform Revenue</div>
+            <div class="revenue-bar-container"><div class="revenue-bar-label"><span>Spotify</span><span style="color:var(--gold)">$89,200</span></div><div class="revenue-bar-track"><div class="revenue-bar-fill" style="width:76%;background:linear-gradient(90deg,#1DB954,#4ade80)"></div></div></div>
+            <div class="revenue-bar-container"><div class="revenue-bar-label"><span>Apple Music</span><span style="color:var(--gold)">$67,800</span></div><div class="revenue-bar-track"><div class="revenue-bar-fill" style="width:58%;background:linear-gradient(90deg,#fc3c44,#f472b6)"></div></div></div>
+            <div class="revenue-bar-container"><div class="revenue-bar-label"><span>YouTube</span><span style="color:var(--gold)">$45,300</span></div><div class="revenue-bar-track"><div class="revenue-bar-fill" style="width:39%;background:linear-gradient(90deg,#ff0000,#f59e0b)"></div></div></div>
+            <div class="revenue-bar-container"><div class="revenue-bar-label"><span>Amazon Music</span><span style="color:var(--gold)">$18,900</span></div><div class="revenue-bar-track"><div class="revenue-bar-fill" style="width:16%;background:linear-gradient(90deg,#00a8e1,#22d3ee)"></div></div></div>
+            <div class="revenue-bar-container"><div class="revenue-bar-label"><span>Tidal</span><span style="color:var(--gold)">$12,400</span></div><div class="revenue-bar-track"><div class="revenue-bar-fill" style="width:11%;background:linear-gradient(90deg,#000,#666)"></div></div></div>
+        </div>
+        <div class="card"><div class="card-title" style="margin-bottom:16px">🤖 AI System Status</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>Lightning AI</span><span class="badge badge-green">14 models</span></div>
+                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>HuggingFace</span><span class="badge badge-blue">16 providers</span></div>
+                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>Model Registry</span><span class="badge badge-purple">40 models</span></div>
+                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>NVIDIA NIM</span><span class="badge badge-green">Active</span></div>
+                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>RAG System</span><span class="badge badge-green">Active</span></div>
+                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>Agents</span><span class="badge badge-green">Running</span></div>
+                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>GOAT Studio</span><span class="badge badge-gold">Active</span></div>
+                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>ASCAP Catalog</span><span class="badge badge-purple" id="dashCatalogBadge">438 works</span></div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- MAIN CONTENT -->
-<main class="main">
-
-    <!-- ==================== MODEL HUB ==================== -->
-    <section id="sec-models" class="section active">
-        <h2 class="section-title">🤗 HuggingFace Model Hub — <span style="color:var(--accent-cyan)">16 Providers · 40+ Open-Source Models</span></h2>
-
-        <!-- Inference Providers -->
-        <h3 style="font-size:16px; margin-bottom:12px; color:var(--text-secondary);">☁️ Inference Providers</h3>
-        <div class="providers-grid" id="providersGrid"></div>
-
-        <!-- Local Runners -->
-        <div class="local-panel">
-            <h3>🖥️ Local Runners</h3>
-            <div class="local-runners" id="localRunners">
-                <div class="runner-status"><div class="runner-dot" id="ollamaDot"></div>🦙 Ollama — <span id="ollamaStatus">Checking...</span></div>
-                <div class="runner-status"><div class="runner-dot" id="vllmDot"></div>🚄 vLLM — <span id="vllmStatus">Checking...</span></div>
+<!-- GOAT STUDIO DAW -->
+<div class="section" id="section-daw">
+    <div class="section-header">
+        <div><div class="section-title">🎹 GOAT Studio <span class="badge badge-red">PRO</span></div><div class="section-subtitle">Professional DAW — Recording, Mixing, Mastering & Film/TV Scoring</div></div>
+        <div style="display:flex;gap:8px">
+            <button class="btn btn-outline btn-sm" onclick="dawNewProject()"><i class="fas fa-file"></i> New</button>
+            <button class="btn btn-outline btn-sm" onclick="dawLoadProjects()"><i class="fas fa-folder-open"></i> Open</button>
+            <button class="btn btn-primary btn-sm" onclick="dawSave()"><i class="fas fa-save"></i> Save</button>
+        </div>
+    </div>
+    <div class="daw-section-wrapper">
+        <div class="daw-transport">
+            <div class="transport-controls">
+                <button class="transport-btn" onclick="dawRewind()" title="Rewind"><i class="fas fa-backward"></i></button>
+                <button class="transport-btn" onclick="dawStop()" title="Stop"><i class="fas fa-stop"></i></button>
+                <button class="transport-btn play-btn" id="dawPlayBtn" onclick="dawTogglePlay()" title="Play"><i class="fas fa-play"></i></button>
+                <button class="transport-btn record-btn" id="dawRecBtn" onclick="dawToggleRecord()" title="Record"><i class="fas fa-circle"></i></button>
+                <button class="transport-btn" onclick="dawForward()" title="Forward"><i class="fas fa-forward"></i></button>
+                <button class="transport-btn" id="dawLoopBtn" onclick="dawToggleLoop()" title="Loop"><i class="fas fa-redo"></i></button>
+                <button class="transport-btn" id="dawMetronomeBtn" onclick="dawToggleMetronome()" title="Metronome"><i class="fas fa-drum"></i></button>
+            </div>
+            <div class="transport-display">
+                <div class="transport-time" id="dawTimecode">01:00:00:00</div>
+                <div class="transport-bpm"><span>BPM</span><input type="number" id="dawBpm" value="120" min="20" max="300" onchange="dawSetBPM(this.value)"></div>
+                <div class="transport-time-sig">4/4</div>
+                <div class="transport-key">C minor</div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+                <button class="btn btn-sm btn-outline" onclick="dawShowView('arrange')"><i class="fas fa-bars"></i> Arrange</button>
+                <button class="btn btn-sm btn-outline" onclick="dawShowView('pianoroll')"><i class="fas fa-th"></i> Piano Roll</button>
+                <button class="btn btn-sm btn-outline" onclick="dawShowView('mixer')"><i class="fas fa-sliders-h"></i> Mixer</button>
+                <button class="btn btn-sm btn-outline" onclick="dawShowView('scoring')"><i class="fas fa-film"></i> Scoring</button>
             </div>
         </div>
+        <div class="daw-toolbar">
+            <div class="toolbar-group">
+                <button class="toolbar-btn active" onclick="dawSetTool(this,'select')"><i class="fas fa-mouse-pointer"></i> Select</button>
+                <button class="toolbar-btn" onclick="dawSetTool(this,'draw')"><i class="fas fa-pencil-alt"></i> Draw</button>
+                <button class="toolbar-btn" onclick="dawSetTool(this,'cut')"><i class="fas fa-cut"></i> Split</button>
+                <button class="toolbar-btn" onclick="dawSetTool(this,'erase')"><i class="fas fa-eraser"></i> Erase</button>
+            </div>
+            <div class="toolbar-group">
+                <button class="toolbar-btn" onclick="dawSetSnap(this,'1/4')">1/4</button>
+                <button class="toolbar-btn active" onclick="dawSetSnap(this,'1/8')">1/8</button>
+                <button class="toolbar-btn" onclick="dawSetSnap(this,'1/16')">1/16</button>
+                <button class="toolbar-btn" onclick="dawSetSnap(this,'free')">Free</button>
+            </div>
+            <div class="toolbar-group">
+                <button class="toolbar-btn" onclick="dawAddTrack('audio')"><i class="fas fa-plus"></i> Audio</button>
+                <button class="toolbar-btn" onclick="dawAddTrack('midi')"><i class="fas fa-plus"></i> MIDI</button>
+                <button class="toolbar-btn" onclick="dawAddTrack('bus')"><i class="fas fa-plus"></i> Bus</button>
+            </div>
+            <div class="toolbar-group">
+                <button class="toolbar-btn" onclick="dawAICompose()"><i class="fas fa-magic"></i> AI Compose</button>
+                <button class="toolbar-btn" onclick="dawAIMaster()"><i class="fas fa-hat-wizard"></i> AI Master</button>
+            </div>
+            <div class="toolbar-group">
+                <button class="toolbar-btn" onclick="dawZoomIn()"><i class="fas fa-search-plus"></i></button>
+                <button class="toolbar-btn" onclick="dawZoomOut()"><i class="fas fa-search-minus"></i></button>
+            </div>
+        </div>
+        <div class="daw-workspace" id="dawArrangeView" style="height:480px">
+            <div class="track-headers" id="dawTrackHeaders"></div>
+            <div class="timeline-area" id="dawTimeline">
+                <div class="timeline-ruler" id="dawRuler"></div>
+                <div class="timeline-tracks" id="dawTimelineTracks"><div class="playhead" id="dawPlayhead" style="left:0"></div></div>
+            </div>
+        </div>
+        <div class="piano-roll" id="dawPianoRoll" style="display:none">
+            <div class="piano-keys" id="dawPianoKeys"></div>
+            <div class="piano-grid" id="dawPianoGrid"></div>
+        </div>
+        <div class="daw-mixer" id="dawMixerView" style="display:none"></div>
+        <div id="dawScoringView" style="display:none;padding:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <div style="font-weight:700;font-size:15px"><i class="fas fa-film"></i> Cue List — Film/TV Scoring</div>
+                <div style="display:flex;gap:8px"><button class="btn btn-sm btn-outline" onclick="dawAddCue()"><i class="fas fa-plus"></i> Add Cue</button><span class="badge badge-gold">SMPTE: <span id="dawSMPTE">01:00:00:00</span></span></div>
+            </div>
+            <table class="data-table"><thead><tr><th>#</th><th>Cue Name</th><th>TC In</th><th>TC Out</th><th>Scene</th><th>Status</th></tr></thead>
+            <tbody id="dawCueList">
+                <tr><td style="color:var(--gold);font-weight:700">M1</td><td>Main Title</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:00:00:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:00:45:00</td><td>Opening</td><td><span class="badge badge-green">Complete</span></td></tr>
+                <tr><td style="color:var(--gold);font-weight:700">M2</td><td>Chase Scene</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:12:30:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:14:15:00</td><td>Act 2</td><td><span class="badge badge-red">Recording</span></td></tr>
+                <tr><td style="color:var(--gold);font-weight:700">M3</td><td>Love Theme</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:25:00:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:27:30:00</td><td>Act 2</td><td><span class="badge badge-gold">Pending</span></td></tr>
+                <tr><td style="color:var(--gold);font-weight:700">M4</td><td>Climax</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:45:00:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:48:00:00</td><td>Act 3</td><td><span class="badge badge-gold">Pending</span></td></tr>
+                <tr><td style="color:var(--gold);font-weight:700">M5</td><td>End Credits</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">02:01:00:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">02:04:30:00</td><td>Credits</td><td><span class="badge badge-gold">Pending</span></td></tr>
+            </tbody></table>
+            <div style="margin-top:16px"><div style="font-weight:700;font-size:13px;margin-bottom:8px"><i class="fas fa-map-marker-alt"></i> Tempo Map</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="badge badge-gold">Bar 1: 120 BPM</span><span class="badge badge-blue">Bar 17: 140 BPM (accel)</span><span class="badge badge-purple">Bar 33: 95 BPM (rit)</span><span class="badge badge-red">Bar 49: 160 BPM (climax)</span></div>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top:20px"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-drum"></i> Sound Library</div><div style="display:flex;gap:6px" id="soundCategoryTabs"></div></div><div class="search-bar" style="margin-top:12px"><input class="search-input" placeholder="Search sounds... (808, pad, strings, film, scoring)" id="soundSearch" oninput="searchSounds()"></div><div class="card-grid cols-4" id="soundGrid" style="max-height:240px;overflow-y:auto"></div></div></div>
+</div>
 
-        <!-- Model Registry -->
-        <h3 style="font-size:16px; margin-bottom:12px; color:var(--text-secondary);">📦 Open-Source Model Registry</h3>
-
+<!-- ASCAP CATALOG -->
+<div class="section" id="section-catalog">
+    <div class="section-header">
+        <div><div class="section-title">📀 ASCAP Music Catalog</div><div class="section-subtitle">Harvey L. Miller / FASTASSMAN PUBLISHING INC — <span id="catalogTotal">0</span> registered works</div></div>
+        <div style="display:flex;gap:8px"><span class="badge badge-gold">IPI: 348202968</span><span class="badge badge-purple">Party ID: 1596704</span></div>
+    </div>
+    <div class="card-grid cols-4" style="margin-bottom:20px">
+        <div class="card"><div class="card-title">Total Works</div><div style="font-size:28px;font-weight:800;color:var(--purple)" id="catWorks">0</div></div>
+        <div class="card"><div class="card-title">Writers</div><div style="font-size:28px;font-weight:800;color:var(--blue)" id="catWriters">0</div></div>
+        <div class="card"><div class="card-title">Licensed</div><div style="font-size:28px;font-weight:800;color:var(--green-light)" id="catLicensed">0</div></div>
+        <div class="card"><div class="card-title">Roles</div><div style="font-size:20px;font-weight:800;color:var(--gold)" id="catRoles">-</div></div>
+    </div>
+    <div class="card" style="margin-bottom:20px">
         <div class="search-bar">
-            <input type="text" id="modelSearch" placeholder="Search models (e.g., deepseek, coding, vision, llama...)..." oninput="searchModels()">
-            <select id="familyFilter" onchange="filterByFamily()">
-                <option value="">All Families</option>
-            </select>
+            <input class="search-input" placeholder="Search works by title, writer, ASCAP ID, or ISWC..." id="catalogSearch" onkeyup="if(event.key==='Enter')searchCatalog()">
+            <select class="search-input" style="width:140px;flex:none" id="catalogRole" onchange="searchCatalog()"><option value="">All Roles</option><option value="CA">CA</option><option value="E">E</option><option value="AM">AM</option><option value="C">C</option><option value="A">A</option></select>
+            <button class="btn btn-primary" onclick="searchCatalog()"><i class="fas fa-search"></i> Search</button>
         </div>
+        <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Title</th><th>ASCAP ID</th><th>Writers</th><th>Registered</th><th>ISWC</th><th>Licensed</th></tr></thead><tbody id="catalogBody"></tbody></table></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12px;color:var(--text-muted)"><span id="catalogPageInfo">Showing 0 of 0</span><div style="display:flex;gap:4px"><button class="btn btn-sm btn-outline" onclick="catalogPrev()">← Prev</button><button class="btn btn-sm btn-outline" onclick="catalogNext()">Next →</button></div></div>
+    </div>
+    <div class="card-grid cols-2">
+        <div class="card"><div class="card-title" style="margin-bottom:12px">👥 Top Writers/Collaborators</div><div id="catalogWritersList"></div></div>
+        <div class="card"><div class="card-title" style="margin-bottom:12px">📈 Registration Timeline</div><div id="catalogTimeline" style="display:flex;gap:4px;align-items:flex-end;height:100px;padding-top:8px"></div></div>
+    </div>
+</div>
 
-        <div class="category-tabs" id="categoryTabs"></div>
-        <div class="models-grid" id="modelsGrid"></div>
-    </section>
+<!-- MODEL HUB -->
+<div class="section" id="section-models">
+    <div class="section-header"><div><div class="section-title">🧊 AI Model Hub</div><div class="section-subtitle">63 AI models across Lightning AI, HuggingFace, NVIDIA NIM, and 40+ open-source models</div></div></div>
+    <div class="filter-tabs" id="modelCategoryTabs"></div>
+    <div class="search-bar"><input class="search-input" placeholder="Search models..." id="modelSearch" oninput="searchModels()"><select class="search-input" style="width:160px;flex:none" id="modelFamilyFilter" onchange="filterModels()"><option value="">All Families</option></select></div>
+    <div class="card-grid cols-3" id="modelGrid"></div>
+    <div style="margin-top:24px"><div class="card-title" style="margin-bottom:12px">🤗 HuggingFace Inference Providers</div><div class="card-grid cols-4" id="hfProviderGrid"></div></div>
+</div>
 
-    <!-- ==================== LIGHTNING AI ==================== -->
-    <section id="sec-lightning" class="section">
-        <h2 class="section-title">⚡ Lightning AI — <span style="color:var(--accent-gold)">14 Production Models · 3 Providers</span></h2>
-        <div class="search-bar">
-            <input type="text" id="lightningSearch" placeholder="Search Lightning AI models..." oninput="filterLightning()">
-            <select id="lightningProvider" onchange="filterLightning()">
-                <option value="">All Providers</option>
-                <option value="Lightning AI">Lightning AI</option>
-                <option value="OpenAI">OpenAI</option>
-                <option value="Google">Google</option>
-            </select>
-            <select id="lightningSort" onchange="filterLightning()">
-                <option value="name">Sort: Name</option>
-                <option value="costInput">Sort: Cost (Input)</option>
-                <option value="latency">Sort: Latency</option>
-                <option value="throughput">Sort: Throughput</option>
-                <option value="contextLength">Sort: Context</option>
-            </select>
-        </div>
-        <div class="lightning-grid" id="lightningGrid"></div>
-    </section>
+<!-- AI CHAT -->
+<div class="section" id="section-chat">
+    <div class="section-header">
+        <div><div class="section-title">💬 AI Chat</div><div class="section-subtitle">Multi-provider AI assistant — powered by 63 models</div></div>
+        <select class="search-input" style="width:160px" id="chatProvider"><option value="lightning">⚡ Lightning AI</option><option value="groq">🟢 Groq</option><option value="cerebras">🧠 Cerebras</option><option value="together">🤝 Together</option><option value="fireworks">🎆 Fireworks</option><option value="cohere">🔶 Cohere</option><option value="nvidia">🟩 NVIDIA</option><option value="hf-auto">🤗 HF Auto-Route</option></select>
+    </div>
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages"><div class="chat-msg ai"><div class="msg-bubble">👋 Welcome to SUPER GOAT ROYALTIES AI! I can help with revenue analysis, market predictions, contract generation, catalog queries, and more.</div></div></div>
+        <div class="chat-input-area"><input class="chat-input" id="chatInput" placeholder="Ask about royalties, market trends, your catalog..." onkeyup="if(event.key==='Enter')sendChat()"><button class="btn btn-primary" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-sm btn-outline" onclick="quickChat('Analyze my royalty revenue')">📊 Revenue</button>
+        <button class="btn btn-sm btn-outline" onclick="quickChat('Predict Hip-Hop market trends for Spotify')">📈 Market</button>
+        <button class="btn btn-sm btn-outline" onclick="quickChat('How many ASCAP works do I have?')">📀 Catalog</button>
+        <button class="btn btn-sm btn-outline" onclick="quickChat('Generate a sync licensing contract')">📝 Contract</button>
+        <button class="btn btn-sm btn-outline" onclick="quickChat('Content strategy for growing my music business')">🎯 Strategy</button>
+    </div>
+</div>
 
-    <!-- ==================== AI CHAT ==================== -->
-    <section id="sec-chat" class="section">
-        <h2 class="section-title">💬 AI Chat — <span style="color:var(--accent-cyan)">Multi-Provider Inference</span></h2>
-        <div class="chat-container">
-            <div class="chat-sidebar">
-                <h3>Provider</h3>
-                <select class="provider-select" id="chatProvider" onchange="updateChatModels()">
-                    <option value="lightning">⚡ Lightning AI</option>
-                    <optgroup label="HF Cloud Providers" id="chatHFProviders"></optgroup>
-                    <optgroup label="Local Runners">
-                        <option value="ollama">🦙 Ollama</option>
-                        <option value="vllm">🚄 vLLM</option>
-                    </optgroup>
-                    <option value="nvidia">🎯 NVIDIA NIM</option>
-                </select>
-                <h3>Model</h3>
-                <select class="model-select" id="chatModel"></select>
-                <h3 style="margin-top:16px;">Quick Prompts</h3>
-                <div style="display:flex;flex-direction:column;gap:6px;">
-                    <button style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text-secondary);cursor:pointer;font-size:11px;text-align:left;" onclick="setPrompt('Analyze my royalty revenue trends and suggest optimization strategies')">📊 Revenue Analysis</button>
-                    <button style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text-secondary);cursor:pointer;font-size:11px;text-align:left;" onclick="setPrompt('Predict music market trends for Hip-Hop over the next 6 months')">📈 Market Predictions</button>
-                    <button style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text-secondary);cursor:pointer;font-size:11px;text-align:left;" onclick="setPrompt('Generate a music licensing contract template for digital distribution')">📋 Contract Gen</button>
-                    <button style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text-secondary);cursor:pointer;font-size:11px;text-align:left;" onclick="setPrompt('Write a JavaScript function to calculate streaming royalty splits')">💻 Code Gen</button>
-                    <button style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text-secondary);cursor:pointer;font-size:11px;text-align:left;" onclick="setPrompt('Create a content marketing strategy for a new album release')">🎵 Content Strategy</button>
-                </div>
-            </div>
-            <div class="chat-main">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="chat-message assistant">
-                        <div class="bubble">🐐 Welcome to SUPER GOAT Royalties AI Chat!\n\nYou can now chat with models from:\n• ⚡ Lightning AI (14 models)\n• 🤗 HuggingFace (16 providers, 40+ models)\n• 🎯 NVIDIA NIM (9 models)\n• 🦙 Local runners (Ollama, vLLM)\n\nSelect a provider and model from the sidebar, then ask anything about music royalties, contracts, market trends, or code!</div>
-                        <div class="msg-meta">System · GOAT Royalties v3.2</div>
-                    </div>
-                </div>
-                <div class="chat-input-row">
-                    <input type="text" id="chatInput" placeholder="Ask anything about music royalties, contracts, trends..." onkeypress="if(event.key==='Enter')sendChat()">
-                    <button onclick="sendChat()">Send 🚀</button>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- AGENTS -->
+<div class="section" id="section-agents">
+    <div class="section-header"><div><div class="section-title">🤖 Autonomous Agents</div><div class="section-subtitle">AI-powered agents working autonomously on your behalf</div></div></div>
+    <div class="card-grid cols-2">
+        <div class="card" style="border-left:3px solid var(--gold)"><div class="card-header"><span class="card-title">💰 Royalty Tracker</span><span class="badge badge-green">Active</span></div><div class="card-desc">Monitors streaming platforms for royalty payments, detects discrepancies, and tracks revenue across Spotify, Apple Music, YouTube, Tidal, and Amazon Music.</div><div style="margin-top:12px;display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="runAgent('royalty-tracker')">Run Now</button><button class="btn btn-sm btn-outline">Logs</button></div></div>
+        <div class="card" style="border-left:3px solid var(--blue)"><div class="card-header"><span class="card-title">📊 Content Advisor</span><span class="badge badge-green">Active</span></div><div class="card-desc">Analyzes market trends, recommends content strategies, identifies emerging genres, and suggests optimal release timing.</div><div style="margin-top:12px;display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="runAgent('content-advisor')">Run Now</button><button class="btn btn-sm btn-outline">Logs</button></div></div>
+        <div class="card" style="border-left:3px solid var(--purple)"><div class="card-header"><span class="card-title">📝 Contract Analyst</span><span class="badge badge-green">Active</span></div><div class="card-desc">Reviews contracts, generates terms, analyzes royalty splits, and ensures fair deal structures for publishing agreements.</div><div style="margin-top:12px;display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="runAgent('contract-analyst')">Run Now</button><button class="btn btn-sm btn-outline">Logs</button></div></div>
+        <div class="card" style="border-left:3px solid var(--pink)"><div class="card-header"><span class="card-title">📢 Marketing Agent</span><span class="badge badge-green">Active</span></div><div class="card-desc">Creates marketing campaigns, optimizes social media, tracks engagement metrics, and generates promotional content.</div><div style="margin-top:12px;display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="runAgent('marketing')">Run Now</button><button class="btn btn-sm btn-outline">Logs</button></div></div>
+    </div>
+</div>
 
-    <!-- ==================== DASHBOARD ==================== -->
-    <section id="sec-dashboard" class="section">
-        <h2 class="section-title">📊 Dashboard — <span style="color:var(--accent-green)">Platform Analytics</span></h2>
-        <div class="dashboard-grid" id="dashboardGrid"></div>
-    </section>
+<!-- API DOCS -->
+<div class="section" id="section-api-docs">
+    <div class="section-header"><div><div class="section-title">📖 API Documentation</div><div class="section-subtitle">Complete REST API reference — 60+ endpoints</div></div><span class="badge badge-gold">v4.0.0</span></div>
+    <div class="card-grid cols-2" id="apiDocsGrid"></div>
+</div>
 
-    <!-- ==================== AGENTS ==================== -->
-    <section id="sec-agents" class="section">
-        <h2 class="section-title">🤖 Autonomous Agents — <span style="color:var(--accent-pink)">AI-Powered Automation</span></h2>
-        <div class="agents-grid" id="agentsGrid"></div>
-    </section>
-</main>
+</div>
 
 <script>
-// ==================== STATE ====================
-let allModels = [];
-let allLightningModels = [];
-let allProviders = [];
-let currentCategory = '';
-let appData = {};
+let dawState={project:null,isPlaying:false,isRecording:false,isLooping:false,metronomeOn:false,bpm:120,position:0,zoom:1,tracks:[
+{id:1,name:'Drums',type:'audio',color:'#dc2626',muted:false,solo:false,armed:false,volume:0.8,pan:0,clips:[{start:0,length:16,name:'Beat Loop',color:'#dc2626'}]},
+{id:2,name:'Bass 808',type:'midi',color:'#f59e0b',muted:false,solo:false,armed:false,volume:0.75,pan:0,clips:[{start:0,length:8,name:'Sub Pattern',color:'#f59e0b'},{start:8,length:8,name:'Variation',color:'#d97706'}]},
+{id:3,name:'Keys',type:'midi',color:'#818cf8',muted:false,solo:false,armed:false,volume:0.65,pan:-15,clips:[{start:4,length:12,name:'Rhodes Chords',color:'#818cf8'}]},
+{id:4,name:'Lead Synth',type:'midi',color:'#22d3ee',muted:false,solo:false,armed:false,volume:0.7,pan:20,clips:[{start:8,length:8,name:'Melody',color:'#22d3ee'}]},
+{id:5,name:'Vocals',type:'audio',color:'#f472b6',muted:false,solo:false,armed:false,volume:0.85,pan:0,clips:[{start:4,length:12,name:'Main Vocal',color:'#f472b6'}]},
+{id:6,name:'FX Bus',type:'bus',color:'#4ade80',muted:false,solo:false,armed:false,volume:0.5,pan:0,clips:[]}
+],currentView:'arrange',selectedTrack:0};
+let catalogPage=1,notifications=[],ws=null;
 
-// ==================== INIT ====================
-async function init() {
-    await Promise.all([
-        loadStatus(),
-        loadProviders(),
-        loadModels(),
-        loadLightningModels(),
-        loadLocalStatus(),
-        loadDashboard(),
-        loadAgents()
-    ]);
-}
+document.addEventListener('DOMContentLoaded',()=>{initNav();initWS();loadStatus();renderDAW();loadSounds();loadCatalog();loadModels();loadHFProviders();renderAPIDocs();startTimecode();});
 
-async function loadStatus() {
-    try {
-        const res = await fetch('/api/status');
-        const data = await res.json();
-        appData.status = data;
-        document.getElementById('statTotal').textContent = data.counts.totalModels;
-        document.getElementById('statProviders').textContent = data.counts.hfProviders;
-        document.getElementById('statLightning').textContent = data.counts.lightningModels;
-        document.getElementById('statRegistry').textContent = data.counts.registryModels;
-        document.getElementById('statCategories').textContent = data.counts.registryCategories;
-        const badge = document.getElementById('modeBadge');
-        badge.textContent = data.mode === 'live' ? 'LIVE' : 'DEMO';
-        if (data.mode === 'live') badge.classList.add('live');
-    } catch (e) { console.error('Status error:', e); }
-}
+function initNav(){document.querySelectorAll('.nav-link').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('section-'+b.dataset.section).classList.add('active');});});}
 
-// ==================== PROVIDERS ====================
-async function loadProviders() {
-    try {
-        const res = await fetch('/api/hf/providers');
-        const data = await res.json();
-        allProviders = data.providers;
-        renderProviders(data.providers);
-        populateChatProviders(data.providers);
-    } catch (e) { console.error('Providers error:', e); }
-}
+function initWS(){try{const p=location.protocol==='https:'?'wss:':'ws:';ws=new WebSocket(`${p}//${location.host}`);ws.onopen=()=>{document.getElementById('wsStatus').textContent='Connected';ws.send(JSON.stringify({type:'subscribe',channels:['royalties','market','agents','daw']}));};ws.onmessage=e=>{try{const m=JSON.parse(e.data);if(m.type==='market-update'&&m.data){document.getElementById('dashRevenue').textContent='$'+Math.round(m.data.totalRevenue).toLocaleString();document.getElementById('dashGrowth').textContent=m.data.growthRate.toFixed(1);}if(m.type==='agent-complete')addNotif('🤖','Agent completed: '+m.agentId);}catch(e){}};ws.onclose=()=>{document.getElementById('wsStatus').textContent='Reconnecting...';setTimeout(initWS,3000);};}catch(e){document.getElementById('wsStatus').textContent='Unavailable';}}
 
-function renderProviders(providers) {
-    const grid = document.getElementById('providersGrid');
-    grid.innerHTML = providers.map(p => {
-        const speedClass = p.speed === 'ultra-fast' ? 'speed-ultra' : p.speed === 'fast' ? 'speed-fast' : '';
-        const localClass = p.isLocal ? 'local' : '';
-        return `<div class="provider-card" onclick="showProviderDetail('${p.id}')">
-            <div class="api-dot ${p.hasApiKey ? 'connected' : ''}"></div>
-            <div class="icon">${p.icon}</div>
-            <div class="name">${p.name}</div>
-            <div class="desc">${p.description}</div>
-            <div class="meta">
-                <span class="badge ${speedClass}">${p.speed}</span>
-                <span class="badge">${p.modelCount} models</span>
-                ${p.isLocal ? '<span class="badge local">local</span>' : ''}
-            </div>
-        </div>`;
-    }).join('');
-}
+async function loadStatus(){try{const r=await fetch('/api/status');const d=await r.json();document.getElementById('statModels').textContent=d.counts.totalModels;document.getElementById('statProviders').textContent=d.counts.hfProviders;document.getElementById('statLightning').textContent=d.counts.lightningModels;document.getElementById('statCatalog').textContent=d.counts.catalogWorks;document.getElementById('statRevenue').textContent='$233,600';document.getElementById('statUptime').textContent=Math.round(d.uptime)+'s';}catch(e){}}
 
-function populateChatProviders(providers) {
-    const group = document.getElementById('chatHFProviders');
-    group.innerHTML = providers
-        .filter(p => !p.isLocal)
-        .map(p => `<option value="${p.id}">${p.icon} ${p.name}</option>`)
-        .join('');
-    updateChatModels();
-}
+function toggleNotifications(){document.getElementById('notifPanel').classList.toggle('open');}
+function addNotif(icon,text){notifications.unshift({icon,text,time:new Date().toLocaleTimeString()});if(notifications.length>50)notifications.pop();document.getElementById('notifCount').textContent=notifications.length;const l=document.getElementById('notifList');l.innerHTML=notifications.slice(0,20).map(n=>`<div class="notification-item"><span style="font-size:16px">${n.icon}</span><div><div class="notification-text">${n.text}</div><div class="notification-time">${n.time}</div></div></div>`).join('');}
+function clearNotifications(){notifications=[];document.getElementById('notifCount').textContent='0';document.getElementById('notifList').innerHTML='';}
 
-function showProviderDetail(id) {
-    // For now, filter model registry by this provider
-    const search = document.getElementById('modelSearch');
-    search.value = '';
-    currentCategory = '';
-    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.category-tab')[0]?.classList.add('active');
-    const filtered = allModels.filter(m => m.providers.includes(id));
-    renderModels(filtered);
-}
+function renderDAW(){renderHeaders();renderTimeline();renderMixer();renderPianoRoll();}
+function renderHeaders(){const el=document.getElementById('dawTrackHeaders');el.innerHTML=dawState.tracks.map((t,i)=>`<div class="track-header ${i===dawState.selectedTrack?'selected':''}" onclick="dawSelectTrack(${i})"><div class="track-name"><div class="track-color" style="background:${t.color}"></div>${t.name} <span style="color:var(--text-muted);font-size:9px">${t.type}</span></div><div class="track-controls"><button class="track-ctrl-btn ${t.muted?'muted':''}" onclick="event.stopPropagation();dawToggleMute(${i})">M</button><button class="track-ctrl-btn ${t.solo?'soloed':''}" onclick="event.stopPropagation();dawToggleSolo(${i})">S</button><button class="track-ctrl-btn ${t.armed?'armed':''}" onclick="event.stopPropagation();dawToggleArm(${i})">R</button><input type="range" class="track-volume" min="0" max="100" value="${t.volume*100}" oninput="dawSetVol(${i},this.value/100)"></div></div>`).join('');}
+function renderTimeline(){const ruler=document.getElementById('dawRuler');const bars=32;const bw=80*dawState.zoom;ruler.innerHTML='';ruler.style.width=bars*bw+'px';ruler.style.position='relative';for(let i=1;i<=bars;i++){const m=document.createElement('span');m.style.cssText=`position:absolute;left:${(i-1)*bw}px;font-size:9px;color:#666;padding:0 4px;width:${bw}px;border-left:1px solid #2a2a3e;`;m.textContent=i;ruler.appendChild(m);}
+const tt=document.getElementById('dawTimelineTracks');tt.innerHTML='<div class="playhead" id="dawPlayhead" style="left:0"></div>';tt.style.width=bars*bw+'px';
+dawState.tracks.forEach((t,i)=>{const te=document.createElement('div');te.className='timeline-track';t.clips.forEach(c=>{const ce=document.createElement('div');ce.className='audio-clip';ce.style.cssText=`left:${c.start*bw/4}px;width:${c.length*bw/4}px;background:${(c.color||t.color)}44;border:1px solid ${(c.color||t.color)}88;`;let pts='';const segs=Math.max(20,Math.floor(c.length*5));for(let s=0;s<=segs;s++){const x=(s/segs)*100;const y=50+(Math.sin(s*0.8)*15+Math.random()*20-10)*(t.type==='audio'?1:0.5);pts+=`${x},${y} `;}ce.innerHTML=`<div class="clip-name">${c.name}</div><svg class="waveform" viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:calc(100% - 18px)"><polyline points="${pts}" fill="none" stroke="${c.color||t.color}" stroke-width="1.5"/></svg>`;te.appendChild(ce);});tt.appendChild(te);});}
+function renderMixer(){const el=document.getElementById('dawMixerView');const ch=dawState.tracks.map((t,i)=>`<div class="mixer-channel"><div class="mixer-label" style="color:${t.color}">${t.name}</div><div style="display:flex;gap:2px;align-items:flex-end;height:120px"><div class="mixer-fader-container"><div class="mixer-fader" style="height:${t.volume*100}%"></div></div><div class="mixer-meter"><div class="mixer-meter-fill" style="height:${t.muted?0:t.volume*70+Math.random()*20}%"></div></div></div><div class="mixer-db">${t.muted?'-∞':((t.volume-0.8)*30).toFixed(1)+'dB'}</div><div class="effect-rack"><div class="effect-slot active">EQ</div><div class="effect-slot active">Comp</div><div class="effect-slot">Rev</div></div></div>`);ch.push(`<div class="mixer-channel master"><div class="mixer-label" style="color:var(--gold)">MASTER</div><div style="display:flex;gap:2px;align-items:flex-end;height:120px"><div class="mixer-fader-container"><div class="mixer-fader" style="height:85%"></div></div><div class="mixer-meter"><div class="mixer-meter-fill" style="height:75%"></div></div></div><div class="mixer-db" style="color:var(--gold)">0.0dB</div><div class="effect-rack"><div class="effect-slot active">EQ</div><div class="effect-slot active">Lim</div></div></div>`);el.innerHTML=ch.join('');}
+function renderPianoRoll(){const k=document.getElementById('dawPianoKeys');const nn=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];let h='';for(let o=5;o>=2;o--)for(let n=11;n>=0;n--){const nm=nn[n]+o;const bl=[1,3,6,8,10].includes(n);h+=`<div class="piano-key ${bl?'black':'white'}">${nm}</div>`;}k.innerHTML=h;const g=document.getElementById('dawPianoGrid');const bw=20*dawState.zoom;g.style.width=(32*4*bw)+'px';g.style.height=(48*16)+'px';const dn=[{n:24,s:0,d:2,c:'#818cf8'},{n:28,s:2,d:2,c:'#818cf8'},{n:31,s:4,d:4,c:'#818cf8'},{n:26,s:8,d:2,c:'#f472b6'},{n:29,s:10,d:2,c:'#f472b6'},{n:33,s:12,d:4,c:'#f472b6'}];g.innerHTML=dn.map(n=>`<div class="note-block" style="left:${n.s*bw}px;top:${n.n*16}px;width:${n.d*bw-2}px;background:${n.c}"></div>`).join('');}
 
-// ==================== MODELS ====================
-async function loadModels() {
-    try {
-        const [modelsRes, catsRes, famRes] = await Promise.all([
-            fetch('/api/models'),
-            fetch('/api/models/categories'),
-            fetch('/api/models/families')
-        ]);
-        const modelsData = await modelsRes.json();
-        const catsData = await catsRes.json();
-        const famData = await famRes.json();
+function dawTogglePlay(){dawState.isPlaying=!dawState.isPlaying;document.getElementById('dawPlayBtn').classList.toggle('active',dawState.isPlaying);}
+function dawStop(){dawState.isPlaying=false;dawState.isRecording=false;dawState.position=0;document.getElementById('dawPlayBtn').classList.remove('active');document.getElementById('dawRecBtn').classList.remove('active');document.getElementById('dawPlayhead').style.left='0px';}
+function dawToggleRecord(){dawState.isRecording=!dawState.isRecording;document.getElementById('dawRecBtn').classList.toggle('active',dawState.isRecording);if(dawState.isRecording){dawState.isPlaying=true;document.getElementById('dawPlayBtn').classList.add('active');}}
+function dawRewind(){dawState.position=Math.max(0,dawState.position-4);}
+function dawForward(){dawState.position+=4;}
+function dawToggleLoop(){dawState.isLooping=!dawState.isLooping;document.getElementById('dawLoopBtn').classList.toggle('active',dawState.isLooping);}
+function dawToggleMetronome(){dawState.metronomeOn=!dawState.metronomeOn;document.getElementById('dawMetronomeBtn').classList.toggle('active',dawState.metronomeOn);}
+function dawSetBPM(v){dawState.bpm=parseInt(v);}
+function dawSelectTrack(i){dawState.selectedTrack=i;renderHeaders();}
+function dawToggleMute(i){dawState.tracks[i].muted=!dawState.tracks[i].muted;renderHeaders();renderMixer();}
+function dawToggleSolo(i){dawState.tracks[i].solo=!dawState.tracks[i].solo;renderHeaders();renderMixer();}
+function dawToggleArm(i){dawState.tracks[i].armed=!dawState.tracks[i].armed;renderHeaders();}
+function dawSetVol(i,v){dawState.tracks[i].volume=v;}
+function dawZoomIn(){dawState.zoom=Math.min(3,dawState.zoom*1.25);renderTimeline();renderPianoRoll();}
+function dawZoomOut(){dawState.zoom=Math.max(0.3,dawState.zoom/1.25);renderTimeline();renderPianoRoll();}
+function dawSetTool(el,t){el.parentElement.querySelectorAll('.toolbar-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function dawSetSnap(el,v){el.parentElement.querySelectorAll('.toolbar-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function dawShowView(v){dawState.currentView=v;document.getElementById('dawArrangeView').style.display=v==='arrange'?'flex':'none';document.getElementById('dawPianoRoll').style.display=v==='pianoroll'?'flex':'none';document.getElementById('dawMixerView').style.display=v==='mixer'?'flex':'none';document.getElementById('dawScoringView').style.display=v==='scoring'?'block':'none';if(v==='mixer')renderMixer();}
+function dawAddTrack(type){const colors=['#dc2626','#f59e0b','#818cf8','#22d3ee','#f472b6','#4ade80','#a78bfa','#fb923c'];dawState.tracks.push({id:dawState.tracks.length+1,name:`${type[0].toUpperCase()+type.slice(1)} ${dawState.tracks.length+1}`,type,color:colors[dawState.tracks.length%colors.length],muted:false,solo:false,armed:false,volume:0.75,pan:0,clips:[]});renderDAW();addNotif('🎵','Added '+type+' track');}
 
-        allModels = modelsData.models;
-        renderCategoryTabs(catsData.categories);
-        renderFamilyFilter(famData.families);
-        renderModels(allModels);
-    } catch (e) { console.error('Models error:', e); }
-}
+async function dawNewProject(){try{const r=await fetch('/api/daw/projects',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Session '+new Date().toLocaleDateString(),bpm:dawState.bpm,genre:'Hip-Hop'})});dawState.project=await r.json();addNotif('🎹','Created: '+dawState.project.name);}catch(e){addNotif('❌','Create failed');}}
+async function dawSave(){if(!dawState.project)await dawNewProject();if(!dawState.project)return;try{await fetch(`/api/daw/projects/${dawState.project.id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({...dawState.project,tracks:dawState.tracks,bpm:dawState.bpm})});addNotif('💾','Project saved');}catch(e){addNotif('❌','Save failed');}}
+async function dawLoadProjects(){try{const r=await fetch('/api/daw/projects');const d=await r.json();if(!d.projects.length){addNotif('📂','No saved projects');return;}const p=d.projects[d.projects.length-1];const pr=await fetch(`/api/daw/projects/${p.id}`);dawState.project=await pr.json();if(dawState.project.tracks?.length)dawState.tracks=dawState.project.tracks;dawState.bpm=dawState.project.bpm||120;document.getElementById('dawBpm').value=dawState.bpm;renderDAW();addNotif('📂','Loaded: '+dawState.project.name);}catch(e){addNotif('❌','Load failed');}}
+async function dawAICompose(){addNotif('🤖','AI composing...');try{const r=await fetch('/api/daw/ai/compose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({genre:'Hip-Hop',key:'C',scale:'minor',bpm:dawState.bpm,bars:8})});const d=await r.json();addNotif('✅',`AI: ${d.composition.notes.length} notes, ${d.composition.chords.length} chords`);dawState.tracks.push({id:dawState.tracks.length+1,name:'AI Melody',type:'midi',color:'#a78bfa',muted:false,solo:false,armed:false,volume:0.7,pan:0,clips:[{start:0,length:d.bars*4,name:'AI Composed',color:'#a78bfa'}]});renderDAW();}catch(e){addNotif('❌','AI compose failed');}}
+async function dawAIMaster(){addNotif('🤖','AI mastering analysis...');try{const r=await fetch('/api/daw/ai/master',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({genre:'Hip-Hop',trackInfo:{tracks:dawState.tracks.length}})});const d=await r.json();const chain=d.mastering.processingChain||[];addNotif('✅',`AI: ${chain.length} processing stages`);alert('AI Mastering:\n\n'+chain.map(c=>'• '+c.effect+': '+JSON.stringify(c.params)).join('\n')+'\n\nTarget: '+JSON.stringify(d.mastering.targetSpecs));}catch(e){addNotif('❌','AI master failed');}}
+function dawAddCue(){const tb=document.getElementById('dawCueList');const n=tb.children.length+1;const tr=document.createElement('tr');tr.innerHTML=`<td style="color:var(--gold);font-weight:700">M${n}</td><td>New Cue</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:00:00:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:00:30:00</td><td>-</td><td><span class="badge badge-gold">Pending</span></td>`;tb.appendChild(tr);addNotif('🎬','Added cue M'+n);}
 
-function renderCategoryTabs(categories) {
-    const container = document.getElementById('categoryTabs');
-    const total = categories.reduce((s, c) => s + c.count, 0);
-    container.innerHTML = `<div class="category-tab active" onclick="filterCategory('')">🤖 All <span class="count">(${total})</span></div>` +
-        categories.map(c =>
-            `<div class="category-tab" onclick="filterCategory('${c.name}')">${c.icon} ${c.name} <span class="count">(${c.count})</span></div>`
-        ).join('');
-}
+function startTimecode(){let f=0;setInterval(()=>{if(dawState.isPlaying){dawState.position+=dawState.bpm/60/30;f++;const ts=dawState.position*60/dawState.bpm;const h=Math.floor(ts/3600)+1,m=Math.floor((ts%3600)/60),s=Math.floor(ts%60),fr=f%30;const tc=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(fr).padStart(2,'0')}`;document.getElementById('dawTimecode').textContent=tc;const se=document.getElementById('dawSMPTE');if(se)se.textContent=tc;const bw=80*dawState.zoom;const ph=document.getElementById('dawPlayhead');if(ph)ph.style.left=(dawState.position/4)*bw+'px';if(dawState.isLooping&&dawState.position>128)dawState.position=0;}},1000/30);setInterval(()=>{if(dawState.isPlaying&&dawState.currentView==='mixer')renderMixer();},200);}
 
-function renderFamilyFilter(families) {
-    const select = document.getElementById('familyFilter');
-    select.innerHTML = '<option value="">All Families</option>' +
-        families.map(f => `<option value="${f.name}">${f.name} (${f.count})</option>`).join('');
-}
+async function loadSounds(){try{const r=await fetch('/api/daw/sounds/categories');const d=await r.json();document.getElementById('soundCategoryTabs').innerHTML='<button class="filter-tab active" onclick="filterSounds(\'\')">All</button>'+d.categories.map(c=>`<button class="filter-tab" onclick="filterSounds('${c.name}')">${c.name} (${c.count})</button>`).join('');filterSounds('');}catch(e){}}
+async function filterSounds(cat){try{const r=await fetch(cat?`/api/daw/sounds?category=${cat}`:'/api/daw/sounds');const d=await r.json();document.getElementById('soundGrid').innerHTML=d.sounds.map(s=>`<div class="card" style="padding:10px;cursor:pointer" onclick="addNotif('🔊','Preview: ${s.name}')"><div style="font-size:12px;font-weight:700;margin-bottom:4px">${s.name}</div><div style="font-size:10px;color:var(--text-muted)">${s.category} • ${s.type}</div><div style="margin-top:4px;display:flex;gap:3px;flex-wrap:wrap">${s.tags.slice(0,3).map(t=>`<span class="badge badge-purple" style="font-size:8px;padding:1px 5px">${t}</span>`).join('')}</div></div>`).join('');}catch(e){}}
+function searchSounds(){const q=document.getElementById('soundSearch').value;fetch(`/api/daw/sounds?search=${encodeURIComponent(q)}`).then(r=>r.json()).then(d=>{document.getElementById('soundGrid').innerHTML=d.sounds.map(s=>`<div class="card" style="padding:10px"><div style="font-size:12px;font-weight:700">${s.name}</div><div style="font-size:10px;color:var(--text-muted)">${s.category}</div></div>`).join('');});}
 
-function filterCategory(cat) {
-    currentCategory = cat;
-    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-    event.target.closest('.category-tab').classList.add('active');
-    document.getElementById('modelSearch').value = '';
-    document.getElementById('familyFilter').value = '';
-    const filtered = cat ? allModels.filter(m => m.category === cat) : allModels;
-    renderModels(filtered);
-}
+async function loadCatalog(){try{const sr=await fetch('/api/catalog/stats');const st=await sr.json();document.getElementById('catalogTotal').textContent=st.totalWorks;document.getElementById('catWorks').textContent=st.totalWorks;document.getElementById('catWriters').textContent=st.totalWriters;document.getElementById('catLicensed').textContent=st.licensedByASCAP;document.getElementById('catRoles').textContent=Object.keys(st.roleBreakdown||{}).join(', ');document.getElementById('statCatalog').textContent=st.totalWorks;document.getElementById('dashWorks').textContent=st.totalWorks;document.getElementById('dashCatalogBadge').textContent=st.totalWorks+' works';
+if(st.topWriters){document.getElementById('catalogWritersList').innerHTML=st.topWriters.slice(0,10).map((w,i)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${i+1}. ${w.name}</span><span class="badge badge-purple">${w.works}</span></div>`).join('');}
+const tr=await fetch('/api/catalog/timeline');const tl=await tr.json();if(tl.length){const mx=Math.max(...tl.map(t=>t.count));document.getElementById('catalogTimeline').innerHTML=tl.map(t=>`<div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:4px"><div style="width:100%;background:var(--purple);border-radius:2px;height:${Math.max(4,(t.count/mx)*80)}px;opacity:0.7"></div><span style="font-size:8px;color:var(--text-muted)">${t.year}</span></div>`).join('');}
+searchCatalog();}catch(e){}}
+async function searchCatalog(){const q=document.getElementById('catalogSearch').value;const role=document.getElementById('catalogRole').value;let u=`/api/catalog/works?page=${catalogPage}&limit=15`;if(q)u+=`&q=${encodeURIComponent(q)}`;if(role)u+=`&role=${role}`;try{const r=await fetch(u);const d=await r.json();document.getElementById('catalogBody').innerHTML=d.works.map(w=>`<tr><td style="font-weight:600;color:var(--text-primary)">${w.title}</td><td><span class="badge badge-purple">${w.id}</span></td><td style="max-width:200px">${w.writers.slice(0,3).map(wr=>wr.name).join(', ')}${w.writers.length>3?' +'+( w.writers.length-3):''}</td><td>${w.registrationDate||'-'}</td><td style="font-size:10px;color:var(--text-muted)">${w.iswcNumber||'-'}</td><td>${w.licensedByASCAP?'<span class="badge badge-green">✓</span>':'<span class="badge badge-red">✗</span>'}</td></tr>`).join('');document.getElementById('catalogPageInfo').textContent=`Page ${d.pagination.page} of ${d.pagination.totalPages} (${d.pagination.total} results)`;}catch(e){}}
+function catalogPrev(){if(catalogPage>1){catalogPage--;searchCatalog();}}
+function catalogNext(){catalogPage++;searchCatalog();}
 
-function filterByFamily() {
-    const family = document.getElementById('familyFilter').value;
-    document.getElementById('modelSearch').value = '';
-    const filtered = family ? allModels.filter(m => m.family === family) : (currentCategory ? allModels.filter(m => m.category === currentCategory) : allModels);
-    renderModels(filtered);
-}
+async function loadModels(){try{const cr=await fetch('/api/models/categories');const cs=await cr.json();document.getElementById('modelCategoryTabs').innerHTML='<button class="filter-tab active" onclick="filterModelCat(\'\')">All</button>'+cs.categories.map(c=>`<button class="filter-tab" onclick="filterModelCat('${c.name}')">${c.icon} ${c.name} (${c.count})</button>`).join('');const fr=await fetch('/api/models/families');const fs=await fr.json();document.getElementById('modelFamilyFilter').innerHTML='<option value="">All Families</option>'+fs.families.map(f=>`<option value="${f.name}">${f.name} (${f.count})</option>`).join('');filterModelCat('');}catch(e){}}
+async function filterModelCat(cat){try{const r=await fetch(cat?`/api/models?category=${cat}`:'/api/models');const d=await r.json();renderModelGrid(d.models);}catch(e){}}
+function renderModelGrid(models){const cc={'text-generation':'blue','code':'purple','vision':'pink','multimodal':'gold','audio':'red','embedding':'green'};document.getElementById('modelGrid').innerHTML=models.map(m=>`<div class="card"><div class="card-header"><span class="card-title" style="font-size:13px">${m.name}</span><span class="badge badge-${cc[m.category]||'blue'}">${m.category}</span></div><div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">${m.author} • ${m.params}</div><div class="card-desc">${(m.description||'').substring(0,80)}...</div><div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap">${(m.providers||[]).slice(0,4).map(p=>`<span class="badge badge-purple" style="font-size:9px">${p}</span>`).join('')}</div>${m.trending?'<div style="margin-top:6px"><span class="badge badge-gold">🔥 Trending</span></div>':''}</div>`).join('');}
+async function searchModels(){const q=document.getElementById('modelSearch').value;if(q.length<2)return;try{const r=await fetch(`/api/models/search?q=${encodeURIComponent(q)}`);const d=await r.json();renderModelGrid(d.models);}catch(e){}}
+async function filterModels(){const f=document.getElementById('modelFamilyFilter').value;if(!f){filterModelCat('');return;}try{const r=await fetch(`/api/models?family=${f}`);const d=await r.json();renderModelGrid(d.models);}catch(e){}}
+async function loadHFProviders(){try{const r=await fetch('/api/hf/providers');const d=await r.json();document.getElementById('hfProviderGrid').innerHTML=d.providers.map(p=>`<div class="card" style="padding:12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:20px">${p.icon}</span><span style="font-weight:700;font-size:13px">${p.name}</span></div><div style="font-size:10px;color:var(--text-muted)">${p.description||p.specialty||''}</div><div style="margin-top:6px"><span class="badge badge-blue">${p.speed||'fast'}</span><span class="badge badge-purple">${p.models?.length||0} models</span></div></div>`).join('');}catch(e){}}
 
-function searchModels() {
-    const q = document.getElementById('modelSearch').value.toLowerCase();
-    if (!q) { renderModels(currentCategory ? allModels.filter(m => m.category === currentCategory) : allModels); return; }
-    const filtered = allModels.filter(m =>
-        m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q) ||
-        m.family.toLowerCase().includes(q) || m.author.toLowerCase().includes(q) ||
-        m.description.toLowerCase().includes(q) || m.category.toLowerCase().includes(q) ||
-        m.tags.some(t => t.toLowerCase().includes(q))
-    );
-    renderModels(filtered);
-}
+async function sendChat(){const inp=document.getElementById('chatInput');const msg=inp.value.trim();if(!msg)return;inp.value='';const el=document.getElementById('chatMessages');el.innerHTML+=`<div class="chat-msg user"><div class="msg-bubble">${msg}</div></div><div class="chat-msg ai" id="chatLoading"><div class="msg-bubble"><div class="loading-spinner"></div> Thinking...</div></div>`;el.scrollTop=el.scrollHeight;try{const r=await fetch('/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:msg}],provider:document.getElementById('chatProvider').value})});const d=await r.json();document.getElementById('chatLoading').remove();const c=d.content||d.choices?.[0]?.message?.content||JSON.stringify(d);el.innerHTML+=`<div class="chat-msg ai"><div class="msg-bubble">${c.replace(/\n/g,'<br>')}</div></div>`;}catch(e){document.getElementById('chatLoading').remove();el.innerHTML+=`<div class="chat-msg ai"><div class="msg-bubble" style="color:var(--red)">Error: Try another provider.</div></div>`;}el.scrollTop=el.scrollHeight;}
+function quickChat(m){document.getElementById('chatInput').value=m;sendChat();}
 
-function renderModels(models) {
-    const grid = document.getElementById('modelsGrid');
-    if (!models.length) { grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:40px;">No models found matching your criteria.</p>'; return; }
-    grid.innerHTML = models.map(m => `
-        <div class="model-card">
-            <div class="model-header">
-                <div>
-                    <div class="model-name">${m.name}</div>
-                    <div class="model-author">${m.author} · ${m.category}</div>
-                </div>
-                ${m.trending ? '<span class="tag trending">🔥 Trending</span>' : ''}
-            </div>
-            <div class="model-desc">${m.description}</div>
-            <div class="model-meta">
-                <div class="meta-item">Params: <span>${m.params}</span></div>
-                <div class="meta-item">Context: <span>${m.contextLength ? (m.contextLength >= 1000 ? (m.contextLength/1000)+'K' : m.contextLength) : 'N/A'}</span></div>
-                <div class="meta-item">License: <span>${m.license}</span></div>
-                <div class="meta-item">Downloads: <span>${m.downloads}</span></div>
-            </div>
-            <div class="model-tags">${m.tags.slice(0, 5).map(t => `<span class="tag">${t}</span>`).join('')}</div>
-            <div class="providers-row">${m.providers.map(p => `<span class="prov-badge">${p}</span>`).join('')}</div>
-        </div>
-    `).join('');
-}
+async function runAgent(id){addNotif('🤖','Running: '+id);try{await fetch('/api/agents/execute',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agentId:id,task:'analyze',context:{}})});addNotif('✅','Agent done: '+id);}catch(e){addNotif('❌','Agent failed: '+id);}}
 
-// ==================== LIGHTNING MODELS ====================
-async function loadLightningModels() {
-    try {
-        const res = await fetch('/api/lightning/models');
-        const data = await res.json();
-        allLightningModels = data.models;
-        renderLightningModels(data.models);
-    } catch (e) { console.error('Lightning error:', e); }
-}
+function renderAPIDocs(){const eps=[{g:'❤️ Health & Status',r:['GET /api/health','GET /api/status','GET /api/metrics','GET /api/dashboard']},{g:'📀 ASCAP Catalog',r:['GET /api/catalog/works','GET /api/catalog/works/:id','GET /api/catalog/stats','GET /api/catalog/writers','GET /api/catalog/timeline']},{g:'⚡ Lightning AI',r:['GET /api/lightning/models','POST /api/lightning/chat','POST /api/lightning/generate','POST /api/lightning/smart-route','POST /api/lightning/compare','GET /api/lightning/usage']},{g:'🤗 HuggingFace',r:['GET /api/hf/providers','POST /api/hf/chat','POST /api/hf/generate','POST /api/hf/auto-route','POST /api/hf/compare','GET /api/hf/usage']},{g:'📦 Model Registry',r:['GET /api/models','GET /api/models/stats','GET /api/models/categories','GET /api/models/trending','GET /api/models/families','GET /api/models/search','GET /api/models/:id']},{g:'🎹 GOAT Studio DAW',r:['GET /api/daw/projects','POST /api/daw/projects','GET /api/daw/projects/:id','PUT /api/daw/projects/:id','DELETE /api/daw/projects/:id','POST /api/daw/ai/compose','POST /api/daw/ai/master','GET /api/daw/sounds','GET /api/daw/sounds/categories','POST /api/daw/cues']},{g:'💬 Unified AI',r:['POST /api/ai/chat','GET /api/ai/stats','GET /api/ai/revenue-analysis','GET /api/ai/market-predictions','POST /api/ai/content-recommendations','POST /api/ai/generate-contract']},{g:'📚 RAG & Agents',r:['POST /api/rag/query','GET /api/rag/stats','POST /api/agents/execute','GET /api/agents/status','POST /api/agents/autonomous']},{g:'🟩 NVIDIA & Local',r:['POST /api/nvidia/generate','GET /api/nvidia/models','GET /api/local/status']},{g:'💰 Revenue & Market',r:['GET /api/revenue/predictions','GET /api/nft/portfolio','GET /api/collaboration/status','GET /api/market/trends']}];document.getElementById('apiDocsGrid').innerHTML=eps.map(g=>`<div class="card"><div class="card-title" style="margin-bottom:10px">${g.g}</div>${g.r.map(r=>{const[mt,pa]=r.split(' ');const mc={GET:'green',POST:'blue',PUT:'gold',DELETE:'red'};return`<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px"><span class="badge badge-${mc[mt]||'blue'}" style="min-width:36px;text-align:center">${mt}</span><code style="color:var(--text-secondary)">${pa}</code></div>`;}).join('')}</div>`).join('');}
 
-function filterLightning() {
-    const search = document.getElementById('lightningSearch').value.toLowerCase();
-    const provider = document.getElementById('lightningProvider').value;
-    const sortBy = document.getElementById('lightningSort').value;
-    let filtered = allLightningModels;
-    if (provider) filtered = filtered.filter(m => m.provider === provider);
-    if (search) filtered = filtered.filter(m => m.name.toLowerCase().includes(search) || m.description.toLowerCase().includes(search));
-    if (sortBy === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name));
-    else if (sortBy === 'costInput') filtered.sort((a, b) => a.costInput - b.costInput);
-    else if (sortBy === 'latency') filtered.sort((a, b) => a.latency - b.latency);
-    else if (sortBy === 'throughput') filtered.sort((a, b) => b.throughput - a.throughput);
-    else if (sortBy === 'contextLength') filtered.sort((a, b) => b.contextLength - a.contextLength);
-    renderLightningModels(filtered);
-}
-
-function renderLightningModels(models) {
-    const grid = document.getElementById('lightningGrid');
-    grid.innerHTML = models.map(m => `
-        <div class="lightning-card">
-            <div class="lm-name">${m.name}</div>
-            <div class="lm-provider">${m.provider} · ${m.id}</div>
-            <div class="lm-stats">
-                <div class="lm-stat">Input: <span>$${m.costInput}/M</span></div>
-                <div class="lm-stat">Output: <span>$${m.costOutput}/M</span></div>
-                <div class="lm-stat">Latency: <span>${m.latency}s</span></div>
-                <div class="lm-stat">Throughput: <span>${m.throughput} t/s</span></div>
-                <div class="lm-stat">Context: <span>${(m.contextLength/1000)}K</span></div>
-                ${m.lightningCostInput ? `<div class="lm-stat">⚡ Input: <span>$${m.lightningCostInput}/M</span></div>` : ''}
-            </div>
-            <div class="lm-tags">${(m.tags || []).map(t => `<span class="lm-tag">${t}</span>`).join('')}</div>
-        </div>
-    `).join('');
-}
-
-// ==================== LOCAL RUNNERS ====================
-async function loadLocalStatus() {
-    try {
-        const res = await fetch('/api/local/status');
-        const data = await res.json();
-        document.getElementById('ollamaDot').className = 'runner-dot' + (data.ollama.running ? ' active' : '');
-        document.getElementById('ollamaStatus').textContent = data.ollama.running ? `Running (${data.ollama.modelCount} models)` : 'Not detected';
-        document.getElementById('vllmDot').className = 'runner-dot' + (data.vllm.running ? ' active' : '');
-        document.getElementById('vllmStatus').textContent = data.vllm.running ? `Running (${data.vllm.modelCount} models)` : 'Not detected';
-    } catch (e) { console.error('Local status error:', e); }
-}
-
-// ==================== CHAT ====================
-function updateChatModels() {
-    const provider = document.getElementById('chatProvider').value;
-    const select = document.getElementById('chatModel');
-
-    if (provider === 'lightning') {
-        select.innerHTML = allLightningModels.map(m => `<option value="${m.key}">${m.name}</option>`).join('');
-    } else if (provider === 'nvidia') {
-        select.innerHTML = '<option value="mixtral-8x7b">Mixtral 8x7B</option><option value="llama2-70b">Llama 2 70B</option><option value="nemotron-70b">Nemotron 70B</option><option value="phi-3">Phi-3</option><option value="codellama-34b">Code Llama 34B</option>';
-    } else {
-        // HF provider - show registry models available on that provider
-        const providerModels = allModels.filter(m => m.providers.includes(provider) && m.category === 'text-generation');
-        if (providerModels.length > 0) {
-            select.innerHTML = providerModels.map(m => `<option value="${m.id}">${m.name} (${m.params})</option>`).join('');
-        } else {
-            select.innerHTML = '<option value="meta-llama/Llama-3.3-70B-Instruct">Llama 3.3 70B</option>';
-        }
-    }
-}
-
-function setPrompt(text) {
-    document.getElementById('chatInput').value = text;
-    document.getElementById('chatInput').focus();
-}
-
-async function sendChat() {
-    const input = document.getElementById('chatInput');
-    const msg = input.value.trim();
-    if (!msg) return;
-
-    const provider = document.getElementById('chatProvider').value;
-    const model = document.getElementById('chatModel').value;
-
-    // Add user message
-    addChatMessage('user', msg);
-    input.value = '';
-
-    try {
-        let endpoint, body;
-        if (provider === 'lightning') {
-            endpoint = '/api/lightning/chat';
-            body = { messages: [{ role: 'user', content: msg }], model: model };
-        } else if (provider === 'nvidia') {
-            endpoint = '/api/ai/chat';
-            body = { messages: [{ role: 'user', content: msg }], model: model, provider: 'nvidia' };
-        } else {
-            endpoint = '/api/hf/chat';
-            body = { messages: [{ role: 'user', content: msg }], model: model, provider: provider };
-        }
-
-        const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-        const data = await res.json();
-        const content = data.content || data.error || 'No response';
-        const meta = `${data.provider || provider} · ${data.model || model}${data.demo ? ' · Demo' : ''}`;
-        addChatMessage('assistant', content, meta);
-    } catch (e) {
-        addChatMessage('assistant', 'Error: ' + e.message, 'System Error');
-    }
-}
-
-function addChatMessage(role, content, meta) {
-    const container = document.getElementById('chatMessages');
-    const div = document.createElement('div');
-    div.className = 'chat-message ' + role;
-    div.innerHTML = `<div class="bubble">${escapeHtml(content)}</div>${meta ? `<div class="msg-meta">${meta}</div>` : ''}`;
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-}
-
-function escapeHtml(str) {
-    return str.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/\n/g, '<br>');
-}
-
-// ==================== DASHBOARD ====================
-async function loadDashboard() {
-    try {
-        const res = await fetch('/api/dashboard');
-        const data = await res.json();
-        appData.dashboard = data;
-        document.getElementById('statRevenue').textContent = '$' + Math.round(data.totalRevenue / 1000) + 'K';
-        renderDashboard(data);
-    } catch (e) { console.error('Dashboard error:', e); }
-}
-
-function renderDashboard(d) {
-    const grid = document.getElementById('dashboardGrid');
-    const platforms = d.platforms || {};
-    const platformEntries = Object.entries(platforms);
-    const maxRev = Math.max(...platformEntries.map(([, v]) => v.revenue || 0), 1);
-
-    grid.innerHTML = `
-        <div class="dash-card" style="grid-column: span 2;">
-            <h3>📈 Platform Revenue</h3>
-            ${platformEntries.map(([name, v]) => `
-                <div class="revenue-bar">
-                    <span class="platform-name">${name}</span>
-                    <div class="bar-bg"><div class="bar-fill" style="width:${((v.revenue||0)/maxRev)*100}%"></div></div>
-                    <span class="amount">$${((v.revenue||0)/1000).toFixed(1)}K</span>
-                </div>
-            `).join('')}
-        </div>
-        <div class="dash-card">
-            <h3>💰 Total Revenue</h3>
-            <div class="dash-value" style="color:var(--accent-green);">$${(d.totalRevenue/1000).toFixed(1)}K</div>
-            <div class="dash-sub">Growth: +${d.growthRate}%</div>
-        </div>
-        <div class="dash-card">
-            <h3>🎨 NFT Portfolio</h3>
-            <div class="dash-value" style="color:var(--accent-purple);">$${(d.nftPortfolio.totalValue/1000).toFixed(0)}K</div>
-            <div class="dash-sub">${d.nftPortfolio.items} items · ${d.nftPortfolio.chains.length} chains</div>
-        </div>
-        <div class="dash-card">
-            <h3>🤝 Collaboration</h3>
-            <div class="dash-value" style="color:var(--accent-cyan);">${d.collaboration.teamMembers}</div>
-            <div class="dash-sub">${d.collaboration.activeProjects} active projects</div>
-        </div>
-        <div class="dash-card">
-            <h3>🤖 AI Features</h3>
-            <div class="dash-value" style="color:var(--accent-gold);">${d.aiFeatures.totalModels}</div>
-            <div class="dash-sub">${d.aiFeatures.lightningModels} Lightning · ${d.aiFeatures.hfProviders} HF Providers · ${d.aiFeatures.registryModels} Registry</div>
-        </div>
-        <div class="dash-card">
-            <h3>🎵 Content Stats</h3>
-            <div class="dash-value" style="color:var(--accent-pink);">${(d.contentStats.totalStreams/1000000).toFixed(1)}M</div>
-            <div class="dash-sub">${d.contentStats.protectedTracks} tracks · ${(d.contentStats.downloads/1000).toFixed(0)}K downloads</div>
-        </div>
-    `;
-}
-
-// ==================== AGENTS ====================
-async function loadAgents() {
-    try {
-        const res = await fetch('/api/agents/status');
-        const data = await res.json();
-        renderAgents(data.agents || []);
-    } catch (e) { console.error('Agents error:', e); }
-}
-
-function renderAgents(agents) {
-    const grid = document.getElementById('agentsGrid');
-    const agentInfo = [
-        { id: 'royalty-tracker', name: '📊 Royalty Tracker', desc: 'Monitors and optimizes royalty income across all platforms. Tracks revenue streams, identifies anomalies, and predicts future earnings.' },
-        { id: 'content-advisor', name: '🎵 Content Advisor', desc: 'Analyzes market trends and provides content strategy recommendations. Optimizes release timing and playlist targeting.' },
-        { id: 'contract-analyst', name: '📋 Contract Analyst', desc: 'Reviews and generates music contracts. Identifies risk clauses, ensures compliance, and optimizes deal terms.' },
-        { id: 'marketing-agent', name: '📢 Marketing Agent', desc: 'Creates targeted marketing campaigns. Optimizes social media presence, SEO, and fan engagement strategies.' }
-    ];
-
-    grid.innerHTML = agentInfo.map(a => {
-        const status = agents[a.id] || {};
-        return `<div class="agent-card">
-            <div class="agent-name">${a.name}</div>
-            <div class="agent-status">${status.status || 'Active'}</div>
-            <div class="agent-desc">${a.desc}</div>
-        </div>`;
-    }).join('');
-}
-
-// ==================== NAVIGATION ====================
-function showSection(name) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById('sec-' + name).classList.add('active');
-    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-}
-
-// ==================== BOOT ====================
-init();
+async function refreshDashboard(){try{const r=await fetch('/api/dashboard');const d=await r.json();document.getElementById('dashRevenue').textContent='$'+Math.round(d.totalRevenue).toLocaleString();document.getElementById('dashGrowth').textContent=d.growthRate.toFixed(1);document.getElementById('dashNFT').textContent='$'+Math.round(d.nftPortfolio.totalValue).toLocaleString();addNotif('📊','Dashboard refreshed');}catch(e){}}
 </script>
 </body>
 </html>

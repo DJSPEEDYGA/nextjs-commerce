@@ -66,6 +66,7 @@ const cyberOps     = require('./lib/security/advanced-cyber-ops');
 const metaverse    = require('./lib/web3/metaverse-engine');
 const osint        = require('./lib/intelligence/osint-network');
 const storage      = require('./lib/storage/local-storage-engine');
+const catalog      = require('./lib/catalog/real-catalog');
 
 // ===================== INITIALIZE SYSTEMS =====================
 const bgChecker    = new BackgroundChecker();
@@ -185,7 +186,15 @@ app.get('/api/status', (req, res) => {
             virtualVenues: metaverse.getStats().virtualVenues,
             supportedChains: metaverse.getStats().supportedChains,
             osintTools: osint.getStats().osintTools,
-            breachRecords: osint.getStats().breachRecords
+            breachRecords: osint.getStats().breachRecords,
+            realCatalog: {
+                ascapWorks: catalog.stats.totalASCAPWorks,
+                wakaISRCTracks: catalog.stats.totalWakaISRCTracks,
+                fullISRCEntries: catalog.stats.totalFullISRCEntries,
+                productionKits: catalog.stats.totalProductionKits,
+                recordsSold: catalog.stats.recordsSold,
+                publisher: catalog.stats.publisher
+            }
         },
         copyright: '© 2024 HARVEY L MILLER JR / JUAQUIN J MALPHURS / KEVIN W HALLINGQUEST'
     });
@@ -994,6 +1003,51 @@ app.post('/api/storage/set-path', (req, res) => {
 });
 
 // ===================== CATCH-ALL =====================
+// ═══════════════════════════════════════════════════════════════
+// 🎵 REAL CATALOG API — FASTASSMAN PUBLISHING × BRICK SQUAD
+// ═══════════════════════════════════════════════════════════════
+app.get('/api/catalog/dashboard', (req, res) => {
+  try { res.json(catalog.getFullDashboard()); } catch(e) { res.status(500).json({error:e.message}); }
+});
+app.get('/api/catalog/artist', (req, res) => {
+  try { res.json(catalog.getArtistProfile()); } catch(e) { res.status(500).json({error:e.message}); }
+});
+app.get('/api/catalog/waka', (req, res) => {
+  try { res.json(catalog.getWakaProfile()); } catch(e) { res.status(500).json({error:e.message}); }
+});
+app.get('/api/catalog/publisher', (req, res) => {
+  try { res.json(catalog.getPublisher()); } catch(e) { res.status(500).json({error:e.message}); }
+});
+app.get('/api/catalog/stats', (req, res) => {
+  try { res.json(catalog.getCatalogStats()); } catch(e) { res.status(500).json({error:e.message}); }
+});
+app.get('/api/catalog/works', (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    res.json(catalog.getASCAPWorks(page, limit));
+  } catch(e) { res.status(500).json({error:e.message}); }
+});
+app.get('/api/catalog/waka-tracks', (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    res.json(catalog.getWakaISRCTracks(page, limit));
+  } catch(e) { res.status(500).json({error:e.message}); }
+});
+app.get('/api/catalog/kits', (req, res) => {
+  try { res.json(catalog.getProductionKits()); } catch(e) { res.status(500).json({error:e.message}); }
+});
+app.get('/api/catalog/search', (req, res) => {
+  try { res.json(catalog.searchCatalog(req.query.q || '')); } catch(e) { res.status(500).json({error:e.message}); }
+});
+app.get('/api/catalog/genre/:genre', (req, res) => {
+  try { res.json(catalog.getByGenre(req.params.genre)); } catch(e) { res.status(500).json({error:e.message}); }
+});
+app.get('/api/catalog/collabs', (req, res) => {
+  try { res.json(catalog.getFeaturedCollabs()); } catch(e) { res.status(500).json({error:e.message}); }
+});
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -1007,6 +1061,8 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log('');
     console.log(`💾 Storage: http://localhost:${PORT}/api/storage/stats`);
     console.log(`📂 Config:  http://localhost:${PORT}/api/storage/config`);
+    console.log(`🎵 Catalog: http://localhost:${PORT}/api/catalog/dashboard`);
+    console.log(`📀 ${catalog.stats.totalASCAPWorks} ASCAP Works | ${catalog.stats.totalWakaISRCTracks} Waka ISRC Tracks | ${catalog.stats.recordsSold} Records Sold`);
     console.log(`🌍 Celebs:  http://localhost:${PORT}/api/worldwide/celebrities`);
     console.log(`🎵 Music:   http://localhost:${PORT}/api/music/stats`);
     console.log(`🏰 Empire:  http://localhost:${PORT}/api/empire/stats`);

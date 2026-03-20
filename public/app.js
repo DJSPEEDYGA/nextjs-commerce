@@ -304,7 +304,7 @@ const HUB_MAP = {
   discover:'dating', matches:'dating', stars:'dating', feed:'dating',
   music:'creative', writing:'creative', avatar:'creative', gaming:'creative',
   cyber:'security', cyberops:'security', intel:'security', secstatus:'security',
-  empire:'business', web3:'business',
+  empire:'business', web3:'business', catalog:'business',
   profile:'me', faceid:'me', localstorage:'me'
 };
 let currentHub = 'dating';
@@ -2864,6 +2864,249 @@ const _origSwitchTabStorage = switchTab;
 switchTab = function(tab) {
   _origSwitchTabStorage(tab);
   if (tab === 'localstorage') loadStorageUI();
+};
+
+// ═══════════════════════════════════════════════════════════════
+// 📀 REAL CATALOG — FASTASSMAN PUBLISHING × BRICK SQUAD MUSIC
+// ═══════════════════════════════════════════════════════════════
+let catalogLoaded = false;
+async function loadCatalogUI() {
+  if (catalogLoaded) return;
+  const el = document.getElementById('catalog-content');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">🎵 Loading real catalog...</div>';
+  try {
+    const res = await fetch('/api/catalog/dashboard');
+    const data = await res.json();
+    renderCatalogDashboard(data, el);
+    catalogLoaded = true;
+  } catch(e) {
+    el.innerHTML = `<div style="text-align:center;padding:40px;color:var(--red)">❌ ${e.message}</div>`;
+  }
+}
+
+function renderCatalogDashboard(data, el) {
+  const a = data.artist || {};
+  const w = data.waka || {};
+  const s = data.stats || {};
+  const featured = data.featuredWorks || [];
+  const wakaTracks = data.recentWaka || [];
+  const kits = data.kits || [];
+  const collabs = data.topCollaborators || [];
+
+  let html = `
+    <!-- ARTIST PROFILE CARD -->
+    <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:16px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,215,0,0.3)">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+        <div style="font-size:48px">${a.emoji || '🎧'}</div>
+        <div>
+          <div style="font-size:20px;font-weight:800;color:#ffd700">${a.name || 'DJ Speedy'}</div>
+          <div style="font-size:13px;color:var(--text2)">${a.realName || ''}</div>
+          <div style="font-size:12px;color:#4ade80;margin-top:2px">✅ RIAA Certified · ${a.recordsSold || '40M+'} Records Sold</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px">${a.bio || ''}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+        ${(a.companies || []).map(c => `<span style="background:rgba(255,215,0,0.15);color:#ffd700;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600">${c}</span>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:rgba(74,222,128,0.15);color:#4ade80;padding:4px 10px;border-radius:8px;font-size:11px">📡 ${a.distribution || 'Sony Music'}</span>
+        <span style="background:rgba(96,165,250,0.15);color:#60a5fa;padding:4px 10px;border-radius:8px;font-size:11px">🎼 ${s.pro || 'ASCAP'}</span>
+        <span style="background:rgba(251,146,60,0.15);color:#fb923c;padding:4px 10px;border-radius:8px;font-size:11px">📀 ${s.totalASCAPWorks || 333} Works</span>
+      </div>
+    </div>
+
+    <!-- WAKA FLOCKA CARD -->
+    <div style="background:linear-gradient(135deg,#2d1b00,#1a0a00);border-radius:16px;padding:16px;margin-bottom:16px;border:1px solid rgba(255,100,0,0.3)">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="font-size:40px">${w.emoji || '🔥'}</div>
+        <div>
+          <div style="font-size:18px;font-weight:800;color:#ff6b35">${w.name || 'Waka Flocka Flame'}</div>
+          <div style="font-size:12px;color:var(--text2)">${w.realName || ''}</div>
+          <div style="font-size:11px;color:#fb923c;margin-top:2px">${w.label || 'Brick Squad'} · ${s.totalWakaISRCTracks || 57} ISRC Tracks</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.5">${w.bio || ''}</div>
+    </div>
+
+    <!-- STATS GRID -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+      <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#ffd700">${s.totalASCAPWorks || 0}</div>
+        <div style="font-size:10px;color:var(--text2)">ASCAP Works</div>
+      </div>
+      <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#ff6b35">${s.totalWakaISRCTracks || 0}</div>
+        <div style="font-size:10px;color:var(--text2)">Waka ISRC</div>
+      </div>
+      <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#4ade80">${s.uniqueFullISRCTitles || 0}</div>
+        <div style="font-size:10px;color:var(--text2)">Full Catalog</div>
+      </div>
+      <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#60a5fa">${s.totalProductionKits || 0}</div>
+        <div style="font-size:10px;color:var(--text2)">Kits</div>
+      </div>
+      <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#c084fc">${s.totalCollaborators || 0}</div>
+        <div style="font-size:10px;color:var(--text2)">Collaborators</div>
+      </div>
+      <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center">
+        <div style="font-size:22px;font-weight:800;color:#f472b6">${(s.genres || []).length}</div>
+        <div style="font-size:10px;color:var(--text2)">Genres</div>
+      </div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div style="margin-bottom:16px">
+      <input id="catalog-search" type="text" placeholder="🔍 Search catalog... (songs, artists, genres)" 
+        style="width:100%;padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text1);font-size:14px;box-sizing:border-box"
+        oninput="searchCatalogDebounced(this.value)">
+      <div id="catalog-search-results" style="margin-top:8px"></div>
+    </div>
+
+    <!-- TOP COLLABORATORS -->
+    <div style="font-size:14px;font-weight:700;margin-bottom:8px;color:var(--text1)">🤝 Top Collaborators</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+      ${collabs.map(c => `<span style="background:rgba(139,92,246,0.15);color:#a78bfa;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600">${c}</span>`).join('')}
+    </div>
+
+    <!-- FEATURED WORKS -->
+    <div style="font-size:14px;font-weight:700;margin-bottom:8px;color:var(--text1)">⭐ Featured Works (ASCAP)</div>
+    <div style="margin-bottom:16px">
+      ${featured.map(w => `
+        <div style="background:var(--card);border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text1)">${w.title}</div>
+            ${w.featuring ? `<div style="font-size:11px;color:#a78bfa">ft. ${w.featuring.join(', ')}</div>` : ''}
+            ${w.genre ? `<div style="font-size:10px;color:var(--text2)">${w.genre}</div>` : ''}
+          </div>
+          ${w.tier ? `<span style="background:rgba(255,215,0,0.2);color:#ffd700;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700">${w.tier}</span>` : ''}
+        </div>
+      `).join('')}
+      <button onclick="loadMoreWorks()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--accent);font-weight:700;cursor:pointer;margin-top:6px">View All ${s.totalASCAPWorks} Works →</button>
+    </div>
+
+    <!-- WAKA FLOCKA TRACKS -->
+    <div style="font-size:14px;font-weight:700;margin-bottom:8px;color:var(--text1)">🔥 Waka Flocka ISRC Tracks</div>
+    <div style="margin-bottom:16px">
+      ${wakaTracks.map(t => `
+        <div style="background:var(--card);border-radius:10px;padding:10px 14px;margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-size:13px;font-weight:700;color:var(--text1)">${t.title}</div>
+            <div style="font-size:10px;color:var(--text2)">${t.isrcs ? t.isrcs.length + ' ISRCs' : ''}</div>
+          </div>
+          ${t.featuring ? `<div style="font-size:11px;color:#fb923c">ft. ${t.featuring.join(', ')}</div>` : ''}
+          ${t.isrcs ? `<div style="font-size:9px;color:var(--text2);margin-top:4px;font-family:monospace">${t.isrcs[0]}</div>` : ''}
+        </div>
+      `).join('')}
+      <button onclick="loadMoreWakaTracks()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:#ff6b35;font-weight:700;cursor:pointer;margin-top:6px">View All ${s.totalWakaISRCTracks} Tracks →</button>
+    </div>
+
+    <!-- PRODUCTION KITS -->
+    <div style="font-size:14px;font-weight:700;margin-bottom:8px;color:var(--text1)">🎹 Production Kits & Beats</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:16px">
+      ${kits.map(k => `
+        <div style="background:var(--card);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:12px;font-weight:700;color:var(--text1)">${k.title}</div>
+          <div style="font-size:10px;color:#60a5fa">${k.type}</div>
+          <div style="font-size:10px;color:var(--text2)">${k.genre}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- PUBLISHER INFO -->
+    <div style="background:linear-gradient(135deg,#0a2e0a,#1a1a2e);border-radius:16px;padding:16px;border:1px solid rgba(74,222,128,0.3)">
+      <div style="font-size:14px;font-weight:700;color:#4ade80;margin-bottom:8px">📋 Publisher Information</div>
+      <div style="font-size:12px;color:var(--text2);line-height:2">
+        <div><strong style="color:var(--text1)">Publisher:</strong> ${s.publisher || 'FASTASSMAN PUBLISHING INC'}</div>
+        <div><strong style="color:var(--text1)">PRO:</strong> ${s.pro || 'ASCAP'}</div>
+        <div><strong style="color:var(--text1)">Distributor:</strong> ${s.distributor || 'Sony Music / The Orchard'}</div>
+        <div><strong style="color:var(--text1)">ISRC Prefix:</strong> ${s.isrcPrefix || 'QZ-9EM-17'}</div>
+        <div><strong style="color:var(--text1)">Records Sold:</strong> ${s.recordsSold || '40,000,000+'} (RIAA)</div>
+        <div><strong style="color:var(--text1)">Total Works:</strong> ${s.totalASCAPWorks} ASCAP + ${s.totalWakaISRCTracks} Waka ISRC + ${s.uniqueFullISRCTitles} Full ISRC</div>
+      </div>
+    </div>
+  `;
+  el.innerHTML = html;
+}
+
+// Catalog search with debounce
+let _catalogSearchTimer = null;
+function searchCatalogDebounced(query) {
+  clearTimeout(_catalogSearchTimer);
+  _catalogSearchTimer = setTimeout(() => searchCatalog(query), 300);
+}
+
+async function searchCatalog(query) {
+  const el = document.getElementById('catalog-search-results');
+  if (!el) return;
+  if (!query || query.length < 2) { el.innerHTML = ''; return; }
+  try {
+    const res = await fetch('/api/catalog/search?q=' + encodeURIComponent(query));
+    const data = await res.json();
+    let html = '';
+    if (data.totalResults === 0) {
+      html = '<div style="text-align:center;padding:12px;color:var(--text2);font-size:12px">No results found</div>';
+    } else {
+      if (data.ascapWorks.length > 0) {
+        html += '<div style="font-size:11px;font-weight:700;color:#ffd700;margin:8px 0 4px">ASCAP Works (' + data.ascapWorks.length + ')</div>';
+        data.ascapWorks.slice(0, 10).forEach(w => {
+          html += '<div style="background:var(--card);border-radius:8px;padding:8px 12px;margin-bottom:4px;font-size:12px"><strong>' + w.title + '</strong>' + (w.featuring ? ' <span style="color:#a78bfa">ft. ' + w.featuring.join(', ') + '</span>' : '') + '</div>';
+        });
+      }
+      if (data.wakaISRC.length > 0) {
+        html += '<div style="font-size:11px;font-weight:700;color:#ff6b35;margin:8px 0 4px">Waka ISRC (' + data.wakaISRC.length + ')</div>';
+        data.wakaISRC.slice(0, 10).forEach(t => {
+          html += '<div style="background:var(--card);border-radius:8px;padding:8px 12px;margin-bottom:4px;font-size:12px"><strong>' + t.title + '</strong>' + (t.featuring ? ' <span style="color:#fb923c">ft. ' + t.featuring.join(', ') + '</span>' : '') + '</div>';
+        });
+      }
+      if (data.kits.length > 0) {
+        html += '<div style="font-size:11px;font-weight:700;color:#60a5fa;margin:8px 0 4px">Kits (' + data.kits.length + ')</div>';
+        data.kits.slice(0, 5).forEach(k => {
+          html += '<div style="background:var(--card);border-radius:8px;padding:8px 12px;margin-bottom:4px;font-size:12px"><strong>' + k.title + '</strong> <span style="color:var(--text2)">' + k.genre + '</span></div>';
+        });
+      }
+    }
+    el.innerHTML = html;
+  } catch(e) { el.innerHTML = ''; }
+}
+
+async function loadMoreWorks() {
+  const el = document.getElementById('catalog-content');
+  if (!el) return;
+  try {
+    const res = await fetch('/api/catalog/works?limit=333');
+    const data = await res.json();
+    let html = '<div style="font-size:16px;font-weight:800;margin-bottom:12px;color:#ffd700">📀 All ASCAP Works (' + data.total + ')</div>';
+    html += '<button onclick="catalogLoaded=false;loadCatalogUI()" style="margin-bottom:12px;padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--accent);font-weight:700;cursor:pointer">← Back to Dashboard</button>';
+    data.works.forEach((w, i) => {
+      html += '<div style="background:var(--card);border-radius:8px;padding:8px 12px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center"><div><span style="color:var(--text2);font-size:11px;margin-right:8px">' + (i+1) + '.</span><span style="font-size:13px;font-weight:600;color:var(--text1)">' + w.title + '</span>' + (w.featuring ? ' <span style="font-size:11px;color:#a78bfa">ft. ' + w.featuring.join(', ') + '</span>' : '') + '</div><span style="font-size:10px;color:var(--text2)">' + (w.genre || '') + '</span></div>';
+    });
+    el.innerHTML = html;
+  } catch(e) { showToast('❌ ' + e.message, 'error'); }
+}
+
+async function loadMoreWakaTracks() {
+  const el = document.getElementById('catalog-content');
+  if (!el) return;
+  try {
+    const res = await fetch('/api/catalog/waka-tracks?limit=57');
+    const data = await res.json();
+    let html = '<div style="font-size:16px;font-weight:800;margin-bottom:12px;color:#ff6b35">🔥 All Waka Flocka ISRC Tracks (' + data.total + ')</div>';
+    html += '<button onclick="catalogLoaded=false;loadCatalogUI()" style="margin-bottom:12px;padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--accent);font-weight:700;cursor:pointer">← Back to Dashboard</button>';
+    data.tracks.forEach((t, i) => {
+      html += '<div style="background:var(--card);border-radius:10px;padding:10px 14px;margin-bottom:6px"><div style="display:flex;justify-content:space-between"><div><span style="color:var(--text2);font-size:11px;margin-right:6px">' + (i+1) + '.</span><span style="font-size:13px;font-weight:700;color:var(--text1)">' + t.title + '</span></div><span style="font-size:10px;color:var(--text2)">' + (t.isrcs ? t.isrcs.length + ' ISRCs' : '') + '</span></div>' + (t.featuring ? '<div style="font-size:11px;color:#fb923c;margin-top:2px">ft. ' + t.featuring.join(', ') + '</div>' : '') + (t.isrcs ? '<div style="font-size:9px;color:var(--text2);margin-top:4px;font-family:monospace">' + t.isrcs.join(' | ') + '</div>' : '') + '</div>';
+    });
+    el.innerHTML = html;
+  } catch(e) { showToast('❌ ' + e.message, 'error'); }
+}
+
+// Wire catalog tab into switchTab chain
+const _origSwitchTabCatalog = switchTab;
+switchTab = function(tab) {
+  _origSwitchTabCatalog(tab);
+  if (tab === 'catalog') loadCatalogUI();
 };
 
 // ===================== SPLASH — OFFLINE EDITION (NO LOGIN) =====================

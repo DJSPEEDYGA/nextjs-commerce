@@ -41,3 +41,7 @@ desktop.ini
 *.log
 .cache/todo.md
 todo.md
+server-v5.log
+server.js.bak
+*.log
+node_modules/

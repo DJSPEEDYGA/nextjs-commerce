@@ -1,0 +1,3343 @@
+[
+  {
+    "id": "root-speedy",
+    "name": "DJ Speedy",
+    "realName": "Harvey Lee Miller Jr.",
+    "tier": 0,
+    "emoji": "\ud83c\udfa7",
+    "type": "producer",
+    "connectionToRoot": "SELF \u2014 Founder & Master Producer",
+    "bio": "Multi-Platinum Super Producer with 40M+ records sold (RIAA). Classical trained, Atlanta-based pioneer. Producer/composer for Beyonc\u00e9, Jay-Z, Outkast, Waka Flocka, Gucci Mane, Nicki Minaj, and 100+ artists. Film/TV: Marvel, MTV, CBS, FOX, NBC, VH1.",
+    "stats": {
+      "catalogSongs": 3077,
+      "isrcs": 1737,
+      "iswcs": 1151,
+      "recordsSold": "40M+"
+    },
+    "companies": [
+      "Speedy Productions Inc.",
+      "Fastassman Publishing Inc.",
+      "Life Imitates Art Inc.",
+      "HarveyMillerMusic Inc.",
+      "Brick Squad Music LLC",
+      "GOAT Systems"
+    ],
+    "musicCredits": [
+      "Beyonc\u00e9",
+      "Jay-Z",
+      "Outkast",
+      "Waka Flocka Flame",
+      "Gucci Mane",
+      "Nicki Minaj",
+      "2 Chainz",
+      "T.I.",
+      "Flo Rida",
+      "Drake",
+      "Future",
+      "Migos"
+    ],
+    "filmTV": [
+      "Marvel Studios",
+      "MTV",
+      "CBS",
+      "FOX",
+      "NBC",
+      "VH1"
+    ],
+    "fashion": [
+      "GOAT Brand",
+      "Brick Squad Merch"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": []
+    },
+    "location": "Atlanta, GA",
+    "genre": [
+      "Hip Hop",
+      "Trap",
+      "EDM",
+      "R&B"
+    ],
+    "socials": {
+      "instagram": "@djspeedy",
+      "twitter": "@djspeedy"
+    },
+    "networkSize": 277
+  },
+  {
+    "id": "root-waka",
+    "name": "Waka Flocka Flame",
+    "realName": "Juaquin James Malphurs",
+    "tier": 0,
+    "emoji": "\ud83d\udd25",
+    "type": "artist",
+    "connectionToRoot": "Partner \u2014 Brick Squad co-founder, 900+ shared works",
+    "bio": "ATL trap pioneer. Flockaveli changed rap. HARD IN DA PAINT. No Hands. Brick Squad Monopoly. Over 900 registered works. Reality TV star (Growing Up Hip Hop, Love & Hip Hop). Vegan lifestyle advocate.",
+    "stats": {
+      "catalogSongs": 963,
+      "isrcs": 1737,
+      "followers": "8.5M+"
+    },
+    "companies": [
+      "Brick Squad Monopoly",
+      "1017 Records",
+      "36 Brickhouse"
+    ],
+    "musicCredits": [
+      "Gucci Mane",
+      "Slim Dunkin",
+      "French Montana",
+      "Drake",
+      "Nicki Minaj",
+      "Meek Mill",
+      "Rick Ross",
+      "Ludacris",
+      "T.I."
+    ],
+    "filmTV": [
+      "Growing Up Hip Hop (WEtv)",
+      "Love & Hip Hop Atlanta (VH1)",
+      "Wild N Out (MTV)"
+    ],
+    "fashion": [
+      "Brick Squad Monopoly Brand",
+      "36 Brickhouse Streetwear"
+    ],
+    "dating": {
+      "status": "Divorced",
+      "known": [
+        "Tammy Rivera (ex-wife, Love & Hip Hop)"
+      ]
+    },
+    "location": "Atlanta, GA",
+    "genre": [
+      "Trap",
+      "Hip Hop",
+      "Crunk"
+    ],
+    "socials": {
+      "instagram": "@wakaflocka",
+      "twitter": "@WakaFlocka"
+    },
+    "networkSize": 200
+  },
+  {
+    "id": "t1-gucci",
+    "name": "Gucci Mane",
+    "realName": "Radric Delantic Davis",
+    "tier": 1,
+    "emoji": "\ud83e\uddca",
+    "type": "artist",
+    "catalogSongs": 35,
+    "connectionToRoot": "35 songs in catalog. Co-founded 1017 Brick Squad. ASCAP verified.",
+    "bio": "Trap music pioneer. East Atlanta Santa. Co-founded 1017 Records. Over 70 mixtapes. Autobiography became NYT bestseller. Married to Keyshia Ka'oir.",
+    "musicNetwork": [
+      "Drake",
+      "Migos",
+      "Young Thug",
+      "Future",
+      "Lil Wayne",
+      "Nicki Minaj",
+      "Rick Ross",
+      "2 Chainz",
+      "T.I.",
+      "Jeezy",
+      "Chief Keef",
+      "21 Savage",
+      "Lil Baby",
+      "Lil Uzi Vert"
+    ],
+    "filmTV": [
+      "Gucci Mane: The Movie",
+      "Spring Breakers (2012)",
+      "Birds of a Feather"
+    ],
+    "fashion": [
+      "Gucci Brand Ambassador",
+      "Delantic clothing line",
+      "Ice Cream Tattoo signature"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Keyshia Ka'oir (wife, married 2017, $1.7M wedding)"
+      ]
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$14M",
+    "genre": [
+      "Trap",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "21 Savage",
+      "Lil Baby",
+      "Lil Uzi Vert",
+      "Kodak Black",
+      "NBA YoungBoy",
+      "Pooh Shiesty",
+      "Key Glock"
+    ]
+  },
+  {
+    "id": "t1-nicki",
+    "name": "Nicki Minaj",
+    "realName": "Onika Tanya Maraj-Petty",
+    "tier": 1,
+    "emoji": "\ud83d\udc51",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "GET LOW (FEAT. NICKI MINAJ, TYGA & FLO RIDA) \u2014 ASCAP verified. DJ Speedy produced.",
+    "bio": "Best-selling female rapper of all time. 100M+ records sold. Queen of rap. Young Money/Cash Money. American Idol judge. Massive fashion icon.",
+    "musicNetwork": [
+      "Drake",
+      "Lil Wayne",
+      "Beyonc\u00e9",
+      "Jay-Z",
+      "Ariana Grande",
+      "Rihanna",
+      "Kanye West",
+      "Eminem",
+      "Future",
+      "2 Chainz",
+      "Meek Mill",
+      "Migos",
+      "Cardi B"
+    ],
+    "filmTV": [
+      "Barbershop: The Next Cut",
+      "The Other Woman",
+      "Ice Age: Continental Drift (voice)",
+      "American Idol (judge)",
+      "RuPaul's Drag Race (guest)"
+    ],
+    "fashion": [
+      "Fendi collaboration",
+      "H&M campaign",
+      "Kmart clothing line",
+      "Crocs collaboration",
+      "MAC Cosmetics"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Kenneth Petty (husband)",
+        "Meek Mill (ex)",
+        "Safaree Samuels (ex)",
+        "Drake (rumored)",
+        "Nas (dated 2017)",
+        "Eminem (rumored)"
+      ]
+    },
+    "location": "Los Angeles, CA / New York",
+    "netWorth": "$130M",
+    "genre": [
+      "Hip Hop",
+      "Pop",
+      "R&B"
+    ],
+    "tier2Network": [
+      "Ariana Grande",
+      "Beyonc\u00e9",
+      "Rihanna",
+      "Cardi B",
+      "Megan Thee Stallion",
+      "Doja Cat",
+      "Latto",
+      "Ice Spice",
+      "BTS",
+      "Ed Sheeran"
+    ]
+  },
+  {
+    "id": "t1-drake",
+    "name": "Drake",
+    "realName": "Aubrey Drake Graham",
+    "tier": 1,
+    "emoji": "\ud83e\udd89",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. Connected via Waka Flocka & Gucci Mane network.",
+    "bio": "Biggest rapper alive. 170M+ records sold. OVO Sound founder. Degrassi actor turned global icon. Most streamed artist on Spotify history.",
+    "musicNetwork": [
+      "Lil Wayne",
+      "Nicki Minaj",
+      "Future",
+      "21 Savage",
+      "Travis Scott",
+      "Kanye West",
+      "Jay-Z",
+      "Rick Ross",
+      "Rihanna",
+      "The Weeknd",
+      "J. Cole",
+      "Kendrick Lamar"
+    ],
+    "filmTV": [
+      "Degrassi: The Next Generation",
+      "Anchorman 2 (cameo)",
+      "SNL Host",
+      "Top Boy (executive producer)",
+      "Euphoria (executive producer)"
+    ],
+    "fashion": [
+      "OVO (October's Very Own) clothing",
+      "Nike partnership",
+      "Chrome Hearts"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Rihanna (dated 2009-2016)",
+        "Jennifer Lopez (dated 2016)",
+        "Sophie Brussaux (son's mother)",
+        "Johanna Leia (dated 2021)"
+      ]
+    },
+    "location": "Toronto, Canada / Los Angeles",
+    "netWorth": "$260M",
+    "genre": [
+      "Hip Hop",
+      "R&B",
+      "Pop"
+    ],
+    "tier2Network": [
+      "Travis Scott",
+      "The Weeknd",
+      "J. Cole",
+      "Kendrick Lamar",
+      "Bad Bunny",
+      "Lil Durk",
+      "Jack Harlow",
+      "SZA",
+      "Doja Cat"
+    ]
+  },
+  {
+    "id": "t1-future",
+    "name": "Future",
+    "realName": "Nayvadius DeMun Cash",
+    "tier": 1,
+    "emoji": "\ud83c\udf0a",
+    "type": "artist",
+    "catalogSongs": 4,
+    "connectionToRoot": "4 songs in catalog. Atlanta neighbor. Brick Squad network.",
+    "bio": "Atlanta trap legend. Freebandz label. DS2. Monster. Dirty Sprite. Pioneer of melodic trap. Multiple platinum albums.",
+    "musicNetwork": [
+      "Drake",
+      "Young Thug",
+      "Lil Uzi Vert",
+      "Juice WRLD",
+      "Gunna",
+      "Lil Baby",
+      "21 Savage",
+      "Metro Boomin",
+      "DJ Esco",
+      "Waka Flocka"
+    ],
+    "filmTV": [
+      "Superfly (2018, soundtrack)",
+      "Coming 2 America (cameo)",
+      "What a Time to Be Alive documentary"
+    ],
+    "fashion": [
+      "Reebok partnership",
+      "Freebandz merch",
+      "Known for designer fashion/Amiri jeans"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Ciara (ex-fianc\u00e9e, son Future Jr.)",
+        "Lori Harvey (ex)",
+        "Joie Chavis (son Hendrix)",
+        "Brittni Mealy (son Prince)",
+        "Plus 5 other baby mothers (8 kids total)"
+      ]
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$40M",
+    "genre": [
+      "Trap",
+      "Hip Hop",
+      "Melodic Trap"
+    ],
+    "tier2Network": [
+      "Metro Boomin",
+      "Gunna",
+      "Lil Baby",
+      "Ciara",
+      "Lori Harvey",
+      "Juice WRLD",
+      "Southside"
+    ]
+  },
+  {
+    "id": "t1-lilwayne",
+    "name": "Lil Wayne",
+    "realName": "Dwayne Michael Carter Jr.",
+    "tier": 1,
+    "emoji": "\ud83e\udd19",
+    "type": "artist",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog. Young Money/Cash Money network. Connected via Nicki Minaj & Drake.",
+    "bio": "Greatest rapper alive (self-proclaimed, widely agreed). Young Money founder. Tha Carter series. A Milli. Lollipop. 120M+ records sold. Mentor to Drake & Nicki.",
+    "musicNetwork": [
+      "Drake",
+      "Nicki Minaj",
+      "Birdman",
+      "T-Pain",
+      "2 Chainz",
+      "Gudda Gudda",
+      "Tyga",
+      "Chris Brown",
+      "Jay-Z",
+      "Eminem",
+      "Kanye West",
+      "Future"
+    ],
+    "filmTV": [
+      "Baller Blockin' (2000)",
+      "Hurricane Season",
+      "Saturday Night Live",
+      "The Carter documentary"
+    ],
+    "fashion": [
+      "TRUKFIT clothing line",
+      "Supra footwear",
+      "Beats by Dre endorsement"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Toya Johnson (ex-wife)",
+        "Lauren London (ex, son Kameron)",
+        "Nivea (ex, son Neal)",
+        "La'Tecia Thomas (ex-fianc\u00e9e)",
+        "Denise Bidot (ex)"
+      ]
+    },
+    "location": "Miami, FL / Los Angeles",
+    "netWorth": "$170M",
+    "genre": [
+      "Hip Hop",
+      "Rap",
+      "Pop Rap"
+    ],
+    "tier2Network": [
+      "Birdman",
+      "Chris Brown",
+      "T-Pain",
+      "Lauren London",
+      "Toya Johnson"
+    ]
+  },
+  {
+    "id": "t1-frenchmontana",
+    "name": "French Montana",
+    "realName": "Karim Kharbouch",
+    "tier": 1,
+    "emoji": "\ud83c\uddf2\ud83c\udde6",
+    "type": "artist",
+    "catalogSongs": 24,
+    "connectionToRoot": "24 songs in catalog! Heavy collaborator. ASCAP/SoundExchange verified.",
+    "bio": "Moroccan-American rapper. Coke Boys. Unforgettable (8x platinum). Bad Boy/Epic Records. Major philanthropist for Africa.",
+    "musicNetwork": [
+      "Drake",
+      "Rick Ross",
+      "Waka Flocka",
+      "Diddy",
+      "Swae Lee",
+      "A$AP Rocky",
+      "Nicki Minaj",
+      "Kodak Black",
+      "Lil Durk",
+      "Cardi B",
+      "Migos"
+    ],
+    "filmTV": [
+      "Love & Hip Hop (appearances)",
+      "The Perfect Match",
+      "Master of None (cameo)"
+    ],
+    "fashion": [
+      "Shalimar fragrance",
+      "Ciroc brand ambassador",
+      "Known for luxury fashion/cars"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Khloe Kardashian (dated 2014)",
+        "Trina (dated 2012-2013)",
+        "Iggy Azalea (dated 2016)",
+        "Deen Kharbouch (ex-wife)"
+      ]
+    },
+    "location": "New York, NY / Los Angeles",
+    "netWorth": "$16M",
+    "genre": [
+      "Hip Hop",
+      "Trap"
+    ],
+    "tier2Network": [
+      "Khloe Kardashian",
+      "Diddy",
+      "Swae Lee",
+      "The Kardashians",
+      "Trina",
+      "Iggy Azalea"
+    ]
+  },
+  {
+    "id": "t1-rickross",
+    "name": "Rick Ross",
+    "realName": "William Leonard Roberts II",
+    "tier": 1,
+    "emoji": "\ud83c\udf50",
+    "type": "artist",
+    "catalogSongs": 4,
+    "connectionToRoot": "4 songs in catalog. MMG network. ASCAP verified.",
+    "bio": "Boss. Maybach Music Group founder. Port of Miami. Hustlin'. Major mogul. Wing empire (Wingstop franchises). Largest estate in GA (109 rooms).",
+    "musicNetwork": [
+      "Meek Mill",
+      "Wale",
+      "Drake",
+      "Jay-Z",
+      "Kanye West",
+      "Lil Wayne",
+      "Nicki Minaj",
+      "French Montana",
+      "Gucci Mane",
+      "2 Chainz",
+      "Future"
+    ],
+    "filmTV": [
+      "Magic City documentary",
+      "Days of Wrath (2008)",
+      "Freelancers (2012)"
+    ],
+    "fashion": [
+      "Bel Air Athletics",
+      "Checkers/Rally's franchise owner",
+      "Luxury car collector (100+ cars)"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Lastonia Leviston (ex)",
+        "Lira Galore (ex-fianc\u00e9e)",
+        "Briana Camille (ex, 3 kids)",
+        "Pretty Vee (rumored)"
+      ]
+    },
+    "location": "Fayetteville, GA",
+    "netWorth": "$45M",
+    "genre": [
+      "Hip Hop",
+      "Trap"
+    ],
+    "tier2Network": [
+      "Meek Mill",
+      "Wale",
+      "Omarion",
+      "Gunplay",
+      "Magazeen"
+    ]
+  },
+  {
+    "id": "t1-2chainz",
+    "name": "2 Chainz",
+    "realName": "Tauheed Epps",
+    "tier": 1,
+    "emoji": "\u26d3\ufe0f",
+    "type": "artist",
+    "catalogSongs": 4,
+    "connectionToRoot": "4 songs in catalog. Atlanta family. ASCAP verified.",
+    "bio": "Tity Boi. Playaz Circle (Duffle Bag Boy). Based on a T.R.U. Story. Birthday Song. I'm Different. Former college basketball player. Restaurant owner (Esco).",
+    "musicNetwork": [
+      "Lil Wayne",
+      "Kanye West",
+      "Drake",
+      "Pharrell",
+      "Waka Flocka",
+      "Gucci Mane",
+      "Future",
+      "Young Thug",
+      "Travis Scott",
+      "Ariana Grande"
+    ],
+    "filmTV": [
+      "2 Chainz Most Expensivest (VICELAND)",
+      "Law & Order: SVU (2019)",
+      "Empire (guest)"
+    ],
+    "fashion": [
+      "CEO of T.R.U. (The Real University)",
+      "Adidas collaboration",
+      "Known for statement chains/glasses"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Kesha Ward (wife, married 2018, together since college)"
+      ]
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$12M",
+    "genre": [
+      "Hip Hop",
+      "Trap"
+    ],
+    "tier2Network": [
+      "Kanye West",
+      "Pharrell",
+      "Ariana Grande",
+      "Travis Scott",
+      "Lil Baby"
+    ]
+  },
+  {
+    "id": "t1-ti",
+    "name": "T.I.",
+    "realName": "Clifford Joseph Harris Jr.",
+    "tier": 1,
+    "emoji": "\ud83d\udc51",
+    "type": "artist",
+    "catalogSongs": 3,
+    "connectionToRoot": "3 songs in catalog. Atlanta royalty. King of the South.",
+    "bio": "King of the South. Trap Muzik pioneer. Whatever You Like. Live Your Life ft Rihanna. Actor. Hustle Gang CEO. Grand Hustle Records. T.I. & Tiny reality show.",
+    "musicNetwork": [
+      "Lil Wayne",
+      "Jay-Z",
+      "Kanye West",
+      "Pharrell",
+      "Rihanna",
+      "Justin Timberlake",
+      "Waka Flocka",
+      "Young Thug",
+      "Jeezy",
+      "Ludacris",
+      "B.o.B"
+    ],
+    "filmTV": [
+      "ATL (2006)",
+      "American Gangster (2007)",
+      "Ant-Man (2015, Marvel)",
+      "Ant-Man and the Wasp (2018)",
+      "T.I. & Tiny: The Family Hustle (VH1)",
+      "Roots (2016)"
+    ],
+    "fashion": [
+      "AKOO clothing line",
+      "Hustle Gang apparel",
+      "Known for designer fashion"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Tiny Harris (wife, married 2010, Xscape singer)",
+        "Lashon Thompson (ex, 2 sons)",
+        "Ms. Niko (rumored)"
+      ]
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$50M",
+    "genre": [
+      "Hip Hop",
+      "Trap",
+      "Pop Rap"
+    ],
+    "tier2Network": [
+      "Rihanna",
+      "Justin Timberlake",
+      "Tiny Harris",
+      "Xscape",
+      "Marvel/Disney"
+    ]
+  },
+  {
+    "id": "t1-ludacris",
+    "name": "Ludacris",
+    "realName": "Christopher Brian Bridges",
+    "tier": 1,
+    "emoji": "\ud83c\udfce\ufe0f",
+    "type": "artist",
+    "catalogSongs": 3,
+    "connectionToRoot": "3 songs in catalog. Atlanta legend. Disturbing tha Peace.",
+    "bio": "ATL legend. Fast & Furious franchise star. Disturbing Tha Peace Records. Word of Mouf. Chicken-n-Beer. Grammy winner. Actor turned global brand.",
+    "musicNetwork": [
+      "Pharrell",
+      "Timbaland",
+      "Nicki Minaj",
+      "Lil Wayne",
+      "T.I.",
+      "Jermaine Dupri",
+      "Usher",
+      "Ciara",
+      "Waka Flocka"
+    ],
+    "filmTV": [
+      "Fast & Furious franchise (Tej Parker)",
+      "Crash (2004)",
+      "Hustle & Flow (2005)",
+      "New Year's Eve (2011)",
+      "Fear Factor (host)",
+      "Karma's World (Netflix, creator)"
+    ],
+    "fashion": [
+      "Conjure Cognac brand",
+      "Phat Farm partnership",
+      "Known for clean style"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Eudoxie Bridges (wife, married 2014)",
+        "Christine Vest (ex, daughter)"
+      ]
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$30M",
+    "genre": [
+      "Hip Hop",
+      "Southern Rap"
+    ],
+    "tier2Network": [
+      "Vin Diesel",
+      "Tyrese",
+      "Paul Walker (RIP)",
+      "Michelle Rodriguez",
+      "Usher",
+      "Jermaine Dupri"
+    ]
+  },
+  {
+    "id": "t1-youngthug",
+    "name": "Young Thug",
+    "realName": "Jeffery Lamar Williams",
+    "tier": 1,
+    "emoji": "\ud83d\udc0d",
+    "type": "artist",
+    "catalogSongs": 3,
+    "connectionToRoot": "3 songs in catalog. Atlanta next-gen. YSL Records.",
+    "bio": "Fashion-forward rap revolutionary. YSL Records founder. Barter 6. So Much Fun (platinum). Invented modern rap flows. Currently facing RICO trial.",
+    "musicNetwork": [
+      "Future",
+      "Gunna",
+      "Lil Baby",
+      "Travis Scott",
+      "Drake",
+      "Lil Uzi Vert",
+      "21 Savage",
+      "Waka Flocka",
+      "Gucci Mane",
+      "Juice WRLD",
+      "Post Malone"
+    ],
+    "filmTV": [
+      "Saturday Night Live (musical guest)",
+      "Spider-Man: Into the Spider-Verse (soundtrack)"
+    ],
+    "fashion": [
+      "Calvin Klein campaign (2016, gender-fluid fashion)",
+      "Alessandro Michele/Gucci muse",
+      "Known for dresses/high fashion gender-bending"
+    ],
+    "dating": {
+      "status": "Engaged",
+      "known": [
+        "Jerrika Karlae (ex-fianc\u00e9e)",
+        "Mariah the Scientist (current)"
+      ]
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$8M",
+    "genre": [
+      "Trap",
+      "Hip Hop",
+      "Experimental"
+    ],
+    "tier2Network": [
+      "Gunna",
+      "Lil Baby",
+      "Lil Keed (RIP)",
+      "Travis Scott",
+      "Post Malone"
+    ]
+  },
+  {
+    "id": "t1-migos",
+    "name": "Migos",
+    "realName": "Quavo, Offset, Takeoff (RIP)",
+    "tier": 1,
+    "emoji": "\ud83c\udfaf",
+    "type": "group",
+    "catalogSongs": 3,
+    "connectionToRoot": "3 songs in catalog. Atlanta trap. QC Music.",
+    "bio": "Versace. Bad and Boujee. Culture. Changed the triplet flow forever. Quality Control Music. Takeoff tragically killed in 2022.",
+    "musicNetwork": [
+      "Drake",
+      "Travis Scott",
+      "Cardi B",
+      "Nicki Minaj",
+      "Lil Wayne",
+      "Gucci Mane",
+      "Future",
+      "Young Thug",
+      "21 Savage",
+      "Lil Baby"
+    ],
+    "filmTV": [
+      "Atlanta (FX, cameo)",
+      "Narcos: Mexico (Takeoff)",
+      "Star (FOX)",
+      "Saturday Night Live"
+    ],
+    "fashion": [
+      "Quavo x Boohoo Man",
+      "Versace ambassadors",
+      "Known for luxury fashion/drip"
+    ],
+    "dating": {
+      "status": "Mixed",
+      "known": [
+        "Offset married Cardi B (2017)",
+        "Quavo dated Saweetie (2018-2021)",
+        "Takeoff (RIP, private)"
+      ]
+    },
+    "location": "Atlanta, GA / Los Angeles",
+    "netWorth": "$80M combined",
+    "genre": [
+      "Trap",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Cardi B",
+      "Saweetie",
+      "Lil Baby",
+      "Quality Control",
+      "Coach K",
+      "Pierre Thomas"
+    ]
+  },
+  {
+    "id": "t1-meekmill",
+    "name": "Meek Mill",
+    "realName": "Robert Rihmeek Williams",
+    "tier": 1,
+    "emoji": "\ud83d\udcaa",
+    "type": "artist",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog. MMG/Dreamchasers. Criminal justice reform icon.",
+    "bio": "Philadelphia legend. Dreams and Nightmares. Criminal justice reform advocate. Dreamchasers label. Free Meek docuseries. REFORM Alliance co-founder.",
+    "musicNetwork": [
+      "Rick Ross",
+      "Drake",
+      "Nicki Minaj",
+      "Jay-Z",
+      "Future",
+      "Young Thug",
+      "Lil Durk",
+      "Waka Flocka",
+      "French Montana",
+      "Lil Uzi Vert"
+    ],
+    "filmTV": [
+      "Free Meek (Amazon Prime docuseries)",
+      "Charm City Kings (producer)",
+      "#FreeMeek movement"
+    ],
+    "fashion": [
+      "Dreamchasers merch",
+      "Puma partnership",
+      "Known for Philly street style"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Nicki Minaj (dated 2015-2017)",
+        "Milan Harris (son Czar)",
+        "Bernice Burgos (rumored)"
+      ]
+    },
+    "location": "Philadelphia, PA",
+    "netWorth": "$20M",
+    "genre": [
+      "Hip Hop",
+      "Trap"
+    ],
+    "tier2Network": [
+      "Jay-Z",
+      "Philadelphia Eagles/76ers",
+      "Michael Rubin",
+      "REFORM Alliance"
+    ]
+  },
+  {
+    "id": "t1-tyga",
+    "name": "Tyga",
+    "realName": "Micheal Ray Stevenson",
+    "tier": 1,
+    "emoji": "\ud83d\udc2f",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "GET LOW (FEAT. NICKI MINAJ, TYGA & FLO RIDA). ASCAP verified.",
+    "bio": "Rack City. Taste. Young Money. Major Kardashian connection. Last Kings brand.",
+    "musicNetwork": [
+      "Lil Wayne",
+      "Nicki Minaj",
+      "Chris Brown",
+      "Offset",
+      "Dj Mustard",
+      "YG",
+      "Wiz Khalifa",
+      "Drake"
+    ],
+    "filmTV": [
+      "Going Yard",
+      "Kingin' with Tyga (MTV)",
+      "Rob & Chyna (cameo)"
+    ],
+    "fashion": [
+      "Last Kings clothing line",
+      "D.O.P.E. (Downers of Planet Earth)"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Kylie Jenner (dated 2014-2017, MAJOR)",
+        "Blac Chyna (ex, son King Cairo)",
+        "Camaryn Swanson (ex)",
+        "Avril Lavigne (dated 2023)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$5M",
+    "genre": [
+      "Hip Hop",
+      "Pop Rap"
+    ],
+    "tier2Network": [
+      "Kylie Jenner",
+      "Kardashian Family",
+      "Blac Chyna",
+      "Chris Brown",
+      "Avril Lavigne"
+    ]
+  },
+  {
+    "id": "t1-florida",
+    "name": "Flo Rida",
+    "realName": "Tramar Lacel Dillard",
+    "tier": 1,
+    "emoji": "\ud83c\udf34",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "GET LOW (FEAT. NICKI MINAJ, TYGA & FLO RIDA). ASCAP/MLC verified.",
+    "bio": "Low. Right Round. Good Feeling. Whistle. 80M+ records sold worldwide. Eurovision performer (2021). Party anthem king.",
+    "musicNetwork": [
+      "T-Pain",
+      "Ke$ha",
+      "Sia",
+      "Pitbull",
+      "DJ Khaled",
+      "Nicki Minaj",
+      "Akon",
+      "Jason Derulo",
+      "David Guetta"
+    ],
+    "filmTV": [
+      "Step Up 3D (soundtrack)",
+      "Eurovision 2021 (San Marino)",
+      "Various TV performances"
+    ],
+    "fashion": [
+      "International Luxury Brands endorsements",
+      "Known for flashy style"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": [
+        "Megatron (ex)",
+        "Various models (private)"
+      ]
+    },
+    "location": "Miami, FL",
+    "netWorth": "$30M",
+    "genre": [
+      "Pop Rap",
+      "Dance",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Pitbull",
+      "DJ Khaled",
+      "David Guetta",
+      "Sia",
+      "Jason Derulo"
+    ]
+  },
+  {
+    "id": "t1-diddy",
+    "name": "Diddy",
+    "realName": "Sean John Combs",
+    "tier": 1,
+    "emoji": "\ud83e\udd42",
+    "type": "mogul",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog. Bad Boy network. Industry titan.",
+    "bio": "Bad Boy Records founder. REVOLT Media. Sean John fashion. Ciroc. Music mogul. I'll Be Missing You. Last Night. Can't Nobody Hold Me Down.",
+    "musicNetwork": [
+      "The Notorious B.I.G.",
+      "Jay-Z",
+      "Mary J. Blige",
+      "Usher",
+      "Mase",
+      "Faith Evans",
+      "French Montana",
+      "Rick Ross",
+      "Lil Kim",
+      "Cassie"
+    ],
+    "filmTV": [
+      "Making the Band (MTV)",
+      "Get Him to the Greek",
+      "A Raisin in the Sun (Broadway)",
+      "The Four (FOX judge)"
+    ],
+    "fashion": [
+      "Sean John (founded 1998, CFDA award)",
+      "Ciroc vodka",
+      "Revolt TV",
+      "Aqua Hydration",
+      "DeLe\u00f3n tequila"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Kim Porter (ex, RIP, 3 kids)",
+        "Jennifer Lopez (dated 1999-2001)",
+        "Cassie (dated 2007-2018)",
+        "Yung Miami (dated 2022-2023)"
+      ]
+    },
+    "location": "Los Angeles, CA / Miami",
+    "netWorth": "$400M",
+    "genre": [
+      "Hip Hop",
+      "R&B",
+      "Pop"
+    ],
+    "tier2Network": [
+      "Jennifer Lopez",
+      "Kim Kardashian",
+      "Yung Miami",
+      "Mary J. Blige",
+      "Notorious B.I.G.",
+      "Bad Boy roster"
+    ]
+  },
+  {
+    "id": "t1-souljboy",
+    "name": "Soulja Boy",
+    "realName": "DeAndre Cortez Way",
+    "tier": 1,
+    "emoji": "\ud83c\udfae",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. First rapper to use internet for fame. ATL connection.",
+    "bio": "Crank That (Soulja Boy). First internet rapper. SODMG. Gaming entrepreneur. First rapper to release own console (controversy). Social media pioneer.",
+    "musicNetwork": [
+      "Lil Wayne",
+      "Gucci Mane",
+      "Chief Keef",
+      "Waka Flocka",
+      "Bow Wow",
+      "Arab",
+      "Lil B"
+    ],
+    "filmTV": [
+      "Soulja Boy: The Movie",
+      "Love & Hip Hop Hollywood",
+      "Wild N Out"
+    ],
+    "fashion": [
+      "SODMG brand",
+      "Yums footwear",
+      "SouljaWatch (tech products)"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Nia Riley (ex, Love & Hip Hop)",
+        "Blac Chyna (dated 2019)",
+        "Diamond (ex)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$5M",
+    "genre": [
+      "Hip Hop",
+      "Dance Rap"
+    ],
+    "tier2Network": [
+      "Bow Wow",
+      "Blac Chyna",
+      "Chief Keef",
+      "Lil B"
+    ]
+  },
+  {
+    "id": "t1-chiefkeef",
+    "name": "Chief Keef",
+    "realName": "Keith Farrelle Cozart",
+    "tier": 1,
+    "emoji": "\ud83d\udca5",
+    "type": "artist",
+    "catalogSongs": 3,
+    "connectionToRoot": "3 songs in catalog. Drill pioneer. Connected via Gucci/Waka network.",
+    "bio": "Chicago drill pioneer. Love Sosa. Don't Like. I Don't Like (Kanye remix). Influenced entire generation. Glo Gang.",
+    "musicNetwork": [
+      "Lil Reese",
+      "Fredo Santana (RIP)",
+      "Tadoe",
+      "Gucci Mane",
+      "Kanye West",
+      "Lil Uzi Vert",
+      "Playboi Carti",
+      "Young Thug"
+    ],
+    "filmTV": [
+      "Various documentaries",
+      "Music videos as cultural artifacts"
+    ],
+    "fashion": [
+      "Glo Gang merch",
+      "Influenced drill fashion (True Religion, designer belts)"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": [
+        "Multiple children with different mothers"
+      ]
+    },
+    "location": "Los Angeles, CA (from Chicago)",
+    "netWorth": "$1M",
+    "genre": [
+      "Drill",
+      "Trap",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Kanye West",
+      "Playboi Carti",
+      "Lil Uzi Vert",
+      "21 Savage"
+    ]
+  },
+  {
+    "id": "t1-yogotti",
+    "name": "Yo Gotti",
+    "realName": "Mario Mims",
+    "tier": 1,
+    "emoji": "\ud83d\udcb0",
+    "type": "artist",
+    "catalogSongs": 4,
+    "connectionToRoot": "4 songs in catalog. CMG label boss. Memphis royalty.",
+    "bio": "Memphis legend. CMG (Collective Music Group) founder. Down in the DM. Rake It Up. Signed Moneybagg Yo, 42 Dugg, EST Gee, GloRilla.",
+    "musicNetwork": [
+      "Moneybagg Yo",
+      "42 Dugg",
+      "EST Gee",
+      "GloRilla",
+      "Lil Wayne",
+      "Rick Ross",
+      "Gucci Mane",
+      "Waka Flocka",
+      "Future",
+      "Nicki Minaj"
+    ],
+    "filmTV": [
+      "CMG: The Label documentary",
+      "Live from the Kitchen"
+    ],
+    "fashion": [
+      "CMG merch",
+      "Known for luxury lifestyle/cars"
+    ],
+    "dating": {
+      "status": "Dating",
+      "known": [
+        "Angela Simmons (dating, Rev Run's daughter!)",
+        "Lakeisha Mims (ex)",
+        "Various (private)"
+      ]
+    },
+    "location": "Memphis, TN",
+    "netWorth": "$16M",
+    "genre": [
+      "Hip Hop",
+      "Trap",
+      "Memphis Rap"
+    ],
+    "tier2Network": [
+      "Moneybagg Yo",
+      "GloRilla",
+      "42 Dugg",
+      "Angela Simmons",
+      "Rev Run/Simmons family"
+    ]
+  },
+  {
+    "id": "t1-treysongz",
+    "name": "Trey Songz",
+    "realName": "Tremaine Aldon Neverson",
+    "tier": 1,
+    "emoji": "\ud83c\udfa4",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. R&B connection. Waka/Speedy network.",
+    "bio": "R&B heartthrob. Bottoms Up. Say Aah. Slow Motion. Heart Attack. Trigga. Multiple platinum albums. Major ladies' man.",
+    "musicNetwork": [
+      "Nicki Minaj",
+      "Drake",
+      "Chris Brown",
+      "Fabolous",
+      "Lil Wayne",
+      "T.I.",
+      "Waka Flocka",
+      "Gucci Mane"
+    ],
+    "filmTV": [
+      "Baggage Claim (2013)",
+      "Blood Brother (2018)",
+      "Texas Chainsaw 3D (2013)"
+    ],
+    "fashion": [
+      "Rocawear campaign",
+      "Known for heartthrob image/fitted style"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Khloe Kardashian (rumored 2014)",
+        "Megan Thee Stallion (rumored)",
+        "Lauren London (dated)",
+        "Tanaya Henry (ex)",
+        "Multiple baby mothers"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$12M",
+    "genre": [
+      "R&B",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Chris Brown",
+      "Fabolous",
+      "Lauren London"
+    ]
+  },
+  {
+    "id": "t1-lilboosie",
+    "name": "Lil Boosie",
+    "realName": "Torrence Ivy Hatch Jr.",
+    "tier": 1,
+    "emoji": "\ud83c\udfda\ufe0f",
+    "type": "artist",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog. Southern rap legend. Trill Entertainment.",
+    "bio": "Baton Rouge legend. Wipe Me Down. Set It Off. Survived cancer. Released from prison 2014. Badazz Music Syndicate. Raw & real.",
+    "musicNetwork": [
+      "Webbie",
+      "Lil Phat",
+      "Foxx",
+      "Gucci Mane",
+      "Waka Flocka",
+      "Kevin Gates",
+      "NBA YoungBoy",
+      "T.I.",
+      "Rick Ross"
+    ],
+    "filmTV": [
+      "Boosie: My Struggle (2022)",
+      "Glass House",
+      "Pimp C documentary"
+    ],
+    "fashion": [
+      "Badazz merch",
+      "Known for BR street style"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Multiple baby mothers (8+ kids)",
+        "Walnita Decuir-Hatch"
+      ]
+    },
+    "location": "Baton Rouge, LA",
+    "netWorth": "$8M",
+    "genre": [
+      "Southern Rap",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Kevin Gates",
+      "NBA YoungBoy",
+      "Webbie",
+      "Pimp C (RIP)"
+    ]
+  },
+  {
+    "id": "t1-juicyj",
+    "name": "Juicy J",
+    "realName": "Jordan Michael Houston",
+    "tier": 1,
+    "emoji": "\ud83c\udf7a",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. Three 6 Mafia. Academy Award winner!",
+    "bio": "Three 6 Mafia co-founder. ACADEMY AWARD WINNER (It's Hard out Here for a Pimp). Bandz a Make Her Dance. Influenced all of trap music.",
+    "musicNetwork": [
+      "Three 6 Mafia",
+      "Project Pat",
+      "Wiz Khalifa",
+      "Gucci Mane",
+      "Waka Flocka",
+      "Lil Wayne",
+      "2 Chainz",
+      "Nicki Minaj",
+      "Travis Scott",
+      "Cardi B"
+    ],
+    "filmTV": [
+      "Hustle & Flow (2005, Oscar-winning song)",
+      "Three 6 Mafia TV shows",
+      "Various documentaries"
+    ],
+    "fashion": [
+      "Trillville merch",
+      "Known for Memphis style"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Regina Perera (wife)"
+      ]
+    },
+    "location": "Memphis, TN / Los Angeles",
+    "netWorth": "$20M",
+    "genre": [
+      "Hip Hop",
+      "Crunk",
+      "Trap"
+    ],
+    "tier2Network": [
+      "DJ Paul",
+      "Project Pat",
+      "Wiz Khalifa",
+      "Taylor Gang",
+      "Travis Scott"
+    ]
+  },
+  {
+    "id": "t1-projectpat",
+    "name": "Project Pat",
+    "realName": "Patrick Earl Houston",
+    "tier": 1,
+    "emoji": "\ud83d\udd2b",
+    "type": "artist",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog. Three 6 Mafia family. Juicy J's brother.",
+    "bio": "Chickenhead. Don't Save Her. Juicy J's older brother. Three 6 Mafia affiliate. North Memphis legend. Mista Don't Play.",
+    "musicNetwork": [
+      "Juicy J",
+      "Three 6 Mafia",
+      "DJ Paul",
+      "Gucci Mane",
+      "Waka Flocka",
+      "Young Dolph (RIP)",
+      "Yo Gotti"
+    ],
+    "filmTV": [
+      "Various Three 6 Mafia projects"
+    ],
+    "fashion": [
+      "Memphis street style icon"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": []
+    },
+    "location": "Memphis, TN",
+    "netWorth": "$5M",
+    "genre": [
+      "Southern Rap",
+      "Memphis Rap"
+    ],
+    "tier2Network": [
+      "Young Dolph (RIP)",
+      "Key Glock",
+      "Memphis rap scene"
+    ]
+  },
+  {
+    "id": "t1-wale",
+    "name": "Wale",
+    "realName": "Olubowale Victor Akintimehin",
+    "tier": 1,
+    "emoji": "\ud83c\udfc8",
+    "type": "artist",
+    "catalogSongs": 5,
+    "connectionToRoot": "5 songs in catalog! MMG family. D.C. to ATL connection.",
+    "bio": "D.C. rapper. Lotus Flower Bomb. Ambition. The Album About Nothing. Massive Seinfeld fan. Nigerian heritage. MMG signee.",
+    "musicNetwork": [
+      "Rick Ross",
+      "Meek Mill",
+      "J. Cole",
+      "Rihanna",
+      "Miguel",
+      "Jeremih",
+      "Waka Flocka",
+      "French Montana"
+    ],
+    "filmTV": [
+      "Various TV appearances",
+      "WWE connections (entrance music)"
+    ],
+    "fashion": [
+      "Villa x Wale sneakers",
+      "Nigerian fashion influence",
+      "Known for sneaker culture"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": [
+        "Chloe Alexis (daughter Zyla's mother)",
+        "India Graham"
+      ]
+    },
+    "location": "Washington, D.C.",
+    "netWorth": "$7M",
+    "genre": [
+      "Hip Hop",
+      "Go-Go Rap"
+    ],
+    "tier2Network": [
+      "J. Cole",
+      "Rihanna",
+      "Miguel",
+      "Jerry Seinfeld",
+      "WWE"
+    ]
+  },
+  {
+    "id": "t1-acehood",
+    "name": "Ace Hood",
+    "realName": "Antoine McColister",
+    "tier": 1,
+    "emoji": "\ud83e\udd85",
+    "type": "artist",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog. We the Best Music. DJ Khaled connection.",
+    "bio": "Bugatti. Hustle Hard. We the Best Music (DJ Khaled's label). Florida rep. Body transformation inspiration.",
+    "musicNetwork": [
+      "DJ Khaled",
+      "Rick Ross",
+      "Lil Wayne",
+      "T-Pain",
+      "Meek Mill",
+      "Future",
+      "Waka Flocka",
+      "Birdman"
+    ],
+    "filmTV": [
+      "Various music videos"
+    ],
+    "fashion": [
+      "Fitness brand partnerships",
+      "Body transformation content"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Shelah Marie (wife, wellness advocate)"
+      ]
+    },
+    "location": "South Florida",
+    "netWorth": "$5M",
+    "genre": [
+      "Hip Hop",
+      "Trap"
+    ],
+    "tier2Network": [
+      "DJ Khaled",
+      "Birdman",
+      "Cash Money roster"
+    ]
+  },
+  {
+    "id": "t1-sleepybrown",
+    "name": "Sleepy Brown",
+    "realName": "Patrick \"Sleepy\" Brown",
+    "tier": 1,
+    "emoji": "\ud83d\ude34",
+    "type": "artist/producer",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog. Organized Noize. OutKast family. ATL royalty.",
+    "bio": "Organized Noize member. OutKast's musical family. I Can't Wait. Margarita. Son of legendary musician Jimmy Brown. Atlanta music foundation.",
+    "musicNetwork": [
+      "OutKast",
+      "Andr\u00e9 3000",
+      "Big Boi",
+      "Goodie Mob",
+      "CeeLo Green",
+      "TLC",
+      "Ludacris",
+      "Dungeon Family"
+    ],
+    "filmTV": [
+      "ATL music documentaries",
+      "Organized Noize documentary (Netflix 2016)"
+    ],
+    "fashion": [
+      "Atlanta bohemian style"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": []
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$3M",
+    "genre": [
+      "R&B",
+      "Southern Hip Hop",
+      "Funk"
+    ],
+    "tier2Network": [
+      "Andr\u00e9 3000",
+      "Big Boi",
+      "CeeLo Green",
+      "TLC",
+      "Dungeon Family"
+    ]
+  },
+  {
+    "id": "t1-mgk",
+    "name": "Machine Gun Kelly",
+    "realName": "Colson Baker",
+    "tier": 1,
+    "emoji": "\ud83c\udfb8",
+    "type": "artist",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog: GO CRAZY (FEAT. MACHINE GUN KELLY). Verified.",
+    "bio": "From rap to pop-punk. Bad Things. Bloody Valentine. My Ex's Best Friend. Tickets to My Downfall went #1. Engaged to Megan Fox.",
+    "musicNetwork": [
+      "Eminem",
+      "Waka Flocka",
+      "Travis Barker",
+      "Halsey",
+      "Young Thug",
+      "Lil Wayne",
+      "Trippie Redd",
+      "YUNGBLUD"
+    ],
+    "filmTV": [
+      "Bird Box (2018)",
+      "The Dirt (2019, Tommy Lee)",
+      "Big Time Adolescence",
+      "Midnight in the Switchgrass",
+      "Good Mourning",
+      "Jackass Forever"
+    ],
+    "fashion": [
+      "UN/DN LAQR nail polish line",
+      "Known for pink aesthetic/punk style"
+    ],
+    "dating": {
+      "status": "Engaged",
+      "known": [
+        "Megan Fox (fianc\u00e9e, since 2020)",
+        "Amber Rose (dated 2015)",
+        "Sommer Ray (dated 2020)",
+        "Emma Cannon (daughter's mother)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$25M",
+    "genre": [
+      "Hip Hop",
+      "Pop Punk",
+      "Rock"
+    ],
+    "tier2Network": [
+      "Megan Fox",
+      "Travis Barker",
+      "Kourtney Kardashian",
+      "Pete Davidson",
+      "Mod Sun"
+    ]
+  },
+  {
+    "id": "t1-lildurk",
+    "name": "Lil Durk",
+    "realName": "Durk Derrick Banks",
+    "tier": 1,
+    "emoji": "\ud83d\udd13",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "DON'T LOVE (FEAT. LIL DURK & DEREZ DESHON). Catalog verified.",
+    "bio": "Chicago drill to mainstream. OTF (Only The Family). Laugh Now Cry Later w Drake. Voice of the Heroes w Lil Baby. All My Life. Grammy nominated.",
+    "musicNetwork": [
+      "Drake",
+      "Lil Baby",
+      "21 Savage",
+      "Future",
+      "Gunna",
+      "Pooh Shiesty",
+      "King Von (RIP)",
+      "Waka Flocka",
+      "Meek Mill"
+    ],
+    "filmTV": [
+      "Various documentary appearances",
+      "Music video storytelling pioneer"
+    ],
+    "fashion": [
+      "OTF merch",
+      "Alamo Records",
+      "Known for designer fashion"
+    ],
+    "dating": {
+      "status": "Dating",
+      "known": [
+        "India Royale (girlfriend/fianc\u00e9e)",
+        "Multiple baby mothers (6 children)"
+      ]
+    },
+    "location": "Chicago, IL / Atlanta",
+    "netWorth": "$8M",
+    "genre": [
+      "Drill",
+      "Trap",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Lil Baby",
+      "King Von (RIP)",
+      "India Royale",
+      "OTF roster"
+    ]
+  },
+  {
+    "id": "t1-tylerthecreator",
+    "name": "Tyler, The Creator",
+    "realName": "Tyler Gregory Okonma",
+    "tier": 1,
+    "emoji": "\ud83c\udf3a",
+    "type": "artist",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog. Odd Future. Creative genius.",
+    "bio": "Odd Future leader. IGOR (Grammy winner). Call Me If You Get Lost. Flower Boy. Golf le Fleur fashion. Camp Flog Gnaw festival creator. Creative polymath.",
+    "musicNetwork": [
+      "Frank Ocean",
+      "A$AP Rocky",
+      "Pharrell",
+      "Kanye West",
+      "Lil Wayne",
+      "Waka Flocka",
+      "Earl Sweatshirt",
+      "The Neptunes"
+    ],
+    "filmTV": [
+      "Loiter Squad (Adult Swim)",
+      "The Jellies (Adult Swim)",
+      "Grinch soundtrack",
+      "Various voice acting"
+    ],
+    "fashion": [
+      "Golf le Fleur (luxury brand)",
+      "Golf Wang",
+      "Converse collaboration",
+      "Lacoste collaboration",
+      "Fashion icon/trendsetter"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": [
+        "Reign Judge (rumored, Kendall Jenner overlap)",
+        "Jaden Smith (rumored)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$16M",
+    "genre": [
+      "Hip Hop",
+      "Alternative",
+      "Neo-Soul"
+    ],
+    "tier2Network": [
+      "Frank Ocean",
+      "A$AP Rocky",
+      "Pharrell",
+      "Kanye West",
+      "Jaden Smith",
+      "Kendall Jenner"
+    ]
+  },
+  {
+    "id": "t1-asaprocky",
+    "name": "A$AP Rocky",
+    "realName": "Rakim Athelaston Mayers",
+    "tier": 1,
+    "emoji": "\ud83d\udc8e",
+    "type": "artist",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog (A$AP Rocky + A$AP Ferg). A$AP Mob.",
+    "bio": "A$AP Mob leader. Fashion icon. Peso. Fuckin' Problems. L.S.D. Testing. Known as most stylish man in hip hop. With Rihanna.",
+    "musicNetwork": [
+      "A$AP Ferg",
+      "Drake",
+      "Kanye West",
+      "Tyler The Creator",
+      "Playboi Carti",
+      "Skepta",
+      "Waka Flocka",
+      "ScHoolboy Q"
+    ],
+    "filmTV": [
+      "Dope (2015)",
+      "Monster (2018)",
+      "On My Block (soundtrack)",
+      "Stockholm Syndrome arrest"
+    ],
+    "fashion": [
+      "Dior ambassador",
+      "Gucci Muse",
+      "Under Armour",
+      "Pacsun",
+      "AWGE creative agency",
+      "Most stylish rapper alive"
+    ],
+    "dating": {
+      "status": "Together",
+      "known": [
+        "Rihanna (partner, 2 kids, RZA & Riot)",
+        "Chanel Iman (ex)",
+        "Kendall Jenner (dated 2017)",
+        "Iggy Azalea (dated 2011-2012)"
+      ]
+    },
+    "location": "New York / Los Angeles",
+    "netWorth": "$10M",
+    "genre": [
+      "Hip Hop",
+      "Alternative Hip Hop"
+    ],
+    "tier2Network": [
+      "Rihanna",
+      "Pharrell",
+      "Virgil Abloh (RIP)",
+      "Kendall Jenner",
+      "A$AP Mob"
+    ]
+  },
+  {
+    "id": "t1-steveaoki",
+    "name": "Steve Aoki",
+    "realName": "Steven Hiroyuki Aoki",
+    "tier": 1,
+    "emoji": "\ud83c\udfa7",
+    "type": "DJ/producer",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. EDM crossover. Waka Flocka collab.",
+    "bio": "EDM superstar. Dim Mak Records founder. Known for cake throwing. Benihana heir. Most traveled musician in history. 250+ shows/year.",
+    "musicNetwork": [
+      "Waka Flocka",
+      "Lil Uzi Vert",
+      "BTS",
+      "Louis Tomlinson",
+      "Linkin Park",
+      "will.i.am",
+      "Kid Cudi",
+      "Ti\u00ebsto"
+    ],
+    "filmTV": [
+      "I'll Sleep When I'm Dead (Netflix doc)",
+      "Various festival headlining"
+    ],
+    "fashion": [
+      "Dim Mak Collection",
+      "Known for wild stage outfits/cake throwing"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Tiernan Cowling (wife, model)",
+        "Previous relationships private"
+      ]
+    },
+    "location": "Los Angeles, CA / Las Vegas",
+    "netWorth": "$75M",
+    "genre": [
+      "EDM",
+      "Electro House",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "BTS",
+      "Ti\u00ebsto",
+      "Marshmello",
+      "Diplo",
+      "Benihana family"
+    ]
+  },
+  {
+    "id": "t1-ojdajuiceman",
+    "name": "OJ Da Juiceman",
+    "realName": "Otis Williams Jr.",
+    "tier": 1,
+    "emoji": "\ud83e\uddc3",
+    "type": "artist",
+    "catalogSongs": 10,
+    "connectionToRoot": "10 songs in catalog! 1017 Brick Squad OG. Core member.",
+    "bio": "1017 Brick Squad original member. Make Tha Trap Say Aye. Juice World. Gucci Mane prot\u00e9g\u00e9. Atlanta trap foundation.",
+    "musicNetwork": [
+      "Gucci Mane",
+      "Waka Flocka",
+      "Brick Squad",
+      "Young Jeezy",
+      "Nicki Minaj",
+      "French Montana"
+    ],
+    "filmTV": [],
+    "fashion": [
+      "32 Entertainment merch"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": []
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$500K",
+    "genre": [
+      "Trap",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Brick Squad roster",
+      "Atlanta trap scene"
+    ]
+  },
+  {
+    "id": "t1-travisporter",
+    "name": "Travis Porter",
+    "realName": "Quez, Ali, Strap (trio)",
+    "tier": 1,
+    "emoji": "\ud83d\udc83",
+    "type": "group",
+    "catalogSongs": 16,
+    "connectionToRoot": "16 songs in catalog! Core Brick Squad affiliate. ATL party rap.",
+    "bio": "Atlanta party rap trio. Ayy Ladies. Make It Rain. Bring It Back. College party anthem kings. Brick Squad affiliated.",
+    "musicNetwork": [
+      "Waka Flocka",
+      "Gucci Mane",
+      "2 Chainz",
+      "Tyga",
+      "New Boyz",
+      "Wale"
+    ],
+    "filmTV": [
+      "Various music video appearances"
+    ],
+    "fashion": [
+      "Known for party/club style"
+    ],
+    "dating": {
+      "status": "Various",
+      "known": []
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$2M",
+    "genre": [
+      "Hip Hop",
+      "Party Rap",
+      "Trap"
+    ],
+    "tier2Network": [
+      "Atlanta party scene",
+      "Club promoters"
+    ]
+  },
+  {
+    "id": "t1-slimdunkin",
+    "name": "Slim Dunkin",
+    "realName": "Mario Hamilton",
+    "tier": 1,
+    "emoji": "\ud83d\udd4a\ufe0f",
+    "type": "artist",
+    "catalogSongs": 64,
+    "connectionToRoot": "64 songs in catalog! #1 collaborator. Brick Squad core. RIP.",
+    "bio": "Brick Squad Monopoly core member. Tragically shot and killed Dec 2011 at age 24. Most prolific collaborator in catalog with 64 songs. Fetti Gang. RIP Legend.",
+    "musicNetwork": [
+      "Waka Flocka",
+      "Gucci Mane",
+      "Wooh Da Kid",
+      "Frenchie",
+      "Brick Squad",
+      "DJ Speedy"
+    ],
+    "filmTV": [],
+    "fashion": [
+      "Brick Squad style"
+    ],
+    "dating": {
+      "status": "RIP",
+      "known": []
+    },
+    "location": "Atlanta, GA (RIP 2011)",
+    "netWorth": "N/A",
+    "genre": [
+      "Trap",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Brick Squad family"
+    ]
+  },
+  {
+    "id": "t1-roscoe",
+    "name": "Roscoe Dash",
+    "realName": "Jeffrey Christopher Johnson",
+    "tier": 1,
+    "emoji": "\ud83d\udcab",
+    "type": "artist",
+    "catalogSongs": 9,
+    "connectionToRoot": "9 songs in catalog! No Hands collaborator. Major hit.",
+    "bio": "No Hands (with Waka Flocka, 5x platinum). All The Way Turnt Up. Atlanta rapper. No Hands was one of the biggest club records ever.",
+    "musicNetwork": [
+      "Waka Flocka",
+      "Soulja Boy",
+      "Big Sean",
+      "Tinie Tempah",
+      "T-Pain"
+    ],
+    "filmTV": [],
+    "fashion": [],
+    "dating": {
+      "status": "Private",
+      "known": []
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$300K",
+    "genre": [
+      "Hip Hop",
+      "Party Rap"
+    ],
+    "tier2Network": [
+      "Big Sean",
+      "T-Pain"
+    ]
+  },
+  {
+    "id": "t1-youngscooter",
+    "name": "Young Scooter",
+    "realName": "Kenneth Edward Bailey",
+    "tier": 1,
+    "emoji": "\ud83d\udef4",
+    "type": "artist",
+    "catalogSongs": 8,
+    "connectionToRoot": "8 songs in catalog. Colombia. Street rap. Black Migo Gang.",
+    "bio": "Colombia. Jugg King. Street lottery. Brick Squad affiliate. Black Migo Gang. One of the realest in Atlanta.",
+    "musicNetwork": [
+      "Gucci Mane",
+      "Future",
+      "Waka Flocka",
+      "Young Thug",
+      "Ralo",
+      "Lil Baby"
+    ],
+    "filmTV": [],
+    "fashion": [
+      "Black Migo merch"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": []
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$2M",
+    "genre": [
+      "Trap",
+      "Street Rap"
+    ],
+    "tier2Network": [
+      "Ralo",
+      "Lil Baby",
+      "Atlanta street scene"
+    ]
+  },
+  {
+    "id": "t1-wooh",
+    "name": "Wooh Da Kid",
+    "realName": "Clifford Dixon",
+    "tier": 1,
+    "emoji": "\ud83d\udd0a",
+    "type": "artist/producer",
+    "catalogSongs": 31,
+    "connectionToRoot": "31 songs in catalog! Brick Squad core producer/artist. Beat maker.",
+    "bio": "Brick Squad Monopoly core. Producer AND rapper. Made beats for Waka, Gucci, Slim Dunkin. Superproducer of BSM.",
+    "musicNetwork": [
+      "Waka Flocka",
+      "Gucci Mane",
+      "Slim Dunkin",
+      "Brick Squad",
+      "1017"
+    ],
+    "filmTV": [],
+    "fashion": [
+      "Brick Squad style"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": []
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$1M",
+    "genre": [
+      "Trap",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Brick Squad producers",
+      "808 Mafia"
+    ]
+  },
+  {
+    "id": "t1-kandi",
+    "name": "Kandi Burruss",
+    "realName": "Kandi Lenice Burruss-Tucker",
+    "tier": 1,
+    "emoji": "\u2728",
+    "type": "artist/mogul",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. Xscape member. RHOA star. Atlanta royalty.",
+    "bio": "Xscape member. Grammy-winning songwriter (No Scrubs for TLC, Bills Bills Bills for Destiny's Child). Real Housewives of Atlanta. Old Lady Gang restaurants. Bedroom Kandi. Massive mogul.",
+    "musicNetwork": [
+      "Xscape",
+      "TLC",
+      "Destiny's Child",
+      "Tiny Harris",
+      "T.I.",
+      "Ed Sheeran (wrote for)",
+      "Mariah Carey"
+    ],
+    "filmTV": [
+      "Real Housewives of Atlanta (since 2009)",
+      "Kandi & The Gang (Bravo)",
+      "Celebrity Big Brother",
+      "The Chi (Showtime)"
+    ],
+    "fashion": [
+      "Bedroom Kandi (adult toy line)",
+      "Tags Boutique",
+      "Old Lady Gang restaurants"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Todd Tucker (husband, married 2014)",
+        "AJ Jewell (ex, RIP)",
+        "Russell Block (daughter Riley's father)"
+      ]
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$30M",
+    "genre": [
+      "R&B",
+      "Hip Hop",
+      "Pop"
+    ],
+    "tier2Network": [
+      "Real Housewives cast",
+      "NeNe Leakes",
+      "Porsha Williams",
+      "Tiny Harris",
+      "TLC",
+      "Destiny's Child/Beyonc\u00e9"
+    ]
+  },
+  {
+    "id": "t1-michaeljackson",
+    "name": "Michael Jackson",
+    "realName": "Michael Joseph Jackson",
+    "tier": 1,
+    "emoji": "\ud83d\udc51",
+    "type": "legend",
+    "catalogSongs": 1,
+    "connectionToRoot": "Referenced in catalog. King of Pop. Universal connection.",
+    "bio": "King of Pop. Thriller (best-selling album ever). Moonwalk inventor. Jackson 5. 750M+ records sold. The greatest entertainer who ever lived.",
+    "musicNetwork": [
+      "Quincy Jones",
+      "Paul McCartney",
+      "Diana Ross",
+      "Stevie Wonder",
+      "Janet Jackson",
+      "Prince",
+      "Whitney Houston",
+      "Madonna"
+    ],
+    "filmTV": [
+      "The Wiz (1978)",
+      "Captain EO",
+      "Moonwalker",
+      "This Is It",
+      "Thriller music video (revolutionary)"
+    ],
+    "fashion": [
+      "Defined pop fashion",
+      "Sequin glove",
+      "Military jackets",
+      "Red leather",
+      "Fedora"
+    ],
+    "dating": {
+      "status": "RIP",
+      "known": [
+        "Lisa Marie Presley (ex-wife, Elvis's daughter)",
+        "Debbie Rowe (ex-wife, Paris & Prince's mother)"
+      ]
+    },
+    "location": "Neverland / Gary, IN (RIP 2009)",
+    "netWorth": "$2B+ estate",
+    "genre": [
+      "Pop",
+      "R&B",
+      "Rock",
+      "Dance"
+    ],
+    "tier2Network": [
+      "Paris Jackson",
+      "Janet Jackson",
+      "Beyonc\u00e9",
+      "Justin Timberlake",
+      "Usher",
+      "Chris Brown"
+    ]
+  },
+  {
+    "id": "t1-goodcharlotte",
+    "name": "Good Charlotte",
+    "realName": "Joel & Benji Madden",
+    "tier": 1,
+    "emoji": "\ud83c\udfb8",
+    "type": "band",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. Pop-punk crossover. Waka Flocka EDM/rock connection.",
+    "bio": "Pop-punk legends. Lifestyles of the Rich and Famous. The Young and the Hopeless. Benji married Cameron Diaz (now married to Nicole Richie). Joel married Nicole Richie.",
+    "musicNetwork": [
+      "Waka Flocka",
+      "Simple Plan",
+      "Fall Out Boy",
+      "My Chemical Romance",
+      "Blink-182"
+    ],
+    "filmTV": [
+      "Various MTV shows",
+      "The Voice Australia (judges)"
+    ],
+    "fashion": [
+      "MADE Clothing",
+      "DCMA Collective"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Joel Madden married Nicole Richie (2010)",
+        "Benji Madden married Cameron Diaz (2015)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$25M combined",
+    "genre": [
+      "Pop Punk",
+      "Rock"
+    ],
+    "tier2Network": [
+      "Nicole Richie",
+      "Cameron Diaz",
+      "Lionel Richie",
+      "Paris Hilton",
+      "Benji/Joel social circle"
+    ]
+  },
+  {
+    "id": "t1-gorillazoe",
+    "name": "Gorilla Zoe",
+    "realName": "Alonzo Mathis",
+    "tier": 1,
+    "emoji": "\ud83e\udd8d",
+    "type": "artist",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog. Boyz n da Hood. Atlanta rap.",
+    "bio": "Boyz n da Hood member. Hood Figga. I Got It. Lost. Atlanta street rapper. Block Entertainment.",
+    "musicNetwork": [
+      "Jeezy",
+      "Waka Flocka",
+      "Gucci Mane",
+      "Block Entertainment"
+    ],
+    "filmTV": [],
+    "fashion": [],
+    "dating": {
+      "status": "Private",
+      "known": []
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$2M",
+    "genre": [
+      "Hip Hop",
+      "Trap"
+    ],
+    "tier2Network": [
+      "Jeezy",
+      "Block Entertainment"
+    ]
+  },
+  {
+    "id": "t1-plies",
+    "name": "Plies",
+    "realName": "Algernod Lanier Washington",
+    "tier": 1,
+    "emoji": "\ud83d\udcaf",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. Florida rap. Shawty. Bust It Baby.",
+    "bio": "Bust It Baby. Shawty. Hypnotized. Florida rep. Became viral meme/social media king. Big Gates Records. Real 1.",
+    "musicNetwork": [
+      "T-Pain",
+      "Akon",
+      "Ne-Yo",
+      "Lil Wayne",
+      "Waka Flocka",
+      "Rick Ross",
+      "Gucci Mane"
+    ],
+    "filmTV": [
+      "Various TV appearances",
+      "Social media viral star"
+    ],
+    "fashion": [
+      "Big Gates merch",
+      "Known for grills/street style"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": [
+        "Very private about relationships"
+      ]
+    },
+    "location": "Fort Myers, FL",
+    "netWorth": "$14M",
+    "genre": [
+      "Hip Hop",
+      "Southern Rap"
+    ],
+    "tier2Network": [
+      "T-Pain",
+      "Akon",
+      "Florida rap scene"
+    ]
+  },
+  {
+    "id": "t1-jimjones",
+    "name": "Jim Jones",
+    "realName": "Joseph Guillermo Jones II",
+    "tier": 1,
+    "emoji": "\ud83c\udfe0",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. Dipset. Ballin'. Harlem legend.",
+    "bio": "Dipset co-founder. Ballin'. We Fly High. Love & Hip Hop star. Vampire Life clothing. Harlem legend.",
+    "musicNetwork": [
+      "Cam'ron",
+      "Juelz Santana",
+      "Freekey Zekey",
+      "Max B",
+      "Lil Wayne",
+      "Waka Flocka",
+      "French Montana"
+    ],
+    "filmTV": [
+      "Love & Hip Hop New York",
+      "State Property 2",
+      "Paid in Full"
+    ],
+    "fashion": [
+      "Vampire Life clothing",
+      "Dipset movement/fashion influence"
+    ],
+    "dating": {
+      "status": "Together",
+      "known": [
+        "Chrissy Lampkin (long-term partner, Love & Hip Hop)"
+      ]
+    },
+    "location": "New York, NY / Miami",
+    "netWorth": "$10M",
+    "genre": [
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Cam'ron",
+      "Dipset",
+      "Chrissy Lampkin",
+      "Max B"
+    ]
+  },
+  {
+    "id": "t1-juelzsantana",
+    "name": "Juelz Santana",
+    "realName": "LaRon Louis James",
+    "tier": 1,
+    "emoji": "\ud83d\uddfd",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. Dipset. There It Go.",
+    "bio": "Dipset member. There It Go (The Whistle Song). From Me to U. Married to Kimbella from Love & Hip Hop.",
+    "musicNetwork": [
+      "Cam'ron",
+      "Jim Jones",
+      "Lil Wayne",
+      "Chris Brown",
+      "Waka Flocka"
+    ],
+    "filmTV": [
+      "Love & Hip Hop New York",
+      "State Property 2"
+    ],
+    "fashion": [
+      "Skull Gang",
+      "Dipset fashion"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Kimbella Vanderhee (wife, Love & Hip Hop)"
+      ]
+    },
+    "location": "New York, NY",
+    "netWorth": "$2M",
+    "genre": [
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Dipset",
+      "Kimbella"
+    ]
+  },
+  {
+    "id": "t1-pastortroy",
+    "name": "Pastor Troy",
+    "realName": "Micah Levar Troy",
+    "tier": 1,
+    "emoji": "\u26ea",
+    "type": "artist",
+    "catalogSongs": 2,
+    "connectionToRoot": "2 songs in catalog. DSGB. Atlanta crunk legend. No Mo Play in GA.",
+    "bio": "No Mo Play in GA. Vica Versa. Atlanta crunk pioneer. DSGB (Down South Georgia Boys). Independent legend.",
+    "musicNetwork": [
+      "Lil Jon",
+      "Waka Flocka",
+      "Gucci Mane",
+      "T.I.",
+      "Ludacris",
+      "David Banner"
+    ],
+    "filmTV": [],
+    "fashion": [
+      "DSGB merch",
+      "Known for militant style"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": []
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$3M",
+    "genre": [
+      "Crunk",
+      "Southern Rap"
+    ],
+    "tier2Network": [
+      "Lil Jon",
+      "David Banner",
+      "Crunk movement"
+    ]
+  },
+  {
+    "id": "t1-bunb",
+    "name": "Bun B",
+    "realName": "Bernard James Freeman",
+    "tier": 1,
+    "emoji": "\ud83e\udd20",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. UGK legend. Trill OG.",
+    "bio": "UGK half (with Pimp C, RIP). International Players Anthem. Trill OG. Houston legend. Rice University professor. Trill Burgers restaurant.",
+    "musicNetwork": [
+      "Pimp C (RIP)",
+      "Jay-Z",
+      "Lil Wayne",
+      "T.I.",
+      "Gucci Mane",
+      "Waka Flocka",
+      "OutKast",
+      "Scarface"
+    ],
+    "filmTV": [
+      "Various documentaries",
+      "Rice University lecturer on hip hop"
+    ],
+    "fashion": [
+      "Trill OG brand",
+      "Trill Burgers (restaurant)",
+      "Houston culture icon"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Queenie Freeman (wife)"
+      ]
+    },
+    "location": "Houston, TX",
+    "netWorth": "$4M",
+    "genre": [
+      "Southern Rap",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Pimp C (RIP)",
+      "Scarface",
+      "Jay-Z",
+      "Houston rap scene",
+      "UGK legacy"
+    ]
+  },
+  {
+    "id": "t1-richthekid",
+    "name": "Rich The Kid",
+    "realName": "Dimitri Roger",
+    "tier": 1,
+    "emoji": "\ud83d\udcb5",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. QC Music. New Money.",
+    "bio": "New Freezer. Plug Walk. Rich Forever Music label. QC affiliated. Known for flashy lifestyle.",
+    "musicNetwork": [
+      "Migos",
+      "Lil Uzi Vert",
+      "Kendrick Lamar",
+      "Waka Flocka",
+      "Famous Dex",
+      "Jay Critch"
+    ],
+    "filmTV": [],
+    "fashion": [
+      "Rich Forever merch",
+      "Known for jewelry/flashy style"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Tori Brixx (ex, kids)",
+        "Antonette Willis (ex-wife)"
+      ]
+    },
+    "location": "Atlanta, GA / Los Angeles",
+    "netWorth": "$3M",
+    "genre": [
+      "Trap",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Lil Uzi Vert",
+      "Famous Dex",
+      "Jay Critch"
+    ]
+  },
+  {
+    "id": "t1-yingyangtwins",
+    "name": "Ying Yang Twins",
+    "realName": "Kaine & D-Roc",
+    "tier": 1,
+    "emoji": "\u262f\ufe0f",
+    "type": "group",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. ATL crunk legends. Whisper Song.",
+    "bio": "Whisper Song. Get Low. Salt Shaker. Shake. Atlanta crunk pioneers. Lil Jon collaborators. Party anthem kings.",
+    "musicNetwork": [
+      "Lil Jon",
+      "Pitbull",
+      "Waka Flocka",
+      "Busta Rhymes",
+      "Mike Jones"
+    ],
+    "filmTV": [
+      "Date Movie (2006)",
+      "Various TV appearances"
+    ],
+    "fashion": [
+      "Known for crunk era fashion"
+    ],
+    "dating": {
+      "status": "Various",
+      "known": []
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$3M combined",
+    "genre": [
+      "Crunk",
+      "Southern Hip Hop"
+    ],
+    "tier2Network": [
+      "Lil Jon",
+      "Pitbull",
+      "Crunk movement"
+    ]
+  },
+  {
+    "id": "t1-andersonpaak",
+    "name": "Anderson .Paak",
+    "realName": "Brandon Paak Anderson",
+    "tier": 1,
+    "emoji": "\ud83e\udd41",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "WAKA FLOCKA FLAME WITH ANDERSON .PAAK. Catalog verified.",
+    "bio": "Silk Sonic (with Bruno Mars). Come Down. Grammy winner. NxWorries. The Free Nationals. Multi-instrumentalist genius. Drummer/singer/rapper.",
+    "musicNetwork": [
+      "Bruno Mars",
+      "Dr. Dre",
+      "Kendrick Lamar",
+      "Waka Flocka",
+      "Mac Miller (RIP)",
+      "Thundercat",
+      "Flying Lotus"
+    ],
+    "filmTV": [
+      "Silk Sonic performances",
+      "Various award show performances",
+      "SNL"
+    ],
+    "fashion": [
+      "Known for fedora/afro look",
+      "Retro style icon"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Jae Lin (wife)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$20M",
+    "genre": [
+      "R&B",
+      "Hip Hop",
+      "Funk",
+      "Soul"
+    ],
+    "tier2Network": [
+      "Bruno Mars",
+      "Dr. Dre",
+      "Kendrick Lamar",
+      "Thundercat"
+    ]
+  },
+  {
+    "id": "t1-actionbronson",
+    "name": "Action Bronson",
+    "realName": "Ariyan Arslani",
+    "tier": 1,
+    "emoji": "\ud83c\udf56",
+    "type": "artist",
+    "catalogSongs": 1,
+    "connectionToRoot": "Featured in catalog. Chef/rapper. Fuck That's Delicious.",
+    "bio": "Rapper/chef/TV host. Fuck, That's Delicious (VICELAND). Body transformation. Albanian heritage. Mr. Wonderful. Food culture icon.",
+    "musicNetwork": [
+      "Waka Flocka",
+      "Meyhem Lauren",
+      "Big Body Bes",
+      "Harry Fraud",
+      "Schoolboy Q"
+    ],
+    "filmTV": [
+      "Fuck, That's Delicious (VICELAND)",
+      "The Untitled Action Bronson Show",
+      "Ancient Aliens (co-host)",
+      "Traveling the Stars"
+    ],
+    "fashion": [
+      "Known for transformation/fitness",
+      "Food culture brand"
+    ],
+    "dating": {
+      "status": "Private",
+      "known": [
+        "Valerie (partner, children)"
+      ]
+    },
+    "location": "New York, NY",
+    "netWorth": "$10M",
+    "genre": [
+      "Hip Hop",
+      "East Coast"
+    ],
+    "tier2Network": [
+      "VICELAND network",
+      "Chef community",
+      "Food Network"
+    ]
+  },
+  {
+    "id": "t2-beyonce",
+    "name": "Beyonc\u00e9",
+    "realName": "Beyonc\u00e9 Giselle Knowles-Carter",
+    "tier": 2,
+    "emoji": "\ud83d\udc1d",
+    "type": "icon",
+    "connectionPath": "DJ Speedy (produced for) \u2192 Direct. Also: Nicki Minaj collab, Jay-Z wife, Kandi/Destiny's Child",
+    "bio": "Queen Bey. 32 Grammys (most ever). Destiny's Child. Lemonade. Renaissance. Irreplaceable. Single Ladies. Cultural icon. Ivy Park. Global fashion mogul.",
+    "musicNetwork": [
+      "Jay-Z",
+      "Destiny's Child",
+      "Nicki Minaj",
+      "Drake",
+      "Kendrick Lamar",
+      "Megan Thee Stallion",
+      "Ed Sheeran",
+      "Adele"
+    ],
+    "filmTV": [
+      "Dreamgirls",
+      "The Lion King (voice)",
+      "Black Is King (Disney+)",
+      "Homecoming (Netflix)",
+      "Renaissance World Tour film"
+    ],
+    "fashion": [
+      "Ivy Park x Adidas",
+      "Tiffany & Co.",
+      "Balmain",
+      "Vogue September cover (first Black photographer)"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Jay-Z (husband, married 2008, Blue Ivy, Rumi & Sir)"
+      ]
+    },
+    "location": "Los Angeles / Houston",
+    "netWorth": "$540M",
+    "genre": [
+      "R&B",
+      "Pop",
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Adele",
+      "Taylor Swift",
+      "Rihanna",
+      "Oprah",
+      "Michelle Obama",
+      "Solange"
+    ]
+  },
+  {
+    "id": "t2-jayz",
+    "name": "Jay-Z",
+    "realName": "Shawn Corey Carter",
+    "tier": 2,
+    "emoji": "\ud83c\udfdb\ufe0f",
+    "type": "mogul",
+    "connectionPath": "DJ Speedy (produced for) \u2192 Direct. Beyonc\u00e9 husband. Roc Nation. Industry titan.",
+    "bio": "HOV. Roc-A-Fella/Roc Nation founder. First billionaire rapper. 24 Grammys. Tidal. D'Uss\u00e9. Ace of Spades champagne. Marcy Projects to the top.",
+    "musicNetwork": [
+      "Kanye West",
+      "Beyonc\u00e9",
+      "Rihanna",
+      "Drake",
+      "Nicki Minaj",
+      "Eminem",
+      "Nas",
+      "J. Cole",
+      "Meek Mill"
+    ],
+    "filmTV": [
+      "Annie (2014, producer)",
+      "The Harder They Fall (producer)",
+      "Top Boy (producer)",
+      "Made in America documentary"
+    ],
+    "fashion": [
+      "Rocawear (founded)",
+      "Billionaire Boys Club investor",
+      "Puma partnership"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Beyonc\u00e9 (wife, married 2008)"
+      ]
+    },
+    "location": "Los Angeles / New York",
+    "netWorth": "$2.5B",
+    "genre": [
+      "Hip Hop"
+    ],
+    "tier2Network": [
+      "Kanye West",
+      "Rihanna",
+      "Meek Mill",
+      "Roc Nation roster",
+      "NFL",
+      "LVMH"
+    ]
+  },
+  {
+    "id": "t2-rihanna",
+    "name": "Rihanna",
+    "realName": "Robyn Rihanna Fenty",
+    "tier": 2,
+    "emoji": "\ud83d\udc84",
+    "type": "icon",
+    "connectionPath": "Via A$AP Rocky (partner) + Drake + Nicki Minaj + T.I. (Live Your Life)",
+    "bio": "Fenty Beauty ($2.8B brand). Savage X Fenty. Umbrella. We Found Love. Work. Diamond status hits. Barbadian queen. Fashion/beauty mogul.",
+    "musicNetwork": [
+      "Drake",
+      "Jay-Z",
+      "Eminem",
+      "Kanye West",
+      "Nicki Minaj",
+      "A$AP Rocky",
+      "SZA",
+      "Calvin Harris"
+    ],
+    "filmTV": [
+      "Ocean's 8",
+      "Battleship",
+      "Valerian",
+      "Bates Motel",
+      "Super Bowl LVII Halftime (2023)"
+    ],
+    "fashion": [
+      "Fenty Beauty ($2.8B)",
+      "Savage X Fenty lingerie",
+      "Fenty x LVMH",
+      "Dior ambassador"
+    ],
+    "dating": {
+      "status": "Together",
+      "known": [
+        "A$AP Rocky (partner, 2 sons)",
+        "Drake (dated/off-on 2009-2016)",
+        "Hassan Jameel (dated 2017-2020)",
+        "Chris Brown (dated 2008-2012)"
+      ]
+    },
+    "location": "Los Angeles / Barbados",
+    "netWorth": "$1.4B",
+    "genre": [
+      "Pop",
+      "R&B",
+      "Dancehall"
+    ],
+    "tier2Network": [
+      "A$AP Rocky",
+      "LVMH/Bernard Arnault",
+      "Cara Delevingne",
+      "Lupita Nyong'o"
+    ]
+  },
+  {
+    "id": "t2-kanyewest",
+    "name": "Kanye West",
+    "realName": "Ye (Kanye Omari West)",
+    "tier": 2,
+    "emoji": "\ud83d\udc3b",
+    "type": "mogul",
+    "connectionPath": "Via Jay-Z + Chief Keef (Don't Like remix) + 2 Chainz + T.I. + Kid Cudi",
+    "bio": "Yeezy. 24 Grammys. College Dropout to billionaire. DONDA. Yeezus. Married Kim Kardashian. Fashion revolutionary. Most influential artist of generation.",
+    "musicNetwork": [
+      "Jay-Z",
+      "Kid Cudi",
+      "Pusha T",
+      "Travis Scott",
+      "Chief Keef",
+      "2 Chainz",
+      "Chance the Rapper",
+      "Ty Dolla $ign"
+    ],
+    "filmTV": [
+      "jeen-yuhs (Netflix trilogy)",
+      "Various fashion shows as performance art"
+    ],
+    "fashion": [
+      "Yeezy (with Adidas, $1.5B+)",
+      "Gap collaboration",
+      "Balenciaga",
+      "Louis Vuitton (first Black artistic director pathway)"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Bianca Censori (wife, 2023)",
+        "Kim Kardashian (ex-wife, 4 kids: North, Saint, Chicago, Psalm)",
+        "Amber Rose (dated 2008-2010)",
+        "Chaney Jones (dated 2022)"
+      ]
+    },
+    "location": "Los Angeles / Tokyo",
+    "netWorth": "$400M",
+    "genre": [
+      "Hip Hop",
+      "Gospel",
+      "Experimental"
+    ],
+    "tier2Network": [
+      "Kim Kardashian",
+      "Travis Scott",
+      "Kid Cudi",
+      "Pusha T",
+      "Virgil Abloh (RIP)",
+      "Balenciaga"
+    ]
+  },
+  {
+    "id": "t2-cardib",
+    "name": "Cardi B",
+    "realName": "Belcalis Marlenis Cepeda",
+    "tier": 2,
+    "emoji": "\ud83d\udc85",
+    "type": "artist",
+    "connectionPath": "Via Offset/Migos (married) + Nicki Minaj + French Montana",
+    "bio": "Bodak Yellow. WAP. I Like It. First solo female rapper with #1 in 19 years. Love & Hip Hop to Grammy winner. Married to Offset.",
+    "musicNetwork": [
+      "Offset",
+      "Migos",
+      "Bruno Mars",
+      "Megan Thee Stallion",
+      "Nicki Minaj",
+      "SZA",
+      "Lil Nas X"
+    ],
+    "filmTV": [
+      "Love & Hip Hop New York",
+      "Hustlers (2019)",
+      "F9 (2021)",
+      "SNL host"
+    ],
+    "fashion": [
+      "Reebok partnership",
+      "Fashion Nova ambassador",
+      "Balenciaga",
+      "Known for bold fashion"
+    ],
+    "dating": {
+      "status": "Married (separated)",
+      "known": [
+        "Offset (husband, married 2017, daughter Kulture, son Wave)",
+        "Tommy (Love & Hip Hop ex)"
+      ]
+    },
+    "location": "New York / Atlanta / Los Angeles",
+    "netWorth": "$80M",
+    "genre": [
+      "Hip Hop",
+      "Trap",
+      "Latin"
+    ],
+    "tier2Network": [
+      "Offset",
+      "Kulture",
+      "Fashion Nova",
+      "Megan Thee Stallion"
+    ]
+  },
+  {
+    "id": "t2-travisscott",
+    "name": "Travis Scott",
+    "realName": "Jacques Bermon Webster II",
+    "tier": 2,
+    "emoji": "\ud83c\udf35",
+    "type": "artist",
+    "connectionPath": "Via Young Thug + Drake + Kanye West + Migos + 2 Chainz",
+    "bio": "Astroworld. SICKO MODE. Goosebumps. Cactus Jack label. McDonald's collab. Nike/Jordan collab. With Kylie Jenner.",
+    "musicNetwork": [
+      "Drake",
+      "Kanye West",
+      "Young Thug",
+      "Future",
+      "Quavo",
+      "Kid Cudi",
+      "Don Toliver",
+      "21 Savage"
+    ],
+    "filmTV": [
+      "Netflix: Look Mom I Can Fly",
+      "Fortnite concert (12M viewers)"
+    ],
+    "fashion": [
+      "Nike/Jordan (Cactus Jack Jordans)",
+      "McDonald's meal",
+      "Dior collection",
+      "Cacti seltzer"
+    ],
+    "dating": {
+      "status": "Together",
+      "known": [
+        "Kylie Jenner (partner, Stormi & Aire)",
+        "Rojean Kar (rumored)"
+      ]
+    },
+    "location": "Los Angeles / Houston",
+    "netWorth": "$80M",
+    "genre": [
+      "Hip Hop",
+      "Psychedelic Trap"
+    ],
+    "tier2Network": [
+      "Kylie Jenner",
+      "Kardashian family",
+      "Nike",
+      "McDonald's"
+    ]
+  },
+  {
+    "id": "t2-kimk",
+    "name": "Kim Kardashian",
+    "realName": "Kimberly Noel Kardashian",
+    "tier": 2,
+    "emoji": "\ud83d\udcf8",
+    "type": "mogul",
+    "connectionPath": "Via Kanye West (ex) + Tyga/Kylie + French Montana/Khloe + Diddy",
+    "bio": "SKIMS ($4B valuation). KKW Beauty. Reality TV queen. Law student. The Kardashians (Hulu). Most followed woman on Instagram.",
+    "musicNetwork": [
+      "Kanye West",
+      "Through family: Travis Scott, Tyga, French Montana"
+    ],
+    "filmTV": [
+      "Keeping Up with the Kardashians (2007-2021)",
+      "The Kardashians (Hulu)",
+      "American Horror Story (2023)",
+      "SNL Host"
+    ],
+    "fashion": [
+      "SKIMS ($4B)",
+      "KKW Beauty",
+      "Balenciaga muse",
+      "Met Gala icon",
+      "Dolce & Gabbana"
+    ],
+    "dating": {
+      "status": "Single",
+      "known": [
+        "Kanye West (ex-husband, 4 kids)",
+        "Pete Davidson (dated 2021-2022)",
+        "Tom Brady (rumored)",
+        "Damon Thomas (ex-husband)",
+        "Kris Humphries (ex-husband, 72 days)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$1.7B",
+    "genre": [
+      "N/A"
+    ],
+    "tier2Network": [
+      "Kris Jenner",
+      "Kylie Jenner",
+      "Kourtney",
+      "Khloe",
+      "Pete Davidson",
+      "Tom Brady"
+    ]
+  },
+  {
+    "id": "t2-kyliejenner",
+    "name": "Kylie Jenner",
+    "realName": "Kylie Kristen Jenner",
+    "tier": 2,
+    "emoji": "\ud83d\udc44",
+    "type": "mogul",
+    "connectionPath": "Via Tyga (ex, catalog collab) + Travis Scott (partner) + Kardashian network",
+    "bio": "Kylie Cosmetics ($1.2B). Youngest self-made billionaire (Forbes). Stormi Webster. Kris Jenner's youngest. Social media queen.",
+    "musicNetwork": [
+      "Travis Scott",
+      "Tyga",
+      "Through family connections"
+    ],
+    "filmTV": [
+      "Keeping Up with the Kardashians",
+      "The Kardashians (Hulu)",
+      "Life of Kylie"
+    ],
+    "fashion": [
+      "Kylie Cosmetics",
+      "Kylie Skin",
+      "Kylie Baby",
+      "Kylie Swim",
+      "Fashion icon"
+    ],
+    "dating": {
+      "status": "Co-parenting",
+      "known": [
+        "Travis Scott (ex, 2 kids: Stormi & Aire)",
+        "Tyga (ex, 2014-2017)",
+        "Timoth\u00e9e Chalamet (dated 2023)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$750M",
+    "genre": [
+      "N/A"
+    ],
+    "tier2Network": [
+      "Travis Scott",
+      "Timoth\u00e9e Chalamet",
+      "Kardashian empire"
+    ]
+  },
+  {
+    "id": "t2-meganfox",
+    "name": "Megan Fox",
+    "realName": "Megan Denise Fox",
+    "tier": 2,
+    "emoji": "\ud83e\udd8a",
+    "type": "actress",
+    "connectionPath": "Via Machine Gun Kelly (fianc\u00e9, 2 songs in catalog)",
+    "bio": "Transformers star. Jennifer's Body (cult classic). Engaged to Machine Gun Kelly. Gothic aesthetic icon. Mother of 3.",
+    "musicNetwork": [
+      "Machine Gun Kelly",
+      "Travis Barker circle"
+    ],
+    "filmTV": [
+      "Transformers (2007, 2009)",
+      "Jennifer's Body (2009)",
+      "New Girl (recurring)",
+      "Teenage Mutant Ninja Turtles",
+      "Expendables 4"
+    ],
+    "fashion": [
+      "Boohoo collaboration",
+      "Known for gothic/alternative style"
+    ],
+    "dating": {
+      "status": "Engaged",
+      "known": [
+        "Machine Gun Kelly (fianc\u00e9)",
+        "Brian Austin Green (ex-husband, 3 sons)",
+        "Shia LaBeouf (dated)",
+        "David Gallagher (dated)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$10M",
+    "genre": [
+      "N/A"
+    ],
+    "tier2Network": [
+      "Brian Austin Green",
+      "Travis Barker",
+      "Kourtney Kardashian"
+    ]
+  },
+  {
+    "id": "t2-nicolerichie",
+    "name": "Nicole Richie",
+    "realName": "Nicole Camille Richie",
+    "tier": 2,
+    "emoji": "\ud83d\udc57",
+    "type": "fashion/TV",
+    "connectionPath": "Via Good Charlotte (Joel Madden's wife, catalog collab) + Lionel Richie's daughter",
+    "bio": "Fashion designer. The Simple Life (with Paris Hilton). House of Harlow 1960. Lionel Richie's daughter. Joel Madden's wife. Fashion icon.",
+    "musicNetwork": [
+      "Joel Madden/Good Charlotte",
+      "Lionel Richie (father)"
+    ],
+    "filmTV": [
+      "The Simple Life (2003-2007)",
+      "Candidly Nicole",
+      "Great News (NBC)",
+      "Don't Forget the Lyrics (host)"
+    ],
+    "fashion": [
+      "House of Harlow 1960",
+      "Winter Kate",
+      "Fashion Star (NBC judge)"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Joel Madden (husband, married 2010, 2 kids)",
+        "Adam Goldstein/DJ AM (ex, RIP)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$40M",
+    "genre": [
+      "N/A"
+    ],
+    "tier2Network": [
+      "Paris Hilton",
+      "Lionel Richie",
+      "Cameron Diaz (sister-in-law)",
+      "Sofia Richie"
+    ]
+  },
+  {
+    "id": "t2-camerondiaz",
+    "name": "Cameron Diaz",
+    "realName": "Cameron Michelle Diaz",
+    "tier": 2,
+    "emoji": "\ud83c\udfac",
+    "type": "actress",
+    "connectionPath": "Via Good Charlotte (Benji Madden's wife, catalog collab)",
+    "bio": "The Mask. There's Something About Mary. Charlie's Angels. Shrek (voice). Retired from acting 2014-2024. Avaline wine brand.",
+    "musicNetwork": [
+      "Benji Madden/Good Charlotte"
+    ],
+    "filmTV": [
+      "The Mask (1994)",
+      "There's Something About Mary (1998)",
+      "Charlie's Angels (2000/2003)",
+      "Shrek (voice)",
+      "Back in Action (2024 comeback)"
+    ],
+    "fashion": [
+      "Avaline wine brand",
+      "The Body Book author",
+      "Known for natural beauty advocate"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Benji Madden (husband, married 2015, daughter Raddix)",
+        "Justin Timberlake (dated)",
+        "Jared Leto (dated)",
+        "Alex Rodriguez (dated)",
+        "Matt Dillon (dated)"
+      ]
+    },
+    "location": "Los Angeles, CA",
+    "netWorth": "$140M",
+    "genre": [
+      "N/A"
+    ],
+    "tier2Network": [
+      "Justin Timberlake",
+      "Drew Barrymore",
+      "Nicole Richie (sister-in-law)"
+    ]
+  },
+  {
+    "id": "t2-brunomars",
+    "name": "Bruno Mars",
+    "realName": "Peter Gene Hernandez",
+    "tier": 2,
+    "emoji": "\ud83c\udfb6",
+    "type": "artist",
+    "connectionPath": "Via Anderson .Paak (Silk Sonic, Waka collab) + Cardi B (Finesse remix)",
+    "bio": "Silk Sonic. 15 Grammys. Just the Way You Are. Uptown Funk. 24K Magic. Hawaii-born legend. Las Vegas residency king.",
+    "musicNetwork": [
+      "Anderson .Paak",
+      "Cardi B",
+      "Ed Sheeran",
+      "Beyonc\u00e9",
+      "Adele",
+      "Lady Gaga"
+    ],
+    "filmTV": [
+      "Super Bowl halftime shows (2014, 2016)",
+      "SNL performances",
+      "Various award shows"
+    ],
+    "fashion": [
+      "Lacoste x Ricky Regal",
+      "Known for retro-sharp style"
+    ],
+    "dating": {
+      "status": "Together",
+      "known": [
+        "Jessica Caban (long-term girlfriend since 2011)"
+      ]
+    },
+    "location": "Las Vegas / Los Angeles",
+    "netWorth": "$175M",
+    "genre": [
+      "Pop",
+      "R&B",
+      "Funk"
+    ],
+    "tier2Network": [
+      "Anderson .Paak",
+      "Jessica Caban",
+      "Pharrell"
+    ]
+  },
+  {
+    "id": "t2-tammyrivera",
+    "name": "Tammy Rivera",
+    "realName": "Tammy Rivera-Malphurs",
+    "tier": 2,
+    "emoji": "\ud83d\udc83",
+    "type": "reality TV/singer",
+    "connectionPath": "Via Waka Flocka Flame (ex-wife). Direct family connection.",
+    "bio": "Love & Hip Hop Atlanta star. Waka Flocka's ex-wife. Singer (All These Kisses). Fashion designer. T. Rivera Collection. Strong Latina/Black woman icon.",
+    "musicNetwork": [
+      "Waka Flocka",
+      "Through LHHA cast"
+    ],
+    "filmTV": [
+      "Love & Hip Hop Atlanta (main cast)",
+      "Waka & Tammy: What The Flocka",
+      "Growing Up Hip Hop"
+    ],
+    "fashion": [
+      "T. Rivera Collection",
+      "Swimwear line",
+      "Known for bold fashion/curves"
+    ],
+    "dating": {
+      "status": "Divorced",
+      "known": [
+        "Waka Flocka Flame (ex-husband, divorced 2023)",
+        "Currently dating"
+      ]
+    },
+    "location": "Atlanta, GA",
+    "netWorth": "$3M",
+    "genre": [
+      "R&B",
+      "Pop"
+    ],
+    "tier2Network": [
+      "Love & Hip Hop cast",
+      "LHHA network"
+    ]
+  },
+  {
+    "id": "t2-ciara",
+    "name": "Ciara",
+    "realName": "Ciara Princess Harris-Wilson",
+    "tier": 2,
+    "emoji": "\ud83d\udcab",
+    "type": "artist",
+    "connectionPath": "Via Future (ex-fianc\u00e9, son) + T.I./Atlanta network + Ludacris network",
+    "bio": "Goodies. 1, 2 Step. Level Up. Ride. Atlanta R&B queen. Married to Russell Wilson (NFL). LITA fashion brand. Beauty Works.",
+    "musicNetwork": [
+      "Future",
+      "Missy Elliott",
+      "Ludacris",
+      "Nicki Minaj",
+      "Petey Pablo",
+      "50 Cent"
+    ],
+    "filmTV": [
+      "All You've Got (2006)",
+      "That's My Boy (2012)",
+      "Dancing with the Stars"
+    ],
+    "fashion": [
+      "LITA by Ciara",
+      "Ten to One Rum",
+      "OAK",
+      "Fashion icon/dancer"
+    ],
+    "dating": {
+      "status": "Married",
+      "known": [
+        "Russell Wilson (husband, married 2016, NFL QB)",
+        "Future (ex-fianc\u00e9, son Future Jr.)",
+        "50 Cent (dated 2008)",
+        "Bow Wow (dated)"
+      ]
+    },
+    "location": "Denver, CO / Atlanta",
+    "netWorth": "$20M",
+    "genre": [
+      "R&B",
+      "Pop",
+      "Dance"
+    ],
+    "tier2Network": [
+      "Russell Wilson",
+      "NFL network",
+      "Serena Williams"
+    ]
+  },
+  {
+    "id": "t2-jenniferlopez",
+    "name": "Jennifer Lopez",
+    "realName": "Jennifer Lynn Affleck (n\u00e9e Lopez)",
+    "tier": 2,
+    "emoji": "\ud83d\udc8e",
+    "type": "icon",
+    "connectionPath": "Via Diddy (ex, 2 songs in catalog) + French Montana network",
+    "bio": "Jenny from the Block. Triple threat: singer, actress, dancer. 80M+ records sold. Hustlers. Selena. Married Ben Affleck. JLo Beauty. $400M empire.",
+    "musicNetwork": [
+      "Diddy",
+      "Ja Rule",
+      "Pitbull",
+      "LL Cool J",
+      "Fat Joe",
+      "French Montana",
+      "Bad Bunny",
+      "Maluma"
+    ],
+    "filmTV": [
+      "Selena (1997)",
+      "Maid in Manhattan",
+      "Hustlers (2019)",
+      "Marry Me (2022)",
+      "This Is Me...Now",
+      "American Idol (judge)"
+    ],
+    "fashion": [
+      "JLo Beauty",
+      "JLo Jennifer Lopez Collection",
+      "Coach",
+      "Versace (the dress)",
+      "Ben Affleck/Bennifer fashion icon"
+    ],
+    "dating": {
+      "status": "Married (separating)",
+      "known": [
+        "Ben Affleck (husband, married 2022, separated 2024)",
+        "Diddy (dated 1999-2001)",
+        "Marc Anthony (ex-husband, twins Max & Emme)",
+        "Alex Rodriguez (ex-fianc\u00e9, dated 2017-2021)",
+        "Ojani Noa (ex-husband)",
+        "Cris Judd (ex-husband)"
+      ]
+    },
+    "location": "Los Angeles / New York",
+    "netWorth": "$400M",
+    "genre": [
+      "Pop",
+      "Latin",
+      "Dance"
+    ],
+    "tier2Network": [
+      "Ben Affleck",
+      "Marc Anthony",
+      "Alex Rodriguez",
+      "Shakira"
+    ]
+  }
+]

@@ -305,7 +305,8 @@ const HUB_MAP = {
   music:'creative', writing:'creative', avatar:'creative', gaming:'creative',
   cyber:'security', cyberops:'security', intel:'security', secstatus:'security',
   empire:'business', web3:'business', catalog:'business',
-  profile:'me', faceid:'me', localstorage:'me'
+  profile:'me', faceid:'me', localstorage:'me',
+  datasets:'business'
 };
 let currentHub = 'dating';
 let currentSubPage = null;
@@ -3126,3 +3127,171 @@ window.addEventListener('load', () => {
     }, 500);
   }, 2000);
 });
+
+// ===================== HUGGINGFACE DATASETS ENGINE =====================
+let dsAllData = [];
+let dsFiltered = [];
+
+async function loadDatasets() {
+  const grid = document.getElementById('datasets-grid');
+  if (!grid) return;
+  grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">Loading datasets...</div>';
+  try {
+    const res = await fetch('/api/datasets/catalog');
+    const data = await res.json();
+    dsAllData = data.datasets || data || [];
+    dsFiltered = [...dsAllData];
+    renderDatasets();
+    const cats = [...new Set(dsAllData.map(d => d.category).filter(Boolean))];
+    const sel = document.getElementById('ds-category');
+    if (sel) {
+      sel.innerHTML = '<option value="all">All Categories</option>' + cats.map(c => '<option value="' + c + '">' + c + '</option>').join('');
+    }
+    const el = document.getElementById('ds-stat-total');
+    if (el) el.textContent = dsAllData.length;
+    const catEl = document.getElementById('ds-stat-cats');
+    if (catEl) catEl.textContent = cats.length;
+    try {
+      const lr = await fetch('/api/datasets/local');
+      const ld = await lr.json();
+      const localEl = document.getElementById('ds-stat-local');
+      if (localEl) localEl.textContent = (ld.datasets || []).length;
+      renderLocalDatasets(ld.datasets || []);
+    } catch(e) {}
+  } catch(e) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4444">Error: ' + e.message + '</div>';
+  }
+}
+
+function renderDatasets() {
+  const grid = document.getElementById('datasets-grid');
+  if (!grid) return;
+  if (dsFiltered.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">No datasets found</div>';
+    return;
+  }
+  grid.innerHTML = dsFiltered.map(d => {
+    const name = d.name || d.id.split('/')[1];
+    const desc = (d.description || '').substring(0, 100) + ((d.description || '').length > 100 ? '...' : '');
+    const dl = d.downloads ? d.downloads.toLocaleString() : 'N/A';
+    return '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer" onclick="openDatasetDetail(\'' + d.id + '\')">' +
+      '<div style="display:flex;justify-content:space-between;align-items:start">' +
+      '<div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--text)">' + name + '</div>' +
+      '<div style="font-size:11px;color:var(--gold);margin-top:2px">' + d.id + '</div></div>' +
+      '<div style="font-size:10px;padding:3px 8px;background:rgba(255,215,0,.15);color:var(--gold);border-radius:6px;font-weight:600">' + (d.category || 'General') + '</div></div>' +
+      '<div style="font-size:12px;color:var(--text2);margin-top:8px;line-height:1.4">' + desc + '</div>' +
+      '<div style="display:flex;gap:12px;margin-top:10px">' +
+      '<div style="font-size:11px;color:var(--text3)">Downloads: ' + dl + '</div>' +
+      '<div style="font-size:11px;color:var(--text3)">Likes: ' + (d.likes || 'N/A') + '</div></div></div>';
+  }).join('');
+}
+
+function renderLocalDatasets(datasets) {
+  const el = document.getElementById('datasets-local');
+  if (!el) return;
+  if (!datasets || datasets.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">No downloaded datasets yet</div>';
+    return;
+  }
+  el.innerHTML = datasets.map(d =>
+    '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px">' +
+    '<div style="font-size:13px;font-weight:700;color:var(--text)">' + (d.name || d.id) + '</div>' +
+    '<div style="font-size:11px;color:var(--text2);margin-top:4px">' + (d.files || 0) + ' files</div></div>'
+  ).join('');
+}
+
+function searchDatasets() {
+  const q = (document.getElementById('ds-search') ? document.getElementById('ds-search').value : '').toLowerCase();
+  dsFiltered = dsAllData.filter(d =>
+    (d.id || '').toLowerCase().includes(q) ||
+    (d.name || '').toLowerCase().includes(q) ||
+    (d.description || '').toLowerCase().includes(q) ||
+    (d.category || '').toLowerCase().includes(q)
+  );
+  renderDatasets();
+}
+
+function sortDatasets() {
+  const v = document.getElementById('ds-sort') ? document.getElementById('ds-sort').value : 'name';
+  if (v === 'downloads') dsFiltered.sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
+  else if (v === 'trending') dsFiltered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+  else dsFiltered.sort((a, b) => (a.name || a.id).localeCompare(b.name || b.id));
+  renderDatasets();
+}
+
+function filterDatasetCat() {
+  const cat = document.getElementById('ds-category') ? document.getElementById('ds-category').value : 'all';
+  dsFiltered = cat === 'all' ? [...dsAllData] : dsAllData.filter(d => d.category === cat);
+  renderDatasets();
+}
+
+async function openDatasetDetail(id) {
+  const d = dsAllData.find(x => x.id === id);
+  if (!d) return;
+  let filesHtml = '<div style="color:var(--text3);font-size:12px">Loading files...</div>';
+  try {
+    const fr = await fetch('/api/datasets/files/' + id);
+    const fd = await fr.json();
+    const files = fd.files || fd || [];
+    filesHtml = files.length ? files.slice(0, 10).map(f =>
+      '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">' +
+      '<div style="font-size:12px;color:var(--text)">' + (f.rfilename || f.name || f) + '</div>' +
+      '<div style="font-size:10px;color:var(--text3)">' + (f.size ? (f.size/1024).toFixed(1)+'KB' : '') + '</div></div>'
+    ).join('') : '<div style="color:var(--text3);font-size:12px">No files listed</div>';
+  } catch(e) { filesHtml = '<div style="color:#ff4444;font-size:12px">' + e.message + '</div>'; }
+
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.onclick = function(e) { if (e.target === modal) modal.remove(); };
+  modal.innerHTML =
+    '<div style="background:var(--bg);border-radius:20px;max-width:400px;width:100%;max-height:80vh;overflow-y:auto;padding:24px;border:1px solid var(--border)">' +
+    '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">' +
+    '<div><div style="font-size:18px;font-weight:800;color:var(--text)">' + (d.name || d.id.split('/')[1]) + '</div>' +
+    '<div style="font-size:12px;color:var(--gold);margin-top:4px">' + d.id + '</div></div>' +
+    '<div onclick="this.closest(\'div[style*=fixed]\').remove()" style="font-size:20px;cursor:pointer;color:var(--text2)">&times;</div></div>' +
+    '<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px">' + (d.description || 'No description') + '</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">' +
+    '<div style="background:var(--card);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-size:16px;font-weight:800;color:var(--gold)">' + (d.downloads ? d.downloads.toLocaleString() : 'N/A') + '</div><div style="font-size:10px;color:var(--text3)">Downloads</div></div>' +
+    '<div style="background:var(--card);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-size:16px;font-weight:800;color:#e91e63">' + (d.likes || 'N/A') + '</div><div style="font-size:10px;color:var(--text3)">Likes</div></div>' +
+    '<div style="background:var(--card);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border)"><div style="font-size:16px;font-weight:800;color:#4CAF50">' + (d.category || 'General') + '</div><div style="font-size:10px;color:var(--text3)">Category</div></div></div>' +
+    '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">Files</div>' +
+    '<div style="margin-bottom:16px">' + filesHtml + '</div>' +
+    '<div style="display:flex;gap:8px">' +
+    '<button onclick="dsDownloadReadme(\'' + d.id + '\')" style="flex:1;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px;font-weight:600;cursor:pointer">README</button>' +
+    '<a href="https://huggingface.co/datasets/' + d.id + '" target="_blank" style="flex:1;padding:10px;background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:10px;color:#000;font-size:12px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none">View on HF</a></div></div>';
+  document.body.appendChild(modal);
+}
+
+async function dsDownloadReadme(id) {
+  try {
+    const res = await fetch('/api/datasets/download/readme', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dataset: id })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('README downloaded for ' + id, 'success');
+    } else {
+      showToast('Download failed: ' + (data.error || 'Unknown'), 'error');
+    }
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+async function liveSearchHF() {
+  const q = document.getElementById('ds-search') ? document.getElementById('ds-search').value : '';
+  if (!q || q.length < 2) { showToast('Type at least 2 characters to search HuggingFace', 'error'); return; }
+  const grid = document.getElementById('datasets-grid');
+  if (grid) grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">Searching HuggingFace Hub...</div>';
+  try {
+    const res = await fetch('/api/datasets/search?q=' + encodeURIComponent(q) + '&limit=20');
+    const data = await res.json();
+    dsFiltered = data.results || data || [];
+    renderDatasets();
+    showToast('Found ' + dsFiltered.length + ' datasets from HuggingFace', 'success');
+  } catch(e) {
+    if (grid) grid.innerHTML = '<div style="text-align:center;padding:40px;color:#ff4444">Search failed: ' + e.message + '</div>';
+  }
+}

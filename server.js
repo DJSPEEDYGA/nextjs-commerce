@@ -67,6 +67,8 @@ const metaverse    = require('./lib/web3/metaverse-engine');
 const osint        = require('./lib/intelligence/osint-network');
 const storage      = require('./lib/storage/local-storage-engine');
 const catalog      = require('./lib/catalog/real-catalog');
+const HFDatasetsEngine = require('./lib/datasets/hf-datasets');
+const hfDatasets = new HFDatasetsEngine({ downloadDir: path.join(__dirname, 'datasets') });
 
 // ===================== INITIALIZE SYSTEMS =====================
 const bgChecker    = new BackgroundChecker();
@@ -1001,6 +1003,58 @@ app.post('/api/storage/backup', (req, res) => {
 app.post('/api/storage/set-path', (req, res) => {
     try { res.json(storage.setStoragePath(req.body.path)); } catch(e) { res.status(500).json({ error: e.message }); }
 });
+
+
+// ═══════════════════════════════════════════════════════════════════
+// 🤗 SECTION 18.5 — HUGGINGFACE DATASETS ENGINE (NO API KEY NEEDED)
+// ═══════════════════════════════════════════════════════════════════
+app.get('/api/datasets/stats', (req, res) => {
+    try { res.json(hfDatasets.getStats()); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/datasets/catalog', (req, res) => {
+    try { res.json(hfDatasets.getCatalog()); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/datasets/categories', (req, res) => {
+    try { res.json(hfDatasets.getCategories()); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/datasets/dataset/:org/:name', (req, res) => {
+    try { const ds = hfDatasets.getDataset(`${req.params.org}/${req.params.name}`); ds ? res.json(ds) : res.status(404).json({ error: 'Not found' }); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/datasets/search', async (req, res) => {
+    try { const r = await hfDatasets.searchHFHub(req.query.q || '', parseInt(req.query.limit)||10); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/datasets/info/:org/:name', async (req, res) => {
+    try { const r = await hfDatasets.getDatasetInfo(`${req.params.org}/${req.params.name}`); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/datasets/files/:org/:name', async (req, res) => {
+    try { const r = await hfDatasets.listFiles(`${req.params.org}/${req.params.name}`); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/datasets/preview/:org/:name', async (req, res) => {
+    try { const r = await hfDatasets.previewDataset(`${req.params.org}/${req.params.name}`, req.query.file, parseInt(req.query.rows)||5); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.post('/api/datasets/download/file', async (req, res) => {
+    try { const r = await hfDatasets.downloadFile(req.body.dataset, req.body.filename); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.post('/api/datasets/download/readme', async (req, res) => {
+    try { const r = await hfDatasets.downloadFile(req.body.dataset, 'README.md'); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.post('/api/datasets/download/dataset', (req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive' });
+    hfDatasets.downloadDataset(req.body.dataset, (evt) => { res.write(`data: ${JSON.stringify(evt)}\n\n`); if (evt.status === 'complete' || evt.status === 'error') res.end(); }).catch(e => { res.write(`data: ${JSON.stringify({status:'error',message:e.message})}\n\n`); res.end(); });
+});
+app.get('/api/datasets/local', (req, res) => {
+    try { res.json(hfDatasets.getLocalDatasets()); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/datasets/downloads/active', (req, res) => {
+    try { res.json(hfDatasets.getActiveDownloads()); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/datasets/analyze/:org/:name', async (req, res) => {
+    try { const r = await hfDatasets.analyzeDataset(`${req.params.org}/${req.params.name}`); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/datasets/health', (req, res) => {
+    res.json({ status: 'ok', engine: 'HFDatasetsEngine', datasets: hfDatasets.getStats().totalDatasets, timestamp: new Date().toISOString() });
+});
+console.log('  🤗 /api/datasets/* — HuggingFace Datasets (16 endpoints, NO API KEY)');
 
 // ===================== CATCH-ALL =====================
 // ═══════════════════════════════════════════════════════════════

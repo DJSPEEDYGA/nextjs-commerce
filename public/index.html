@@ -1199,6 +1199,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <div class="hub-tile-name">Real Catalog</div>
         <div class="hub-tile-desc">333 ASCAP Works · ISRC · Collabs</div>
       </div>
+      <div class="hub-tile" onclick="openSubPage('datasets','business')">
+        <div class="hub-tile-icon">🤗</div>
+        <div class="hub-tile-name">HF Datasets</div>
+        <div class="hub-tile-desc">41 AI Datasets · No API Key</div>
+      </div>
     </div>
   </div>
 
@@ -1230,6 +1235,52 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
       </div>
     </div>
   </div>
+  
+  <!-- ========== DATASETS SUBPAGE ========== -->
+  <div class="page" id="page-datasets">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F917; HuggingFace Datasets</div><div class="page-sub">41 AI Datasets &middot; No API Key &middot; Download & Go</div></div>
+      <div class="header-badge" id="ds-count-badge">41</div>
+    </div>
+
+    <div style="padding:0 16px 12px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+        <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center;border:1px solid var(--border)">
+          <div style="font-size:22px;font-weight:800;color:var(--gold)" id="ds-stat-total">41</div>
+          <div style="font-size:10px;color:var(--text2)">Datasets</div>
+        </div>
+        <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center;border:1px solid var(--border)">
+          <div style="font-size:22px;font-weight:800;color:#4CAF50" id="ds-stat-cats">8</div>
+          <div style="font-size:10px;color:var(--text2)">Categories</div>
+        </div>
+        <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center;border:1px solid var(--border)">
+          <div style="font-size:22px;font-weight:800;color:#2196F3" id="ds-stat-local">0</div>
+          <div style="font-size:10px;color:var(--text2)">Downloaded</div>
+        </div>
+      </div>
+
+      <input type="text" id="ds-search" placeholder="&#x1F50D; Search datasets..." oninput="searchDatasets()" style="width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px;outline:none;box-sizing:border-box;margin-bottom:8px">
+
+      <div style="display:flex;gap:8px">
+        <select id="ds-sort" onchange="sortDatasets()" style="flex:1;padding:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px">
+          <option value="name">Sort: Name</option>
+          <option value="downloads">Sort: Downloads</option>
+          <option value="trending">Sort: Trending</option>
+        </select>
+        <select id="ds-category" onchange="filterDatasetCat()" style="flex:1;padding:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px">
+          <option value="all">All Categories</option>
+        </select>
+        <button onclick="liveSearchHF()" style="padding:8px 14px;background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:10px;color:#000;font-weight:700;font-size:12px;cursor:pointer">&#x1F917; Live</button>
+      </div>
+    </div>
+
+    <div class="section-label">DATASETS CATALOG</div>
+    <div id="datasets-grid" style="display:grid;grid-template-columns:1fr;gap:8px;padding:0 16px 16px"></div>
+
+    <div class="section-label">LOCAL DOWNLOADS</div>
+    <div id="datasets-local" style="padding:0 16px 100px"></div>
+  </div>
+
   <!-- ========== END CATEGORY HUBS ========== -->
 
   <div class="page" id="page-discover">

@@ -1,15 +1,17 @@
 /**
- * SUPER GOAT ROYALTIES - Electron Main Process
- * Desktop application shell with system tray, menus, and secure IPC
+ * 🐐 SUPER GOAT ROYALTY APP — ULTIMATE EDITION v5.0.0
+ * Electron Main Process — Desktop Application Shell
+ * © 2024 Harvey L Miller Jr / Juaquin J Malphurs / Kevin W Hallingquest
  */
 
 const { app, BrowserWindow, Menu, Tray, ipcMain, shell, dialog } = require('electron');
 const path = require('path');
+const { fork } = require('child_process');
 
 let mainWindow;
 let tray;
 let serverProcess;
-const SERVER_PORT = 3000;
+const SERVER_PORT = 4001;
 
 // ==================== SINGLE INSTANCE LOCK ====================
 const gotTheLock = app.requestSingleInstanceLock();
@@ -18,7 +20,6 @@ if (!gotTheLock) {
     app.quit();
 } else {
     app.on('second-instance', () => {
-        // Focus the main window if a second instance is attempted
         if (mainWindow) {
             if (mainWindow.isMinimized()) mainWindow.restore();
             mainWindow.focus();
@@ -26,310 +27,207 @@ if (!gotTheLock) {
     });
 }
 
+// ==================== START SERVER ====================
+function startServer() {
+    return new Promise((resolve, reject) => {
+        try {
+            process.env.PORT = SERVER_PORT;
+            serverProcess = fork(path.join(__dirname, 'server.js'), [], {
+                env: { ...process.env, PORT: SERVER_PORT, ELECTRON: 'true' },
+                silent: true
+            });
+            
+            serverProcess.stdout.on('data', (data) => {
+                console.log(`[Server] ${data.toString().trim()}`);
+                if (data.toString().includes('Running on port')) {
+                    resolve();
+                }
+            });
+            
+            serverProcess.stderr.on('data', (data) => {
+                console.error(`[Server Error] ${data.toString().trim()}`);
+            });
+            
+            serverProcess.on('error', reject);
+            
+            // Resolve after 3 seconds even if no message
+            setTimeout(resolve, 3000);
+        } catch(e) {
+            console.error('Server start error:', e);
+            resolve(); // Continue anyway
+        }
+    });
+}
+
 // ==================== WINDOW CREATION ====================
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 1400,
+        width: 1440,
         height: 900,
-        minWidth: 800,
-        minHeight: 600,
-        icon: path.join(__dirname, 'build', 'icon.ico'),
+        minWidth: 1024,
+        minHeight: 700,
+        title: '🐐 SUPER GOAT ROYALTY — ULTIMATE EDITION v5.0',
+        icon: path.join(__dirname, 'public', 'favicon.ico'),
+        backgroundColor: '#0a0a0f',
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
-            sandbox: true,
-            preload: path.join(__dirname, 'preload.js')
+            preload: path.join(__dirname, 'preload.js'),
+            webSecurity: false
         },
-        backgroundColor: '#0a0a1a',
-        title: 'SUPER GOAT ROYALTIES - AI-Powered Creator Platform',
-        show: false // Wait for ready-to-show
+        titleBarStyle: 'hidden',
+        titleBarOverlay: {
+            color: '#12121a',
+            symbolColor: '#ffd700',
+            height: 32
+        },
+        show: false
     });
 
-    // Show when ready to avoid visual flash
+    mainWindow.loadURL(`http://localhost:${SERVER_PORT}`);
+
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
         mainWindow.focus();
-    });
-
-    // Start the Express server, then load the app
-    startServer().then(() => {
-        mainWindow.loadURL(`http://localhost:${SERVER_PORT}`);
-    }).catch(err => {
-        console.error('Failed to start server:', err);
-        mainWindow.loadURL(`data:text/html,<h1>Server failed to start</h1><p>${err.message}</p>`);
-    });
-
-    // Open DevTools in development
-    if (process.env.NODE_ENV === 'development') {
-        mainWindow.webContents.openDevTools();
-    }
-
-    // Handle external links - open in default browser
-    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-        shell.openExternal(url);
-        return { action: 'deny' };
     });
 
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
 
-    // Minimize to tray instead of closing (Windows/Linux)
-    mainWindow.on('close', (event) => {
-        if (process.platform !== 'darwin' && tray && !app.isQuitting) {
-            event.preventDefault();
-            mainWindow.hide();
-        }
-    });
-}
-
-// ==================== SERVER MANAGEMENT ====================
-function startServer() {
-    return new Promise((resolve, reject) => {
-        try {
-            const server = require('./server');
-            // Give server a moment to initialize
-            setTimeout(() => {
-                console.log(`✅ Express server started on port ${SERVER_PORT}`);
-                resolve();
-            }, 2000);
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
-
-// ==================== SYSTEM TRAY ====================
-function createTray() {
-    const iconPath = path.join(__dirname, 'build', 'icon.ico');
-    
-    try {
-        tray = new Tray(iconPath);
-    } catch (e) {
-        // Fallback: use favicon if build icon missing
-        try {
-            tray = new Tray(path.join(__dirname, 'favicon.ico'));
-        } catch (e2) {
-            console.warn('No tray icon available, skipping tray');
-            return;
-        }
-    }
-
-    const contextMenu = Menu.buildFromTemplate([
-        {
-            label: 'Show GOAT Royalties',
-            click: () => {
-                if (mainWindow) {
-                    mainWindow.show();
-                    mainWindow.focus();
-                }
-            }
-        },
-        { type: 'separator' },
-        {
-            label: 'Dashboard',
-            click: () => {
-                if (mainWindow) {
-                    mainWindow.show();
-                    mainWindow.webContents.executeJavaScript("showPage('dashboard')");
-                }
-            }
-        },
-        {
-            label: 'AI Chat',
-            click: () => {
-                if (mainWindow) {
-                    mainWindow.show();
-                    mainWindow.webContents.executeJavaScript("showPage('ai-chat')");
-                }
-            }
-        },
-        { type: 'separator' },
-        {
-            label: 'Open in Browser',
-            click: () => {
-                shell.openExternal(`http://localhost:${SERVER_PORT}`);
-            }
-        },
-        { type: 'separator' },
-        {
-            label: 'Quit',
-            click: () => {
-                app.isQuitting = true;
-                app.quit();
-            }
-        }
-    ]);
-
-    tray.setToolTip('SUPER GOAT Royalties v3.0');
-    tray.setContextMenu(contextMenu);
-
-    tray.on('double-click', () => {
-        if (mainWindow) {
-            mainWindow.show();
-            mainWindow.focus();
-        }
+    // Open external links in browser
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        shell.openExternal(url);
+        return { action: 'deny' };
     });
 }
 
 // ==================== APPLICATION MENU ====================
 function createMenu() {
-    const isMac = process.platform === 'darwin';
-
     const template = [
-        // macOS app menu
-        ...(isMac ? [{
-            label: app.getName(),
-            submenu: [
-                { role: 'about' },
-                { type: 'separator' },
-                { role: 'services' },
-                { type: 'separator' },
-                { role: 'hide' },
-                { role: 'hideOthers' },
-                { role: 'unhide' },
-                { type: 'separator' },
-                { role: 'quit' }
-            ]
-        }] : []),
         {
-            label: 'File',
+            label: '🐐 GOAT Royalty',
             submenu: [
-                { role: 'reload' },
-                { role: 'forceReload' },
+                { label: 'About GOAT Royalty v5.0', click: showAbout },
                 { type: 'separator' },
-                isMac ? { role: 'close' } : { role: 'quit' }
-            ]
-        },
-        {
-            label: 'Edit',
-            submenu: [
-                { role: 'undo' },
-                { role: 'redo' },
+                { label: 'Dashboard', accelerator: 'CmdOrCtrl+1', click: () => navigateTo('dashboard') },
+                { label: 'AI Suite', accelerator: 'CmdOrCtrl+2', click: () => navigateTo('ai') },
+                { label: 'Music Studio', accelerator: 'CmdOrCtrl+3', click: () => navigateTo('music') },
+                { label: 'Song Catalog', accelerator: 'CmdOrCtrl+4', click: () => navigateTo('catalog') },
                 { type: 'separator' },
-                { role: 'cut' },
-                { role: 'copy' },
-                { role: 'paste' },
-                { role: 'selectAll' }
+                { label: 'Quit', accelerator: 'CmdOrCtrl+Q', click: () => app.quit() }
             ]
         },
         {
             label: 'View',
             submenu: [
-                { role: 'resetZoom' },
-                { role: 'zoomIn' },
-                { role: 'zoomOut' },
+                { label: 'Reload', accelerator: 'CmdOrCtrl+R', click: () => mainWindow && mainWindow.reload() },
+                { label: 'Developer Tools', accelerator: 'F12', click: () => mainWindow && mainWindow.webContents.toggleDevTools() },
                 { type: 'separator' },
-                { role: 'togglefullscreen' },
+                { label: 'Zoom In', accelerator: 'CmdOrCtrl+=', role: 'zoomIn' },
+                { label: 'Zoom Out', accelerator: 'CmdOrCtrl+-', role: 'zoomOut' },
+                { label: 'Reset Zoom', accelerator: 'CmdOrCtrl+0', role: 'resetZoom' },
                 { type: 'separator' },
-                { role: 'toggleDevTools' }
-            ]
-        },
-        {
-            label: 'Window',
-            submenu: [
-                { role: 'minimize' },
-                { role: 'zoom' },
-                ...(isMac ? [
-                    { type: 'separator' },
-                    { role: 'front' }
-                ] : [
-                    { role: 'close' }
-                ])
+                { label: 'Full Screen', accelerator: 'F11', role: 'togglefullscreen' }
             ]
         },
         {
             label: 'Help',
             submenu: [
-                {
-                    label: 'About GOAT Royalties',
-                    click: () => {
-                        dialog.showMessageBox(mainWindow, {
-                            type: 'info',
-                            title: 'About SUPER GOAT Royalties',
-                            message: 'SUPER GOAT Royalties v3.0',
-                            detail: 'AI-Powered Creator Platform\n\nPowered by NVIDIA NIM, LangChain, and RAG\nWith Autonomous AI Agents\n\n© 2024 DJSPEEDYGA',
-                            buttons: ['OK']
-                        });
-                    }
-                },
+                { label: 'Website', click: () => shell.openExternal('https://www.goatroyaltyapp.org') },
+                { label: 'GitHub', click: () => shell.openExternal('https://github.com/DJSPEEDYGA/nextjs-commerce') },
                 { type: 'separator' },
-                {
-                    label: 'Open in Browser',
-                    click: () => {
-                        shell.openExternal(`http://localhost:${SERVER_PORT}`);
-                    }
-                },
-                {
-                    label: 'GitHub Repository',
-                    click: () => {
-                        shell.openExternal('https://github.com/DJSPEEDYGA/nextjs-commerce');
-                    }
-                }
+                { label: `Server: http://localhost:${SERVER_PORT}`, enabled: false }
             ]
         }
     ];
-
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
+    
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
-// ==================== IPC HANDLERS ====================
-ipcMain.handle('get-app-info', () => {
-    return {
-        version: app.getVersion(),
-        name: app.getName(),
-        platform: process.platform,
-        electron: process.versions.electron,
-        node: process.versions.node
-    };
-});
-
-ipcMain.on('get-app-version', (event) => {
-    event.reply('app-version', app.getVersion());
-});
-
-ipcMain.on('minimize-window', () => {
-    if (mainWindow) mainWindow.minimize();
-});
-
-ipcMain.on('maximize-window', () => {
+function navigateTo(tab) {
     if (mainWindow) {
-        if (mainWindow.isMaximized()) {
-            mainWindow.unmaximize();
-        } else {
-            mainWindow.maximize();
-        }
+        mainWindow.webContents.executeJavaScript(`
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            const tab = document.querySelector('[data-tab="${tab}"]');
+            if (tab) { tab.classList.add('active'); }
+            const content = document.getElementById('tab-${tab}');
+            if (content) { content.classList.add('active'); }
+            if (typeof loadTabData === 'function') loadTabData('${tab}');
+        `);
     }
-});
+}
 
-ipcMain.on('close-window', () => {
-    if (mainWindow) mainWindow.close();
-});
+function showAbout() {
+    dialog.showMessageBox(mainWindow, {
+        type: 'info',
+        title: '🐐 SUPER GOAT ROYALTY APP',
+        message: 'SUPER GOAT ROYALTY — ULTIMATE EDITION v5.0.0',
+        detail: `The Most Complete Music Industry App Ever Built
+
+242 API Endpoints | 13 Dashboard Tabs | 28 Library Modules
+
+🤖 AI: NVIDIA NIM + OpenRouter + Gemini + ACE SteerLM
+🎵 Music: 3,077 Songs | DAW Suite | Distribution Hub
+💕 Social: AI Dating + Celebrity Network
+🛡️ Security: 6-Engine AV + Cyber Warfare
+🎮 Gaming: UE5 CoPilot + FiveM
+
+© 2024 Harvey L Miller Jr (DJ Speedy)
+Juaquin J Malphurs (Waka Flocka)
+Kevin W Hallingquest
+www.goatroyaltyapp.org`,
+        buttons: ['OK']
+    });
+}
 
 // ==================== APP LIFECYCLE ====================
-app.on('ready', () => {
+app.whenReady().then(async () => {
+    console.log('🐐 Starting SUPER GOAT ROYALTY APP v5.0...');
+    
+    await startServer();
+    console.log(`🐐 Server running on port ${SERVER_PORT}`);
+    
     createWindow();
     createMenu();
-    createTray();
+    
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
 });
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
+        if (serverProcess) serverProcess.kill();
         app.quit();
     }
 });
 
-app.on('activate', () => {
-    if (mainWindow === null) {
-        createWindow();
-    } else {
-        mainWindow.show();
+app.on('before-quit', () => {
+    if (serverProcess) {
+        serverProcess.kill();
     }
 });
 
-app.on('before-quit', () => {
-    app.isQuitting = true;
-});
+// ==================== IPC HANDLERS ====================
+ipcMain.handle('get-app-info', () => ({
+    name: 'SUPER GOAT ROYALTY APP',
+    version: '5.0.0',
+    serverPort: SERVER_PORT,
+    platform: process.platform,
+    arch: process.arch
+}));
 
-module.exports = { createWindow };
+ipcMain.handle('get-server-status', async () => {
+    try {
+        const http = require('http');
+        return new Promise((resolve) => {
+            http.get(`http://localhost:${SERVER_PORT}/api/status`, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => resolve(JSON.parse(data)));
+            }).on('error', () => resolve({ status: 'offline' }));
+        });
+    } catch(e) { return { status: 'error', message: e.message }; }
+});

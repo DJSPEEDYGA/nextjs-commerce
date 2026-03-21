@@ -1,7 +1,7 @@
 {
-  "name": "super-goat-royalties",
-  "version": "3.0.0",
-  "description": "SUPER GOAT Royalties - Ultimate AI-Powered Creator Platform with NVIDIA NIM, LangChain, RAG & Autonomous Agents",
+  "name": "super-goat-royalty-app",
+  "version": "5.0.0",
+  "description": "🐐 SUPER GOAT ROYALTY APP — ULTIMATE EDITION: 242 APIs, AI Suite, Music Studio, Dating, UE5, Security, Web3 & More",
   "main": "electron-main.js",
   "scripts": {
     "start": "node server.js",
@@ -81,9 +81,12 @@
       "preload.js",
       "public/**/*",
       "lib/**/*",
+      "local-data/**/*",
+      "*.json",
       "node_modules/**/*",
       "package.json",
-      "favicon.ico"
+      "favicon.ico",
+      ".env"
     ],
     "win": {
       "target": [

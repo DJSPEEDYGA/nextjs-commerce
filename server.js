@@ -828,6 +828,73 @@ app.get('/api/dictionary/term-of-the-day', (req, res) => {
     res.json(term);
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
+
+// ======================== GOOGLE DRIVE FUNNEL CHANNEL ========================
+let driveService;
+try {
+  driveService = require('./lib/google-drive/drive-service');
+  console.log('✅ Google Drive Service loaded');
+} catch(e) {
+  console.log('⚠️  Google Drive Service not available');
+  driveService = {
+    uploadToDrive: async () => ({ fileId: 'demo-id', url: 'https://drive.google.com/file/d/demo' }),
+    exportSurvival: async (data) => ({ localFile: 'demo.json', cloudUpload: null }),
+    checkConnection: async () => false
+  };
+}
+
+// POST /api/drive/upload - Upload file to Google Drive
+app.post('/api/drive/upload', async (req, res) => {
+  try {
+    const { fileName, content } = req.body;
+    const apiKey = process.env.GOOGLE_DRIVE_API_KEY;
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID || '17RV_P-8vWxnX6cmkJI_WF4He2kbiUaVf';
+
+    if (!fileName || !content) {
+      return res.status(400).json({ error: 'fileName and content are required' });
+    }
+
+    const result = await driveService.uploadToDrive(fileName, content, apiKey, folderId);
+    res.json(result);
+  } catch(e) {
+    console.error('Google Drive upload error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// POST /api/drive/export-survival - Export survival data to Google Drive
+app.post('/api/drive/export-survival', async (req, res) => {
+  try {
+    const data = req.body;
+    const driveKey = process.env.GOOGLE_DRIVE_API_KEY;
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID || '17RV_P-8vWxnX6cmkJI_WF4He2kbiUaVf';
+
+    const result = await driveService.exportSurvival(data, driveKey, folderId);
+    res.json(result);
+  } catch(e) {
+    console.error('Google Drive export error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// GET /api/drive/status - Check Google Drive connection status
+app.get('/api/drive/status', async (req, res) => {
+  try {
+    const apiKey = process.env.GOOGLE_DRIVE_API_KEY;
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID || '17RV_P-8vWxnX6cmkJI_WF4He2kbiUaVf';
+
+    const isConnected = await driveService.checkConnection(apiKey, folderId);
+    res.json({
+      connected: isConnected,
+      folderId: folderId,
+      configured: !!(apiKey && folderId)
+    });
+  } catch(e) {
+    console.error('Google Drive status check error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

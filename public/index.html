@@ -38,6 +38,8 @@
     <button class="nav-tab" data-tab="web3"><span class="tab-icon">🌐</span> Web3</button>
     <button class="nav-tab" data-tab="empire"><span class="tab-icon">👑</span> Empire</button>
     <button class="nav-tab" data-tab="llmops"><span class="tab-icon">⚙️</span> LLMOps</button>
+    <button class="nav-tab" data-tab="tiktok"><span class="tab-icon">🎵</span> TikTok</button>
+    <button class="nav-tab" data-tab="huggingface"><span class="tab-icon">🤗</span> HF Hub <span class="tab-badge">FREE</span></button>
 </nav>
 
 <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
@@ -366,11 +368,73 @@
     <div class="card-grid" id="llmopsCards"></div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     TIKTOK INTEGRATION
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab-tiktok">
+    <div class="section-header">
+        <h2>🎵 TikTok Analytics</h2>
+        <p>Profile Analysis • Video Feed • Hashtag Search • Trending Content</p>
+    </div>
+    <div class="tiktok-container">
+        <div class="tiktok-controls">
+            <input type="text" id="tiktokUsername" placeholder="Enter TikTok username..." class="search-input">
+            <input type="number" id="tiktokCount" placeholder="Count" min="1" max="50" value="10" class="search-input-small">
+            <button onclick="fetchTikTokProfile()" class="btn-primary">Get Profile</button>
+            <button onclick="fetchTikTokVideos()" class="btn-secondary">Get Videos</button>
+            <button onclick="fetchTikTokAnalytics()" class="btn-accent">Full Analytics</button>
+        </div>
+        <div class="tiktok-controls">
+            <input type="text" id="tiktokHashtag" placeholder="Enter hashtag..." class="search-input">
+            <button onclick="searchTikTokHashtag()" class="btn-primary">Search Hashtag</button>
+            <button onclick="fetchTikTokTrending()" class="btn-accent">🔥 Trending</button>
+        </div>
+        <div id="tiktokResults" class="tiktok-results"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     HUGGING FACE HUB INTEGRATION
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab-huggingface">
+    <div class="section-header">
+        <h2>🤗 Hugging Face Hub <span class="hf-badge-free">100% FREE • NO API • NO LOGIN</span></h2>
+        <p>800K+ Models • 200K+ Datasets • Download & Use Instantly</p>
+    </div>
+    <div class="hf-container">
+        <div class="hf-controls">
+            <input type="text" id="hfSearch" placeholder="Search models/datasets..." class="search-input">
+            <select id="hfType" class="search-select">
+                <option value="model">Models</option>
+                <option value="dataset">Datasets</option>
+            </select>
+            <button onclick="searchHuggingFace()" class="btn-primary">🔍 Search</button>
+        </div>
+        <div class="hf-controls">
+            <button onclick="loadHFTrendingModels()" class="btn-accent">🔥 Trending Models</button>
+            <button onclick="loadHFTopDownloads()" class="btn-secondary">📥 Most Downloaded</button>
+            <button onclick="loadHFTrendingDatasets()" class="btn-secondary">📊 Trending Datasets</button>
+        </div>
+        <div class="hf-collections">
+            <h3>🎯 GOAT Curated Collections</h3>
+            <div class="hf-collection-buttons">
+                <button onclick="loadHFCollection('music')" class="collection-btn">🎵 Music AI</button>
+                <button onclick="loadHFCollection('llm')" class="collection-btn">🧠 LLMs</button>
+                <button onclick="loadHFCollection('image')" class="collection-btn">🖼️ Image AI</button>
+                <button onclick="loadHFCollection('security')" class="collection-btn">🛡️ Security</button>
+                <button onclick="loadHFCollection('coding')" class="collection-btn">💻 Coding</button>
+                <button onclick="loadHFCollection('video')" class="collection-btn">🎬 Video AI</button>
+            </div>
+        </div>
+        <div id="hfResults" class="hf-results"></div>
+    </div>
+</div>
+
 </main>
 
 <!-- ═══════════════════ FOOTER ═══════════════════ -->
 <footer class="app-footer">
-    <p class="copyright">🐐 SUPER GOAT ROYALTY APP — ULTIMATE EDITION v5.0.0</p>
+    <p class="copyright">🐐 SUPER GOAT ROYALTY APP — ULTIMATE EDITION v5.1.0</p>
     <p>© 2024 Harvey L Miller Jr (DJ Speedy) / Juaquin J Malphurs (Waka Flocka) / Kevin W Hallingquest</p>
     <p>www.goatroyaltyapp.org — All Rights Reserved</p>
 </footer>

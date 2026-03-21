@@ -141,6 +141,8 @@ try { osint = require('./lib/intelligence/osint-network'); } catch(e) { osint = 
 try { storageEngine = require('./lib/storage/local-storage-engine'); } catch(e) { storageEngine = { getStats: () => ({}), getInfo: () => ({}), getConfig: () => ({}), setConfig: () => ({}), save: () => ({}), load: () => ({}), loadItem: () => ({}), exportData: () => ({}), importData: () => ({}), backup: () => ({}), setPath: () => ({}) }; }
 try { catalog = require('./lib/catalog/real-catalog'); } catch(e) { catalog = { getFullDashboard: () => ({}), getArtistProfile: () => ({}), getWakaProfile: () => ({}), getPublishers: () => ([]), getCatalogStats: () => ({}), getAllSongs: () => ([]), getSongsBySource: () => ([]), getAlbums: () => ([]), getSongsByAlbum: () => ([]), searchCatalog: () => ([]), getFeaturedCollabs: () => ([]), getTopCrossReferenced: () => ([]), getSources: () => ([]), stats: { totalUniqueSongs: 0, totalISRCs: 0, totalISWCs: 0, dataSources: [], recordsSold: '0' } }; }
 try { officeVault = require('./lib/office-vault'); } catch(e) { officeVault = { getAllDocuments: () => ([]), getDJSpeedyCatalog: () => ([]), getWakaFlockaCatalog: () => ([]), getVaultStats: () => ({}), searchDocuments: () => ([]) }; }
+try { tikTokService = require('./lib/tiktok/tiktok-service'); } catch(e) { tikTokService = { getInfo: () => ({}), getUserProfile: () => ({}), getUserVideos: () => [], getAnalytics: () => ({}), searchHashtag: () => [], getTrending: () => [] }; }
+try { hfHub = require('./lib/huggingface/huggingface-hub'); } catch(e) { hfHub = { getInfo: () => ({}), getDashboard: () => ({}), getModels: () => [], getDatasets: () => [], getModel: () => ({}), search: () => ({}), getCollection: () => ({}), getDownloadInfo: () => ({}) }; }
 
 // ======================== WEBSOCKET ========================
 wss.on('connection', (ws) => {
@@ -567,14 +569,194 @@ app.get('/api/catalog/sources', (req, res) => { try { res.json(catalog.getSource
 // ╚══════════════════════════════════════════════════════════════════╝
 
 app.get('/api/vault/all', (req, res) => { try { res.json(officeVault.getAllDocuments()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/vault/dj-speedy', (req, res) => { try { res.json(officeVault.getDJSpeedyCatalog()); } catch(e) { res.status(500).json({ error: e.message }); } });
 app.get('/api/vault/waka-flocka', (req, res) => { try { res.json(officeVault.getWakaFlockaCatalog()); } catch(e) { res.status(500).json({ error: e.message }); } });
 app.get('/api/vault/stats', (req, res) => { try { res.json(officeVault.getVaultStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
 app.get('/api/vault/search', (req, res) => { try { res.json(officeVault.searchDocuments(req.query.q||'')); } catch(e) { res.status(500).json({ error: e.message }); } });
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    CATCH-ALL & START                             ║
-// ╚══════════════════════════════════════════════════════════════════╝
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║                    SECTION 21: TIKTOK                          ║
+// ╚══════════════════════════════════════════════════════════════════════╝
+
+const TikTokServiceClass = tikTokService;
+const tikTokInstance = new TikTokServiceClass(process.env.TIKAPI_KEY);
+
+app.get('/api/tiktok/info', (req, res) => {
+  try {
+    const info = tikTokInstance.getInfo();
+    res.json(info);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/tiktok/profile/:username', async (req, res) => {
+  try {
+    const profile = await tikTokInstance.getUserProfile(req.params.username);
+    res.json(profile);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/tiktok/videos/:username', async (req, res) => {
+  try {
+    const count = parseInt(req.query.count) || 10;
+    const videos = await tikTokInstance.getUserVideos(req.params.username, count);
+    res.json(videos);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/tiktok/analytics/:username', async (req, res) => {
+  try {
+    const analytics = await tikTokInstance.getAnalytics(req.params.username);
+    res.json(analytics);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/tiktok/hashtag/:tag', async (req, res) => {
+  try {
+    const count = parseInt(req.query.count) || 10;
+    const results = await tikTokInstance.searchHashtag(req.params.tag, count);
+    res.json(results);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/tiktok/trending', async (req, res) => {
+  try {
+    const count = parseInt(req.query.count) || 10;
+    const trending = await tikTokInstance.getTrending(count);
+    res.json(trending);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║              SECTION 22: HUGGING FACE HUB                     ║
+// ╚══════════════════════════════════════════════════════════════════════╝
+
+const HuggingFaceHubClass = hfHub;
+const hfHubInstance = new HuggingFaceHubClass();
+
+app.get('/api/hf/info', (req, res) => {
+  try {
+    const info = hfHubInstance.getInfo();
+    res.json(info);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/dashboard', async (req, res) => {
+  try {
+    const dashboard = await hfHubInstance.getDashboard();
+    res.json(dashboard);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/models', async (req, res) => {
+  try {
+    const models = await hfHubInstance.getModels({
+      search: req.query.search,
+      filter: req.query.filter,
+      sort: req.query.sort,
+      limit: parseInt(req.query.limit) || 20
+    });
+    res.json(models);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/models/trending', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 20;
+    const models = await hfHubInstance.getTrendingModels(limit);
+    res.json(models);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/models/most-downloaded', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 20;
+    const models = await hfHubInstance.getMostDownloadedModels(limit);
+    res.json(models);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/models/task/:task', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 20;
+    const models = await hfHubInstance.getModelsByTask(req.params.task, limit);
+    res.json(models);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/model/:author/:model', async (req, res) => {
+  try {
+    const model = await hfHubInstance.getModel(req.params.author, req.params.model);
+    res.json(model);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/model/:author/:model/files', async (req, res) => {
+  try {
+    const files = await hfHubInstance.getModelFiles(req.params.author, req.params.model);
+    res.json(files);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/datasets', async (req, res) => {
+  try {
+    const datasets = await hfHubInstance.getDatasets({
+      search: req.query.search,
+      author: req.query.author,
+      sort: req.query.sort,
+      limit: parseInt(req.query.limit) || 20
+    });
+    res.json(datasets);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/datasets/trending', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 20;
+    const datasets = await hfHubInstance.getTrendingDatasets(limit);
+    res.json(datasets);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/search', async (req, res) => {
+  try {
+    const results = await hfHubInstance.search(
+      req.query.q || '',
+      req.query.type || 'model'
+    );
+    res.json(results);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/collections', (req, res) => {
+  try {
+    const collections = hfHubInstance.curatedCollections;
+    res.json(collections);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/collection/:id', async (req, res) => {
+  try {
+    const collection = await hfHubInstance.getCollection(req.params.id);
+    res.json(collection);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/download/:type/:author/:id', (req, res) => {
+  try {
+    const downloadInfo = hfHubInstance.getDownloadInfo(
+      req.params.type,
+      req.params.author,
+      req.params.id
+    );
+    res.json(downloadInfo);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hf/tasks', (req, res) => {
+  try {
+    const tasks = hfHubInstance.taskCategories;
+    res.json(tasks);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});// ╚══════════════════════════════════════════════════════════════════╝
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -601,7 +783,7 @@ server.listen(PORT, '0.0.0.0', () => {
     try { console.log(`📀 ${catalog.stats.totalUniqueSongs} Songs | ${catalog.stats.totalISRCs} ISRCs | ${catalog.stats.dataSources.length} Sources`); } catch(e) {}
     try { console.log(`🌍 ${celebrityDb.celebrities.length} Celebrity Profiles | ${celebrityDb._countTotalConnections()} Network Reach`); } catch(e) {}
     console.log('');
-    console.log('🔒 245+ API Endpoints | WebSocket Real-Time | All Systems GO');
+    console.log('🔒 271 API Endpoints | WebSocket Real-Time | All Systems GO');
     console.log('© 2024 Harvey L Miller Jr / Juaquin J Malphurs / Kevin W Hallingquest');
 });
 

@@ -60,6 +60,8 @@ function loadTabData(tab) {
         case 'web3': loadWeb3(); break;
         case 'empire': loadEmpire(); break;
         case 'llmops': loadLLMOps(); break;
+        case 'tiktok': loadTikTok(); break;
+        case 'huggingface': loadHuggingFace(); break;
     }
 }
 
@@ -532,7 +534,489 @@ function escHtml(str) {
 // ═══════════════ INIT ═══════════════
 document.addEventListener('DOMContentLoaded', () => {
     loadDashboard();
-    console.log('🐐 SUPER GOAT ROYALTY APP v5.0 — ULTIMATE EDITION');
+// ==================== TIKTOK FUNCTIONS ====================
+
+async function loadTikTok() {
+    console.log('🎵 Loading TikTok Dashboard...');
+    const resultsDiv = document.getElementById('tiktokResults');
+    resultsDiv.innerHTML = '<p class="loading">🎵 Loading TikTok Analytics...</p>';
+    
+    try {
+        const response = await fetch('/api/tiktok/info');
+        const info = await response.json();
+        
+        resultsDiv.innerHTML = `
+            <div class="tiktok-info-card">
+                <h3>🎵 TikTok Integration Status</h3>
+                <p><strong>Mode:</strong> ${info.demoMode ? 'Demo Mode' : 'Live API'}</p>
+                <p><strong>Features:</strong> Profile lookup, video feed, hashtag search, analytics</p>
+                ${info.demoMode ? '<p class="tiktok-demo-notice">📋 Running in demo mode. Set TIKAPI_KEY for live data.</p>' : ''}
+            </div>
+            <p class="tiktok-instruction">Enter a username above to get started!</p>
+        `;
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading TikTok info: ${error.message}</p>`;
+    }
+}
+
+async function fetchTikTokProfile() {
+    const username = document.getElementById('tiktokUsername').value.trim();
+    if (!username) {
+        alert('Please enter a TikTok username');
+        return;
+    }
+    
+    const resultsDiv = document.getElementById('tiktokResults');
+    resultsDiv.innerHTML = '<p class="loading">🎵 Fetching profile...</p>';
+    
+    try {
+        const response = await fetch(`/api/tiktok/profile/${username}`);
+        const profile = await response.json();
+        
+        if (profile.error) {
+            resultsDiv.innerHTML = `<p class="error">${profile.error}</p>`;
+            return;
+        }
+        
+        resultsDiv.innerHTML = `
+            <div class="tiktok-profile">
+                <div class="tiktok-avatar">
+                    <img src="${profile.avatarUrl || 'https://via.placeholder.com/100'}" alt="${profile.username}">
+                </div>
+                <div class="tiktok-profile-info">
+                    <h3>@${profile.username}</h3>
+                    <p class="tiktok-display-name">${profile.displayName || 'N/A'}</p>
+                    <p class="tiktok-bio">${profile.bio || 'No bio available'}</p>
+                    <div class="tiktok-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">${formatNum(profile.followers)}</span>
+                            <span class="stat-label">Followers</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">${formatNum(profile.following)}</span>
+                            <span class="stat-label">Following</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">${formatNum(profile.likes)}</span>
+                            <span class="stat-label">Likes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">${formatNum(profile.videos)}</span>
+                            <span class="stat-label">Videos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error fetching profile: ${error.message}</p>`;
+    }
+}
+
+async function fetchTikTokVideos() {
+    const username = document.getElementById('tiktokUsername').value.trim();
+    const count = document.getElementById('tiktokCount').value || 10;
+    
+    if (!username) {
+        alert('Please enter a TikTok username');
+        return;
+    }
+    
+    const resultsDiv = document.getElementById('tiktokResults');
+    resultsDiv.innerHTML = '<p class="loading">🎵 Fetching videos...</p>';
+    
+    try {
+        const response = await fetch(`/api/tiktok/videos/${username}?count=${count}`);
+        const videos = await response.json();
+        
+        if (videos.error) {
+            resultsDiv.innerHTML = `<p class="error">${videos.error}</p>`;
+            return;
+        }
+        
+        renderTikTokVideos(videos, `Videos by @${username}`);
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error fetching videos: ${error.message}</p>`;
+    }
+}
+
+async function fetchTikTokAnalytics() {
+    const username = document.getElementById('tiktokUsername').value.trim();
+    
+    if (!username) {
+        alert('Please enter a TikTok username');
+        return;
+    }
+    
+    const resultsDiv = document.getElementById('tiktokResults');
+    resultsDiv.innerHTML = '<p class="loading">🎵 Fetching analytics...</p>';
+    
+    try {
+        const response = await fetch(`/api/tiktok/analytics/${username}`);
+        const analytics = await response.json();
+        
+        if (analytics.error) {
+            resultsDiv.innerHTML = `<p class="error">${analytics.error}</p>`;
+            return;
+        }
+        
+        resultsDiv.innerHTML = `
+            <div class="tiktok-analytics">
+                <h3>📊 Analytics for @${username}</h3>
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h4>Average Engagement</h4>
+                        <p class="analytics-value">${analytics.avgEngagementRate ? analytics.avgEngagementRate.toFixed(2) + '%' : 'N/A'}</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Total Views</h4>
+                        <p class="analytics-value">${formatNum(analytics.totalViews || 0)}</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Average Likes</h4>
+                        <p class="analytics-value">${formatNum(analytics.avgLikes || 0)}</p>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Average Comments</h4>
+                        <p class="analytics-value">${formatNum(analytics.avgComments || 0)}</p>
+                    </div>
+                </div>
+            </div>
+            ${analytics.videos ? renderTikTokVideos(analytics.videos, 'Recent Performance') : ''}
+        `;
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error fetching analytics: ${error.message}</p>`;
+    }
+}
+
+async function searchTikTokHashtag() {
+    const tag = document.getElementById('tiktokHashtag').value.trim();
+    const count = document.getElementById('tiktokCount').value || 10;
+    
+    if (!tag) {
+        alert('Please enter a hashtag');
+        return;
+    }
+    
+    const resultsDiv = document.getElementById('tiktokResults');
+    resultsDiv.innerHTML = '<p class="loading">🎵 Searching hashtag...</p>';
+    
+    try {
+        const response = await fetch(`/api/tiktok/hashtag/${tag}?count=${count}`);
+        const videos = await response.json();
+        
+        if (videos.error) {
+            resultsDiv.innerHTML = `<p class="error">${videos.error}</p>`;
+            return;
+        }
+        
+        renderTikTokVideos(videos, `#${tag} Videos`);
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error searching hashtag: ${error.message}</p>`;
+    }
+}
+
+async function fetchTikTokTrending() {
+    const count = document.getElementById('tiktokCount').value || 10;
+    const resultsDiv = document.getElementById('tiktokResults');
+    resultsDiv.innerHTML = '<p class="loading">🎵 Fetching trending...</p>';
+    
+    try {
+        const response = await fetch(`/api/tiktok/trending?count=${count}`);
+        const videos = await response.json();
+        
+        if (videos.error) {
+            resultsDiv.innerHTML = `<p class="error">${videos.error}</p>`;
+            return;
+        }
+        
+        renderTikTokVideos(videos, '🔥 Trending Videos');
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error fetching trending: ${error.message}</p>`;
+    }
+}
+
+function renderTikTokVideos(videos, title) {
+    const resultsDiv = document.getElementById('tiktokResults');
+    
+    if (!videos || videos.length === 0) {
+        resultsDiv.innerHTML = `<p class="info">No videos found</p>`;
+        return;
+    }
+    
+    let html = `<h3 class="tiktok-section-title">${title}</h3>`;
+    html += '<div class="tiktok-video-grid">';
+    
+    videos.forEach(video => {
+        html += `
+            <div class="tiktok-video-card">
+                <div class="tiktok-thumbnail">
+                    <img src="${video.thumbnailUrl || 'https://via.placeholder.com/200x300'}" alt="${video.description}">
+                </div>
+                <div class="tiktok-video-info">
+                    <p class="tiktok-desc">${video.description || 'No description'}</p>
+                    <div class="tiktok-video-stats">
+                        <span>❤️ ${formatNum(video.likes || 0)}</span>
+                        <span>💬 ${formatNum(video.comments || 0)}</span>
+                        <span>🔄 ${formatNum(video.shares || 0)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    resultsDiv.innerHTML = html;
+}
+
+// ==================== HUGGING FACE FUNCTIONS ====================
+
+async function loadHuggingFace() {
+    console.log('🤗 Loading Hugging Face Hub...');
+    const resultsDiv = document.getElementById('hfResults');
+    resultsDiv.innerHTML = '<p class="loading">🤗 Loading Hugging Face Hub...</p>';
+    
+    try {
+        const response = await fetch('/api/hf/dashboard');
+        const dashboard = await response.json();
+        
+        let html = `
+            <div class="hf-dashboard">
+                <h3>📊 Hugging Face Hub Dashboard</h3>
+                <div class="hf-stats">
+                    <div class="hf-stat-card">
+                        <h4>Collections</h4>
+                        <p>${dashboard.stats.totalCollections}</p>
+                    </div>
+                    <div class="hf-stat-card">
+                        <h4>Task Categories</h4>
+                        <p>${dashboard.stats.totalTaskCategories}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hf-section">
+                <h3>🔥 Trending Models</h3>
+                ${renderHFModels(dashboard.trendingModels)}
+            </div>
+        `;
+        
+        resultsDiv.innerHTML = html;
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading dashboard: ${error.message}</p>`;
+    }
+}
+
+async function searchHuggingFace() {
+    const query = document.getElementById('hfSearch').value.trim();
+    const type = document.getElementById('hfType').value;
+    
+    if (!query) {
+        alert('Please enter a search query');
+        return;
+    }
+    
+    const resultsDiv = document.getElementById('hfResults');
+    resultsDiv.innerHTML = '<p class="loading">🤗 Searching...</p>';
+    
+    try {
+        const response = await fetch(`/api/hf/search?q=${encodeURIComponent(query)}&type=${type}`);
+        const results = await response.json();
+        
+        if (type === 'model') {
+            resultsDiv.innerHTML = `<h3>Search Results: "${query}"</h3>` + renderHFModels(results);
+        } else {
+            resultsDiv.innerHTML = `<h3>Dataset Results: "${query}"</h3>` + renderHFDatasets(results);
+        }
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error searching: ${error.message}</p>`;
+    }
+}
+
+async function loadHFTrendingModels() {
+    const resultsDiv = document.getElementById('hfResults');
+    resultsDiv.innerHTML = '<p class="loading">🤗 Loading trending models...</p>';
+    
+    try {
+        const response = await fetch('/api/hf/models/trending?limit=20');
+        const models = await response.json();
+        resultsDiv.innerHTML = '<h3>🔥 Trending Models</h3>' + renderHFModels(models);
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading trending models: ${error.message}</p>`;
+    }
+}
+
+async function loadHFTopDownloads() {
+    const resultsDiv = document.getElementById('hfResults');
+    resultsDiv.innerHTML = '<p class="loading">🤗 Loading most downloaded...</p>';
+    
+    try {
+        const response = await fetch('/api/hf/models/most-downloaded?limit=20');
+        const models = await response.json();
+        resultsDiv.innerHTML = '<h3>📥 Most Downloaded Models</h3>' + renderHFModels(models);
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading most downloaded: ${error.message}</p>`;
+    }
+}
+
+async function loadHFTrendingDatasets() {
+    const resultsDiv = document.getElementById('hfResults');
+    resultsDiv.innerHTML = '<p class="loading">🤗 Loading trending datasets...</p>';
+    
+    try {
+        const response = await fetch('/api/hf/datasets/trending?limit=20');
+        const datasets = await response.json();
+        resultsDiv.innerHTML = '<h3>📊 Trending Datasets</h3>' + renderHFDatasets(datasets);
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading trending datasets: ${error.message}</p>`;
+    }
+}
+
+async function loadHFCollection(collectionId) {
+    const resultsDiv = document.getElementById('hfResults');
+    resultsDiv.innerHTML = '<p class="loading">🤗 Loading collection...</p>';
+    
+    try {
+        const response = await fetch(`/api/hf/collection/${collectionId}`);
+        const collection = await response.json();
+        
+        let html = `
+            <div class="hf-collection-header">
+                <h3>${collection.name}</h3>
+                <p>${collection.description}</p>
+                <p><strong>${collection.models.length} models</strong></p>
+            </div>
+        `;
+        
+        html += renderHFModels(collection.models);
+        resultsDiv.innerHTML = html;
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading collection: ${error.message}</p>`;
+    }
+}
+
+async function showHFDownload(type, author, id) {
+    try {
+        const response = await fetch(`/api/hf/download/${type}/${author}/${id}`);
+        const downloadInfo = await response.json();
+        
+        let html = `
+            <div class="hf-download-modal">
+                <h3>📥 Download: ${author}/${id}</h3>
+                <p class="hf-free-badge">✅ NO API KEY REQUIRED • NO LOGIN REQUIRED</p>
+                
+                <h4>Download Methods:</h4>
+                <div class="download-methods">
+        `;
+        
+        downloadInfo.downloadMethods.forEach(method => {
+            html += `
+                <div class="download-method">
+                    <h5>${method.method}</h5>
+                    <p>${method.description}</p>
+                    ${method.command ? `<pre><code>${method.command}</code></pre>` : ''}
+                    ${method.url ? `<a href="${method.url}" target="_blank" class="btn-primary">🔗 Open</a>` : ''}
+                </div>
+            `;
+        });
+        
+        html += `
+                </div>
+                <p class="hf-link">🔗 <a href="${downloadInfo.url}" target="_blank">View on Hugging Face</a></p>
+            </div>
+        `;
+        
+        const resultsDiv = document.getElementById('hfResults');
+        resultsDiv.innerHTML = html;
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+    }
+}
+
+function renderHFModels(models) {
+    if (!models || models.length === 0) {
+        return '<p class="info">No models found</p>';
+    }
+    
+    let html = '<div class="hf-model-grid">';
+    
+    models.forEach(model => {
+        const modelId = model.id || (model.modelId && model.modelId.split('/')[1]);
+        const author = model.author || (model.modelId && model.modelId.split('/')[0]);
+        const downloads = model.downloads || model.likes || 0;
+        const likes = model.likes || 0;
+        
+        html += `
+            <div class="hf-model-card">
+                <div class="hf-model-header">
+                    <h4>${modelId || 'Unknown'}</h4>
+                    <span class="hf-badge-free">FREE</span>
+                </div>
+                <p class="hf-author">by ${author || 'Unknown'}</p>
+                <p class="hf-description">${model.cardData?.description || model.description || 'No description'}</p>
+                <div class="hf-model-tags">
+                    ${model.pipeline_tag ? `<span class="hf-tag">${model.pipeline_tag}</span>` : ''}
+                    ${model.tags ? model.tags.slice(0, 3).map(tag => `<span class="hf-tag">${tag}</span>`).join('') : ''}
+                </div>
+                <div class="hf-model-stats">
+                    <span>📥 ${formatNum(downloads)}</span>
+                    <span>❤️ ${formatNum(likes)}</span>
+                </div>
+                <button onclick="showHFDownload('model', '${author}', '${modelId}')" class="btn-download">📥 Download</button>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    return html;
+}
+
+function renderHFDatasets(datasets) {
+    if (!datasets || datasets.length === 0) {
+        return '<p class="info">No datasets found</p>';
+    }
+    
+    let html = '<div class="hf-model-grid">';
+    
+    datasets.forEach(dataset => {
+        const datasetId = dataset.id;
+        const author = dataset.author;
+        const downloads = dataset.downloads || 0;
+        const likes = dataset.likes || 0;
+        
+        html += `
+            <div class="hf-model-card">
+                <div class="hf-model-header">
+                    <h4>${datasetId}</h4>
+                    <span class="hf-badge-free">FREE</span>
+                </div>
+                <p class="hf-author">by ${author}</p>
+                <p class="hf-description">${dataset.description || 'No description'}</p>
+                <div class="hf-model-tags">
+                    ${dataset.tags ? dataset.tags.slice(0, 3).map(tag => `<span class="hf-tag">${tag}</span>`).join('') : ''}
+                </div>
+                <div class="hf-model-stats">
+                    <span>📥 ${formatNum(downloads)}</span>
+                    <span>❤️ ${formatNum(likes)}</span>
+                </div>
+                <button onclick="showHFDownload('dataset', '${author}', '${datasetId}')" class="btn-download">📥 Download</button>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    return html;
+}
+
+// Format large numbers (e.g., 1500000 -> 1.5M)
+function formatNum(num) {
+    if (num === undefined || num === null) return '0';
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+}    console.log('🐐 SUPER GOAT ROYALTY APP v5.1.0 — ULTIMATE EDITION');
     console.log('© 2024 Harvey L Miller Jr / Juaquin J Malphurs / Kevin W Hallingquest');
-    console.log('242 API Endpoints | 13 Tabs | All Systems GO 🚀');
+    console.log('271 API Endpoints | 15 Tabs | All Systems GO 🚀');
 });

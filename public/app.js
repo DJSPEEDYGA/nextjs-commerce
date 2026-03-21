@@ -62,6 +62,7 @@ function loadTabData(tab) {
         case 'llmops': loadLLMOps(); break;
         case 'tiktok': loadTikTok(); break;
         case 'huggingface': loadHuggingFace(); break;
+        case 'dictionary': loadDictionary(); break;
     }
 }
 
@@ -1018,5 +1019,198 @@ function formatNum(num) {
     return num.toString();
 }    console.log('🐐 SUPER GOAT ROYALTY APP v5.1.0 — ULTIMATE EDITION');
     console.log('© 2024 Harvey L Miller Jr / Juaquin J Malphurs / Kevin W Hallingquest');
-    console.log('271 API Endpoints | 15 Tabs | All Systems GO 🚀');
+// ==================== DICTIONARY FUNCTIONS ====================
+
+async function loadDictionary() {
+    console.log('🔥 Loading Waka Flocka Flames Rap Dictionary...');
+    const resultsDiv = document.getElementById('dictResults');
+    const statsDiv = document.getElementById('dictStats');
+    const categoriesDiv = document.getElementById('dictCategories');
+    
+    resultsDiv.innerHTML = '<p class="loading">🔥 Loading dictionary...</p>';
+    
+    try {
+        const [infoResponse, categoriesResponse] = await Promise.all([
+            fetch('/api/dictionary/info'),
+            fetch('/api/dictionary/categories')
+        ]);
+        
+        const info = await infoResponse.json();
+        const categories = await categoriesResponse.json();
+        
+        statsDiv.innerHTML = `
+            <div class="dict-stat-card">
+                <h4>📚 Total Terms</h4>
+                <p>${info.stats.totalTerms}</p>
+            </div>
+            <div class="dict-stat-card">
+                <h4>📂 Categories</h4>
+                <p>${info.stats.totalCategories}</p>
+            </div>
+            <div class="dict-stat-card">
+                <h4>🔥 Waka Terms</h4>
+                <p>${info.stats.wakaSpecificTerms}</p>
+            </div>
+            <div class="dict-stat-card">
+                <h4>🎵 Trap Terms</h4>
+                <p>${info.stats.trapTerms}</p>
+            </div>
+        `;
+        
+        categoriesDiv.innerHTML = `
+            <h3>📂 Categories</h3>
+            <div class="category-buttons">
+                ${categories.map(cat => `<button onclick="loadCategory('${cat}')" class="category-btn">${cat}</button>`).join('')}
+            </div>
+        `;
+        
+        resultsDiv.innerHTML = `
+            <div class="dict-welcome">
+                <h3>🔥 Welcome to the Waka Flocka Flames Rap Dictionary!</h3>
+                <p>Search for hip-hop and trap slang terms, learn definitions, and discover Waka Flocka references.</p>
+                <p>Use the controls above to search, browse categories, or get a random term!</p>
+            </div>
+        `;
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading dictionary: ${error.message}</p>`;
+    }
+}
+
+async function searchDictionary() {
+    const query = document.getElementById('dictSearch').value.trim();
+    
+    if (!query) {
+        alert('Please enter a search term');
+        return;
+    }
+    
+    const resultsDiv = document.getElementById('dictResults');
+    resultsDiv.innerHTML = '<p class="loading">🔍 Searching...</p>';
+    
+    try {
+        const response = await fetch(`/api/dictionary/search?q=${encodeURIComponent(query)}`);
+        const terms = await response.json();
+        
+        if (terms.length === 0) {
+            resultsDiv.innerHTML = '<p class="info">No terms found. Try a different search term.</p>';
+            return;
+        }
+        
+        renderDictionaryTerms(terms, `Search Results: "${query}"`);
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error searching: ${error.message}</p>`;
+    }
+}
+
+async function loadRandomTerm() {
+    const resultsDiv = document.getElementById('dictResults');
+    resultsDiv.innerHTML = '<p class="loading">🎲 Loading random term...</p>';
+    
+    try {
+        const response = await fetch('/api/dictionary/random');
+        const term = await response.json();
+        renderDictionaryTerms([term], '🎲 Random Term');
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading random term: ${error.message}</p>`;
+    }
+}
+
+async function loadTermOfTheDay() {
+    const resultsDiv = document.getElementById('dictResults');
+    resultsDiv.innerHTML = '<p class="loading">📅 Loading term of the day...</p>';
+    
+    try {
+        const response = await fetch('/api/dictionary/term-of-the-day');
+        const term = await response.json();
+        renderDictionaryTerms([term], '📅 Term of the Day');
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading term of the day: ${error.message}</p>`;
+    }
+}
+
+async function loadWakaTerms() {
+    const resultsDiv = document.getElementById('dictResults');
+    resultsDiv.innerHTML = '<p class="loading">🔥 Loading Waka Flocka terms...</p>';
+    
+    try {
+        const response = await fetch('/api/dictionary/waka');
+        const terms = await response.json();
+        renderDictionaryTerms(terms, '🔥 Waka Flocka Flame Terms');
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading Waka terms: ${error.message}</p>`;
+    }
+}
+
+async function loadTrapTerms() {
+    const resultsDiv = document.getElementById('dictResults');
+    resultsDiv.innerHTML = '<p class="loading">🎵 Loading trap terms...</p>';
+    
+    try {
+        const response = await fetch('/api/dictionary/trap');
+        const terms = await response.json();
+        renderDictionaryTerms(terms, '🎵 Trap Music Terms');
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading trap terms: ${error.message}</p>`;
+    }
+}
+
+async function loadCategory(category) {
+    const resultsDiv = document.getElementById('dictResults');
+    resultsDiv.innerHTML = '<p class="loading">📂 Loading category...</p>';
+    
+    try {
+        const response = await fetch(`/api/dictionary/category/${encodeURIComponent(category)}`);
+        const terms = await response.json();
+        renderDictionaryTerms(terms, `📂 Category: ${category}`);
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading category: ${error.message}</p>`;
+    }
+}
+
+async function loadAllCategories() {
+    const resultsDiv = document.getElementById('dictResults');
+    resultsDiv.innerHTML = '<p class="loading">📚 Loading all terms...</p>';
+    
+    try {
+        const response = await fetch('/api/dictionary/all');
+        const terms = await response.json();
+        renderDictionaryTerms(terms, '📚 All Dictionary Terms');
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error loading all terms: ${error.message}</p>`;
+    }
+}
+
+function renderDictionaryTerms(terms, title) {
+    const resultsDiv = document.getElementById('dictResults');
+    
+    if (!terms || terms.length === 0) {
+        resultsDiv.innerHTML = '<p class="info">No terms found</p>';
+        return;
+    }
+    
+    let html = `<h3 class="dict-section-title">${title} (${terms.length} terms)</h3>`;
+    html += '<div class="dictionary-terms-grid">';
+    
+    terms.forEach(term => {
+        html += `
+            <div class="dict-term-card">
+                <div class="dict-term-header">
+                    <h4 class="dict-term">${term.term}</h4>
+                    <span class="dict-category">${term.category}</span>
+                </div>
+                <p class="dict-definition">${term.definition}</p>
+                ${term.wakaReference ? `<p class="dict-waka-ref">🔥 ${term.wakaReference}</p>` : ''}
+                <div class="dict-examples">
+                    <strong>Examples:</strong>
+                    <ul>
+                        ${term.examples.map(ex => `<li>"${ex}"</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    resultsDiv.innerHTML = html;
+}    console.log('280 API Endpoints | 16 Tabs | All Systems GO 🚀');
 });

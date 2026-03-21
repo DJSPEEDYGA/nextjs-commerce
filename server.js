@@ -143,6 +143,7 @@ try { catalog = require('./lib/catalog/real-catalog'); } catch(e) { catalog = { 
 try { officeVault = require('./lib/office-vault'); } catch(e) { officeVault = { getAllDocuments: () => ([]), getDJSpeedyCatalog: () => ([]), getWakaFlockaCatalog: () => ([]), getVaultStats: () => ({}), searchDocuments: () => ([]) }; }
 try { tikTokService = require('./lib/tiktok/tiktok-service'); } catch(e) { tikTokService = { getInfo: () => ({}), getUserProfile: () => ({}), getUserVideos: () => [], getAnalytics: () => ({}), searchHashtag: () => [], getTrending: () => [] }; }
 try { hfHub = require('./lib/huggingface/huggingface-hub'); } catch(e) { hfHub = { getInfo: () => ({}), getDashboard: () => ({}), getModels: () => [], getDatasets: () => [], getModel: () => ({}), search: () => ({}), getCollection: () => ({}), getDownloadInfo: () => ({}) }; }
+try { wakaDictionary = require('./lib/rap-dictionary/waka-flames-dictionary'); } catch(e) { wakaDictionary = { getInfo: () => ({}), getAllTerms: () => [], searchTerms: () => [], getTermsByCategory: () => [], getRandomTerm: () => ({}), getWakaTerms: () => [], getTrapTerms: () => [], getCategories: () => [], getTermOfTheDay: () => ({}) }; }
 
 // ======================== WEBSOCKET ========================
 wss.on('connection', (ws) => {
@@ -757,7 +758,76 @@ app.get('/api/hf/tasks', (req, res) => {
     res.json(tasks);
   } catch(e) { res.status(500).json({ error: e.message }); }
 });// ╚══════════════════════════════════════════════════════════════════╝
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║              SECTION 23: WAKA FLOCKA RAP DICTIONARY           ║
+// ╚══════════════════════════════════════════════════════════════════════╝
 
+const WakaDictionaryClass = wakaDictionary;
+const wakaDictInstance = new WakaDictionaryClass();
+
+app.get('/api/dictionary/info', (req, res) => {
+  try {
+    const info = wakaDictInstance.getInfo();
+    res.json(info);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/dictionary/all', (req, res) => {
+  try {
+    const terms = wakaDictInstance.getAllTerms();
+    res.json(terms);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/dictionary/search', (req, res) => {
+  try {
+    const query = req.query.q || '';
+    const results = wakaDictInstance.searchTerms(query);
+    res.json(results);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/dictionary/category/:category', (req, res) => {
+  try {
+    const terms = wakaDictInstance.getTermsByCategory(req.params.category);
+    res.json(terms);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/dictionary/random', (req, res) => {
+  try {
+    const term = wakaDictInstance.getRandomTerm();
+    res.json(term);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/dictionary/waka', (req, res) => {
+  try {
+    const terms = wakaDictInstance.getWakaTerms();
+    res.json(terms);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/dictionary/trap', (req, res) => {
+  try {
+    const terms = wakaDictInstance.getTrapTerms();
+    res.json(terms);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/dictionary/categories', (req, res) => {
+  try {
+    const categories = wakaDictInstance.getCategories();
+    res.json(categories);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/dictionary/term-of-the-day', (req, res) => {
+  try {
+    const term = wakaDictInstance.getTermOfTheDay();
+    res.json(term);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -783,7 +853,7 @@ server.listen(PORT, '0.0.0.0', () => {
     try { console.log(`📀 ${catalog.stats.totalUniqueSongs} Songs | ${catalog.stats.totalISRCs} ISRCs | ${catalog.stats.dataSources.length} Sources`); } catch(e) {}
     try { console.log(`🌍 ${celebrityDb.celebrities.length} Celebrity Profiles | ${celebrityDb._countTotalConnections()} Network Reach`); } catch(e) {}
     console.log('');
-    console.log('🔒 271 API Endpoints | WebSocket Real-Time | All Systems GO');
+    console.log('🔒 280 API Endpoints | WebSocket Real-Time | All Systems GO');
     console.log('© 2024 Harvey L Miller Jr / Juaquin J Malphurs / Kevin W Hallingquest');
 });
 

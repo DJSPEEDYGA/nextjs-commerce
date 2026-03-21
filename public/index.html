@@ -40,6 +40,7 @@
     <button class="nav-tab" data-tab="llmops"><span class="tab-icon">⚙️</span> LLMOps</button>
     <button class="nav-tab" data-tab="tiktok"><span class="tab-icon">🎵</span> TikTok</button>
     <button class="nav-tab" data-tab="huggingface"><span class="tab-icon">🤗</span> HF Hub <span class="tab-badge">FREE</span></button>
+    <button class="nav-tab" data-tab="dictionary"><span class="tab-icon">🔥</span> Waka Dict</button>
 </nav>
 
 <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
@@ -431,6 +432,34 @@
 </div>
 
 </main>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     WAKA FLOCKA FLAMES RAP DICTIONARY
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab-dictionary">
+    <div class="section-header">
+        <h2>🔥 Waka Flocka Flames Rap Dictionary</h2>
+        <p>50+ Hip-Hop & Trap Terms • Atlanta Slang • Waka Flocka References</p>
+    </div>
+    <div class="dictionary-container">
+        <div class="dictionary-controls">
+            <input type="text" id="dictSearch" placeholder="Search terms..." class="search-input">
+            <button onclick="searchDictionary()" class="btn-primary">🔍 Search</button>
+            <button onclick="loadRandomTerm()" class="btn-secondary">🎲 Random</button>
+            <button onclick="loadTermOfTheDay()" class="btn-accent">📅 Term of the Day</button>
+        </div>
+        <div class="dictionary-controls">
+            <button onclick="loadWakaTerms()" class="btn-waka">🔥 Waka Flocka Terms</button>
+            <button onclick="loadTrapTerms()" class="btn-trap">🎵 Trap Terms</button>
+            <button onclick="loadAllCategories()" class="btn-secondary">📚 All Categories</button>
+        </div>
+        <div class="dictionary-stats" id="dictStats"></div>
+        <div class="dictionary-categories" id="dictCategories"></div>
+        <div id="dictResults" class="dictionary-results"></div>
+    </div>
+</div>
+
 
 <!-- ═══════════════════ FOOTER ═══════════════════ -->
 <footer class="app-footer">

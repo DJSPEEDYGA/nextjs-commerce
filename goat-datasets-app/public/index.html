@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐐 GOAT Datasets - DJ Speedy Edition</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Inline critical overrides */
+    .pulse { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+    .fade-in { animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .dataset-card.downloading { border-color: var(--accent-blue); }
+    .dataset-card.local { border-color: var(--accent-green); }
+    .tag-scroll { max-height: 32px; overflow: hidden; }
+    .tag-scroll.expanded { max-height: none; }
+    .live-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--accent-green); }
+    .live-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; animation: pulse 1.5s infinite; }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="app-header">
+  <div class="logo">
+    <div class="logo-icon">🐐</div>
+    <span class="logo-text">GOAT Datasets</span>
+    <span class="logo-badge">No Keys</span>
+  </div>
+  <input type="text" class="header-search" id="globalSearch" placeholder="🔍 Search 41+ datasets... text-generation, question-answering, image..." oninput="handleSearch(this.value)">
+  <div class="header-actions">
+    <div class="live-badge"><div class="live-dot"></div> LIVE HF API</div>
+    <button class="header-btn" onclick="showPage('downloads')" id="dlBtn">⬇ Downloads <span id="dlCount">0</span></button>
+    <button class="header-btn" onclick="refreshAll()">🔄 Refresh</button>
+  </div>
+</header>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Navigation</div>
+    <div class="sidebar-item active" onclick="showPage('browse')" id="nav-browse">
+      <span class="icon">📊</span> Browse All
+      <span class="count" id="totalCount">41</span>
+    </div>
+    <div class="sidebar-item" onclick="showPage('trending')" id="nav-trending">
+      <span class="icon">🔥</span> Trending
+    </div>
+    <div class="sidebar-item" onclick="showPage('local')" id="nav-local">
+      <span class="icon">💾</span> My Downloads
+      <span class="count" id="localCount">0</span>
+    </div>
+    <div class="sidebar-item" onclick="showPage('downloads')" id="nav-downloads">
+      <span class="icon">⬇️</span> Active Downloads
+      <span class="count" id="activeCount">0</span>
+    </div>
+    <div class="sidebar-item" onclick="showPage('search')" id="nav-search">
+      <span class="icon">🔍</span> Live HF Search
+    </div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Categories</div>
+    <div id="categoryNav"></div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Quick Filters</div>
+    <div class="sidebar-item" onclick="filterByLicense('apache-2.0')">
+      <span class="icon">📜</span> Apache 2.0
+    </div>
+    <div class="sidebar-item" onclick="filterByLicense('mit')">
+      <span class="icon">📜</span> MIT License
+    </div>
+    <div class="sidebar-item" onclick="filterByFormat('parquet')">
+      <span class="icon">📁</span> Parquet
+    </div>
+    <div class="sidebar-item" onclick="filterByFormat('json')">
+      <span class="icon">📁</span> JSON
+    </div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">About</div>
+    <div class="sidebar-item" onclick="showPage('about')">
+      <span class="icon">🐐</span> GOAT App Info
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<main class="main-content">
+
+  <!-- ─── BROWSE PAGE ─── -->
+  <div class="page active" id="page-browse">
+    <h1 class="page-title">🐐 HuggingFace Datasets Hub</h1>
+    <p class="page-subtitle">41 Top Datasets • No API Keys • No Login • Download & Go | DJ Speedy GOAT Edition</p>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-value" id="statTotal">41</div>
+        <div class="stat-label">Total Datasets</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⬇️</div>
+        <div class="stat-value" id="statDownloads">4.3M</div>
+        <div class="stat-label">Global Downloads</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">❤️</div>
+        <div class="stat-value" id="statLikes">35K</div>
+        <div class="stat-label">Community Likes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💾</div>
+        <div class="stat-value" id="statLocal">0</div>
+        <div class="stat-label">Downloaded Local</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔓</div>
+        <div class="stat-value">0</div>
+        <div class="stat-label">API Keys Needed</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <div class="filter-chip active" onclick="setCategory('all', this)">All</div>
+      <div class="filter-chip" onclick="setCategory('text-generation', this)">Text Generation</div>
+      <div class="filter-chip" onclick="setCategory('question-answering', this)">Q&A</div>
+      <div class="filter-chip" onclick="setCategory('image-classification', this)">Vision</div>
+      <div class="filter-chip" onclick="setCategory('image-generation', this)">Image Gen</div>
+      <div class="filter-chip" onclick="setCategory('fill-mask', this)">Fill Mask</div>
+      <div class="filter-chip" onclick="setCategory('summarization', this)">Summarization</div>
+      <select class="sort-select" id="sortSelect" onchange="setSort(this.value)">
+        <option value="likes">Sort: Most Liked</option>
+        <option value="downloads">Sort: Most Downloaded</option>
+        <option value="name">Sort: Name A-Z</option>
+      </select>
+    </div>
+
+    <!-- Dataset Grid -->
+    <div class="datasets-grid" id="datasetsGrid"></div>
+  </div>
+
+  <!-- ─── TRENDING PAGE ─── -->
+  <div class="page" id="page-trending">
+    <h1 class="page-title">🔥 Trending Datasets</h1>
+    <p class="page-subtitle">Top 10 most liked datasets from the HuggingFace community</p>
+    <div class="datasets-grid" id="trendingGrid"></div>
+  </div>
+
+  <!-- ─── LOCAL / MY DOWNLOADS PAGE ─── -->
+  <div class="page" id="page-local">
+    <h1 class="page-title">💾 My Downloaded Datasets</h1>
+    <p class="page-subtitle">Locally stored datasets ready for training and analysis</p>
+
+    <div class="storage-panel" id="storagePanel">
+      <div class="storage-header">
+        <span style="font-weight:700;color:var(--border-gold)">Local Storage</span>
+        <span id="storageUsed" style="font-size:13px;color:var(--text-secondary)">0 B used</span>
+      </div>
+      <div class="storage-bar"><div class="storage-fill" id="storageFill" style="width:0%"></div></div>
+      <div class="storage-details">
+        <span id="storageFiles">0 datasets</span>
+        <span id="storageFree">Unlimited</span>
+      </div>
+    </div>
+
+    <div id="localGrid" class="datasets-grid"></div>
+    <div class="empty-state" id="localEmpty" style="display:none">
+      <div class="empty-icon">📭</div>
+      <h3>No Downloads Yet</h3>
+      <p>Browse datasets and click Download to save them locally for offline use and training.</p>
+      <button class="btn btn-primary" style="margin-top:16px" onclick="showPage('browse')">Browse Datasets</button>
+    </div>
+  </div>
+
+  <!-- ─── ACTIVE DOWNLOADS PAGE ─── -->
+  <div class="page" id="page-downloads">
+    <h1 class="page-title">⬇️ Active Downloads</h1>
+    <p class="page-subtitle">Real-time download progress for dataset files</p>
+    <div class="download-manager active" id="downloadManager"></div>
+    <div class="empty-state" id="dlEmpty">
+      <div class="empty-icon">✅</div>
+      <h3>No Active Downloads</h3>
+      <p>All downloads are complete. Browse datasets to start new downloads.</p>
+    </div>
+  </div>
+
+  <!-- ─── LIVE SEARCH PAGE ─── -->
+  <div class="page" id="page-search">
+    <h1 class="page-title">🔍 Live HuggingFace Search</h1>
+    <p class="page-subtitle">Search 200,000+ datasets on HuggingFace Hub in real-time • No API key required</p>
+    <div style="margin-bottom:20px;display:flex;gap:10px">
+      <input type="text" class="header-search" id="liveSearchInput" placeholder="Search HuggingFace datasets..." style="width:100%;max-width:600px" onkeydown="if(event.key==='Enter')doLiveSearch()">
+      <button class="btn btn-primary" onclick="doLiveSearch()">🔍 Search HF</button>
+    </div>
+    <div id="liveSearchResults" class="datasets-grid"></div>
+    <div class="loading-overlay" id="searchLoading" style="display:none">
+      <div class="spinner"></div> Searching HuggingFace Hub...
+    </div>
+  </div>
+
+  <!-- ─── ABOUT PAGE ─── -->
+  <div class="page" id="page-about">
+    <h1 class="page-title">🐐 GOAT Datasets App</h1>
+    <p class="page-subtitle">Built by DJ Speedy / Harvey Lee Miller Jr.</p>
+    <div style="max-width:700px">
+      <div class="stat-card" style="margin-bottom:20px">
+        <h3 style="color:var(--border-gold);margin-bottom:12px">IF YOU CAN THINK IT! You CAN DO IT IN THE APP.</h3>
+        <p style="color:var(--text-secondary);line-height:1.8;font-size:14px">
+          The GOAT Datasets App gives you instant access to the world's best AI training datasets 
+          from HuggingFace Hub. <strong style="color:var(--accent-green)">No API keys needed. No logins required. Just download and go.</strong>
+        </p>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="label">Built-In Datasets</div>
+          <div class="value">41+</div>
+        </div>
+        <div class="info-item">
+          <div class="label">API Keys Required</div>
+          <div class="value" style="color:var(--accent-green)">ZERO</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Live HF Search</div>
+          <div class="value">200K+</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Download Speed</div>
+          <div class="value">Max</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Offline Mode</div>
+          <div class="value" style="color:var(--accent-green)">YES</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Formats</div>
+          <div class="value">All</div>
+        </div>
+      </div>
+      <div class="stat-card" style="margin-top:20px">
+        <h3 style="color:var(--accent-blue);margin-bottom:8px">🎵 GOAT Royalty App Ecosystem</h3>
+        <p style="color:var(--text-muted);font-size:13px;line-height:1.7">
+          Part of the GOAT Royalty App universe including SUPER GOAT Royalties, GOAT Connect Dating, 
+          AI Assistants, UE5 CoPilot, Cyber Warfare Defense, 3D Avatar Studio, Music Catalog (3,077 ASCAP works), 
+          Screenwriting Studio, and more. Powered by NVIDIA NIM, OpenRouter 653+ models, HuggingFace, and Google Gemini.
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ═══ DATASET DETAIL MODAL ═══ -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Dataset Details</span>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ═══ TOAST CONTAINER ═══ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="app-footer">
+  <span class="brand">🐐 GOAT Datasets App v1.0</span> • DJ Speedy / Harvey Lee Miller Jr. • No API Keys • No Logins • Download & Go
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// GOAT DATASETS APP - FRONTEND ENGINE
+// NO API KEYS | NO LOGINS | DOWNLOAD & GO
+// ═══════════════════════════════════════════════════════
+
+let currentPage = 'browse';
+let currentCategory = 'all';
+let currentSort = 'likes';
+let currentSearch = '';
+let allDatasets = [];
+let downloadProgress = {};
+
+// ─── INIT ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadStats();
+  loadCatalog();
+  loadCategories();
+  connectSSE();
+});
+
+// ─── SSE FOR REAL-TIME DOWNLOADS ──────────────────
+function connectSSE() {
+  const es = new EventSource('/api/events');
+  
+  es.addEventListener('download-start', (e) => {
+    const d = JSON.parse(e.data);
+    downloadProgress[d.id] = { ...d, status: 'downloading', progress: 0 };
+    updateDownloadUI();
+    toast('info', `⬇️ Starting download: ${d.filename}`);
+  });
+  
+  es.addEventListener('download-progress', (e) => {
+    const d = JSON.parse(e.data);
+    downloadProgress[d.id] = { ...downloadProgress[d.id], ...d, status: 'downloading' };
+    updateDownloadUI();
+  });
+  
+  es.addEventListener('download-complete', (e) => {
+    const d = JSON.parse(e.data);
+    downloadProgress[d.id] = { ...downloadProgress[d.id], ...d, status: 'complete', progress: 100 };
+    updateDownloadUI();
+    toast('success', `✅ Downloaded: ${d.id}`);
+    loadStats();
+    if (currentPage === 'local') loadLocalDatasets();
+    // Remove from active after 5s
+    setTimeout(() => { delete downloadProgress[d.id]; updateDownloadUI(); }, 5000);
+  });
+  
+  es.addEventListener('download-error', (e) => {
+    const d = JSON.parse(e.data);
+    downloadProgress[d.id] = { ...downloadProgress[d.id], ...d, status: 'error' };
+    updateDownloadUI();
+    toast('error', `❌ Download failed: ${d.error}`);
+    setTimeout(() => { delete downloadProgress[d.id]; updateDownloadUI(); }, 8000);
+  });
+  
+  es.onerror = () => { setTimeout(connectSSE, 3000); es.close(); };
+}
+
+// ─── LOAD STATS ───────────────────────────────────
+async function loadStats() {
+  try {
+    const r = await fetch('/api/stats');
+    const s = await r.json();
+    document.getElementById('statTotal').textContent = s.totalDatasets;
+    document.getElementById('statDownloads').textContent = formatNum(s.totalDownloads);
+    document.getElementById('statLikes').textContent = formatNum(s.totalLikes);
+    document.getElementById('statLocal').textContent = s.localDatasets;
+    document.getElementById('localCount').textContent = s.localDatasets;
+    document.getElementById('totalCount').textContent = s.totalDatasets;
+  } catch (e) {}
+}
+
+// ─── LOAD CATALOG ─────────────────────────────────
+async function loadCatalog() {
+  try {
+    const params = new URLSearchParams({ sort: currentSort });
+    if (currentCategory !== 'all') params.set('category', currentCategory);
+    if (currentSearch) params.set('search', currentSearch);
+    
+    const r = await fetch(`/api/catalog?${params}`);
+    const data = await r.json();
+    allDatasets = data.datasets;
+    renderDatasets(data.datasets, 'datasetsGrid');
+    
+    // Also render trending (top 10 by likes)
+    const trendR = await fetch('/api/catalog?sort=likes&limit=10');
+    const trendData = await trendR.json();
+    renderDatasets(trendData.datasets, 'trendingGrid', true);
+  } catch (e) {
+    document.getElementById('datasetsGrid').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Could not load datasets</h3></div>';
+  }
+}
+
+// ─── LOAD CATEGORIES ──────────────────────────────
+async function loadCategories() {
+  try {
+    const r = await fetch('/api/categories');
+    const cats = await r.json();
+    const nav = document.getElementById('categoryNav');
+    nav.innerHTML = cats.map(c => `
+      <div class="sidebar-item" onclick="setCategory('${c.name}', null); showPage('browse')">
+        <span class="icon">${getCategoryIcon(c.name)}</span> ${c.name.replace(/-/g, ' ')}
+        <span class="count">${c.count}</span>
+      </div>
+    `).join('');
+  } catch (e) {}
+}
+
+// ─── RENDER DATASETS ──────────────────────────────
+function renderDatasets(datasets, containerId, showRank = false) {
+  const container = document.getElementById(containerId);
+  if (!datasets.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>No datasets found</h3><p>Try a different search or category filter.</p></div>';
+    return;
+  }
+  
+  container.innerHTML = datasets.map((d, i) => {
+    const [org, name] = d.id.split('/');
+    const badge = getBadge(d, i);
+    const localClass = d.isLocal ? 'local' : '';
+    const dlClass = d.isDownloading ? 'downloading' : '';
+    
+    return `
+    <div class="dataset-card fade-in ${localClass} ${dlClass}" onclick="openDetail('${d.id}')" style="animation-delay:${i * 30}ms">
+      <div class="dataset-header">
+        <div class="dataset-name">
+          <span class="org">${org}/</span>${name}
+        </div>
+        ${badge}
+      </div>
+      <div class="dataset-tags tag-scroll">
+        ${d.categories.map(c => `<span class="dataset-tag">${c}</span>`).join('')}
+        <span class="dataset-tag license">${d.license}</span>
+        <span class="dataset-tag format">${d.format}</span>
+      </div>
+      <div class="dataset-desc">${d.desc || ''}</div>
+      <div class="dataset-meta">
+        <div class="dataset-stat"><span class="icon">⬇</span> <span class="value">${formatNum(d.downloads)}</span></div>
+        <div class="dataset-stat"><span class="icon">❤️</span> <span class="value">${formatNum(d.likes)}</span></div>
+        ${d.isLocal ? '<div class="dataset-stat"><span class="icon">💾</span> <span class="value" style="color:var(--accent-green)">Local</span></div>' : ''}
+        ${showRank ? `<div class="dataset-stat"><span class="icon">🏆</span> <span class="value">#${i+1}</span></div>` : ''}
+      </div>
+      <div class="dataset-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-download" onclick="downloadReadme('${d.id}')">⬇ README</button>
+        <button class="btn btn-primary" onclick="openDetail('${d.id}')">📋 Details</button>
+        <button class="btn btn-secondary" onclick="window.open('https://huggingface.co/datasets/${d.id}','_blank')">🌐 HF Hub</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── DETAIL MODAL ─────────────────────────────────
+async function openDetail(id) {
+  const modal = document.getElementById('detailModal');
+  const title = document.getElementById('modalTitle');
+  const body = document.getElementById('modalBody');
+  
+  title.textContent = id;
+  body.innerHTML = '<div class="loading-overlay"><div class="spinner"></div> Loading dataset info...</div>';
+  modal.classList.add('active');
+  
+  // Fetch info from HF API (no auth)
+  const [org, name] = id.split('/');
+  let info = null, files = null, preview = null;
+  
+  try {
+    const [infoR, filesR, previewR] = await Promise.all([
+      fetch(`/api/info/${org}/${name}`),
+      fetch(`/api/files/${org}/${name}`),
+      fetch(`/api/preview/${org}/${name}?filename=README.md`)
+    ]);
+    info = await infoR.json();
+    files = await filesR.json();
+    preview = await previewR.json();
+  } catch (e) {}
+  
+  const dataset = allDatasets.find(d => d.id === id) || { id, categories: [], license: 'unknown', format: 'unknown', downloads: 0, likes: 0 };
+  
+  body.innerHTML = `
+    <div class="modal-section">
+      <h3>📊 Overview</h3>
+      <div class="info-grid">
+        <div class="info-item"><div class="label">Downloads</div><div class="value">${formatNum(info?.downloads || dataset.downloads)}</div></div>
+        <div class="info-item"><div class="label">Likes</div><div class="value">${formatNum(info?.likes || dataset.likes)}</div></div>
+        <div class="info-item"><div class="label">License</div><div class="value" style="font-size:14px">${dataset.license}</div></div>
+        <div class="info-item"><div class="label">Format</div><div class="value" style="font-size:14px">${dataset.format}</div></div>
+        ${info?.lastModified ? `<div class="info-item"><div class="label">Last Updated</div><div class="value" style="font-size:12px">${new Date(info.lastModified).toLocaleDateString()}</div></div>` : ''}
+        ${info?.private !== undefined ? `<div class="info-item"><div class="label">Access</div><div class="value" style="color:var(--accent-green)">${info.private ? 'Private' : 'Public (No Auth)'}</div></div>` : ''}
+      </div>
+    </div>
+    
+    <div class="modal-section">
+      <h3>🏷️ Tags & Categories</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${dataset.categories.map(c => `<span class="dataset-tag">${c}</span>`).join('')}
+        ${(info?.tags || []).slice(0, 20).map(t => `<span class="dataset-tag">${t}</span>`).join('')}
+      </div>
+    </div>
+    
+    ${files?.success && files.files?.length ? `
+    <div class="modal-section">
+      <h3>📁 Files (${files.files.length})</h3>
+      <div class="preview-container">
+        <div class="preview-content" style="max-height:200px;overflow-y:auto">
+          <table class="data-table">
+            <thead><tr><th>File</th><th>Size</th><th>Action</th></tr></thead>
+            <tbody>
+              ${files.files.slice(0, 30).map(f => `
+                <tr>
+                  <td style="color:var(--accent-blue)">${f.path}</td>
+                  <td>${f.sizeFormatted}</td>
+                  <td><button class="btn btn-download" style="padding:4px 10px;font-size:10px" onclick="downloadFile('${id}','${f.path}')">⬇ Get</button></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>` : ''}
+    
+    ${preview?.success ? `
+    <div class="modal-section">
+      <h3>📖 README Preview</h3>
+      <div class="preview-container">
+        <div class="preview-content">${escapeHtml(preview.content?.substring(0, 3000) || 'No preview available')}</div>
+      </div>
+    </div>` : ''}
+    
+    <div class="modal-section">
+      <h3>⚡ Quick Actions</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-download" onclick="downloadReadme('${id}')">⬇ Download README</button>
+        <button class="btn btn-primary" onclick="batchDownload('${id}')">📦 Download Dataset</button>
+        <button class="btn btn-secondary" onclick="window.open('https://huggingface.co/datasets/${id}','_blank')">🌐 Open on HF Hub</button>
+        <button class="btn btn-secondary" onclick="window.open('https://huggingface.co/datasets/${id}/viewer','_blank')">👁️ HF Dataset Viewer</button>
+      </div>
+    </div>
+  `;
+}
+
+function closeModal() {
+  document.getElementById('detailModal').classList.remove('active');
+}
+
+// ─── DOWNLOADS ────────────────────────────────────
+async function downloadReadme(id) {
+  toast('info', `⬇️ Downloading README for ${id}...`);
+  try {
+    const r = await fetch('/api/download/readme', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ datasetId: id })
+    });
+    const data = await r.json();
+    if (data.success) {
+      toast('success', `✅ README saved: ${data.sizeFormatted}`);
+      loadStats();
+    } else {
+      toast('error', `❌ ${data.error}`);
+    }
+  } catch (e) { toast('error', `❌ ${e.message}`); }
+}
+
+async function downloadFile(datasetId, filename) {
+  toast('info', `⬇️ Starting: ${filename}`);
+  try {
+    await fetch('/api/download/file', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ datasetId, filename })
+    });
+  } catch (e) { toast('error', `❌ ${e.message}`); }
+}
+
+async function batchDownload(datasetId) {
+  toast('info', `📦 Starting batch download: ${datasetId}`);
+  try {
+    await fetch('/api/download/dataset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ datasetId, maxFileSize: 50 * 1024 * 1024, maxFiles: 10 })
+    });
+  } catch (e) { toast('error', `❌ ${e.message}`); }
+}
+
+// ─── DOWNLOAD UI ──────────────────────────────────
+function updateDownloadUI() {
+  const entries = Object.entries(downloadProgress);
+  const active = entries.filter(([_, d]) => d.status === 'downloading');
+  
+  document.getElementById('dlCount').textContent = active.length;
+  document.getElementById('activeCount').textContent = active.length;
+  
+  const mgr = document.getElementById('downloadManager');
+  const empty = document.getElementById('dlEmpty');
+  
+  if (entries.length === 0) {
+    mgr.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  mgr.innerHTML = entries.map(([id, d]) => `
+    <div class="download-item">
+      <div class="dl-header">
+        <span class="dl-name">${d.filename || id}</span>
+        <span class="dl-status ${d.status}">${d.status === 'downloading' ? '⬇️ Downloading' : d.status === 'complete' ? '✅ Complete' : '❌ Error'}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${d.progress || 0}%"></div></div>
+      <div class="dl-details">
+        <span>${d.downloadedFormatted || '0 B'} / ${d.totalFormatted || 'unknown'}</span>
+        <span>${d.progress || 0}%</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── LOCAL DATASETS ───────────────────────────────
+async function loadLocalDatasets() {
+  try {
+    const r = await fetch('/api/local');
+    const datasets = await r.json();
+    const grid = document.getElementById('localGrid');
+    const empty = document.getElementById('localEmpty');
+    
+    if (datasets.length === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    
+    empty.style.display = 'none';
+    grid.innerHTML = datasets.map(d => `
+      <div class="dataset-card local fade-in">
+        <div class="dataset-header">
+          <div class="dataset-name">${d.id}</div>
+          <span class="dataset-badge badge-new">💾 Local</span>
+        </div>
+        <div class="dataset-meta">
+          <div class="dataset-stat"><span class="icon">📁</span> <span class="value">${d.sizeFormatted}</span></div>
+        </div>
+        <div class="dataset-actions">
+          <button class="btn btn-primary" onclick="analyzeDataset('${d.id}')">🔬 Analyze</button>
+          <button class="btn btn-danger" onclick="deleteLocal('${d.id}')">🗑️ Delete</button>
+        </div>
+      </div>
+    `).join('');
+    
+    // Update storage panel
+    const totalSize = datasets.reduce((s, d) => s + (d.size || 0), 0);
+    document.getElementById('storageUsed').textContent = formatBytes(totalSize) + ' used';
+    document.getElementById('storageFiles').textContent = `${datasets.length} datasets`;
+  } catch (e) {}
+}
+
+async function deleteLocal(id) {
+  if (!confirm(`Delete local copy of ${id}?`)) return;
+  const [org, name] = id.split('/');
+  try {
+    const r = await fetch(`/api/local/${org}/${name}`, { method: 'DELETE' });
+    const data = await r.json();
+    if (data.success) {
+      toast('success', `🗑️ Deleted: ${id}`);
+      loadLocalDatasets();
+      loadStats();
+    }
+  } catch (e) { toast('error', e.message); }
+}
+
+async function analyzeDataset(id) {
+  const [org, name] = id.split('/');
+  const modal = document.getElementById('detailModal');
+  const title = document.getElementById('modalTitle');
+  const body = document.getElementById('modalBody');
+  
+  title.textContent = `🔬 Analysis: ${id}`;
+  body.innerHTML = '<div class="loading-overlay"><div class="spinner"></div> Analyzing dataset...</div>';
+  modal.classList.add('active');
+  
+  try {
+    const r = await fetch(`/api/analyze/${org}/${name}`);
+    const data = await r.json();
+    
+    body.innerHTML = `
+      <div class="modal-section">
+        <h3>📊 Dataset Analysis</h3>
+        <div class="info-grid">
+          <div class="info-item"><div class="label">Files</div><div class="value">${data.fileCount}</div></div>
+          <div class="info-item"><div class="label">Total Size</div><div class="value">${data.totalSizeFormatted}</div></div>
+          <div class="info-item"><div class="label">File Types</div><div class="value" style="font-size:12px">${data.extensions?.join(', ') || 'N/A'}</div></div>
+          <div class="info-item"><div class="label">Path</div><div class="value" style="font-size:10px;word-break:break-all">${data.path}</div></div>
+        </div>
+      </div>
+      ${data.files?.length ? `
+      <div class="modal-section">
+        <h3>📁 File List</h3>
+        <div class="preview-container">
+          <div class="preview-content" style="max-height:250px">
+            <table class="data-table">
+              <thead><tr><th>Name</th><th>Size</th><th>Type</th></tr></thead>
+              <tbody>
+                ${data.files.map(f => `<tr><td style="color:var(--accent-blue)">${f.path}</td><td>${f.sizeFormatted}</td><td>${f.ext}</td></tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>` : ''}
+      ${data.sampleData ? `
+      <div class="modal-section">
+        <h3>📋 Sample Data (First 5 rows)</h3>
+        <div class="preview-container">
+          <div class="preview-content">${JSON.stringify(data.sampleData, null, 2)}</div>
+        </div>
+      </div>` : ''}
+    `;
+  } catch (e) {
+    body.innerHTML = `<div class="empty-state"><div class="empty-icon">❌</div><h3>Analysis Failed</h3><p>${e.message}</p></div>`;
+  }
+}
+
+// ─── LIVE HF SEARCH ───────────────────────────────
+async function doLiveSearch() {
+  const q = document.getElementById('liveSearchInput').value.trim();
+  if (!q) return;
+  
+  const results = document.getElementById('liveSearchResults');
+  const loading = document.getElementById('searchLoading');
+  
+  results.innerHTML = '';
+  loading.style.display = 'flex';
+  
+  try {
+    const r = await fetch(`/api/search?q=${encodeURIComponent(q)}&limit=20`);
+    const data = await r.json();
+    loading.style.display = 'none';
+    
+    if (data.datasets?.length) {
+      renderDatasets(data.datasets, 'liveSearchResults');
+    } else {
+      results.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>No results found</h3><p>Try different search terms</p></div>';
+    }
+  } catch (e) {
+    loading.style.display = 'none';
+    results.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Search Error</h3><p>${e.message}</p></div>`;
+  }
+}
+
+// ─── NAVIGATION ───────────────────────────────────
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  
+  document.getElementById(`page-${page}`).classList.add('active');
+  const nav = document.getElementById(`nav-${page}`);
+  if (nav) nav.classList.add('active');
+  
+  currentPage = page;
+  
+  if (page === 'local') loadLocalDatasets();
+  if (page === 'downloads') updateDownloadUI();
+}
+
+function setCategory(cat, el) {
+  currentCategory = cat;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else document.querySelector('.filter-chip').classList.add(cat === 'all' ? 'active' : '');
+  loadCatalog();
+}
+
+function setSort(sort) {
+  currentSort = sort;
+  loadCatalog();
+}
+
+function handleSearch(q) {
+  currentSearch = q;
+  clearTimeout(window._searchTimeout);
+  window._searchTimeout = setTimeout(() => loadCatalog(), 300);
+}
+
+function filterByLicense(license) {
+  document.getElementById('globalSearch').value = license;
+  currentSearch = license;
+  showPage('browse');
+  loadCatalog();
+}
+
+function filterByFormat(format) {
+  document.getElementById('globalSearch').value = format;
+  currentSearch = format;
+  showPage('browse');
+  loadCatalog();
+}
+
+async function refreshAll() {
+  toast('info', '🔄 Refreshing...');
+  await loadStats();
+  await loadCatalog();
+  await loadCategories();
+  toast('success', '✅ Refreshed!');
+}
+
+// ─── HELPERS ──────────────────────────────────────
+function formatNum(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return String(n);
+}
+
+function formatBytes(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>');
+}
+
+function getBadge(d, i) {
+  if (d.isLocal) return '<span class="dataset-badge badge-new">💾 LOCAL</span>';
+  if (d.id.startsWith('nvidia/')) return '<span class="dataset-badge badge-nvidia">🟢 NVIDIA</span>';
+  if (i < 3) return '<span class="dataset-badge badge-trending">🔥 TOP</span>';
+  if (d.likes > 900) return '<span class="dataset-badge badge-popular">⭐ POPULAR</span>';
+  return '';
+}
+
+function getCategoryIcon(cat) {
+  const icons = {
+    'text-generation': '📝', 'question-answering': '❓', 'image-classification': '🖼️',
+    'image-generation': '🎨', 'fill-mask': '🎭', 'summarization': '📋',
+    'token-classification': '🏷️', 'text-classification': '📊', 'language-modeling': '🗣️',
+    'autonomous-vehicles': '🚗'
+  };
+  return icons[cat] || '📦';
+}
+
+function toast(type, msg) {
+  const container = document.getElementById('toastContainer');
+  const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-msg">${msg}</span>`;
+  container.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 4000);
+}
+
+// Close modal on overlay click
+document.getElementById('detailModal').addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal-overlay')) closeModal();
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === '/' && !e.ctrlKey && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('globalSearch').focus();
+  }
+});
+</script>
+
+</body>
+</html>

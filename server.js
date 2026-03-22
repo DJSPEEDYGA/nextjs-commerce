@@ -843,6 +843,20 @@ try {
   };
 }
 
+// ======================== VOICE SERVICE ========================
+let voiceService;
+try {
+  voiceService = require('./lib/voice/voice-service');
+  console.log('✅ Voice Service loaded');
+} catch(e) {
+  console.log('⚠️  Voice Service not available');
+  voiceService = {
+    getStatus: () => ({ recognitionSupported: false, synthesisSupported: false }),
+    getCommandPatterns: () => ({}),
+    parseCommand: () => null
+  };
+}
+
 // POST /api/drive/upload - Upload file to Google Drive
 app.post('/api/drive/upload', async (req, res) => {
   try {
@@ -891,6 +905,74 @@ app.get('/api/drive/status', async (req, res) => {
     });
   } catch(e) {
     console.error('Google Drive status check error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ======================== VOICE API ENDPOINTS ========================
+
+// GET /api/voice/status - Check voice service status
+app.get('/api/voice/status', (req, res) => {
+  try {
+    // Server-side status check (voice features work in browser)
+    const status = {
+      recognitionSupported: true, // Available in modern browsers
+      synthesisSupported: true,  // Available in modern browsers
+      isListening: false,
+      availableVoices: 0,
+      browserSupport: {
+        webkitSpeechRecognition: true,
+        speechSynthesis: true
+      },
+      note: 'Voice features require browser environment'
+    };
+    res.json(status);
+  } catch(e) {
+    console.error('Voice status check error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// GET /api/voice/commands - Get available voice commands
+app.get('/api/voice/commands', (req, res) => {
+  try {
+    const patterns = voiceService.getCommandPatterns();
+    res.json(patterns);
+  } catch(e) {
+    console.error('Voice commands error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// POST /api/voice/parse - Parse voice command
+app.post('/api/voice/parse', (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) {
+      return res.status(400).json({ error: 'Text is required' });
+    }
+
+    const command = voiceService.parseCommand(text);
+    res.json(command);
+  } catch(e) {
+    console.error('Voice parse error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// POST /api/voice/enhance - Enhance transcript with AI
+app.post('/api/voice/enhance', async (req, res) => {
+  try {
+    const { transcript } = req.body;
+    if (!transcript) {
+      return res.status(400).json({ error: 'Transcript is required' });
+    }
+
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    const enhanced = await voiceService.enhanceTranscript(transcript, apiKey);
+    res.json(enhanced);
+  } catch(e) {
+    console.error('Voice enhancement error:', e.message);
     res.status(500).json({ error: e.message });
   }
 });

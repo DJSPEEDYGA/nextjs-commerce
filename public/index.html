@@ -280,14 +280,32 @@
     </div>
     <div class="card-grid">
         <div class="card">
-            <div class="card-header"><h3>🎬 Screenwriting</h3><span class="badge badge-gold">Hollywood</span></div>
+            <div class="card-header"><h3>🎬 Screenwriting & Movie Studio</h3><span class="badge badge-gold">Hollywood</span></div>
             <div class="card-body">
                 <input class="input" id="scriptPrompt" placeholder="Describe your script idea..." style="margin-bottom:8px">
                 <select class="input" id="scriptGenre" style="margin-bottom:8px">
-                    <option>Action</option><option>Drama</option><option>Comedy</option><option>Horror</option><option>Sci-Fi</option><option>Thriller</option>
+                    <option>Action</option><option>Drama</option><option>Comedy</option><option>Horror</option><option>Sci-Fi</option><option>Thriller</option><option>Romance</option><option>Documentary</option><option>Animation</option>
                 </select>
-                <button class="btn btn-gold" onclick="generateScript()" style="width:100%">🎬 Generate Script</button>
+                <select class="input" id="scriptFormat" style="margin-bottom:8px">
+                    <option>Feature Film</option><option>TV Pilot</option><option>Short Film</option><option>Web Series</option><option>Music Video</option>
+                </select>
+                <button class="btn btn-gold" onclick="generateScript()" style="width:100%;margin-bottom:8px">🎬 Generate Script</button>
+                <button class="btn btn-purple" onclick="voiceToScript()" style="width:100%">🎙️ Voice to Script</button>
                 <div id="scriptResult" style="margin-top:12px"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3>🎙️ Voice Command Center</h3><span class="badge badge-green">AI Powered</span></div>
+            <div class="card-body">
+                <div id="voiceStatus" style="margin-bottom:12px;padding:8px;background:var(--bg-secondary);border-radius:8px">
+                    <p><strong>Status:</strong> <span id="voiceStatusText">Checking...</span></p>
+                    <p><strong>Commands:</strong> <span id="voiceCommandCount">Loading...</span></p>
+                </div>
+                <button class="btn btn-gold" id="startVoiceBtn" onclick="startVoiceListening()" style="width:100%;margin-bottom:8px">🎙️ Start Listening</button>
+                <button class="btn btn-red" id="stopVoiceBtn" onclick="stopVoiceListening()" style="width:100%;margin-bottom:8px" disabled>⏹️ Stop Listening</button>
+                <input class="input" id="voiceTestInput" placeholder="Or type command here..." style="margin-bottom:8px">
+                <button class="btn btn-blue" onclick="testVoiceCommand()" style="width:100%">🔍 Test Command</button>
+                <div id="voiceResult" style="margin-top:12px"></div>
             </div>
         </div>
         <div class="card">

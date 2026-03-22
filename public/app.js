@@ -1212,5 +1212,221 @@ function renderDictionaryTerms(terms, title) {
     
     html += '</div>';
     resultsDiv.innerHTML = html;
-}    console.log('280 API Endpoints | 16 Tabs | All Systems GO 🚀');
+}
+
+// ======================== VOICE COMMANDS ========================
+let voiceRecognition = null;
+let isListening = false;
+
+// Check voice service status
+async function checkVoiceStatus() {
+    try {
+        const response = await fetch('/api/voice/status');
+        const status = await response.json();
+        
+        const statusText = document.getElementById('voiceStatusText');
+        if (status.recognitionSupported && status.synthesisSupported) {
+            statusText.innerHTML = '<span class="badge badge-green">✅ Fully Supported</span>';
+        } else if (status.recognitionSupported || status.synthesisSupported) {
+            statusText.innerHTML = '<span class="badge badge-yellow">⚠️ Partial Support</span>';
+        } else {
+            statusText.innerHTML = '<span class="badge badge-red">❌ Not Supported</span>';
+        }
+    } catch (error) {
+        document.getElementById('voiceStatusText').innerHTML = '<span class="badge badge-red">❌ Error</span>';
+    }
+}
+
+// Load voice commands
+async function loadVoiceCommands() {
+    try {
+        const response = await fetch('/api/voice/commands');
+        const patterns = await response.json();
+        
+        let totalCommands = 0;
+        for (const category in patterns) {
+            totalCommands += patterns[category].length;
+        }
+        
+        document.getElementById('voiceCommandCount').textContent = `${totalCommands} commands`;
+    } catch (error) {
+        document.getElementById('voiceCommandCount').textContent = 'Error loading';
+    }
+}
+
+// Start voice listening
+function startVoiceListening() {
+    if (!('webkitSpeechRecognition' in window)) {
+        alert('Speech recognition not supported in this browser');
+        return;
+    }
+    
+    voiceRecognition = new webkitSpeechRecognition();
+    voiceRecognition.continuous = true;
+    voiceRecognition.interimResults = true;
+    voiceRecognition.lang = 'en-US';
+    
+    voiceRecognition.onstart = () => {
+        isListening = true;
+        document.getElementById('startVoiceBtn').disabled = true;
+        document.getElementById('stopVoiceBtn').disabled = false;
+        document.getElementById('voiceResult').innerHTML = '<span class="badge badge-green">🎙️ Listening... Speak a command</span>';
+    };
+    
+    voiceRecognition.onresult = (event) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript;
+            } else {
+                interimTranscript += transcript;
+            }
+        }
+        
+        if (finalTranscript) {
+            processVoiceCommand(finalTranscript);
+        } else if (interimTranscript) {
+            document.getElementById('voiceResult').innerHTML = `<span class="info">🎙️ ${interimTranscript}</span>`;
+        }
+    };
+    
+    voiceRecognition.onerror = (event) => {
+        console.error('Voice recognition error:', event.error);
+        document.getElementById('voiceResult').innerHTML = `<span class="error">❌ Error: ${event.error}</span>`;
+        stopVoiceListening();
+    };
+    
+    voiceRecognition.onend = () => {
+        if (isListening) {
+            voiceRecognition.start();
+        }
+    };
+    
+    voiceRecognition.start();
+}
+
+// Stop voice listening
+function stopVoiceListening() {
+    if (voiceRecognition && isListening) {
+        isListening = false;
+        voiceRecognition.stop();
+        document.getElementById('startVoiceBtn').disabled = false;
+        document.getElementById('stopVoiceBtn').disabled = true;
+        document.getElementById('voiceResult').innerHTML = '<span class="badge badge-yellow">⏹️ Stopped</span>';
+    }
+}
+
+// Process voice command
+async function processVoiceCommand(text) {
+    document.getElementById('voiceResult').innerHTML = `<span class="info">🔍 Processing: "${text}"</span>`;
+    
+    try {
+        const response = await fetch('/api/voice/parse', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text })
+        });
+        
+        const command = await response.json();
+        
+        if (command) {
+            executeVoiceCommand(command);
+        } else {
+            document.getElementById('voiceResult').innerHTML = `<span class="info">🤔 No command recognized. Try: "go to dashboard" or "generate script"</span>`;
+        }
+    } catch (error) {
+        document.getElementById('voiceResult').innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+    }
+}
+
+// Execute voice command
+function executeVoiceCommand(command) {
+    const resultDiv = document.getElementById('voiceResult');
+    
+    switch (command.action) {
+        case 'dashboard':
+            switchTab('dashboard');
+            resultDiv.innerHTML = '<span class="badge badge-green">✅ Navigated to Dashboard</span>';
+            break;
+        case 'music':
+            switchTab('music');
+            resultDiv.innerHTML = '<span class="badge badge-green">✅ Navigated to Music Studio</span>';
+            break;
+        case 'ai':
+            switchTab('ai');
+            resultDiv.innerHTML = '<span class="badge badge-green">✅ Navigated to AI Suite</span>';
+            break;
+        case 'creative':
+            switchTab('creative');
+            resultDiv.innerHTML = '<span class="badge badge-green">✅ Navigated to Creative Suite</span>';
+            break;
+        case 'security':
+            switchTab('security');
+            resultDiv.innerHTML = '<span class="badge badge-green">✅ Navigated to Security</span>';
+            break;
+        case 'generateScript':
+            document.getElementById('scriptPrompt').value = 'Write a thrilling action movie about a music producer';
+            generateScript();
+            resultDiv.innerHTML = '<span class="badge badge-green">✅ Generating script</span>';
+            break;
+        case 'searchCatalog':
+            switchTab('catalog');
+            document.getElementById('catalogSearch').focus();
+            resultDiv.innerHTML = '<span class="badge badge-green">✅ Catalog search ready</span>';
+            break;
+        default:
+            resultDiv.innerHTML = `<span class="info">🎯 Command: ${command.action}</span>`;
+    }
+}
+
+// Test voice command
+async function testVoiceCommand() {
+    const text = document.getElementById('voiceTestInput').value.trim();
+    if (!text) return;
+    
+    await processVoiceCommand(text);
+}
+
+// Voice to script
+async function voiceToScript() {
+    if (!('webkitSpeechRecognition' in window)) {
+        alert('Speech recognition not supported in this browser');
+        return;
+    }
+    
+    const promptDiv = document.getElementById('scriptPrompt');
+    promptDiv.placeholder = '🎙️ Speak your script idea...';
+    
+    const recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+    
+    recognition.onstart = () => {
+        document.getElementById('scriptResult').innerHTML = '<span class="badge badge-green">🎙️ Listening... Speak your script idea</span>';
+    };
+    
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        promptDiv.value = transcript;
+        document.getElementById('scriptResult').innerHTML = '<span class="badge badge-gold">✅ Voice captured! Click "Generate Script" to continue</span>';
+    };
+    
+    recognition.onerror = (event) => {
+        document.getElementById('scriptResult').innerHTML = `<span class="error">❌ Error: ${event.error}</span>`;
+    };
+    
+    recognition.start();
+}
+
+// Initialize voice features
+document.addEventListener('DOMContentLoaded', () => {
+    checkVoiceStatus();
+    loadVoiceCommands();
+});
+
+    console.log('280 API Endpoints | 16 Tabs | All Systems GO 🚀');
 });

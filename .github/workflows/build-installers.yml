@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to build (e.g., 3.0.0)'
+        description: 'Version to build (e.g., 5.0.0)'
         required: false
         default: ''
 
@@ -40,7 +40,7 @@ jobs:
           done
 
       - name: Build Linux AppImage
-        run: npm run electron:build:linux
+        run: npm run electron:build:linux -- --publish never
 
       - name: Upload Linux artifacts
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
@@ -70,7 +70,7 @@ jobs:
         run: npm ci
 
       - name: Build Windows installers
-        run: npm run electron:build:win
+        run: npm run electron:build:win -- --publish never
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
@@ -98,8 +98,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate macOS icon
+        run: |
+          mkdir -p build/icons
+          # Generate PNG from ICO
+          npx electron-icon-builder --input=build/icon.ico --output=build/icons || true
+          # Create iconset for ICNS
+          mkdir -p build/icon.iconset
+          sips -s format png build/icon.ico --out build/icon.png || true
+          for size in 16 32 64 128 256 512; do
+            sips -z $size $size build/icon.png --out build/icon.iconset/icon_${size}x${size}.png || true
+          done
+          iconutil -c icns build/icon.iconset -o build/icon.icns || true
+
       - name: Build macOS DMG
-        run: npm run electron:build:mac
+        run: npm run electron:build:mac -- --publish never
         env:
           CSC_LINK: ${{ secrets.MAC_CERTIFICATE }}
           CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}

@@ -1,1009 +1,1019 @@
-/**
- * ╔══════════════════════════════════════════════════════════════════╗
- * ║  🐐 SUPER GOAT ROYALTY APP — ULTIMATE EDITION v5.0.0           ║
- * ║  The Most Complete Music Industry App Ever Built                ║
- * ╠══════════════════════════════════════════════════════════════════╣
- * ║  Copyright © 2024 HARVEY L MILLER JR (DJ SPEEDY)               ║
- * ║  JUAQUIN J MALPHURS (WAKA FLOCKA) / KEVIN W HALLINGQUEST       ║
- * ║  All Rights Reserved — www.goatroyaltyapp.org                   ║
- * ╠══════════════════════════════════════════════════════════════════╣
- * ║  🤖 AI: NVIDIA NIM + OpenRouter + Gemini + ACE SteerLM         ║
- * ║  🎵 Music: 3,077 Songs + DAW Suite + Distribution Hub          ║
- * ║  💰 Finance: Banking + Web3 + Royalty Empire                    ║
- * ║  🛡️ Security: Cyber Warfare + 6-Engine AV + OSINT              ║
- * ║  🎮 Gaming: UE5 CoPilot + FiveM + C++ Hub                     ║
- * ║  🎬 Creative: Screenwriting + Avatar Studio + Hollywood Cams   ║
- * ║  💕 Social: AI Dating + Celebrity Network + Social Feed        ║
- * ║  📊 LLMOps: Model Management + RAG + Agent Orchestration       ║
- * ║  🏪 Commerce: NFT Portfolio + Merch + Contracts                ║
- * ╚══════════════════════════════════════════════════════════════════╝
- */
-
-const express     = require('express');
-const cors        = require('cors');
-const helmet      = require('helmet');
-const path        = require('path');
-const http        = require('http');
-const WebSocket   = require('ws');
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
+const path = require('path');
+const http = require('http');
+const WebSocket = require('ws');
 require('dotenv').config();
+const aiConfig = require('./lib/ai/ai-config');
 
-const app    = express();
+// AI & ML Components
+const nvidiaClient = require('./lib/nvidia/nvidia-nim-client');
+const ragSystem = require('./lib/rag/rag-system');
+const agentManager = require('./lib/agents/autonomous-agent-manager');
+
+// Multi-Provider & OpenShell Components
+const ProviderManager = require('./lib/providers/provider-manager');
+const OpenShellClient = require('./lib/nvidia/openshell-client');
+const InferenceRouter = require('./lib/nvidia/inference-router');
+const SandboxManager = require('./lib/agents/sandbox-manager');
+
+// UE5 CoPilot Components
+const UE5CoPilot = require('./lib/ue5/ue5-copilot');
+const BlueprintAnalyzer = require('./lib/ue5/blueprint-analyzer');
+
+// Initialize multi-provider system
+const providerManager = new ProviderManager();
+const openshellClient = new OpenShellClient();
+const inferenceRouter = new InferenceRouter({
+    providerManager,
+    openshellClient,
+    demoMode: aiConfig.demoMode
+});
+const sandboxManager = new SandboxManager(openshellClient);
+
+// Initialize sandbox mappings
+sandboxManager.initializeAll().then(results => {
+    const deployed = results.filter(r => r.status === 'found').length;
+    console.log(`🐚 OpenShell: ${deployed}/${results.length} agent sandboxes mapped`);
+}).catch(err => console.warn('OpenShell init:', err.message));
+
+// Initialize UE5 CoPilot
+const ue5CoPilot = new UE5CoPilot({ providerManager, demoMode: aiConfig.demoMode });
+const blueprintAnalyzer = new BlueprintAnalyzer({ demoMode: aiConfig.demoMode });
+console.log(`🔨 UE5 CoPilot: FORGE ready (v${ue5CoPilot.version}) — Featured on FAB by Epic Games`);
+const {
+    RevenueData,
+    NFTPortfolio,
+    CollaborationHub,
+    MarketAnalysis
+} = require('./lib/models/data-models');
+
+const rateLimit = require('express-rate-limit');
+
+const app = express();
 const server = http.createServer(app);
-const wss    = new WebSocket.Server({ server });
-const PORT   = process.env.PORT || 3000;
+const wss = new WebSocket.Server({ server });
 
-// ======================== MIDDLEWARE ========================
-app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
-app.use(cors({ origin: '*', credentials: true }));
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+const PORT = process.env.PORT || 3000;
 
-// ======================== AI CONFIG ========================
-let aiConfig;
-try { aiConfig = require('./lib/ai/ai-config'); } catch(e) { aiConfig = { demoMode: true }; }
+// Rate limiting - protect against abuse
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: { error: 'Too many requests, please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
 
-// ======================== CORE AI IMPORTS (NVIDIA/OpenRouter) ========================
-let nvidiaClient, ragSystem, agentManager;
-try { nvidiaClient = require('./lib/nvidia/nvidia-nim-client'); } catch(e) { nvidiaClient = { generate: async () => ({ text: 'Demo mode' }), getModels: () => [] }; }
-try { ragSystem = require('./lib/rag/rag-system'); } catch(e) { ragSystem = { query: async () => ({ answer: 'Demo mode' }), addDocument: async () => ({}), getStats: () => ({}) }; }
-try { agentManager = require('./lib/agents/autonomous-agent-manager'); } catch(e) { agentManager = { execute: async () => ({}), queue: () => ({}), getStatus: () => ({}) }; }
+const aiLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 20, // AI endpoints: 20 requests per minute
+    message: { error: 'AI rate limit exceeded. Please wait before making more AI requests.' },
+    standardHeaders: true,
+    legacyHeaders: false
+});
 
-// Multi-Provider & OpenShell
-let ProviderManager, OpenShellClient, InferenceRouter, SandboxManager;
-let providerManager, openshellClient, inferenceRouter, sandboxManager;
-try {
-    ProviderManager = require('./lib/providers/provider-manager');
-    OpenShellClient = require('./lib/nvidia/openshell-client');
-    InferenceRouter = require('./lib/nvidia/inference-router');
-    SandboxManager  = require('./lib/agents/sandbox-manager');
-    providerManager  = new ProviderManager();
-    openshellClient  = new OpenShellClient();
-    inferenceRouter  = new InferenceRouter({ providerManager, openshellClient, demoMode: aiConfig.demoMode });
-    sandboxManager   = new SandboxManager(openshellClient);
-    sandboxManager.initializeAll().catch(() => {});
-} catch(e) {
-    providerManager = { getAllProviders: () => [], getStats: () => ({}), healthCheck: async () => ({}), setActiveProvider: () => ({}) };
-    openshellClient = {};
-    inferenceRouter = { route: async () => ({ text: 'Demo' }), getAnalytics: () => ({}) };
-    sandboxManager = { getStatus: async () => ({}), getAllSandboxes: async () => [], getDashboard: async () => ({}) };
-}
+// Apply rate limiters
+app.use('/api/', apiLimiter);
+app.use('/api/ai/', aiLimiter);
+app.use('/api/rag/', aiLimiter);
+app.use('/api/agents/execute', aiLimiter);
+app.use('/api/assistants/chat', aiLimiter);
+app.use('/api/nvidia/generate', aiLimiter);
+app.use('/api/models/chat', aiLimiter);
+app.use('/api/gemini/chat', aiLimiter);
+app.use('/api/ace/chat', aiLimiter);
+app.use('/api/ue5/blueprint/generate', aiLimiter);
+app.use('/api/ue5/chat', aiLimiter);
+app.use('/api/inference/route', aiLimiter);
 
-// UE5 CoPilot
-let ue5CoPilot, blueprintAnalyzer;
-try {
-    const UE5CoPilot = require('./lib/ue5/ue5-copilot');
-    const BlueprintAnalyzer = require('./lib/ue5/blueprint-analyzer');
-    ue5CoPilot = new UE5CoPilot({ providerManager, demoMode: aiConfig.demoMode });
-    blueprintAnalyzer = new BlueprintAnalyzer({ demoMode: aiConfig.demoMode });
-} catch(e) {
-    ue5CoPilot = { getInfo: () => ({}), generate: async () => ({}), buildScene: async () => ({}), version: '1.0' };
-    blueprintAnalyzer = { analyze: () => ({}) };
-}
+// Initialize data models
+const revenueData = new RevenueData();
+const nftPortfolio = new NFTPortfolio();
+const collaborationHub = new CollaborationHub();
+const marketAnalysis = new MarketAnalysis();
 
-// Data Models
-let revenueData, nftPortfolio, collaborationHub, marketAnalysis;
-try {
-    const { RevenueData, NFTPortfolio, CollaborationHub, MarketAnalysis } = require('./lib/models/data-models');
-    revenueData = new RevenueData();
-    nftPortfolio = new NFTPortfolio();
-    collaborationHub = new CollaborationHub();
-    marketAnalysis = new MarketAnalysis();
-    // Initialize sample data
+// Initialize sample data
+initializeSampleData();
+
+async function initializeSampleData() {
+    // Initialize revenue data
     revenueData.update('spotify', 89200, { streams: 2500000, growth: 15.2 });
     revenueData.update('appleMusic', 67800, { streams: 1800000, growth: 18.7 });
     revenueData.update('youtube', 45300, { streams: 3200000, growth: 22.3 });
     revenueData.update('tidal', 12400, { streams: 450000, growth: 8.9 });
     revenueData.update('amazonMusic', 18900, { streams: 560000, growth: 12.4 });
+    
     revenueData.growthRate = 23.5;
-    nftPortfolio.addItem({ id: 'goat-genesis-001', name: 'GOAT Genesis #001', collection: 'GOAT Royalty Genesis', blockchain: 'Ethereum', currentValue: 2.5, purchasePrice: 0.5, rarity: 'Legendary' });
-} catch(e) {
-    revenueData = { getAll: () => ({}), total: 233600 };
-    nftPortfolio = { getAll: () => ([]), getTotalValue: () => 0 };
-    collaborationHub = { getAll: () => ([]) };
-    marketAnalysis = { getAll: () => ({}) };
+
+    // Initialize NFT portfolio
+    nftPortfolio.addItem({
+        name: 'Genesis Track NFT',
+        value: 45000,
+        chain: 'Ethereum',
+        description: 'First ever release as NFT'
+    });
+    nftPortfolio.addItem({
+        name: 'Album Art Collection',
+        value: 32000,
+        chain: 'Polygon',
+        description: 'Complete album artwork series'
+    });
+    nftPortfolio.addItem({
+        name: 'Exclusive Beat Pack',
+        value: 28000,
+        chain: 'Solana',
+        description: '10 exclusive beats'
+    });
+    nftPortfolio.addItem({
+        name: 'Limited Edition Single',
+        value: 51000,
+        chain: 'Ethereum',
+        description: 'Limited to 100 copies'
+    });
+
+    // Initialize collaboration hub
+    collaborationHub.addMember({ name: 'Producer Mike', role: 'producer', email: 'mike@example.com' });
+    collaborationHub.addMember({ name: 'Sarah Vocals', role: 'vocalist', email: 'sarah@example.com' });
+    collaborationHub.addMember({ name: 'DJ Alex', role: 'dj', email: 'alex@example.com' });
+
+    collaborationHub.createProject({
+        name: 'New Album Production',
+        description: '2025 Album Project',
+        members: ['Producer Mike', 'Sarah Vocals']
+    });
+
+    // Initialize market analysis
+    marketAnalysis.updateGenreTrends('Hip-Hop', { growth: 25.4, streams: '1.2B', audience: '18-35' });
+    marketAnalysis.updateGenreTrends('Pop', { growth: 18.7, streams: '980M', audience: '16-40' });
+    marketAnalysis.updateGenreTrends('R&B', { growth: 22.1, streams: '650M', audience: '20-45' });
+
+    // Initialize RAG knowledge base
+    await ragSystem.initializeIndustryKnowledge();
+    
+    console.log('Sample data initialized successfully');
 }
 
-// Distribution, LLMOps, Gemini, ACE, Music Recognizer
-let distributionHub, llmOps, geminiClient, aceClient, musicRecognizer;
-try { distributionHub = require('./lib/distribution/distribution-hub'); } catch(e) { distributionHub = { getServices: () => [], getPlatforms: () => [], getCatalog: () => [], getRoyalties: () => ({}), getAnalytics: () => ({}), getTikTok: () => ({}), distribute: async () => ({}) }; }
-try { llmOps = require('./lib/llmops/llmops-dashboard'); } catch(e) { llmOps = { getDashboard: () => ({}), getModels: () => [], getSecurity: () => ({}), getRag: () => ({}), getAgents: () => [], getMonitors: () => [], getModel: () => ({}) }; }
-try { geminiClient = require('./lib/ai/gemini-client'); } catch(e) { geminiClient = { getStatus: () => ({ enabled: false }), getModels: () => [], chat: async () => ({ response: 'Demo mode' }) }; }
-try { aceClient = require('./lib/nvidia/ace-steerlm'); } catch(e) { aceClient = { getAttributes: () => [], getPresets: () => [], chat: async () => ({ response: 'Demo' }), presetChat: async () => ({ response: 'Demo' }) }; }
-try { musicRecognizer = require('./lib/music/music-recognizer'); } catch(e) { musicRecognizer = { getCatalog: () => [], getCapabilities: () => ({}), getStats: () => ({}), getRecent: () => [], recognize: async () => ({}), analyze: async () => ({}), copyrightCheck: async () => ({}), getSimilar: () => [] }; }
+// Middleware
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false
+}));
+app.use(cors());
+app.use(compression());
+app.use(morgan('combined'));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Assistants
-let assistants;
-try { assistants = require('./lib/agents/ai-assistants'); } catch(e) { assistants = { getAll: () => [], getBySection: () => null, chat: async () => ({ response: 'Demo' }), getTip: async () => 'Demo tip' }; }
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
-// ======================== GOAT CONNECT IMPORTS (Dating/Social) ========================
-let bgChecker, banking, securityModule, matchmaker, celebGraph, userDb;
-try { const BC = require('./lib/background/background-checker'); bgChecker = new BC(); } catch(e) { bgChecker = { check: async () => ({}), getStatus: async () => ({}), getPackages: () => [], getStats: () => ({}) }; }
-try { const BI = require('./lib/banking/banking-integration'); banking = new BI(); } catch(e) { banking = { link: async () => ({}), verifyAccount: async () => ({}), getStatus: async () => ({}), getInstitutions: () => [] }; }
-try { const CS = require('./lib/security/cyber-security'); securityModule = new CS(); } catch(e) { securityModule = { getDashboard: () => ({}), scan: async () => ({}), getRecentThreats: () => [], getEncryptionStatus: () => ({}), report: async () => ({}) }; }
-try { const AM = require('./lib/ai/ai-matchmaker'); matchmaker = new AM(); } catch(e) { matchmaker = { match: async () => ([]), getFeed: async () => ([]), processSwipe: async () => ({}), analyzeCompatibility: async () => ({}), getCompatibilityScore: async () => ({}), getDatingPositions: () => [] }; }
-try { const CG = require('./lib/celebrity/celebrity-graph'); celebGraph = new CG(); } catch(e) { celebGraph = { list: () => ([]), getFans: () => ([]), followCelebrity: async () => ({}), findCelebrityMatch: async () => ([]), getCelebrityMusic: () => [] }; }
-try { const UD = require('./lib/database/user-database'); userDb = new UD(); } catch(e) { userDb = { register: async () => ({}), login: async () => ({}), getUser: async () => ({}), getDemoProfiles: () => [], getSocialFeed: async () => ([]), createPost: async () => ({}), likePost: async () => ({}) }; }
-
-// Ultimate Modules (singletons)
-let celebrityDb, faceAI, avatarStudio, cyberWarfare, ue5Studio, screenwriting, musicStudio, empire, cyberOps, metaverse, osint, storageEngine, catalog, officeVault;
-try { celebrityDb = require('./lib/celebrity/celebrity-database'); } catch(e) { celebrityDb = { getCelebrities: () => [], celebrities: [], _countTotalConnections: () => 0, getTrending: () => [], getGenres: () => [], getWorldMap: () => ({}), getCelebrity: () => null, follow: async () => ({}), aiMatch: async () => ([]), getStats: () => ({}), getTier: () => [], getGraph: () => ({}), getDating: () => [], getFilmTV: () => [], getFashion: () => [], getMusic: () => [] }; }
-try { faceAI = require('./lib/security/facial-recognition'); } catch(e) { faceAI = { scan: async () => ({}), compare: async () => ({}), verifyAge: async () => ({}), getStats: () => ({}), liveness: async () => ({}) }; }
-try { avatarStudio = require('./lib/avatar/avatar-studio'); } catch(e) { avatarStudio = { create: async () => ({}), animate: async () => ({}), vertical: async () => ({}), metahuman: async () => ({}), getCameras: () => [], getFivemAssets: () => [], getUe5Assets: () => [], getAnimations: () => [] }; }
-try { cyberWarfare = require('./lib/security/cyber-warfare'); } catch(e) { cyberWarfare = { getDashboard: () => ({}), scan: async () => ({}), scanUrl: async () => ({}), breachCheck: async () => ({}), ddosProtect: async () => ({}), getStats: () => ({}), getThreatIntel: () => [] }; }
-try { ue5Studio = require('./lib/gaming/ue5-studio'); } catch(e) { ue5Studio = { getCppBooks: () => [], getUe5Resources: () => [], getFivem: () => ({}), blueprint: async () => ({}), getStats: () => ({}) }; }
-try { screenwriting = require('./lib/creative/screenwriting-studio'); } catch(e) { screenwriting = { getWriters: () => [], getWriter: () => null, getFormats: () => [], getTemplates: () => [], getSoftware: () => [], getGenres: () => [], getOscars: () => [], generate: async () => ({}), getStats: () => ({}) }; }
-try { musicStudio = require('./lib/music/music-production-studio'); } catch(e) { musicStudio = { getBeats: () => [], getBeat: () => null, getDaws: () => [], getTheory: () => ({}), getRoyalties: () => ({}), getDistribution: () => [], getStreamingRates: () => [], calculateRevenue: () => ({}), calculateSplits: () => ({}), generateBeat: async () => ({}), getEquipment: () => [], getGrammys: () => [], getIndustry: () => ({}), getSampleClearance: () => ({}), getStats: () => ({}) }; }
-try { empire = require('./lib/business/royalty-empire'); } catch(e) { empire = { getBrand: () => ({}), getMerch: () => [], getVenues: () => [], getRevenueStreams: () => [], getContracts: () => [], getLegal: () => ({}), getSocial: () => ({}), generatePitch: () => ({}), calculateMerch: () => ({}), getStats: () => ({}) }; }
-try { cyberOps = require('./lib/security/advanced-cyber-ops'); } catch(e) { cyberOps = { getTools: () => [], getTool: () => null, getOwasp: () => [], getThreatIntel: () => [], getForensics: () => ({}), getCrypto: () => ({}), getIncidentResponse: () => ({}), getCompliance: () => ({}), getCerts: () => [], simulate: () => ({}), getStats: () => ({}) }; }
-try { metaverse = require('./lib/web3/metaverse-engine'); } catch(e) { metaverse = { getNfts: () => [], getNft: () => null, getWallet: () => ({}), getContracts: () => [], getVenues: () => [], getToken: () => ({}), getDefi: () => ({}), getExplorer: () => ({}), getLearn: () => [], mint: () => ({}), getStats: () => ({}) }; }
-try { osint = require('./lib/intelligence/osint-network'); } catch(e) { osint = { getOsintTools: () => [], getThreatProfiles: () => [], getEncryptedComms: () => [], getSocialEngineering: () => [], getPrivacyTools: () => [], getCounterSurveillance: () => [], getBreaches: () => [], getStats: () => ({}) }; }
-try { storageEngine = require('./lib/storage/local-storage-engine'); } catch(e) { storageEngine = { getStats: () => ({}), getInfo: () => ({}), getConfig: () => ({}), setConfig: () => ({}), save: () => ({}), load: () => ({}), loadItem: () => ({}), exportData: () => ({}), importData: () => ({}), backup: () => ({}), setPath: () => ({}) }; }
-try { catalog = require('./lib/catalog/real-catalog'); } catch(e) { catalog = { getFullDashboard: () => ({}), getArtistProfile: () => ({}), getWakaProfile: () => ({}), getPublishers: () => ([]), getCatalogStats: () => ({}), getAllSongs: () => ([]), getSongsBySource: () => ([]), getAlbums: () => ([]), getSongsByAlbum: () => ([]), searchCatalog: () => ([]), getFeaturedCollabs: () => ([]), getTopCrossReferenced: () => ([]), getSources: () => ([]), stats: { totalUniqueSongs: 0, totalISRCs: 0, totalISWCs: 0, dataSources: [], recordsSold: '0' } }; }
-try { officeVault = require('./lib/office-vault'); } catch(e) { officeVault = { getAllDocuments: () => ([]), getDJSpeedyCatalog: () => ([]), getWakaFlockaCatalog: () => ([]), getVaultStats: () => ({}), searchDocuments: () => ([]) }; }
-try { tikTokService = require('./lib/tiktok/tiktok-service'); } catch(e) { tikTokService = { getInfo: () => ({}), getUserProfile: () => ({}), getUserVideos: () => [], getAnalytics: () => ({}), searchHashtag: () => [], getTrending: () => [] }; }
-try { hfHub = require('./lib/huggingface/huggingface-hub'); } catch(e) { hfHub = { getInfo: () => ({}), getDashboard: () => ({}), getModels: () => [], getDatasets: () => [], getModel: () => ({}), search: () => ({}), getCollection: () => ({}), getDownloadInfo: () => ({}) }; }
-try { wakaDictionary = require('./lib/rap-dictionary/waka-flames-dictionary'); } catch(e) { wakaDictionary = { getInfo: () => ({}), getAllTerms: () => [], searchTerms: () => [], getTermsByCategory: () => [], getRandomTerm: () => ({}), getWakaTerms: () => [], getTrapTerms: () => [], getCategories: () => [], getTermOfTheDay: () => ({}) }; }
-
-// ======================== WEBSOCKET ========================
+// WebSocket for real-time updates
 wss.on('connection', (ws) => {
-    console.log('🔌 WebSocket client connected');
-    ws.send(JSON.stringify({ type: 'welcome', message: '🐐 GOAT Royalty v5.0 — Connected', timestamp: new Date().toISOString() }));
-    ws.on('message', (data) => {
+    console.log('New WebSocket connection established');
+    
+    ws.send(JSON.stringify({
+        type: 'connection',
+        message: 'Connected to SUPER GOAT ROYALTIES real-time updates'
+    }));
+
+    ws.on('message', (message) => {
         try {
-            const msg = JSON.parse(data);
-            ws.send(JSON.stringify({ type: 'ack', received: msg.type, timestamp: new Date().toISOString() }));
-        } catch(e) { ws.send(JSON.stringify({ type: 'error', message: 'Invalid JSON' })); }
+            const data = JSON.parse(message);
+            handleWebSocketMessage(ws, data);
+        } catch (error) {
+            console.error('WebSocket message error:', error);
+        }
     });
-    ws.on('close', () => console.log('🔌 WebSocket client disconnected'));
+
+    ws.on('close', () => {
+        console.log('WebSocket connection closed');
+    });
 });
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 1: CORE API                          ║
-// ╚══════════════════════════════════════════════════════════════════╝
+function handleWebSocketMessage(ws, data) {
+    switch (data.type) {
+        case 'subscribe':
+            ws.subscriptions = data.channels || [];
+            break;
+        case 'ping':
+            ws.send(JSON.stringify({ type: 'pong' }));
+            break;
+    }
+}
 
+function broadcast(channel, message) {
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            if (!client.subscriptions || client.subscriptions.includes(channel)) {
+                client.send(JSON.stringify({ channel, ...message }));
+            }
+        }
+    });
+}
+
+// ==================== API ROUTES ====================
+
+// Health & Status
 app.get('/api/status', (req, res) => {
     res.json({
-        app: '🐐 SUPER GOAT ROYALTY APP — ULTIMATE EDITION',
-        version: '5.0.0',
-        copyright: '© 2024 Harvey L Miller Jr / Juaquin J Malphurs / Kevin W Hallingquest',
-        website: 'www.goatroyaltyapp.org',
+        status: 'online',
+        message: 'SUPER GOAT ROYALTIES API is running',
+        version: '4.0.0',
+        app: 'SUPER GOAT Royalties',
+        mode: aiConfig.demoMode ? 'demo' : 'live',
         uptime: process.uptime(),
-        timestamp: new Date().toISOString(),
-        modules: {
-            ai: { nvidia: true, openrouter: true, gemini: true, ace: true },
-            music: { catalog: true, production: true, distribution: true, recognizer: true },
-            social: { dating: true, celebrity: true, feed: true },
-            security: { cyberWarfare: true, cyberOps: true, osint: true, facialRecognition: true },
-            gaming: { ue5: true, fivem: true, cppHub: true },
-            creative: { screenwriting: true, avatarStudio: true },
-            finance: { banking: true, web3: true, empire: true },
-            infrastructure: { llmops: true, rag: true, agents: true, openshell: true }
+        features: {
+            ai: true,
+            nvidia: aiConfig.activeProviders.nvidia,
+            openrouter: aiConfig.activeProviders.openrouter,
+            openshell: aiConfig.activeProviders.openshell,
+            lightning: aiConfig.activeProviders.lightning,
+            huggingface: aiConfig.activeProviders.huggingface,
+            rag: true,
+            agents: true,
+            assistants: true,
+            multiProvider: true,
+            sandboxes: true,
+            inferenceRouting: true,
+            websocket: true
         },
-        endpoints: 245
-    });
-});
-
-app.get('/api/dashboard', async (req, res) => {
-    res.json({
-        revenue: revenueData ? { total: revenueData.total || 233600, growthRate: revenueData.growthRate || 23.5, sources: revenueData.getAll ? revenueData.getAll() : {} } : {},
-        nfts: nftPortfolio ? { items: nftPortfolio.getAll ? nftPortfolio.getAll() : [], totalValue: nftPortfolio.getTotalValue ? nftPortfolio.getTotalValue() : 0 } : {},
-        collaborations: collaborationHub ? { active: collaborationHub.getAll ? collaborationHub.getAll() : [] } : {},
-        market: marketAnalysis ? { trends: marketAnalysis.getAll ? marketAnalysis.getAll() : {} } : {},
-        catalog: catalog ? catalog.getCatalogStats() : {},
+        providers: providerManager.getAllProviders().map(p => ({ id: p.id, name: p.name, status: p.status })),
         timestamp: new Date().toISOString()
     });
 });
 
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 2: AI SUITE                          ║
-// ╚══════════════════════════════════════════════════════════════════╝
+// Dashboard
+app.get('/api/dashboard', async (req, res) => {
+    try {
+        const dashboardData = {
+            totalRevenue: revenueData.totalRevenue,
+            growthRate: revenueData.growthRate,
+            platforms: revenueData.platforms,
+            contentStats: {
+                protectedTracks: 156,
+                totalStreams: 3400000,
+                downloads: 78000
+            },
+            nftPortfolio: {
+                totalValue: nftPortfolio.totalValue,
+                items: nftPortfolio.items.length,
+                chains: Object.keys(nftPortfolio.chains)
+            },
+            collaboration: {
+                teamMembers: collaborationHub.members.length,
+                sharedFiles: collaborationHub.files.length,
+                activeProjects: collaborationHub.getActiveProjects().length
+            },
+            aiFeatures: {
+                ragEnabled: true,
+                agentsRunning: agentManager.getMetrics().activeAgents,
+                autonomousMode: agentManager.getMetrics().autonomousMode
+            }
+        };
 
+        res.json(dashboardData);
+    } catch (error) {
+        console.error('Dashboard error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== AI & LLM ENDPOINTS ====================
+
+// AI-powered revenue analysis
 app.get('/api/ai/revenue-analysis', async (req, res) => {
-    try { const r = await nvidiaClient.generate({ prompt: 'Analyze music revenue trends for independent artist with streaming across Spotify, Apple Music, YouTube', model: 'meta/llama-3.1-70b-instruct' }); res.json({ analysis: r.text || r, revenue: revenueData.getAll ? revenueData.getAll() : {} }); } catch(e) { res.json({ analysis: 'AI analysis: Revenue trending up 23.5% with strong streaming growth across all platforms.', revenue: {} }); }
+    try {
+        const analysis = await nvidiaClient.analyzeRoyaltyData({
+            totalRevenue: revenueData.totalRevenue,
+            growthRate: revenueData.growthRate,
+            platforms: revenueData.platforms
+        });
+
+        res.json({ analysis });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
+
+// AI market predictions
 app.get('/api/ai/market-predictions', async (req, res) => {
-    try { const r = await nvidiaClient.generate({ prompt: 'Predict music market trends for hip-hop and electronic music in 2025', model: 'meta/llama-3.1-70b-instruct' }); res.json({ predictions: r.text || r }); } catch(e) { res.json({ predictions: 'Market prediction: Hip-hop streaming revenue projected to grow 18% in 2025.' }); }
+    try {
+        const { genre, platform, timeframe } = req.query;
+        const predictions = await nvidiaClient.predictMarketTrends(
+            genre || 'Hip-Hop',
+            platform || 'Spotify',
+            timeframe || '6 months'
+        );
+
+        res.json({ predictions });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
+
+// AI content recommendations
 app.post('/api/ai/content-recommendations', async (req, res) => {
-    try { const r = await nvidiaClient.generate({ prompt: `Content recommendations for: ${JSON.stringify(req.body)}`, model: 'meta/llama-3.1-70b-instruct' }); res.json({ recommendations: r.text || r }); } catch(e) { res.json({ recommendations: 'Focus on short-form video content and playlist placements.' }); }
+    try {
+        const { artistProfile, currentContent } = req.body;
+        const recommendations = await nvidiaClient.generateContentRecommendations(
+            artistProfile,
+            currentContent
+        );
+
+        res.json({ recommendations });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
+
+// AI contract generation
 app.post('/api/ai/generate-contract', async (req, res) => {
-    try { const r = await nvidiaClient.generate({ prompt: `Generate music contract for: ${JSON.stringify(req.body)}`, model: 'meta/llama-3.1-70b-instruct' }); res.json({ contract: r.text || r }); } catch(e) { res.json({ contract: 'Standard music licensing agreement template generated.' }); }
-});
-
-// RAG System
-app.post('/api/rag/query', async (req, res) => { try { const r = await ragSystem.query(req.body.query); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/rag/document', async (req, res) => { try { const r = await ragSystem.addDocument(req.body); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/rag/stats', (req, res) => { try { res.json(ragSystem.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Agent System
-app.post('/api/agents/execute', async (req, res) => { try { const r = await agentManager.execute(req.body); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/agents/queue', (req, res) => { try { res.json(agentManager.queue(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/agents/status', (req, res) => { try { res.json(agentManager.getStatus()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/agents/autonomous', (req, res) => { try { res.json(agentManager.queue({ ...req.body, autonomous: true })); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// AI Assistants
-app.get('/api/assistants', (req, res) => { try { res.json({ assistants: assistants.getAll() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/assistants/section/:section', (req, res) => { try { res.json(assistants.getBySection(req.params.section)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/assistants/chat', async (req, res) => { try { const r = await assistants.chat(req.body); res.json(r); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/assistants/tip/:assistantId', async (req, res) => { try { const t = await assistants.getTip(req.params.assistantId); res.json({ tip: t }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Providers
-app.get('/api/providers', (req, res) => { try { res.json({ providers: providerManager.getAllProviders() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/providers/stats', (req, res) => { try { res.json(providerManager.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/providers/health', async (req, res) => { try { res.json(await providerManager.healthCheck()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/providers/active', (req, res) => { try { res.json(providerManager.setActiveProvider(req.body.provider)); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Models & Inference
-app.get('/api/models', async (req, res) => { try { res.json(await inferenceRouter.route({ type: 'list-models' })); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/models/chat', async (req, res) => { try { res.json(await inferenceRouter.route({ type: 'chat', ...req.body })); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/models/recommend/:taskType', (req, res) => { try { res.json(inferenceRouter.route({ type: 'recommend', taskType: req.params.taskType })); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/inference/route', async (req, res) => { try { res.json(await inferenceRouter.route(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/inference/analytics', (req, res) => { try { res.json(inferenceRouter.getAnalytics()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// OpenShell
-app.get('/api/openshell/status', async (req, res) => { try { res.json(await sandboxManager.getStatus()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/openshell/sandboxes', async (req, res) => { try { res.json(await sandboxManager.getAllSandboxes()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/openshell/sandboxes/agent/:agent', async (req, res) => { try { res.json(await sandboxManager.getStatus(req.params.agent)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/openshell/dashboard', async (req, res) => { try { res.json(await sandboxManager.getDashboard()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/openshell/security', async (req, res) => { try { res.json(await sandboxManager.getStatus()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/openshell/inference', async (req, res) => { try { res.json(await inferenceRouter.getAnalytics()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/openshell/profiles', (req, res) => { try { res.json({ profiles: providerManager.getAllProviders() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/openshell/sandboxes', async (req, res) => { try { res.json(await sandboxManager.getStatus()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// NVIDIA Direct
-app.post('/api/nvidia/generate', async (req, res) => { try { res.json(await nvidiaClient.generate(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/nvidia/models', (req, res) => { try { res.json({ models: nvidiaClient.getModels() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Gemini
-app.get('/api/gemini/status', (req, res) => { try { res.json(geminiClient.getStatus()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/gemini/models', (req, res) => { try { res.json({ models: geminiClient.getModels() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/gemini/chat', async (req, res) => { try { res.json(await geminiClient.chat(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ACE SteerLM
-app.get('/api/ace/attributes', (req, res) => { try { res.json({ attributes: aceClient.getAttributes() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/ace/presets', (req, res) => { try { res.json({ presets: aceClient.getPresets() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/ace/chat', async (req, res) => { try { res.json(await aceClient.chat(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/ace/preset-chat', async (req, res) => { try { res.json(await aceClient.presetChat(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 3: UE5 COPILOT                       ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/ue5/info', (req, res) => { try { res.json(ue5CoPilot.getInfo()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/ue5/blueprint/generate', async (req, res) => { try { res.json(await ue5CoPilot.generate(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/ue5/scene/build', async (req, res) => { try { res.json(await ue5CoPilot.buildScene(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/ue5/project/analyze', async (req, res) => { try { res.json(await ue5CoPilot.generate({ ...req.body, type: 'analyze' })); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/ue5/blueprint/refactor', async (req, res) => { try { res.json(await ue5CoPilot.generate({ ...req.body, type: 'refactor' })); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/ue5/chat', async (req, res) => { try { res.json(await ue5CoPilot.generate({ ...req.body, type: 'chat' })); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/ue5/templates', (req, res) => { try { res.json({ templates: ue5CoPilot.getInfo().templates || [] }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/ue5/templates/:id', (req, res) => { try { const info = ue5CoPilot.getInfo(); const t = (info.templates || []).find(t => t.id === req.params.id); res.json(t || { error: 'Not found' }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/ue5/blueprint/analyze', (req, res) => { try { res.json(blueprintAnalyzer.analyze(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/ue5/tips', (req, res) => { res.json({ tips: ['Use Nanite for high-poly meshes', 'Lumen for dynamic GI', 'World Partition for open worlds', 'MetaSounds for audio', 'Control Rig for animation'] }); });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 4: DISTRIBUTION HUB                  ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/distribution/services', (req, res) => { try { res.json({ services: distributionHub.getServices() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/distribution/platforms', (req, res) => { try { res.json({ platforms: distributionHub.getPlatforms() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/distribution/catalog', (req, res) => { try { res.json({ catalog: distributionHub.getCatalog() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/distribution/royalties', (req, res) => { try { res.json(distributionHub.getRoyalties()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/distribution/analytics', (req, res) => { try { res.json(distributionHub.getAnalytics()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/distribution/tiktok', (req, res) => { try { res.json(distributionHub.getTikTok()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/distribution/distribute', async (req, res) => { try { res.json(await distributionHub.distribute(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 5: LLMOps                            ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/llmops/dashboard', (req, res) => { try { res.json(llmOps.getDashboard()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/llmops/models', (req, res) => { try { res.json({ models: llmOps.getModels() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/llmops/security', (req, res) => { try { res.json(llmOps.getSecurity()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/llmops/rag', (req, res) => { try { res.json(llmOps.getRag()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/llmops/agents', (req, res) => { try { res.json({ agents: llmOps.getAgents() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/llmops/monitors', (req, res) => { try { res.json({ monitors: llmOps.getMonitors() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/llmops/model/:modelId', (req, res) => { try { res.json(llmOps.getModel(req.params.modelId)); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 6: MUSIC SUITE                       ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-// Music Recognizer
-app.get('/api/music/recognizer/catalog', (req, res) => { try { res.json({ catalog: musicRecognizer.getCatalog() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/capabilities', (req, res) => { try { res.json(musicRecognizer.getCapabilities()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/recent', (req, res) => { try { res.json({ recent: musicRecognizer.getRecent() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/music/recognize', async (req, res) => { try { res.json(await musicRecognizer.recognize(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/music/analyze', async (req, res) => { try { res.json(await musicRecognizer.analyze(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/music/copyright-check', async (req, res) => { try { res.json(await musicRecognizer.copyrightCheck(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/similar/:trackId', (req, res) => { try { res.json({ similar: musicRecognizer.getSimilar(req.params.trackId) }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Music Production Studio
-app.get('/api/music/beats', (req, res) => { try { res.json({ beats: musicStudio.getBeats() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/beat/:id', (req, res) => { try { res.json(musicStudio.getBeat(req.params.id)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/daws', (req, res) => { try { res.json({ daws: musicStudio.getDaws() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/theory', (req, res) => { try { res.json(musicStudio.getTheory()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/royalties', (req, res) => { try { res.json(musicStudio.getRoyalties()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/distribution', (req, res) => { try { res.json({ distribution: musicStudio.getDistribution() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/streaming-rates', (req, res) => { try { res.json({ rates: musicStudio.getStreamingRates() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/music/calculate-revenue', (req, res) => { try { res.json(musicStudio.calculateRevenue(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/music/calculate-splits', (req, res) => { try { res.json(musicStudio.calculateSplits(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/music/generate-beat', async (req, res) => { try { res.json(await musicStudio.generateBeat(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/equipment', (req, res) => { try { res.json({ equipment: musicStudio.getEquipment() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/grammys', (req, res) => { try { res.json({ grammys: musicStudio.getGrammys() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/industry', (req, res) => { try { res.json(musicStudio.getIndustry()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/sample-clearance', (req, res) => { try { res.json(musicStudio.getSampleClearance()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/music/stats', (req, res) => { try { res.json(musicStudio.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Revenue & Market
-app.get('/api/revenue/predictions', async (req, res) => { try { res.json({ predictions: revenueData.getAll ? revenueData.getAll() : {}, growthRate: 23.5 }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/nft/portfolio', (req, res) => { try { res.json({ portfolio: nftPortfolio.getAll ? nftPortfolio.getAll() : [], totalValue: nftPortfolio.getTotalValue ? nftPortfolio.getTotalValue() : 0 }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/collaboration/status', (req, res) => { try { res.json({ collaborations: collaborationHub.getAll ? collaborationHub.getAll() : [] }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/market/trends', (req, res) => { try { res.json({ trends: marketAnalysis.getAll ? marketAnalysis.getAll() : {} }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 7: GOAT CONNECT (Dating/Social)      ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-// Auth
-app.post('/api/auth/register', async (req, res) => { try { res.json(await userDb.register(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/auth/login', async (req, res) => { try { res.json(await userDb.login(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Background Checks
-app.post('/api/background/check', async (req, res) => { try { res.json(await bgChecker.check(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/background/status/:userId', async (req, res) => { try { res.json(await bgChecker.getStatus(req.params.userId)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/background/packages', (req, res) => { try { res.json({ packages: bgChecker.getPackages() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/background/stats', (req, res) => { try { res.json(bgChecker.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Banking
-app.post('/api/banking/link', async (req, res) => { try { res.json(await banking.link(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/banking/verify', async (req, res) => { try { res.json(await banking.verifyAccount(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/banking/status/:userId', async (req, res) => { try { res.json(await banking.getStatus(req.params.userId)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/banking/institutions', (req, res) => { try { res.json({ institutions: banking.getInstitutions() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Security Dashboard
-app.get('/api/security/dashboard', (req, res) => { try { res.json(securityModule.getDashboard()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/security/scan', async (req, res) => { try { res.json(await securityModule.scan(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/security/threats', (req, res) => { try { res.json({ threats: securityModule.getRecentThreats() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/security/encryption-status', (req, res) => { try { res.json(securityModule.getEncryptionStatus()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/security/report', async (req, res) => { try { res.json(await securityModule.report(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// AI Matchmaking
-app.post('/api/match/generate', async (req, res) => { try { res.json({ matches: await matchmaker.match(req.body) }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/match/feed/:userId', async (req, res) => { try { res.json({ feed: await matchmaker.getFeed(req.params.userId) }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/match/swipe', async (req, res) => { try { res.json(await matchmaker.processSwipe(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/match/ai-analysis', async (req, res) => { try { res.json(await matchmaker.analyzeCompatibility(req.body.user1Id, req.body.user2Id)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/match/compatibility-score/:userId/:targetId', async (req, res) => { try { res.json(await matchmaker.getCompatibilityScore(req.params.userId, req.params.targetId)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/match/dating-positions', (req, res) => { try { res.json({ positions: matchmaker.getDatingPositions() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Celebrity Network
-app.get('/api/celebrity/list', (req, res) => { try { res.json({ celebrities: celebGraph.list ? celebGraph.list() : [] }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/celebrity/:id/fans', (req, res) => { try { res.json({ fans: celebGraph.getFans ? celebGraph.getFans(req.params.id) : [] }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/celebrity/follow', async (req, res) => { try { res.json(await celebGraph.followCelebrity(req.body.userId, req.body.celebrityId)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/celebrity/match/:userId', async (req, res) => { try { res.json({ matches: await celebGraph.findCelebrityMatch(req.params.userId) }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/celebrity/music/:celebrityId', (req, res) => { try { res.json({ music: celebGraph.getCelebrityMusic(req.params.celebrityId) }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Worldwide Celebrity Database
-app.get('/api/worldwide/celebrities', (req, res) => { try { res.json({ celebrities: celebrityDb.getCelebrities ? celebrityDb.getCelebrities() : celebrityDb.celebrities || [] }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/worldwide/trending', (req, res) => { try { res.json({ trending: celebrityDb.getTrending() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/worldwide/genres', (req, res) => { try { res.json({ genres: celebrityDb.getGenres() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/worldwide/world-map', (req, res) => { try { res.json(celebrityDb.getWorldMap()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/worldwide/celebrity/:id', (req, res) => { try { res.json(celebrityDb.getCelebrity(req.params.id)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/worldwide/follow', async (req, res) => { try { res.json(await celebrityDb.follow(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/worldwide/ai-match/:userId', async (req, res) => { try { res.json({ matches: await celebrityDb.aiMatch(req.params.userId) }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// Pyramid Network
-app.get('/api/pyramid/stats', (req, res) => { try { res.json(celebrityDb.getPyramidStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/pyramid/tier/:tier', (req, res) => { try { res.json({ profiles: celebrityDb.getByTier(parseInt(req.params.tier)) }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/pyramid/graph', (req, res) => { try { const stats = celebrityDb.getPyramidStats(); res.json(stats); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/pyramid/dating', (req, res) => { try { res.json({ profiles: celebrityDb.getDatingNetwork() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/pyramid/film-tv', (req, res) => { try { res.json({ profiles: celebrityDb.getFilmTVNetwork() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/pyramid/fashion', (req, res) => { try { res.json({ profiles: celebrityDb.getFashionNetwork() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/pyramid/music', (req, res) => { try { res.json({ profiles: celebrityDb.celebrities.filter(c => c.genre) }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 8: FACIAL RECOGNITION                ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.post('/api/face/scan', async (req, res) => { try { res.json(await faceAI.scan(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/face/compare', async (req, res) => { try { res.json(await faceAI.compare(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/face/verify-age', async (req, res) => { try { res.json(await faceAI.verifyAge(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/face/stats', (req, res) => { try { res.json(faceAI.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/face/liveness', async (req, res) => { try { res.json(await faceAI.liveness(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 9: AVATAR STUDIO                     ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.post('/api/avatar/create', async (req, res) => { try { res.json(await avatarStudio.create(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/avatar/animate', async (req, res) => { try { res.json(await avatarStudio.animate(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/avatar/vertical', async (req, res) => { try { res.json(await avatarStudio.vertical(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/avatar/metahuman', async (req, res) => { try { res.json(await avatarStudio.metahuman(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/avatar/cameras', (req, res) => { try { res.json({ cameras: avatarStudio.getCameras() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/avatar/fivem-assets', (req, res) => { try { res.json({ assets: avatarStudio.getFivemAssets() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/avatar/ue5-assets', (req, res) => { try { res.json({ assets: avatarStudio.getUe5Assets() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/avatar/animations', (req, res) => { try { res.json({ animations: avatarStudio.getAnimations() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 10: CYBER WARFARE                    ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/warfare/dashboard', (req, res) => { try { res.json(cyberWarfare.getDashboard()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/warfare/scan', async (req, res) => { try { res.json(await cyberWarfare.scanContent(req.body.content || '', req.body.type || 'text')); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/warfare/scan-url', async (req, res) => { try { res.json(await cyberWarfare.scanUrl(req.body.url || '')); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/warfare/breach-check', async (req, res) => { try { res.json(await cyberWarfare.checkCredentialBreach(req.body.email || '')); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/warfare/ddos-protect', async (req, res) => { try { res.json(await cyberWarfare.performDDoSProtection(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/warfare/stats', (req, res) => { try { res.json(cyberWarfare.getDashboard()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/warfare/threat-intel', (req, res) => { try { const dash = cyberWarfare.getDashboard(); res.json({ intel: dash.threatFeeds || [] }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 11: GAMING / UE5 STUDIO              ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/gaming/cpp-books', (req, res) => { try { res.json({ books: ue5Studio.getCppBooks() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/gaming/ue5-resources', (req, res) => { try { res.json({ resources: ue5Studio.getUe5Resources() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/gaming/fivem', (req, res) => { try { res.json(ue5Studio.getFivem()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/gaming/blueprint', async (req, res) => { try { res.json(await ue5Studio.blueprint(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/gaming/stats', (req, res) => { try { res.json(ue5Studio.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 12: SCREENWRITING                    ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/screenwriting/writers', (req, res) => { try { res.json({ writers: screenwriting.getWriters() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/screenwriting/writer/:id', (req, res) => { try { res.json(screenwriting.getWriter(req.params.id)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/screenwriting/formats', (req, res) => { try { res.json({ formats: screenwriting.getFormats() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/screenwriting/templates', (req, res) => { try { res.json({ templates: screenwriting.getTemplates() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/screenwriting/software', (req, res) => { try { res.json({ software: screenwriting.getSoftware() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/screenwriting/genres', (req, res) => { try { res.json({ genres: screenwriting.getGenres() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/screenwriting/oscars', (req, res) => { try { res.json({ oscars: screenwriting.getOscars() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/screenwriting/generate', async (req, res) => { try { res.json(await screenwriting.generate(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/screenwriting/stats', (req, res) => { try { res.json(screenwriting.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 13: ADVANCED CYBER OPS                ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/cyberops/tools', (req, res) => { try { res.json({ tools: cyberOps.getTools() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/cyberops/tool/:id', (req, res) => { try { res.json(cyberOps.getTool(req.params.id)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/cyberops/owasp', (req, res) => { try { res.json({ owasp: cyberOps.getOwasp() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/cyberops/threat-intel', (req, res) => { try { res.json({ intel: cyberOps.getThreatIntel() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/cyberops/forensics', (req, res) => { try { res.json(cyberOps.getForensics()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/cyberops/crypto', (req, res) => { try { res.json(cyberOps.getCrypto()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/cyberops/incident-response', (req, res) => { try { res.json(cyberOps.getIncidentResponse()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/cyberops/compliance', (req, res) => { try { res.json(cyberOps.getCompliance()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/cyberops/certs', (req, res) => { try { res.json({ certs: cyberOps.getCerts() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/cyberops/simulate', (req, res) => { try { res.json(cyberOps.simulate(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/cyberops/stats', (req, res) => { try { res.json(cyberOps.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 14: OSINT / INTELLIGENCE              ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/intel/osint-tools', (req, res) => { try { res.json({ tools: osint.getOsintTools() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/intel/threat-profiles', (req, res) => { try { res.json({ profiles: osint.getThreatProfiles() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/intel/encrypted-comms', (req, res) => { try { res.json({ comms: osint.getEncryptedComms() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/intel/social-engineering', (req, res) => { try { res.json({ tactics: osint.getSocialEngineering() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/intel/privacy-tools', (req, res) => { try { res.json({ tools: osint.getPrivacyTools() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/intel/counter-surveillance', (req, res) => { try { res.json({ methods: osint.getCounterSurveillance() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/intel/breaches', (req, res) => { try { res.json({ breaches: osint.getBreaches() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/intel/stats', (req, res) => { try { res.json(osint.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 15: WEB3 / METAVERSE                 ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/web3/nfts', (req, res) => { try { res.json({ nfts: metaverse.getNfts() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/web3/nft/:id', (req, res) => { try { res.json(metaverse.getNft(req.params.id)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/web3/wallet', (req, res) => { try { res.json(metaverse.getWallet()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/web3/contracts', (req, res) => { try { res.json({ contracts: metaverse.getContracts() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/web3/venues', (req, res) => { try { res.json({ venues: metaverse.getVenues() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/web3/token', (req, res) => { try { res.json(metaverse.getToken()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/web3/defi', (req, res) => { try { res.json(metaverse.getDefi()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/web3/explorer', (req, res) => { try { res.json(metaverse.getExplorer()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/web3/learn', (req, res) => { try { res.json({ courses: metaverse.getLearn() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/web3/mint', (req, res) => { try { res.json(metaverse.mint(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/web3/stats', (req, res) => { try { res.json(metaverse.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 16: ROYALTY EMPIRE                    ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/empire/brand', (req, res) => { try { res.json(empire.getBrand()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/empire/merch', (req, res) => { try { res.json({ merch: empire.getMerch() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/empire/venues', (req, res) => { try { res.json({ venues: empire.getVenues() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/empire/revenue-streams', (req, res) => { try { res.json({ streams: empire.getRevenueStreams() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/empire/contracts', (req, res) => { try { res.json({ contracts: empire.getContracts() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/empire/legal', (req, res) => { try { res.json(empire.getLegal()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/empire/social', (req, res) => { try { res.json(empire.getSocial()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/empire/generate-pitch', (req, res) => { try { res.json(empire.generatePitch(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/empire/calculate-merch', (req, res) => { try { res.json(empire.calculateMerch(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/empire/stats', (req, res) => { try { res.json(empire.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 17: SOCIAL FEED                      ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/feed/:userId', async (req, res) => { try { res.json({ feed: await userDb.getSocialFeed(req.params.userId) }); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/feed/post', async (req, res) => { try { res.json(await userDb.createPost(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/feed/like', async (req, res) => { try { res.json(await userDb.likePost(req.body.userId, req.body.postId)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/users/:userId', async (req, res) => { try { res.json(await userDb.getUser(req.params.userId)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/users/demo/profiles', (req, res) => { try { res.json({ profiles: userDb.getDemoProfiles() }); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 18: LOCAL STORAGE                    ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/storage/stats', (req, res) => { try { res.json(storageEngine.getStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/storage/info', (req, res) => { try { res.json(storageEngine.getInfo()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/storage/config', (req, res) => { try { res.json(storageEngine.getConfig()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/storage/config', (req, res) => { try { res.json(storageEngine.setConfig(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/storage/save/:category', (req, res) => { try { res.json(storageEngine.save(req.params.category, req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/storage/load/:category', (req, res) => { try { res.json(storageEngine.load(req.params.category)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/storage/load/:category/:id', (req, res) => { try { res.json(storageEngine.loadItem(req.params.category, req.params.id)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/storage/export', (req, res) => { try { res.json(storageEngine.exportData(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/storage/import', (req, res) => { try { res.json(storageEngine.importData(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/storage/backup', (req, res) => { try { res.json(storageEngine.backup(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.post('/api/storage/set-path', (req, res) => { try { res.json(storageEngine.setPath(req.body)); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 19: SONG CATALOG                     ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/catalog/dashboard', (req, res) => { try { res.json(catalog.getFullDashboard()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/artist', (req, res) => { try { res.json(catalog.getArtistProfile()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/waka', (req, res) => { try { res.json(catalog.getWakaProfile()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/publishers', (req, res) => { try { res.json(catalog.getPublishers()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/stats', (req, res) => { try { res.json(catalog.getCatalogStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/songs', (req, res) => { try { const p = parseInt(req.query.page)||1; const l = parseInt(req.query.limit)||50; res.json(catalog.getAllSongs(p, l, req.query.sort||'title')); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/source/:source', (req, res) => { try { res.json(catalog.getSongsBySource(req.params.source, parseInt(req.query.page)||1, parseInt(req.query.limit)||50)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/albums', (req, res) => { try { res.json(catalog.getAlbums()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/album/:album', (req, res) => { try { res.json(catalog.getSongsByAlbum(req.params.album)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/search', (req, res) => { try { res.json(catalog.searchCatalog(req.query.q||'')); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/collabs', (req, res) => { try { res.json(catalog.getFeaturedCollabs(parseInt(req.query.page)||1, parseInt(req.query.limit)||50)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/top-cross-ref', (req, res) => { try { res.json(catalog.getTopCrossReferenced(parseInt(req.query.limit)||50)); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/catalog/sources', (req, res) => { try { res.json(catalog.getSources()); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 20: OFFICE VAULT                     ║
-// ╚══════════════════════════════════════════════════════════════════╝
-
-app.get('/api/vault/all', (req, res) => { try { res.json(officeVault.getAllDocuments()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/vault/waka-flocka', (req, res) => { try { res.json(officeVault.getWakaFlockaCatalog()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/vault/stats', (req, res) => { try { res.json(officeVault.getVaultStats()); } catch(e) { res.status(500).json({ error: e.message }); } });
-app.get('/api/vault/search', (req, res) => { try { res.json(officeVault.searchDocuments(req.query.q||'')); } catch(e) { res.status(500).json({ error: e.message }); } });
-
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║                    SECTION 21: TIKTOK                          ║
-// ╚══════════════════════════════════════════════════════════════════════╝
-
-const TikTokServiceClass = tikTokService;
-const tikTokInstance = new TikTokServiceClass(process.env.TIKAPI_KEY);
-
-app.get('/api/tiktok/info', (req, res) => {
-  try {
-    const info = tikTokInstance.getInfo();
-    res.json(info);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/tiktok/profile/:username', async (req, res) => {
-  try {
-    const profile = await tikTokInstance.getUserProfile(req.params.username);
-    res.json(profile);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/tiktok/videos/:username', async (req, res) => {
-  try {
-    const count = parseInt(req.query.count) || 10;
-    const videos = await tikTokInstance.getUserVideos(req.params.username, count);
-    res.json(videos);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/tiktok/analytics/:username', async (req, res) => {
-  try {
-    const analytics = await tikTokInstance.getAnalytics(req.params.username);
-    res.json(analytics);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/tiktok/hashtag/:tag', async (req, res) => {
-  try {
-    const count = parseInt(req.query.count) || 10;
-    const results = await tikTokInstance.searchHashtag(req.params.tag, count);
-    res.json(results);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/tiktok/trending', async (req, res) => {
-  try {
-    const count = parseInt(req.query.count) || 10;
-    const trending = await tikTokInstance.getTrending(count);
-    res.json(trending);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║              SECTION 22: HUGGING FACE HUB                     ║
-// ╚══════════════════════════════════════════════════════════════════════╝
-
-const HuggingFaceHubClass = hfHub;
-const hfHubInstance = new HuggingFaceHubClass();
-
-app.get('/api/hf/info', (req, res) => {
-  try {
-    const info = hfHubInstance.getInfo();
-    res.json(info);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/dashboard', async (req, res) => {
-  try {
-    const dashboard = await hfHubInstance.getDashboard();
-    res.json(dashboard);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/models', async (req, res) => {
-  try {
-    const models = await hfHubInstance.getModels({
-      search: req.query.search,
-      filter: req.query.filter,
-      sort: req.query.sort,
-      limit: parseInt(req.query.limit) || 20
-    });
-    res.json(models);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/models/trending', async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 20;
-    const models = await hfHubInstance.getTrendingModels(limit);
-    res.json(models);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/models/most-downloaded', async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 20;
-    const models = await hfHubInstance.getMostDownloadedModels(limit);
-    res.json(models);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/models/task/:task', async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 20;
-    const models = await hfHubInstance.getModelsByTask(req.params.task, limit);
-    res.json(models);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/model/:author/:model', async (req, res) => {
-  try {
-    const model = await hfHubInstance.getModel(req.params.author, req.params.model);
-    res.json(model);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/model/:author/:model/files', async (req, res) => {
-  try {
-    const files = await hfHubInstance.getModelFiles(req.params.author, req.params.model);
-    res.json(files);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/datasets', async (req, res) => {
-  try {
-    const datasets = await hfHubInstance.getDatasets({
-      search: req.query.search,
-      author: req.query.author,
-      sort: req.query.sort,
-      limit: parseInt(req.query.limit) || 20
-    });
-    res.json(datasets);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/datasets/trending', async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 20;
-    const datasets = await hfHubInstance.getTrendingDatasets(limit);
-    res.json(datasets);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/search', async (req, res) => {
-  try {
-    const results = await hfHubInstance.search(
-      req.query.q || '',
-      req.query.type || 'model'
-    );
-    res.json(results);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/collections', (req, res) => {
-  try {
-    const collections = hfHubInstance.curatedCollections;
-    res.json(collections);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/collection/:id', async (req, res) => {
-  try {
-    const collection = await hfHubInstance.getCollection(req.params.id);
-    res.json(collection);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/download/:type/:author/:id', (req, res) => {
-  try {
-    const downloadInfo = hfHubInstance.getDownloadInfo(
-      req.params.type,
-      req.params.author,
-      req.params.id
-    );
-    res.json(downloadInfo);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/hf/tasks', (req, res) => {
-  try {
-    const tasks = hfHubInstance.taskCategories;
-    res.json(tasks);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});// ╚══════════════════════════════════════════════════════════════════╝
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║              SECTION 23: WAKA FLOCKA RAP DICTIONARY           ║
-// ╚══════════════════════════════════════════════════════════════════════╝
-
-const WakaDictionaryClass = wakaDictionary;
-const wakaDictInstance = new WakaDictionaryClass();
-
-app.get('/api/dictionary/info', (req, res) => {
-  try {
-    const info = wakaDictInstance.getInfo();
-    res.json(info);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/dictionary/all', (req, res) => {
-  try {
-    const terms = wakaDictInstance.getAllTerms();
-    res.json(terms);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/dictionary/search', (req, res) => {
-  try {
-    const query = req.query.q || '';
-    const results = wakaDictInstance.searchTerms(query);
-    res.json(results);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/dictionary/category/:category', (req, res) => {
-  try {
-    const terms = wakaDictInstance.getTermsByCategory(req.params.category);
-    res.json(terms);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/dictionary/random', (req, res) => {
-  try {
-    const term = wakaDictInstance.getRandomTerm();
-    res.json(term);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/dictionary/waka', (req, res) => {
-  try {
-    const terms = wakaDictInstance.getWakaTerms();
-    res.json(terms);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/dictionary/trap', (req, res) => {
-  try {
-    const terms = wakaDictInstance.getTrapTerms();
-    res.json(terms);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/dictionary/categories', (req, res) => {
-  try {
-    const categories = wakaDictInstance.getCategories();
-    res.json(categories);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/api/dictionary/term-of-the-day', (req, res) => {
-  try {
-    const term = wakaDictInstance.getTermOfTheDay();
-    res.json(term);
-  } catch(e) { res.status(500).json({ error: e.message }); }
-});
-
-// ======================== GOOGLE DRIVE FUNNEL CHANNEL ========================
-let driveService;
-try {
-  driveService = require('./lib/google-drive/drive-service');
-  console.log('✅ Google Drive Service loaded');
-} catch(e) {
-  console.log('⚠️  Google Drive Service not available');
-  driveService = {
-    uploadToDrive: async () => ({ fileId: 'demo-id', url: 'https://drive.google.com/file/d/demo' }),
-    exportSurvival: async (data) => ({ localFile: 'demo.json', cloudUpload: null }),
-    checkConnection: async () => false
-  };
-}
-
-// ======================== VOICE SERVICE ========================
-let voiceService;
-try {
-  voiceService = require('./lib/voice/voice-service');
-  console.log('✅ Voice Service loaded');
-} catch(e) {
-  console.log('⚠️  Voice Service not available');
-  voiceService = {
-    getStatus: () => ({ recognitionSupported: false, synthesisSupported: false }),
-    getCommandPatterns: () => ({}),
-    parseCommand: () => null
-  };
-}
-
-// POST /api/drive/upload - Upload file to Google Drive
-app.post('/api/drive/upload', async (req, res) => {
-  try {
-    const { fileName, content } = req.body;
-    const apiKey = process.env.GOOGLE_DRIVE_API_KEY;
-    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID || '17RV_P-8vWxnX6cmkJI_WF4He2kbiUaVf';
-
-    if (!fileName || !content) {
-      return res.status(400).json({ error: 'fileName and content are required' });
+    try {
+        const { contractType, parties, terms } = req.body;
+        const contract = await nvidiaClient.generateContractTerms(
+            contractType,
+            parties,
+            terms
+        );
+
+        res.json({ contract });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    const result = await driveService.uploadToDrive(fileName, content, apiKey, folderId);
-    res.json(result);
-  } catch(e) {
-    console.error('Google Drive upload error:', e.message);
-    res.status(500).json({ error: e.message });
-  }
 });
 
-// POST /api/drive/export-survival - Export survival data to Google Drive
-app.post('/api/drive/export-survival', async (req, res) => {
-  try {
-    const data = req.body;
-    const driveKey = process.env.GOOGLE_DRIVE_API_KEY;
-    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID || '17RV_P-8vWxnX6cmkJI_WF4He2kbiUaVf';
+// ==================== RAG ENDPOINTS ====================
 
-    const result = await driveService.exportSurvival(data, driveKey, folderId);
-    res.json(result);
-  } catch(e) {
-    console.error('Google Drive export error:', e.message);
-    res.status(500).json({ error: e.message });
-  }
+// RAG query endpoint
+app.post('/api/rag/query', async (req, res) => {
+    try {
+        const { query } = req.body;
+        const response = await ragSystem.generateResponse(query);
+        
+        res.json({ response });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
-// GET /api/drive/status - Check Google Drive connection status
-app.get('/api/drive/status', async (req, res) => {
-  try {
-    const apiKey = process.env.GOOGLE_DRIVE_API_KEY;
-    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID || '17RV_P-8vWxnX6cmkJI_WF4He2kbiUaVf';
+// Add document to knowledge base
+app.post('/api/rag/document', async (req, res) => {
+    try {
+        const { id, content, metadata } = req.body;
+        const result = await ragSystem.addDocument(id, content, metadata);
+        
+        res.json({ success: true, ...result });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
-    const isConnected = await driveService.checkConnection(apiKey, folderId);
+// RAG stats
+app.get('/api/rag/stats', (req, res) => {
+    res.json(ragSystem.getStats());
+});
+
+// ==================== AGENT ENDPOINTS ====================
+
+// Execute agent task
+app.post('/api/agents/execute', async (req, res) => {
+    try {
+        const { agentId, task, context } = req.body;
+        const result = await agentManager.executeAgent(agentId, task, context);
+        
+        res.json({ success: true, result });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Queue agent task
+app.post('/api/agents/queue', (req, res) => {
+    const { agentId, task, context } = req.body;
+    agentManager.queueTask(agentId, task, context);
+    
+    res.json({ success: true, message: 'Task queued' });
+});
+
+// Agent status
+app.get('/api/agents/status', (req, res) => {
     res.json({
-      connected: isConnected,
-      folderId: folderId,
-      configured: !!(apiKey && folderId)
+        agents: agentManager.getAgentStatus(),
+        metrics: agentManager.getMetrics()
     });
-  } catch(e) {
-    console.error('Google Drive status check error:', e.message);
-    res.status(500).json({ error: e.message });
-  }
 });
 
-// ======================== VOICE API ENDPOINTS ========================
+// Toggle autonomous mode
+app.post('/api/agents/autonomous', (req, res) => {
+    const { enabled } = req.body;
+    agentManager.setAutonomousMode(enabled);
+    
+    res.json({ success: true, autonomousMode: enabled });
+});
 
-// GET /api/voice/status - Check voice service status
-app.get('/api/voice/status', (req, res) => {
-  try {
-    // Server-side status check (voice features work in browser)
-    const status = {
-      recognitionSupported: true, // Available in modern browsers
-      synthesisSupported: true,  // Available in modern browsers
-      isListening: false,
-      availableVoices: 0,
-      browserSupport: {
-        webkitSpeechRecognition: true,
-        speechSynthesis: true
-      },
-      note: 'Voice features require browser environment'
-    };
+// ==================== AI ASSISTANT ENDPOINTS ====================
+
+const assistantManager = require('./lib/agents/assistant-manager');
+
+// Get all assistants
+app.get('/api/assistants', (req, res) => {
+    res.json({ assistants: assistantManager.getAllAssistants() });
+});
+
+// Get assistant by section
+app.get('/api/assistants/section/:section', (req, res) => {
+    const assistant = assistantManager.getAssistantBySection(req.params.section);
+    if (!assistant) return res.status(404).json({ error: 'Assistant not found for this section' });
+    res.json(assistant);
+});
+
+// Chat with a specific assistant
+app.post('/api/assistants/chat', async (req, res) => {
+    try {
+        const { assistantId, message } = req.body;
+        if (!assistantId || !message) {
+            return res.status(400).json({ error: 'assistantId and message are required' });
+        }
+        const result = await assistantManager.chat(assistantId, message);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get a contextual tip from an assistant
+app.get('/api/assistants/tip/:assistantId', async (req, res) => {
+    try {
+        const result = await assistantManager.getTip(req.params.assistantId);
+        if (!result) return res.status(404).json({ error: 'Assistant not found' });
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== PROVIDER MANAGEMENT ENDPOINTS ====================
+
+// Get all providers with status
+app.get('/api/providers', (req, res) => {
+    res.json({ providers: providerManager.getAllProviders() });
+});
+
+// Get provider stats
+app.get('/api/providers/stats', (req, res) => {
+    res.json(providerManager.getStats());
+});
+
+// Health check all providers
+app.get('/api/providers/health', async (req, res) => {
+    const health = await providerManager.healthCheck();
+    res.json(health);
+});
+
+// Set active provider
+app.post('/api/providers/active', (req, res) => {
+    try {
+        const { providerId } = req.body;
+        const result = providerManager.setActiveProvider(providerId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// ==================== MODEL CATALOG ENDPOINTS ====================
+
+// Get model catalog (from OpenRouter + all providers)
+app.get('/api/models', async (req, res) => {
+    try {
+        const options = {
+            search: req.query.search || null,
+            provider: req.query.provider || null,
+            category: req.query.category || null,
+            sort: req.query.sort || 'popular',
+            limit: parseInt(req.query.limit) || 50,
+            minContext: req.query.minContext ? parseInt(req.query.minContext) : null
+        };
+        const catalog = await providerManager.getModelCatalog(options);
+        res.json(catalog);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Chat with any model via unified routing
+app.post('/api/models/chat', async (req, res) => {
+    try {
+        const { model, messages, options } = req.body;
+        if (!messages || !Array.isArray(messages)) {
+            return res.status(400).json({ error: 'messages array is required' });
+        }
+        const result = await providerManager.chat(messages, { model, ...options });
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get model recommendation for a task
+app.get('/api/models/recommend/:taskType', (req, res) => {
+    const { taskType } = req.params;
+    const costTier = req.query.tier || 'balanced';
+    const model = inferenceRouter.getRecommendedModel(taskType, { costTier });
+    res.json({ taskType, costTier, recommendedModel: model });
+});
+
+// Inference routing — route through best provider
+app.post('/api/inference/route', async (req, res) => {
+    try {
+        const { model, messages, options } = req.body;
+        const result = await inferenceRouter.route({ model, messages, options });
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Inference routing analytics
+app.get('/api/inference/analytics', (req, res) => {
+    res.json(inferenceRouter.getAnalytics());
+});
+
+// ==================== NVIDIA OPENSHELL ENDPOINTS ====================
+
+// Gateway status
+app.get('/api/openshell/status', async (req, res) => {
+    const status = await openshellClient.getGatewayStatus();
     res.json(status);
-  } catch(e) {
-    console.error('Voice status check error:', e.message);
-    res.status(500).json({ error: e.message });
-  }
 });
 
-// GET /api/voice/commands - Get available voice commands
-app.get('/api/voice/commands', (req, res) => {
-  try {
-    const patterns = voiceService.getCommandPatterns();
-    res.json(patterns);
-  } catch(e) {
-    console.error('Voice commands error:', e.message);
-    res.status(500).json({ error: e.message });
-  }
+// List all sandboxes
+app.get('/api/openshell/sandboxes', async (req, res) => {
+    const sandboxes = await openshellClient.listSandboxes();
+    res.json({ sandboxes, total: sandboxes.length });
 });
 
-// POST /api/voice/parse - Parse voice command
-app.post('/api/voice/parse', (req, res) => {
-  try {
-    const { text } = req.body;
-    if (!text) {
-      return res.status(400).json({ error: 'Text is required' });
+// Get sandbox for specific agent
+app.get('/api/openshell/sandboxes/agent/:agent', async (req, res) => {
+    const sandbox = await sandboxManager.getAgentSandbox(req.params.agent);
+    if (!sandbox) return res.status(404).json({ error: 'No sandbox profile for this agent' });
+    res.json(sandbox);
+});
+
+// Get sandbox dashboard (all agents + security)
+app.get('/api/openshell/dashboard', async (req, res) => {
+    const dashboard = await sandboxManager.getDashboard();
+    res.json(dashboard);
+});
+
+// Get security metrics
+app.get('/api/openshell/security', async (req, res) => {
+    const metrics = await openshellClient.getSecurityMetrics();
+    res.json(metrics);
+});
+
+// Get inference routing config
+app.get('/api/openshell/inference', async (req, res) => {
+    const config = await openshellClient.getInferenceConfig();
+    res.json(config);
+});
+
+// Get sandbox profiles
+app.get('/api/openshell/profiles', (req, res) => {
+    res.json({ profiles: sandboxManager.getProfiles() });
+});
+
+// Create sandbox for agent
+app.post('/api/openshell/sandboxes', async (req, res) => {
+    try {
+        const { agent } = req.body;
+        if (!agent) return res.status(400).json({ error: 'agent is required' });
+        const sandbox = await sandboxManager.deployAgent(agent);
+        res.json(sandbox);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    const command = voiceService.parseCommand(text);
-    res.json(command);
-  } catch(e) {
-    console.error('Voice parse error:', e.message);
-    res.status(500).json({ error: e.message });
-  }
 });
 
-// POST /api/voice/enhance - Enhance transcript with AI
-app.post('/api/voice/enhance', async (req, res) => {
-  try {
-    const { transcript } = req.body;
-    if (!transcript) {
-      return res.status(400).json({ error: 'Transcript is required' });
+// Destroy sandbox
+app.delete('/api/openshell/sandboxes/:sandboxId', async (req, res) => {
+    const result = await openshellClient.destroySandbox(req.params.sandboxId);
+    res.json(result);
+});
+
+// ==================== NVIDIA NIM ENDPOINTS ====================
+
+// Generate text with NVIDIA NIM
+app.post('/api/nvidia/generate', async (req, res) => {
+    try {
+        const { prompt, model, options } = req.body;
+        const result = await nvidiaClient.generateText(prompt, model, options);
+        
+        res.json({ result });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    const apiKey = process.env.OPENROUTER_API_KEY;
-    const enhanced = await voiceService.enhanceTranscript(transcript, apiKey);
-    res.json(enhanced);
-  } catch(e) {
-    console.error('Voice enhancement error:', e.message);
-    res.status(500).json({ error: e.message });
-  }
 });
 
+// Get model capabilities
+app.get('/api/nvidia/models', (req, res) => {
+    res.json(nvidiaClient.getModelCapabilities());
+});
+
+// ==================== REVENUE ENDPOINTS ====================
+
+// Revenue predictions
+app.get('/api/revenue/predictions', async (req, res) => {
+    try {
+        // Use AI for enhanced predictions
+        const aiAnalysis = await nvidiaClient.analyzeRoyaltyData({
+            totalRevenue: revenueData.totalRevenue,
+            growthRate: revenueData.growthRate,
+            platforms: revenueData.platforms
+        });
+
+        res.json({
+            nextMonth: {
+                predicted: revenueData.totalRevenue * 1.23,
+                increase: revenueData.totalRevenue * 0.23,
+                confidence: 95
+            },
+            opportunities: [
+                { platform: 'TikTok', potential: 25000, priority: 'high' },
+                { platform: 'Spotify Playlists', potential: 18000, priority: 'high' },
+                { platform: 'YouTube Sync', potential: 15000, priority: 'medium' }
+            ],
+            aiAnalysis: aiAnalysis.substring(0, 500) + '...'
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== NFT ENDPOINTS ====================
+
+app.get('/api/nft/portfolio', (req, res) => {
+    res.json({
+        totalValue: nftPortfolio.totalValue,
+        items: nftPortfolio.items,
+        chains: nftPortfolio.chains,
+        recentSales: nftPortfolio.salesHistory.slice(-5)
+    });
+});
+
+// ==================== COLLABORATION ENDPOINTS ====================
+
+app.get('/api/collaboration/status', (req, res) => {
+    res.json({
+        activeMembers: collaborationHub.getActiveMembers().length,
+        totalMembers: collaborationHub.members.length,
+        sharedFiles: collaborationHub.files.length,
+        activeProjects: collaborationHub.getActiveProjects().length,
+        recentActivity: [
+            { user: 'Producer Mike', action: 'uploaded new beat', time: '5 min ago' },
+            { user: 'Sarah Vocals', action: 'commented on track', time: '12 min ago' },
+            { user: 'DJ Alex', action: 'shared mix', time: '1 hour ago' }
+        ],
+        storageUsed: '450GB',
+        storageTotal: '1TB'
+    });
+});
+
+// ==================== MARKET ANALYSIS ENDPOINTS ====================
+
+app.get('/api/market/trends', (req, res) => {
+    res.json({
+        trendingGenres: marketAnalysis.getTrendingGenres(),
+        platformInsights: marketAnalysis.platformInsights,
+        lastUpdated: marketAnalysis.lastUpdated
+    });
+});
+
+// ==================== UE5 COPILOT ENDPOINTS ====================
+
+// Plugin info — version, features, FAB listing
+app.get('/api/ue5/info', (req, res) => {
+    res.json(ue5CoPilot.getPluginInfo());
+});
+
+// Generate a Blueprint from natural language
+app.post('/api/ue5/blueprint/generate', async (req, res) => {
+    try {
+        const { prompt, language, complexity, category, selectedNode, model } = req.body;
+        if (!prompt) return res.status(400).json({ error: 'prompt is required' });
+        const result = await ue5CoPilot.generateBlueprint(prompt, { language, complexity, category, selectedNode, model });
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Build a complete scene from a command
+app.post('/api/ue5/scene/build', async (req, res) => {
+    try {
+        const { command, options } = req.body;
+        if (!command) return res.status(400).json({ error: 'command is required' });
+        const result = await ue5CoPilot.buildScene(command, options || {});
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Analyze project architecture
+app.post('/api/ue5/project/analyze', async (req, res) => {
+    try {
+        const { projectData, options } = req.body;
+        const result = await ue5CoPilot.analyzeProject(projectData || {}, options || {});
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Refactor a Blueprint
+app.post('/api/ue5/blueprint/refactor', async (req, res) => {
+    try {
+        const { blueprint, instruction, options } = req.body;
+        if (!blueprint || !instruction) return res.status(400).json({ error: 'blueprint and instruction are required' });
+        const result = await ue5CoPilot.refactorBlueprint(blueprint, instruction, options || {});
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Chat with FORGE (conversational co-pilot)
+app.post('/api/ue5/chat', async (req, res) => {
+    try {
+        const { message, options } = req.body;
+        if (!message) return res.status(400).json({ error: 'message is required' });
+        const result = await ue5CoPilot.chat(message, options || {});
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Blueprint template library
+app.get('/api/ue5/templates', (req, res) => {
+    const filter = {
+        category: req.query.category || null,
+        complexity: req.query.complexity || null
+    };
+    const templates = ue5CoPilot.getTemplates(filter);
+    res.json({ templates, total: templates.length });
+});
+
+// Get a single template by ID
+app.get('/api/ue5/templates/:id', (req, res) => {
+    const templates = ue5CoPilot.getTemplates({});
+    const template = templates.find(t => t.id === req.params.id || t.name === req.params.id);
+    if (!template) return res.status(404).json({ error: 'Template not found' });
+    res.json({ template });
+});
+
+// Analyze a Blueprint for quality/performance
+app.post('/api/ue5/blueprint/analyze', (req, res) => {
+    const { blueprint } = req.body;
+    if (!blueprint) return res.status(400).json({ error: 'blueprint text is required' });
+    const result = blueprintAnalyzer.analyze(blueprint);
+    res.json(result);
+});
+
+// Blueprint quick tips
+app.get('/api/ue5/tips', (req, res) => {
+    res.json({ tips: blueprintAnalyzer.getQuickTips() });
+});
+
+// ==================== GEMINI AI ENDPOINTS ====================
+const GeminiClient   = require('./lib/providers/gemini-client');
+const geminiClient   = new GeminiClient({ apiKey: process.env.GOOGLE_AI_KEY || process.env.GEMINI_API_KEY });
+
+app.get('/api/gemini/status', (req, res) => {
+    res.json(geminiClient.getStatus());
+});
+
+app.get('/api/gemini/models', (req, res) => {
+    res.json({ models: geminiClient.getModels() });
+});
+
+app.post('/api/gemini/chat', async (req, res) => {
+    const { messages, model, systemPrompt } = req.body;
+    if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: 'messages array is required' });
+    try {
+        const result = await geminiClient.chat(messages, { model, systemPrompt });
+        if (result.response && !result.content) result.content = result.response;
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ==================== NVIDIA ACE + STEERLM ENDPOINTS ====================
+const ACESteerlM   = require('./lib/nvidia/ace-steerlm');
+const aceClient    = new ACESteerlM();
+
+app.get('/api/ace/attributes', (req, res) => {
+    res.json({ attributes: aceClient.getAttributes() });
+});
+
+app.get('/api/ace/presets', (req, res) => {
+    res.json({ presets: aceClient.getPresets() });
+});
+
+app.post('/api/ace/chat', async (req, res) => {
+    const { messages, attributes, systemPrompt } = req.body;
+    if (!messages || !Array.isArray(messages)) return res.status(400).json({ error: 'messages array is required' });
+    try {
+        const profile = attributes || { helpfulness:3, humor:1, creativity:2, toxicity:0, assertiveness:2, empathy:3, formality:2, detail:3 };
+        const result = await aceClient.steerChat(messages, profile, { systemPrompt });
+        if (result.response && !result.content) result.content = result.response;
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.post('/api/ace/preset-chat', async (req, res) => {
+    const { presetName, messages } = req.body;
+    if (!presetName || !messages) return res.status(400).json({ error: 'presetName and messages are required' });
+    try {
+        const result = await aceClient.getPresetChat(presetName, messages);
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ==================== DISTRIBUTION HUB ENDPOINTS ====================
+const DistributionHub = require('./lib/distribution/distribution-hub');
+const distHub         = new DistributionHub();
+
+app.get('/api/distribution/services', (req, res) => {
+    res.json({ services: distHub.getServices() });
+});
+
+app.get('/api/distribution/platforms', (req, res) => {
+    res.json({ platforms: distHub.getPlatforms() });
+});
+
+app.get('/api/distribution/catalog', (req, res) => {
+    res.json(distHub.getCatalog());
+});
+
+app.get('/api/distribution/royalties', (req, res) => {
+    res.json(distHub.getRoyalties());
+});
+
+app.get('/api/distribution/analytics', (req, res) => {
+    res.json(distHub.getAnalytics());
+});
+
+app.get('/api/distribution/tiktok', (req, res) => {
+    res.json(distHub.getTikTokAnalytics());
+});
+
+app.post('/api/distribution/distribute', async (req, res) => {
+    const { title, service, platforms } = req.body;
+    if (!title) return res.status(400).json({ error: 'title is required' });
+    try {
+        const result = await distHub.distributeTrack({ title, service, platforms });
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ==================== LLMOPS DASHBOARD ENDPOINTS ====================
+const LLMOpsMonitor = require('./lib/llmops/llmops-monitor');
+const llmops        = new LLMOpsMonitor();
+
+app.get('/api/llmops/dashboard', (req, res) => {
+    res.json(llmops.getDashboard());
+});
+
+app.get('/api/llmops/models', (req, res) => {
+    res.json({ models: llmops.getDashboard().models });
+});
+
+app.get('/api/llmops/security', (req, res) => {
+    res.json(llmops.getSecurityReport());
+});
+
+app.get('/api/llmops/rag', (req, res) => {
+    res.json(llmops.getRagStats());
+});
+
+app.get('/api/llmops/agents', (req, res) => {
+    res.json(llmops.getAgentHealth());
+});
+
+app.get('/api/llmops/monitors', (req, res) => {
+    res.json({ monitors: llmops.getMonitors() });
+});
+
+app.get('/api/llmops/model/:modelId', (req, res) => {
+    const metrics = llmops.getModelMetrics(req.params.modelId);
+    if (!metrics) return res.status(404).json({ error: 'Model not found' });
+    res.json(metrics);
+});
+
+// ==================== MUSIC RECOGNITION ENDPOINTS ====================
+const MusicRecognizer = require('./lib/music/music-recognizer');
+const musicRecognizer = new MusicRecognizer();
+
+app.get('/api/music/catalog', (req, res) => {
+    res.json(musicRecognizer.getCatalog());
+});
+
+app.get('/api/music/capabilities', (req, res) => {
+    res.json({ capabilities: musicRecognizer.getCapabilities() });
+});
+
+app.get('/api/music/stats', (req, res) => {
+    res.json(musicRecognizer.getStats());
+});
+
+app.get('/api/music/recent', (req, res) => {
+    res.json(musicRecognizer.getRecentRecognitions());
+});
+
+app.post('/api/music/recognize', async (req, res) => {
+    const { audioData, source, duration } = req.body;
+    try {
+        const result = await musicRecognizer.recognize(audioData || 'demo', { source: source || 'upload', duration: duration || 10 });
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.post('/api/music/analyze', async (req, res) => {
+    const { audioData, analysisTypes } = req.body;
+    try {
+        const result = await musicRecognizer.analyzeAudio(audioData || 'demo', analysisTypes);
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.post('/api/music/copyright-check', async (req, res) => {
+    const { audioData } = req.body;
+    try {
+        const result = await musicRecognizer.checkInfringement(audioData || 'demo');
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.get('/api/music/similar/:trackId', (req, res) => {
+    const similar = musicRecognizer.findSimilar(req.params.trackId);
+    res.json({ similar });
+});
+
+// Catch-all route - serve index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Error handling
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        error: 'Something went wrong!',
+        message: err.message
+    });
+});
+
+// Start server
 server.listen(PORT, '0.0.0.0', () => {
-    console.log('');
-    console.log('🐐 ══════════════════════════════════════════════════════');
-    console.log(`🐐  SUPER GOAT ROYALTY APP — ULTIMATE EDITION v5.0.0`);
-    console.log(`🐐  Running on port ${PORT}`);
-    console.log(`🐐  Dashboard: http://localhost:${PORT}`);
-    console.log('🐐 ══════════════════════════════════════════════════════');
-    console.log('');
-    console.log(`🤖 AI Suite:     /api/providers | /api/nvidia | /api/gemini | /api/ace`);
-    console.log(`🎵 Music:        /api/music | /api/catalog | /api/distribution`);
-    console.log(`💕 Social:       /api/match | /api/celebrity | /api/worldwide | /api/feed`);
-    console.log(`🛡️ Security:     /api/warfare | /api/cyberops | /api/intel | /api/face`);
-    console.log(`🎮 Gaming:       /api/ue5 | /api/gaming`);
-    console.log(`🎬 Creative:     /api/screenwriting | /api/avatar`);
-    console.log(`💰 Finance:      /api/banking | /api/web3 | /api/empire`);
-    console.log(`📊 Ops:          /api/llmops | /api/rag | /api/agents | /api/openshell`);
-    console.log(`📀 Catalog:      /api/catalog | /api/vault`);
-    console.log(`💾 Storage:      /api/storage`);
-    try { console.log(`📀 ${catalog.stats.totalUniqueSongs} Songs | ${catalog.stats.totalISRCs} ISRCs | ${catalog.stats.dataSources.length} Sources`); } catch(e) {}
-    try { console.log(`🌍 ${celebrityDb.celebrities.length} Celebrity Profiles | ${celebrityDb._countTotalConnections()} Network Reach`); } catch(e) {}
-    console.log('');
-    console.log('🔒 280 API Endpoints | WebSocket Real-Time | All Systems GO');
-    console.log('© 2024 Harvey L Miller Jr / Juaquin J Malphurs / Kevin W Hallingquest');
+    console.log('🚀 SUPER GOAT ROYALTIES Server v4.0.0 ULTIMATE EDITION running on port', PORT);
+    console.log('📊 Dashboard: http://localhost:' + PORT);
+    console.log('🔌 API Status: http://localhost:' + PORT + '/api/status');
+    console.log('🤖 AI Assistants: 9 agents active');
+    console.log('🎯 NVIDIA NIM: Integrated');
+    console.log('🌐 OpenRouter: 653+ models available');
+    console.log('🐚 NVIDIA OpenShell: Sandboxed agent execution');
+    console.log('⚡ Lightning AI: Model APIs');
+    console.log('🤗 Hugging Face: Open models');
+    console.log('📚 RAG System: Active');
+    console.log('🤝 Autonomous Agents: Running');
+    console.log('📡 WebSocket: Connected');
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received: closing HTTP server');
+    server.close(() => {
+        console.log('HTTP server closed');
+    });
 });
 
 module.exports = { app, server };

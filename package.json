@@ -131,7 +131,6 @@
           ]
         }
       ],
-      "icon": "build/icon.png",
       "artifactName": "GOAT-Royalties-${version}.${ext}",
       "category": "public.app-category.music"
     },

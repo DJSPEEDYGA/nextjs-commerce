@@ -101,15 +101,11 @@ jobs:
       - name: Generate macOS icon
         run: |
           mkdir -p build/icons
-          # Generate PNG from ICO
-          npx electron-icon-builder --input=build/icon.ico --output=build/icons || true
-          # Create iconset for ICNS
-          mkdir -p build/icon.iconset
+          # Generate 512x512 PNG from ICO for macOS
           sips -s format png build/icon.ico --out build/icon.png || true
-          for size in 16 32 64 128 256 512; do
-            sips -z $size $size build/icon.png --out build/icon.iconset/icon_${size}x${size}.png || true
-          done
-          iconutil -c icns build/icon.iconset -o build/icon.icns || true
+          sips -z 512 512 build/icon.png --out build/icon.png || true
+          # Verify size
+          file build/icon.png
 
       - name: Build macOS DMG
         run: npm run electron:build:mac -- --publish never

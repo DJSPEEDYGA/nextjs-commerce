@@ -1,0 +1,118 @@
+# SUPER GOAT ROYALTIES APP - Docker Compose Configuration
+# For production deployment with all services
+
+version: '3.8'
+
+services:
+  # ============================================
+  # Main Application Service
+  # ============================================
+  goat-royalties-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: super-goat-royalties
+    restart: unless-stopped
+    ports:
+      - "4001:4001"
+    volumes:
+      # Persistent data storage
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./datasets:/app/datasets
+      # Configuration (optional)
+      - ./local-data:/app/local-data:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=4001
+      - DATA_DIR=/app/data
+      - LOG_DIR=/app/logs
+      # Uncomment and set API keys for enhanced features
+      # - GEMINI_API_KEY=${GEMINI_API_KEY}
+      # - NVIDIA_NIM_API_KEY=${NVIDIA_NIM_API_KEY}
+      # - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      # - DID_API_KEY=${DID_API_KEY}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4001/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - goat-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================
+  # Nginx Reverse Proxy (Optional)
+  # ============================================
+  nginx:
+    image: nginx:alpine
+    container_name: goat-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - goat-royalties-app
+    networks:
+      - goat-network
+    profiles:
+      - production
+
+  # ============================================
+  # Redis Cache (Optional, for scaling)
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: goat-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - goat-network
+    profiles:
+      - scaling
+
+  # ============================================
+  # PostgreSQL Database (Optional, for persistence)
+  # ============================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: goat-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=goatuser
+      - POSTGRES_PASSWORD=goatpassword
+      - POSTGRES_DB=goatroyalties
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - goat-network
+    profiles:
+      - database
+
+# ============================================
+# Networks
+# ============================================
+networks:
+  goat-network:
+    driver: bridge
+
+# ============================================
+# Volumes
+# ============================================
+volumes:
+  redis-data:
+  postgres-data:

@@ -68,7 +68,9 @@ const osint        = require('./lib/intelligence/osint-network');
 const storage      = require('./lib/storage/local-storage-engine');
 const catalog      = require('./lib/catalog/real-catalog');
 const HFDatasetsEngine = require('./lib/datasets/hf-datasets');
-const hfDatasets = new HFDatasetsEngine({ downloadDir: path.join(__dirname, 'datasets') });
+const hfDatasets = new HFDatasetsEngine({ 
+    downloadDir: process.env.DATASETS_DIR || path.join(__dirname, 'datasets') 
+});
 
 // ===================== INITIALIZE SYSTEMS =====================
 const bgChecker    = new BackgroundChecker();

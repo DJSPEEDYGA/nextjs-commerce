@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>GOAT Connect - OFFLINE EDITION | Zero Cloud. Zero Tracking.</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#FFD700;--purple:#8B5CF6;--pink:#EC4899;--blue:#3B82F6;--green:#10B981;--red:#EF4444;
+  --cyan:#06B6D4;--orange:#F97316;
+  --bg:#0A0A0F;--bg2:#12121A;--bg3:#1A1A27;--bg4:#22223A;
+  --card:#1E1E2E;--card2:#252535;--border:#2A2A3E;
+  --text:#F0F0FF;--text2:#A0A0C0;--text3:#606080;
+  --grad1:linear-gradient(135deg,#667eea,#764ba2);
+  --grad2:linear-gradient(135deg,#f093fb,#f5576c);
+  --grad3:linear-gradient(135deg,#4facfe,#00f2fe);
+  --grad4:linear-gradient(135deg,#43e97b,#38f9d7);
+  --grad5:linear-gradient(135deg,#fa709a,#fee140);
+  --grad6:linear-gradient(135deg,#a18cd1,#fbc2eb);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+#app{height:100vh;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;overflow:hidden;background:var(--bg)}
+#splash{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:20px}
+.splash-logo{font-size:72px;animation:pulse 1.5s infinite}
+.splash-title{font-size:32px;font-weight:900;background:var(--grad5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.splash-sub{font-size:13px;color:var(--text2);letter-spacing:3px;text-transform:uppercase}
+.splash-bar{width:200px;height:4px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.splash-fill{height:100%;background:var(--grad5);border-radius:4px;animation:splashLoad 2.5s ease forwards}
+.splash-copy{position:absolute;bottom:40px;font-size:11px;color:var(--text3);text-align:center}
+@keyframes splashLoad{0%{width:0}100%{width:100%}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+#auth-page{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;overflow-y:auto;z-index:900}
+.auth-hero{padding:60px 30px 30px;text-align:center}
+.auth-logo{font-size:56px;margin-bottom:12px}
+.auth-title{font-size:28px;font-weight:900;background:var(--grad5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.auth-sub{font-size:13px;color:var(--text2);margin-top:6px}
+.auth-tabs{display:flex;gap:0;background:var(--bg3);border-radius:12px;margin:0 24px 24px;padding:4px}
+.auth-tab{flex:1;padding:10px;text-align:center;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;color:var(--text2)}
+.auth-tab.active{background:var(--grad5);color:#fff}
+.auth-form{padding:0 24px 20px;display:flex;flex-direction:column;gap:14px}
+.auth-input{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-size:15px;outline:none;transition:.2s}
+.auth-input:focus{border-color:var(--purple);background:var(--bg4)}
+.auth-btn{background:var(--grad5);border:none;border-radius:12px;padding:15px;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+.auth-notice{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.6}
+.auth-notice strong{color:var(--gold)}
+#main{flex:1;display:none;flex-direction:column;overflow:hidden}
+.page{flex:1;overflow-y:auto;display:none;flex-direction:column;padding-bottom:80px}
+.page.active{display:flex}
+.tab-bar{position:absolute;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:8px 0 calc(8px + var(--safe-bottom));z-index:100;max-width:430px}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;transition:.2s;opacity:.5;font-size:10px;color:var(--text2)}
+.tab-item.active{opacity:1;color:var(--gold)}
+.tab-icon{font-size:22px;line-height:1}
+.page-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--border)}
+.page-title{font-size:22px;font-weight:800}
+.page-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.header-badge{background:var(--grad5);color:#fff;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:700}
+.card{background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.section-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:16px 16px 8px}
+.divider{height:1px;background:var(--border);margin:8px 0}
+.fade-in{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* SWIPE */
+.discover-header{padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between}
+.swipe-area{flex:1;display:flex;align-items:center;justify-content:center;position:relative;padding:10px 16px 0;min-height:420px}
+.swipe-card{position:absolute;width:100%;max-width:360px;border-radius:24px;overflow:hidden;cursor:grab;transition:transform .15s;user-select:none;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.swipe-card:active{cursor:grabbing}
+.swipe-card-img{width:100%;height:420px;display:flex;align-items:center;justify-content:center;position:relative}
+.emoji-avatar{font-size:120px;text-align:center;padding-top:60px}
+.swipe-card-gradient{position:absolute;bottom:0;left:0;right:0;height:220px;background:linear-gradient(transparent,rgba(0,0,0,.92))}
+.swipe-card-info{position:absolute;bottom:0;left:0;right:0;padding:20px}
+.swipe-card-name{font-size:26px;font-weight:800;color:#fff}
+.swipe-card-meta{font-size:14px;color:rgba(255,255,255,.8);margin-top:4px}
+.swipe-card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.swipe-tag{background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border-radius:20px;padding:4px 10px;font-size:11px;color:#fff}
+.match-pct{position:absolute;top:16px;right:16px;background:var(--green);color:#fff;font-size:13px;font-weight:700;padding:6px 12px;border-radius:20px}
+.swipe-like{position:absolute;top:20px;left:16px;background:var(--green);color:#fff;font-size:18px;padding:8px 16px;border-radius:12px;font-weight:800;opacity:0;transition:.2s;transform:rotate(-15deg)}
+.swipe-nope{position:absolute;top:20px;right:16px;background:var(--red);color:#fff;font-size:18px;padding:8px 16px;border-radius:12px;font-weight:800;opacity:0;transition:.2s;transform:rotate(15deg)}
+.swipe-actions{display:flex;justify-content:center;gap:20px;padding:16px}
+.swipe-btn{width:64px;height:64px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;background:var(--bg2);transition:.2s}
+.swipe-btn:hover{transform:scale(1.1)}
+.swipe-btn.nope{border-color:var(--red)}
+.swipe-btn.super{border-color:var(--blue)}
+.swipe-btn.like{border-color:var(--green)}
+/* MATCHES */
+.match-new-row{padding:16px 16px 8px;overflow-x:auto;display:flex;gap:12px;scrollbar-width:none}
+.match-new-row::-webkit-scrollbar{display:none}
+.match-bubble{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:70px}
+.match-bubble-img{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;border:3px solid var(--gold);position:relative}
+.match-bubble-dot{position:absolute;bottom:2px;right:2px;width:14px;height:14px;background:var(--green);border-radius:50%;border:2px solid var(--bg)}
+.match-bubble-name{font-size:11px;color:var(--text2);text-align:center;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.match-grid{padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match-card{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+.match-card-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:64px}
+.match-card-body{padding:12px}
+.match-card-name{font-size:15px;font-weight:700}
+.match-card-sub{font-size:12px;color:var(--text2);margin-top:3px}
+.match-card-pct{display:inline-block;background:var(--grad4);color:#fff;font-size:11px;padding:3px 8px;border-radius:10px;font-weight:700;margin-top:6px}
+.match-card-msg{background:var(--grad5);border:none;border-radius:8px;padding:8px 12px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
+/* WORLD STARS */
+.stars-search{margin:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-size:14px;outline:none;width:calc(100% - 32px)}
+.genre-chips{padding:0 16px 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.genre-chips::-webkit-scrollbar{display:none}
+.genre-chip{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;white-space:nowrap;cursor:pointer;transition:.2s;color:var(--text2)}
+.genre-chip.active{background:var(--grad5);border-color:transparent;color:#fff;font-weight:600}
+.celeb-grid{padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.celeb-card{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:.2s}
+.celeb-card:hover{transform:translateY(-2px);border-color:var(--gold)}
+.celeb-card-top{height:130px;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative}
+.celeb-verified{position:absolute;top:8px;right:8px;font-size:16px}
+.celeb-tier{position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--gold);color:#000}
+.celeb-card-body{padding:10px 12px}
+.celeb-name{font-size:14px;font-weight:700}
+.celeb-genre{font-size:11px;color:var(--text2);margin-top:2px}
+.celeb-country{font-size:11px;color:var(--text3)}
+.celeb-follow{background:var(--grad5);border:none;border-radius:8px;padding:6px 10px;color:#fff;font-size:11px;font-weight:600;cursor:pointer;width:100%;margin-top:8px}
+.celeb-follow.following{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.celeb-pct{display:inline-block;background:var(--grad4);color:#fff;font-size:10px;padding:2px 7px;border-radius:8px;font-weight:700;margin-top:4px}
+.world-map-section{margin:0 16px 16px;background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--border)}
+.world-map-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.world-region{background:var(--bg3);border-radius:10px;padding:10px;text-align:center;cursor:pointer}
+.world-region-flag{font-size:24px}
+.world-region-name{font-size:11px;color:var(--text2);margin-top:4px}
+.world-region-count{font-size:16px;font-weight:800;color:var(--gold)}
+/* FACE ID */
+.face-hero{padding:24px;text-align:center}
+.face-circle{width:180px;height:180px;border-radius:50%;border:3px solid var(--purple);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:80px;background:var(--bg3);position:relative;overflow:hidden;transition:border-color .3s}
+.face-scan-line{position:absolute;left:0;right:0;height:2px;background:var(--green);animation:scanLine 2s linear infinite;box-shadow:0 0 8px var(--green)}
+@keyframes scanLine{0%{top:0}100%{top:100%}}
+.face-status{font-size:18px;font-weight:700;margin-bottom:8px;transition:color .3s}
+.face-sub{font-size:13px;color:var(--text2);line-height:1.6}
+.face-providers{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
+.face-provider{background:var(--card);border-radius:12px;padding:12px;border:1px solid var(--border);text-align:center}
+.face-provider-icon{font-size:28px;margin-bottom:6px}
+.face-provider-name{font-size:12px;font-weight:600}
+.face-provider-acc{font-size:11px;color:var(--green);margin-top:2px}
+.face-provider-status{font-size:10px;color:var(--text3)}
+.face-checks{padding:0 16px}
+.face-check-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border-radius:12px;margin-bottom:8px;border:1px solid var(--border)}
+.face-check-icon{font-size:24px;width:40px;text-align:center}
+.face-check-body{flex:1}
+.face-check-title{font-size:14px;font-weight:600}
+.face-check-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.face-check-badge{padding:3px 8px;border-radius:8px;font-size:11px;font-weight:700}
+.badge-green{background:rgba(16,185,129,.2);color:var(--green)}
+.badge-blue{background:rgba(59,130,246,.2);color:var(--blue)}
+.badge-purple{background:rgba(139,92,246,.2);color:var(--purple)}
+.face-verify-btn{margin:16px;background:var(--grad1);border:none;border-radius:14px;padding:16px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;width:calc(100% - 32px);display:block}
+/* AVATAR */
+.avatar-preview{width:160px;height:160px;background:var(--grad1);border-radius:20px;margin:20px auto 16px;display:flex;align-items:center;justify-content:center;font-size:80px;border:2px solid var(--purple);position:relative;transition:all .3s}
+.avatar-preview-badge{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:10px;padding:3px 10px;border-radius:10px;font-weight:700;white-space:nowrap}
+.platform-tabs{display:flex;gap:8px;padding:0 16px 16px;overflow-x:auto;scrollbar-width:none}
+.platform-tab{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:8px 14px;font-size:12px;white-space:nowrap;cursor:pointer;transition:.2s}
+.platform-tab.active{background:var(--grad1);border-color:transparent;color:#fff;font-weight:600}
+.option-group{margin:0 16px 16px}
+.option-label{font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.option-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.option-row::-webkit-scrollbar{display:none}
+.option-btn{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:12px;white-space:nowrap;cursor:pointer;transition:.2s;color:var(--text2)}
+.option-btn.active{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:600}
+.anim-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 16px}
+.anim-btn{background:var(--card);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;border:1px solid var(--border);transition:.2s}
+.anim-btn:hover{border-color:var(--purple)}
+.anim-btn-icon{font-size:24px}
+.anim-btn-name{font-size:10px;color:var(--text2);margin-top:4px}
+.camera-grid{display:grid;grid-template-columns:1fr;gap:8px;padding:0 16px 16px}
+.camera-card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.camera-icon{font-size:28px}
+.camera-body{flex:1}
+.camera-name{font-size:14px;font-weight:700}
+.camera-spec{font-size:11px;color:var(--text2);margin-top:3px}
+.camera-price{font-size:12px;color:var(--gold);font-weight:700}
+.create-avatar-btn{margin:16px;background:var(--grad1);border:none;border-radius:14px;padding:16px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;width:calc(100% - 32px);display:block}
+/* CYBER */
+.cyber-grade{margin:16px;background:var(--card);border-radius:20px;padding:20px;border:1px solid var(--green);text-align:center}
+.cyber-grade-letter{font-size:72px;font-weight:900;background:var(--grad4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
+.stat-card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);text-align:center}
+.stat-num{font-size:24px;font-weight:900;color:var(--gold)}
+.stat-label{font-size:11px;color:var(--text2);margin-top:4px}
+.threat-monitor{margin:0 16px 16px;background:var(--card);border-radius:16px;padding:16px;border:1px solid var(--border)}
+.threat-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.threat-live{background:var(--red);color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.threat-item{display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg3);border-radius:10px;margin-bottom:6px;border:1px solid var(--border)}
+.threat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.threat-body{flex:1}
+.threat-name{font-size:13px;font-weight:600}
+.threat-time{font-size:11px;color:var(--text3)}
+.threat-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:700}
+.threat-high{background:rgba(239,68,68,.2);color:var(--red)}
+.threat-med{background:rgba(249,115,22,.2);color:var(--orange)}
+.threat-low{background:rgba(16,185,129,.2);color:var(--green)}
+.av-engines{padding:0 16px 16px}
+.av-engine{display:flex;align-items:center;gap:10px;padding:10px;background:var(--card);border-radius:10px;margin-bottom:6px;border:1px solid var(--border)}
+.av-icon{font-size:20px;width:36px;text-align:center}
+.av-body{flex:1}
+.av-name{font-size:13px;font-weight:600}
+.av-sigs{font-size:11px;color:var(--text2)}
+.breach-check-form{padding:0 16px 16px}
+.breach-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-size:14px;outline:none;margin-bottom:10px}
+.breach-btn{background:var(--red);border:none;border-radius:12px;padding:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;width:100%}
+/* GAMING */
+.gaming-tabs{display:flex;gap:0;background:var(--bg3);border-radius:12px;margin:12px 16px;padding:4px}
+.gaming-tab{flex:1;padding:9px 8px;text-align:center;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;color:var(--text2)}
+.gaming-tab.active{background:var(--grad1);color:#fff}
+.gaming-panel{display:none;padding:0 16px}
+.gaming-panel.active{display:block}
+.book-card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:10px;display:flex;gap:12px}
+.book-cover{width:56px;height:72px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.book-body{flex:1}
+.book-title{font-size:14px;font-weight:700;line-height:1.3}
+.book-author{font-size:12px;color:var(--text2);margin-top:3px}
+.book-level{display:inline-block;font-size:10px;padding:2px 8px;border-radius:8px;margin-top:6px;font-weight:700}
+.level-beginner{background:rgba(16,185,129,.2);color:var(--green)}
+.level-intermediate{background:rgba(59,130,246,.2);color:var(--blue)}
+.level-advanced{background:rgba(139,92,246,.2);color:var(--purple)}
+.level-expert{background:rgba(239,68,68,.2);color:var(--red)}
+.ue5-tutorial{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:10px}
+.ue5-tut-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ue5-tut-title{font-size:14px;font-weight:700}
+.ue5-tut-meta{font-size:12px;color:var(--text2)}
+.ue5-features{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ue5-feature{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:3px 8px;font-size:11px;color:var(--text2)}
+.fivem-server{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);margin-bottom:10px}
+.fivem-server-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.fivem-server-icon{font-size:28px}
+.fivem-server-name{font-size:14px;font-weight:700}
+.fivem-server-players{font-size:12px;color:var(--green)}
+.fivem-tags{display:flex;flex-wrap:wrap;gap:6px}
+.fivem-tag{background:var(--bg3);border-radius:8px;padding:3px 8px;font-size:11px;color:var(--text2)}
+.blueprint-card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--purple);margin-bottom:10px;cursor:pointer;transition:.2s}
+.blueprint-card:hover{border-color:var(--gold);transform:translateY(-1px)}
+.blueprint-title{font-size:14px;font-weight:700;color:var(--purple)}
+.blueprint-desc{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5}
+.blueprint-nodes{font-size:11px;color:var(--text3);margin-top:6px}
+.path-step{display:flex;gap:12px;margin-bottom:0}
+.path-line{display:flex;flex-direction:column;align-items:center}
+.path-dot{width:28px;height:28px;border-radius:50%;background:var(--grad1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.path-connector{width:2px;flex:1;background:var(--border);min-height:20px}
+.path-body{flex:1;padding-bottom:16px}
+.path-title{font-size:14px;font-weight:700}
+.path-desc{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5}
+.path-time{font-size:11px;color:var(--gold);margin-top:4px}
+/* FEED */
+.feed-post{background:var(--card);border-radius:16px;border:1px solid var(--border);margin:0 16px 12px;overflow:hidden}
+.feed-post-header{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.feed-avatar{width:40px;height:40px;border-radius:50%;background:var(--grad2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.feed-name{font-size:14px;font-weight:700}
+.feed-meta{font-size:12px;color:var(--text2)}
+.feed-pos{font-size:11px;color:var(--purple);font-weight:600;margin-top:1px}
+.feed-content{padding:0 14px 12px;font-size:14px;line-height:1.6}
+.feed-music{margin:0 14px 12px;background:var(--bg3);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;border:1px solid var(--border)}
+.feed-music-art{width:44px;height:44px;border-radius:8px;background:var(--grad5);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.feed-music-title{font-size:13px;font-weight:700}
+.feed-music-artist{font-size:12px;color:var(--text2)}
+.feed-music-play{width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;margin-left:auto;border:none}
+.feed-actions{display:flex;border-top:1px solid var(--border)}
+.feed-action{flex:1;padding:10px;text-align:center;font-size:12px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--text2)}
+.feed-action:hover{background:var(--bg3)}
+.feed-action.liked{color:var(--pink)}
+.create-post-btn{margin:16px;background:var(--grad5);border:none;border-radius:14px;padding:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;width:calc(100% - 32px);display:flex;align-items:center;justify-content:center;gap:8px}
+/* SECURITY */
+.sec-grade{margin:16px;background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(59,130,246,.1));border-radius:20px;padding:20px;border:1px solid var(--green);text-align:center}
+.sec-letter{font-size:80px;font-weight:900;background:var(--grad4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.enc-item{display:flex;align-items:center;gap:12px;padding:10px;background:var(--card);border-radius:10px;margin-bottom:6px;border:1px solid var(--border)}
+.enc-icon{font-size:20px;width:36px;text-align:center}
+.enc-body{flex:1}
+.enc-name{font-size:13px;font-weight:600}
+.enc-desc{font-size:11px;color:var(--text2);margin-top:2px}
+/* PROFILE */
+.profile-top{padding:24px 20px 16px;text-align:center}
+.profile-avatar{width:100px;height:100px;border-radius:50%;background:var(--grad5);display:flex;align-items:center;justify-content:center;font-size:48px;margin:0 auto 12px;border:3px solid var(--gold)}
+.profile-name{font-size:24px;font-weight:800}
+.profile-sub{font-size:13px;color:var(--text2);margin-top:4px}
+.profile-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:16px;overflow:hidden;margin:0 16px 16px}
+.profile-stat{background:var(--card);padding:14px;text-align:center}
+.profile-stat-num{font-size:20px;font-weight:800}
+.profile-stat-label{font-size:11px;color:var(--text2);margin-top:2px}
+.dna-bar-row{margin-bottom:10px;padding:0 16px}
+.dna-bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:5px}
+.dna-bar-track{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.dna-bar-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.pos-items{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:0 16px 16px}
+.pos-item{background:var(--card);border-radius:12px;padding:10px 12px;border:2px solid var(--border);cursor:pointer;transition:.2s;display:flex;align-items:center;gap:8px}
+.pos-item.active{border-color:var(--gold);background:rgba(255,215,0,.08)}
+.pos-emoji{font-size:20px}
+.pos-name{font-size:12px;font-weight:600}
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal-sheet{background:var(--bg2);border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:85vh;overflow-y:auto;padding:20px 20px calc(20px + var(--safe-bottom))}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:20px}
+.modal-btn{width:100%;padding:15px;border-radius:14px;border:none;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px}
+.modal-btn-primary{background:var(--grad5);color:#fff}
+.modal-btn-secondary{background:var(--bg3);color:var(--text);border:1px solid var(--border)}
+.celeb-modal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.celeb-modal-stat{background:var(--bg3);border-radius:10px;padding:12px;text-align:center}
+.celeb-modal-stat-num{font-size:16px;font-weight:800;color:var(--gold)}
+.celeb-modal-stat-label{font-size:10px;color:var(--text3);margin-top:3px}
+.celeb-modal-bio{background:var(--bg3);border-radius:12px;padding:14px;margin-bottom:16px;font-size:13px;line-height:1.7;color:var(--text2)}
+/* TOAST */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:12px 20px;font-size:14px;font-weight:600;z-index:9999;transition:transform .3s ease;max-width:90%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:var(--green);color:var(--green)}
+.toast.error{border-color:var(--red);color:var(--red)}
+.toast.info{border-color:var(--blue);color:var(--blue)}
+.toast.gold{border-color:var(--gold);color:var(--gold)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+/* ========== SCREENWRITING STUDIO STYLES ========== */
+.writing-tabs{display:flex;gap:0;background:var(--bg3);border-radius:12px;margin:12px 16px;padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.writing-tab{flex:0 0 auto;padding:8px 12px;text-align:center;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;color:var(--text2);white-space:nowrap}
+.writing-tab.active{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff}
+.writing-panel{display:none;padding:0 16px 20px}
+.writing-panel.active{display:block}
+.writing-search-bar{margin-bottom:12px}
+.writing-search-bar input{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;outline:none;transition:border .2s}
+.writing-search-bar input:focus{border-color:var(--gold)}
+.writing-filter-row{display:flex;gap:8px;margin-bottom:12px}
+.writing-filter-row select{flex:1;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px;outline:none;-webkit-appearance:none}
+.writing-count{font-size:12px;color:var(--text2);margin-bottom:10px;padding:0 4px}
+/* Writer Cards */
+.writer-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px;cursor:pointer;transition:transform .2s,border-color .2s}
+.writer-card:hover{transform:translateY(-2px);border-color:var(--gold)}
+.writer-card-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.writer-rank{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
+.writer-info{flex:1}
+.writer-name{font-size:15px;font-weight:700;line-height:1.2}
+.writer-era{font-size:11px;color:var(--text2);margin-top:2px}
+.writer-emoji{font-size:28px;flex-shrink:0}
+.writer-scripts{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.writer-script-tag{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.writer-oscars{font-size:11px;color:var(--gold);font-weight:600}
+.writer-quote{font-size:11px;color:var(--text2);font-style:italic;margin-top:8px;line-height:1.4;border-left:2px solid var(--gold);padding-left:10px}
+.writer-bio{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.5}
+.writer-legacy{font-size:12px;color:var(--gold);margin-top:6px;font-weight:600}
+.writer-genres{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.writer-genre-tag{background:rgba(245,158,11,.15);color:var(--gold);border-radius:6px;padding:2px 8px;font-size:10px;font-weight:600}
+/* Format Cards */
+.format-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.format-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.format-icon{font-size:32px}
+.format-title{font-size:15px;font-weight:700}
+.format-desc{font-size:12px;color:var(--text2);margin-top:2px}
+.format-elements{margin-top:10px}
+.format-element{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.format-element:last-child{border-bottom:none}
+.format-el-name{font-size:12px;font-weight:700;color:var(--gold);min-width:90px}
+.format-el-desc{font-size:12px;color:var(--text2);flex:1}
+.format-el-example{font-size:11px;color:var(--text2);font-style:italic;margin-top:3px;font-family:'Courier New',monospace;background:var(--bg3);padding:4px 8px;border-radius:4px;display:block}
+/* Template Cards */
+.template-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.template-header{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.template-icon{font-size:28px}
+.template-title{font-size:15px;font-weight:700}
+.template-origin{font-size:11px;color:var(--text2);margin-bottom:12px}
+.template-steps{counter-reset:step}
+.template-step{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.template-step:last-child{border-bottom:none}
+.step-num{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+.step-content{flex:1}
+.step-name{font-size:12px;font-weight:700}
+.step-desc{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.4}
+/* Software Cards */
+.software-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px;position:relative;overflow:hidden}
+.software-card.recommended{border-color:var(--gold)}
+.software-card.recommended::before{content:'⭐ RECOMMENDED';position:absolute;top:8px;right:-28px;background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:2px 32px;transform:rotate(45deg)}
+.software-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.software-icon{font-size:28px}
+.software-name{font-size:15px;font-weight:700}
+.software-price{font-size:13px;color:var(--gold);font-weight:700;margin-left:auto}
+.software-desc{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.4}
+.software-features{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.software-feat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.software-platforms{font-size:11px;color:var(--text2)}
+/* Genre Cards */
+.genre-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.genre-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.genre-icon{font-size:28px}
+.genre-name{font-size:15px;font-weight:700}
+.genre-tips{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px;white-space:pre-line}
+.genre-masters{margin-top:8px}
+.genre-masters-title{font-size:12px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.genre-master-list{display:flex;flex-wrap:wrap;gap:5px}
+.genre-master-tag{background:rgba(245,158,11,.15);color:var(--gold);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600}
+/* Oscar Cards */
+.oscar-year-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.oscar-year-header{font-size:18px;font-weight:800;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.oscar-category{margin-bottom:10px}
+.oscar-category:last-child{margin-bottom:0}
+.oscar-cat-title{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.oscar-winner{font-size:13px;font-weight:700;margin-bottom:2px}
+.oscar-film{font-size:12px;color:var(--gold);margin-bottom:2px}
+.oscar-writers{font-size:11px;color:var(--text2)}
+/* Script Generator */
+.script-generator-form{background:var(--card);border-radius:14px;padding:18px;border:1px solid var(--border);margin-bottom:16px}
+.gen-field{margin-bottom:14px}
+.gen-field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.gen-field input,.gen-field textarea,.gen-field select{width:100%;padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;outline:none;transition:border .2s;font-family:inherit}
+.gen-field input:focus,.gen-field textarea:focus,.gen-field select:focus{border-color:var(--gold)}
+.gen-field textarea{min-height:60px;resize:vertical}
+.gen-row{display:flex;gap:10px}
+.gen-row .gen-field{flex:1}
+.gen-submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#f59e0b,#ef4444);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:transform .15s,opacity .15s;margin-top:4px}
+.gen-submit-btn:active{transform:scale(.97);opacity:.9}
+/* Generated Script Output */
+.script-output{background:var(--card);border-radius:14px;padding:18px;border:1px solid var(--gold);margin-bottom:12px}
+.script-output-title{font-size:16px;font-weight:800;color:var(--gold);margin-bottom:4px}
+.script-output-logline{font-size:12px;color:var(--text2);margin-bottom:12px;font-style:italic}
+.script-output-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.script-meta-tag{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:11px;color:var(--text2)}
+.script-section{margin-bottom:16px}
+.script-section-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.script-text{font-family:'Courier New',monospace;font-size:12px;line-height:1.6;color:var(--text2);background:var(--bg3);border-radius:8px;padding:14px;white-space:pre-wrap;overflow-x:auto}
+.script-outline-step{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.script-outline-step:last-child{border-bottom:none}
+.script-char{background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px}
+.script-char-role{font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase}
+.script-char-arc{font-size:11px;color:var(--text2);margin-top:2px}
+.script-char-tips{font-size:11px;color:var(--text2);margin-top:4px;font-style:italic}
+/* ========== MUSIC PRODUCTION STUDIO STYLES ========== */
+.music-tabs{display:flex;gap:0;background:var(--bg3);border-radius:12px;margin:12px 16px;padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.music-tab{flex:0 0 auto;padding:8px 12px;text-align:center;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;color:var(--text2);white-space:nowrap}
+.music-tab.active{background:linear-gradient(135deg,#1DB954,#191414);color:#fff}
+.music-panel{display:none;padding:0 16px 20px}
+.music-panel.active{display:block}
+.music-search-bar{margin-bottom:12px}
+.music-search-bar input{width:100%;padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;outline:none;transition:border .2s}
+.music-search-bar input:focus{border-color:#1DB954}
+.music-count{font-size:12px;color:var(--text2);margin-bottom:10px;padding:0 4px}
+.beat-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px;cursor:pointer;transition:transform .2s,border-color .2s}
+.beat-card:hover{transform:translateY(-2px);border-color:#1DB954}
+.beat-card-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.beat-emoji{font-size:32px;flex-shrink:0}
+.beat-info{flex:1}
+.beat-name{font-size:15px;font-weight:700}
+.beat-genre{font-size:11px;color:var(--text2)}
+.beat-bpm{background:rgba(29,185,84,.2);color:#1DB954;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;flex-shrink:0}
+.beat-elements{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.beat-el-tag{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.beat-producers{font-size:11px;color:#1DB954;font-weight:600;margin-bottom:4px}
+.beat-vibes{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.beat-vibe{background:rgba(29,185,84,.12);color:#1DB954;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:600}
+.beat-detail{display:none}
+.beat-tips{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.5;border-left:2px solid #1DB954;padding-left:10px}
+.beat-artists{font-size:11px;color:var(--text2);margin-top:6px}
+.daw-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px;position:relative;overflow:hidden}
+.daw-card.top-pick{border-color:#1DB954}
+.daw-card.top-pick::before{content:'🏆 TOP PICK';position:absolute;top:8px;right:-24px;background:#1DB954;color:#000;font-size:9px;font-weight:800;padding:2px 30px;transform:rotate(45deg)}
+.daw-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.daw-icon{font-size:28px}
+.daw-name{font-size:15px;font-weight:700}
+.daw-price{font-size:13px;color:#1DB954;font-weight:700;margin-left:auto}
+.daw-tier{font-size:11px;color:#1DB954;font-weight:700;margin-bottom:6px}
+.daw-verdict{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.4}
+.daw-features{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.daw-feat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.daw-used-by{font-size:11px;color:var(--text2);margin-top:4px}
+.theory-section{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.theory-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.scale-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.scale-item:last-child{border-bottom:none}
+.scale-name{font-size:13px;font-weight:700;min-width:100px;color:#1DB954}
+.scale-mood{font-size:11px;color:var(--text2);flex:1}
+.scale-use{font-size:10px;color:var(--text2);font-style:italic}
+.prog-card{background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:8px}
+.prog-name{font-size:13px;font-weight:700;color:#1DB954}
+.prog-numerals{font-size:14px;font-weight:700;margin:4px 0;font-family:'Courier New',monospace}
+.prog-mood{font-size:11px;color:var(--text2)}
+.prog-examples{font-size:11px;color:var(--text2);margin-top:4px}
+.prog-genres{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.prog-genre{background:rgba(29,185,84,.12);color:#1DB954;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:600}
+.royalty-section{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.royalty-title{font-size:15px;font-weight:700;color:#1DB954;margin-bottom:8px}
+.royalty-desc{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.4}
+.pro-card{background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.pro-name{font-size:13px;font-weight:700;min-width:60px}
+.pro-info{font-size:11px;color:var(--text2);flex:1}
+.distro-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.distro-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.distro-icon{font-size:24px}
+.distro-name{font-size:15px;font-weight:700}
+.distro-price{font-size:13px;color:#1DB954;font-weight:700;margin-left:auto}
+.distro-keep{font-size:12px;color:#1DB954;font-weight:700;margin-bottom:6px}
+.distro-features{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.distro-feat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.equip-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.equip-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.equip-icon{font-size:28px}
+.equip-name{font-size:15px;font-weight:700}
+.equip-price{font-size:13px;color:#1DB954;font-weight:700;margin-left:auto}
+.equip-tier{font-size:11px;color:#1DB954;font-weight:700;margin-bottom:6px}
+.equip-verdict{font-size:12px;color:var(--text2);margin-bottom:8px;line-height:1.4}
+.equip-features{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.equip-feat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--text2)}
+.grammy-card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
+.grammy-year{font-size:18px;font-weight:800;color:#1DB954;margin-bottom:10px}
+.grammy-cat{margin-bottom:8px}
+.grammy-cat:last-child{margin-bottom:0}
+.grammy-cat-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.grammy-winner{font-size:13px;font-weight:700}
+.grammy-artist{font-size:12px;color:#1DB954}
+.revenue-calc-form{background:var(--card);border-radius:14px;padding:18px;border:1px solid var(--border);margin-bottom:16px}
+.revenue-output{background:var(--card);border-radius:14px;padding:18px;border:1px solid #1DB954;margin-bottom:12px}
+.revenue-platform{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.revenue-platform:last-child{border-bottom:none}
+.rev-icon{font-size:20px;width:28px;text-align:center}
+.rev-name{font-size:13px;font-weight:600;flex:1}
+.rev-amount{font-size:13px;font-weight:700;color:#1DB954}
+.milestone-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.milestone-row:last-child{border-bottom:none}
+.milestone-streams{font-size:12px;font-weight:600;min-width:90px}
+.milestone-rev{font-size:12px;color:var(--text2);flex:1}
+.milestone-status{font-size:14px}
+
+/* ==================== EMPIRE STYLES ==================== */
+.empire-tabs{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.empire-tabs::-webkit-scrollbar{display:none}
+.empire-tab{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .3s}
+.empire-tab.active{background:linear-gradient(135deg,#FFD700,#B8860B);color:#000;border-color:#FFD700;box-shadow:0 0 12px rgba(255,215,0,0.4)}
+.empire-panel{display:none;padding:0 16px 16px}
+.empire-panel.active{display:block}
+
+/* Brand Display */
+.brand-hero{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);border-radius:16px;padding:24px;margin-bottom:16px;text-align:center;border:2px solid #FFD700;position:relative;overflow:hidden}
+.brand-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,215,0,0.1),transparent);animation:empireRotate 8s linear infinite}
+@keyframes empireRotate{to{transform:rotate(360deg)}}
+.brand-name{font-size:22px;font-weight:800;background:linear-gradient(135deg,#FFD700,#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;position:relative}
+.brand-tagline{font-size:13px;color:#FFD700;opacity:0.8;margin-bottom:16px;position:relative}
+.brand-divisions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px;position:relative}
+.division-card{background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px;text-align:center;transition:all .3s}
+.division-card:hover{border-color:#FFD700;transform:translateY(-2px);box-shadow:0 4px 12px rgba(255,215,0,0.2)}
+.division-emoji{font-size:28px;margin-bottom:6px}
+.division-name{font-size:12px;font-weight:700;color:#FFD700}
+.division-desc{font-size:10px;color:var(--text2);margin-top:4px}
+.brand-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;position:relative}
+.brand-stat{background:rgba(255,215,0,0.06);border-radius:10px;padding:10px;text-align:center}
+.brand-stat-val{font-size:18px;font-weight:800;color:#FFD700}
+.brand-stat-label{font-size:10px;color:var(--text2);margin-top:2px}
+
+/* Merch Grid */
+.merch-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.merch-card:hover{border-color:#FFD700;box-shadow:0 0 12px rgba(255,215,0,0.15)}
+.merch-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.merch-emoji{font-size:32px}
+.merch-name{font-size:15px;font-weight:700;color:var(--text)}
+.merch-category{font-size:11px;color:#FFD700;font-weight:600}
+.merch-price{font-size:20px;font-weight:800;color:#FFD700}
+.merch-details{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.merch-detail{text-align:center;background:rgba(255,215,0,0.06);border-radius:8px;padding:8px}
+.merch-detail-val{font-size:14px;font-weight:700;color:var(--text)}
+.merch-detail-label{font-size:9px;color:var(--text2);text-transform:uppercase}
+.merch-features{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.merch-feature{background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:4px 10px;font-size:10px;color:#FFD700}
+.merch-colors{display:flex;gap:6px;margin-top:8px}
+.merch-color{background:rgba(255,215,0,0.08);border-radius:8px;padding:4px 10px;font-size:11px;color:var(--text2)}
+.merch-calculator{background:var(--bg2);border:1px solid #FFD700;border-radius:14px;padding:20px;margin-top:16px}
+.merch-calculator h3{color:#FFD700;margin-bottom:12px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.calc-row label{font-size:13px;color:var(--text2);min-width:100px}
+.calc-row select,.calc-row input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:13px}
+#merch-calc-result{margin-top:12px}
+.merch-result-card{background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(255,165,0,0.05));border:1px solid #FFD700;border-radius:12px;padding:16px;text-align:center}
+.merch-result-val{font-size:28px;font-weight:800;color:#FFD700}
+.merch-result-label{font-size:11px;color:var(--text2)}
+
+/* Venue Cards */
+.venue-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;transition:all .3s}
+.venue-card:hover{border-color:#FFD700;transform:translateY(-2px)}
+.venue-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.venue-name{font-size:16px;font-weight:700;color:var(--text)}
+.venue-type{font-size:11px;font-weight:600;color:#FFD700;background:rgba(255,215,0,0.1);padding:4px 10px;border-radius:12px}
+.venue-location{font-size:12px;color:var(--text2);margin-bottom:8px}
+.venue-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.venue-stat{text-align:center;background:rgba(255,215,0,0.06);border-radius:8px;padding:8px}
+.venue-stat-val{font-size:14px;font-weight:700;color:#FFD700}
+.venue-stat-label{font-size:9px;color:var(--text2);text-transform:uppercase}
+.venue-features{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.venue-feat{background:rgba(255,215,0,0.08);border-radius:8px;padding:3px 8px;font-size:10px;color:var(--text2)}
+
+/* Revenue Streams */
+.revenue-chart{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px}
+.revenue-bar{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.revenue-label{font-size:12px;font-weight:600;color:var(--text);min-width:120px}
+.revenue-track{flex:1;height:24px;background:rgba(255,215,0,0.08);border-radius:12px;overflow:hidden;position:relative}
+.revenue-fill{height:100%;background:linear-gradient(90deg,#FFD700,#FFA500);border-radius:12px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;transition:width 1s ease}
+.revenue-pct{font-size:11px;font-weight:700;color:#000}
+.revenue-total{text-align:center;margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(184,134,11,0.1));border-radius:12px;border:1px solid #FFD700}
+.revenue-total-val{font-size:28px;font-weight:800;color:#FFD700}
+.revenue-total-label{font-size:11px;color:var(--text2)}
+
+/* Contracts */
+.contract-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.contract-card:hover{border-color:#FFD700}
+.contract-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.contract-name{font-size:15px;font-weight:700;color:var(--text)}
+.contract-risk{font-size:11px;font-weight:600;padding:4px 10px;border-radius:12px}
+.contract-risk.low{background:rgba(0,200,83,0.15);color:#00c853}
+.contract-risk.medium{background:rgba(255,193,7,0.15);color:#ffc107}
+.contract-risk.high{background:rgba(244,67,54,0.15);color:#f44336}
+.contract-desc{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5}
+.contract-terms{display:flex;flex-wrap:wrap;gap:6px}
+.contract-term{background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.15);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--text2)}
+.contract-duration{font-size:11px;color:#FFD700;margin-top:8px;font-weight:600}
+
+/* Legal */
+.legal-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.legal-card:hover{border-color:#FFD700}
+.legal-emoji{font-size:28px;margin-bottom:8px}
+.legal-topic{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.legal-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.legal-points{list-style:none;padding:0}
+.legal-points li{font-size:11px;color:var(--text2);padding:4px 0;padding-left:16px;position:relative}
+.legal-points li::before{content:'⚖️';position:absolute;left:0;font-size:10px}
+
+/* Social Strategy */
+.social-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.social-card:hover{border-color:#FFD700;transform:translateY(-2px)}
+.social-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.social-icon{font-size:32px}
+.social-name{font-size:16px;font-weight:700;color:var(--text)}
+.social-audience{font-size:11px;color:#FFD700;font-weight:600}
+.social-strategy{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.social-content{display:flex;flex-wrap:wrap;gap:6px}
+.social-type{background:rgba(255,215,0,0.1);border-radius:12px;padding:4px 10px;font-size:10px;color:#FFD700}
+.social-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.social-metric{text-align:center;background:rgba(255,215,0,0.06);border-radius:8px;padding:8px}
+.social-metric-val{font-size:14px;font-weight:700;color:#FFD700}
+.social-metric-label{font-size:9px;color:var(--text2)}
+
+/* Pitch Output */
+.pitch-form{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.pitch-form h3{color:#FFD700;margin-bottom:16px}
+.pitch-field{margin-bottom:12px}
+.pitch-field label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:600}
+.pitch-field input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-size:14px;box-sizing:border-box}
+.pitch-field input:focus{border-color:#FFD700;outline:none;box-shadow:0 0 8px rgba(255,215,0,0.3)}
+.empire-action-btn{width:100%;padding:14px;background:linear-gradient(135deg,#FFD700,#B8860B);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;margin-top:8px}
+.empire-action-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(255,215,0,0.4)}
+.pitch-deck{background:var(--bg2);border:2px solid #FFD700;border-radius:16px;overflow:hidden;margin-top:16px}
+.pitch-deck-header{background:linear-gradient(135deg,#FFD700,#B8860B);padding:20px;text-align:center}
+.pitch-deck-title{font-size:18px;font-weight:800;color:#000}
+.pitch-deck-sub{font-size:12px;color:rgba(0,0,0,0.6)}
+.pitch-section{padding:16px;border-bottom:1px solid var(--border)}
+.pitch-section:last-child{border-bottom:none}
+.pitch-section-name{font-size:14px;font-weight:700;color:#FFD700;margin-bottom:8px}
+.pitch-section-content{font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-line}
+
+/* ==================== CYBER OPS STYLES ==================== */
+.cyber-ops-tabs{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cyber-ops-tabs::-webkit-scrollbar{display:none}
+.cop-tab{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .3s}
+.cop-tab.active{background:linear-gradient(135deg,#00ff41,#008f11);color:#000;border-color:#00ff41;box-shadow:0 0 12px rgba(0,255,65,0.4)}
+.cop-panel{display:none;padding:0 16px 16px}
+.cop-panel.active{display:block}
+
+/* PenTest Tool Cards */
+.pentool-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s;position:relative;overflow:hidden}
+.pentool-card:hover{border-color:#00ff41;box-shadow:0 0 12px rgba(0,255,65,0.15)}
+.pentool-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:#00ff41}
+.pentool-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.pentool-name{font-size:16px;font-weight:700;color:#00ff41}
+.pentool-cat{font-size:10px;font-weight:600;color:#000;background:#00ff41;padding:3px 10px;border-radius:12px}
+.pentool-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.pentool-cmds{background:#0a0a0a;border:1px solid #333;border-radius:8px;padding:10px;margin-bottom:8px;font-family:'Courier New',monospace}
+.pentool-cmd{font-size:11px;color:#00ff41;padding:3px 0;border-bottom:1px solid #1a1a1a}
+.pentool-cmd:last-child{border-bottom:none}
+.pentool-cmd::before{content:'$ ';color:#666}
+.pentool-meta{display:flex;gap:12px;margin-top:8px}
+.pentool-diff{font-size:11px;padding:3px 10px;border-radius:8px}
+.pentool-diff.beginner{background:rgba(0,200,83,0.15);color:#00c853}
+.pentool-diff.intermediate{background:rgba(255,193,7,0.15);color:#ffc107}
+.pentool-diff.advanced{background:rgba(244,67,54,0.15);color:#f44336}
+.pentool-power{font-size:11px;color:var(--text2)}
+.pentool-tip{font-size:11px;color:var(--text2);background:rgba(0,255,65,0.05);border-left:2px solid #00ff41;padding:8px;margin-top:8px;line-height:1.4}
+
+/* OWASP Cards */
+.owasp-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.owasp-card:hover{border-color:#ff4444}
+.owasp-rank{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:linear-gradient(135deg,#ff4444,#cc0000);color:#fff;border-radius:50%;font-size:12px;font-weight:800;margin-right:8px}
+.owasp-name{font-size:15px;font-weight:700;color:var(--text);display:inline}
+.owasp-severity{font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px;float:right}
+.owasp-severity.critical{background:rgba(244,67,54,0.2);color:#f44336}
+.owasp-severity.high{background:rgba(255,152,0,0.2);color:#ff9800}
+.owasp-severity.medium{background:rgba(255,193,7,0.2);color:#ffc107}
+.owasp-desc{font-size:12px;color:var(--text2);line-height:1.5;margin:10px 0}
+.owasp-section{margin-top:10px}
+.owasp-section-title{font-size:11px;font-weight:700;color:#ff4444;margin-bottom:6px}
+.owasp-list{display:flex;flex-wrap:wrap;gap:6px}
+.owasp-item{background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.15);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--text2)}
+.owasp-prev{background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.15);color:#00c853}
+
+/* Threat Intel */
+.threat-section{margin-bottom:20px}
+.threat-section-title{font-size:14px;font-weight:700;color:#ff4444;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.threat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;transition:all .3s}
+.threat-card:hover{border-color:#ff4444}
+.threat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.threat-name{font-size:14px;font-weight:700;color:var(--text)}
+.threat-danger{font-size:20px;font-weight:800;color:#ff4444}
+.threat-origin{font-size:11px;color:#00ff41;margin-bottom:4px}
+.threat-targets{font-size:11px;color:var(--text2)}
+.threat-ttps{font-size:11px;color:var(--text2);margin-top:4px;font-style:italic}
+.cve-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.cve-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.cve-id{font-size:13px;font-weight:700;font-family:'Courier New',monospace;color:#ff4444}
+.cve-cvss{font-size:12px;font-weight:800;padding:3px 10px;border-radius:8px}
+.cve-cvss.crit{background:rgba(244,67,54,0.2);color:#f44336}
+.cve-cvss.high{background:rgba(255,152,0,0.2);color:#ff9800}
+.cve-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.cve-desc{font-size:11px;color:var(--text2);line-height:1.4}
+.attack-vector{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.attack-vector:last-child{border-bottom:none}
+.av-emoji{font-size:24px}
+.av-info{flex:1}
+.av-name{font-size:13px;font-weight:700;color:var(--text)}
+.av-desc{font-size:10px;color:var(--text2)}
+.av-bar{width:100px;height:8px;background:rgba(255,68,68,0.1);border-radius:4px;overflow:hidden}
+.av-fill{height:100%;background:linear-gradient(90deg,#ff4444,#ff8800);border-radius:4px}
+.av-pct{font-size:12px;font-weight:700;color:#ff4444;min-width:40px;text-align:right}
+
+/* Forensics */
+.forensic-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.forensic-card:hover{border-color:#00bcd4}
+.forensic-emoji{font-size:32px;margin-bottom:8px}
+.forensic-name{font-size:15px;font-weight:700;color:#00bcd4}
+.forensic-cat{font-size:11px;color:var(--text2);margin-bottom:6px}
+.forensic-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.forensic-caps{display:flex;flex-wrap:wrap;gap:6px}
+.forensic-cap{background:rgba(0,188,212,0.1);border:1px solid rgba(0,188,212,0.2);border-radius:8px;padding:4px 10px;font-size:10px;color:#00bcd4}
+.forensic-use{font-size:11px;color:var(--text2);margin-top:8px;font-style:italic}
+
+/* Crypto */
+.crypto-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;transition:all .3s}
+.crypto-card:hover{border-color:#7c4dff}
+.crypto-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.crypto-name{font-size:14px;font-weight:700;color:var(--text)}
+.crypto-rec{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(0,200,83,0.15);color:#00c853}
+.crypto-rec.deprecated{background:rgba(244,67,54,0.15);color:#f44336}
+.crypto-rec.future{background:rgba(124,77,255,0.15);color:#7c4dff}
+.crypto-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.crypto-meta-item{text-align:center;background:rgba(124,77,255,0.06);border-radius:8px;padding:6px}
+.crypto-meta-val{font-size:12px;font-weight:700;color:#7c4dff}
+.crypto-meta-label{font-size:9px;color:var(--text2)}
+.crypto-use{font-size:11px;color:var(--text2);line-height:1.4}
+.protocol-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.protocol-name{font-size:14px;font-weight:700;color:#7c4dff}
+.protocol-status{font-size:11px;color:#00ff41;font-weight:600;margin-bottom:4px}
+.protocol-desc{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* IR */
+.ir-phase{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.ir-phase::before{content:attr(data-phase);position:absolute;top:0;right:0;background:#00ff41;color:#000;font-size:10px;font-weight:800;padding:4px 12px;border-radius:0 0 0 12px}
+.ir-phase-name{font-size:16px;font-weight:700;color:#00ff41;margin-bottom:4px}
+.ir-phase-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.ir-tasks{list-style:none;padding:0}
+.ir-tasks li{font-size:11px;color:var(--text2);padding:4px 0 4px 20px;position:relative}
+.ir-tasks li::before{content:'▸';position:absolute;left:0;color:#00ff41}
+.severity-card{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
+.severity-emoji{font-size:24px}
+.severity-level{font-size:13px;font-weight:700;color:var(--text)}
+.severity-response{font-size:11px;color:#ff4444;font-weight:600}
+.severity-desc{font-size:10px;color:var(--text2)}
+
+/* Compliance */
+.compliance-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.compliance-card:hover{border-color:#448aff}
+.compliance-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.compliance-name{font-size:15px;font-weight:700;color:#448aff}
+.compliance-diff{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(68,138,255,0.15);color:#448aff}
+.compliance-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.compliance-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.compliance-meta-item{background:rgba(68,138,255,0.06);border-radius:8px;padding:8px;text-align:center}
+.compliance-meta-val{font-size:12px;font-weight:700;color:#448aff}
+.compliance-meta-label{font-size:9px;color:var(--text2)}
+
+/* Certs */
+.cert-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.cert-card:hover{border-color:#FFD700}
+.cert-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cert-name{font-size:15px;font-weight:700;color:var(--text)}
+.cert-level{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px}
+.cert-level.entry{background:rgba(0,200,83,0.15);color:#00c853}
+.cert-level.intermediate{background:rgba(255,193,7,0.15);color:#ffc107}
+.cert-level.advanced{background:rgba(255,152,0,0.15);color:#ff9800}
+.cert-level.expert{background:rgba(244,67,54,0.15);color:#f44336}
+.cert-level.specialist{background:rgba(124,77,255,0.15);color:#7c4dff}
+.cert-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.cert-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cert-meta-item{background:rgba(255,215,0,0.06);border-radius:8px;padding:8px;text-align:center}
+.cert-meta-val{font-size:12px;font-weight:700;color:#FFD700}
+.cert-meta-label{font-size:9px;color:var(--text2)}
+
+/* Simulation */
+.sim-form{background:var(--bg2);border:1px solid #00ff41;border-radius:14px;padding:20px;margin-bottom:16px}
+.sim-form h3{color:#00ff41;margin-bottom:8px}
+.sim-form select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-size:14px;margin-bottom:12px}
+.cop-action-btn{width:100%;padding:14px;background:linear-gradient(135deg,#00ff41,#008f11);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s}
+.cop-action-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,255,65,0.4)}
+.sim-result{background:var(--bg2);border:2px solid #00ff41;border-radius:16px;overflow:hidden;margin-top:16px}
+.sim-header{background:linear-gradient(135deg,#00ff41,#008f11);padding:16px;text-align:center}
+.sim-title{font-size:16px;font-weight:800;color:#000}
+.sim-meta{font-size:11px;color:rgba(0,0,0,0.6)}
+.sim-step{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.sim-step:last-child{border-bottom:none}
+.sim-step-num{width:28px;height:28px;background:rgba(0,255,65,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#00ff41}
+.sim-step-action{flex:1;font-size:12px;color:var(--text)}
+.sim-step-status{font-size:12px;font-weight:600}
+.sim-step-dur{font-size:10px;color:var(--text2)}
+.sim-verdict{padding:16px;text-align:center;background:rgba(0,255,65,0.05)}
+.sim-verdict-score{font-size:22px;font-weight:800;color:#00ff41}
+.sim-verdict-text{font-size:12px;color:var(--text2);margin-top:4px}
+
+/* ==================== WEB3 STYLES ==================== */
+.w3-tabs{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.w3-tabs::-webkit-scrollbar{display:none}
+.w3-tab{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .3s}
+.w3-tab.active{background:linear-gradient(135deg,#7c4dff,#448aff);color:#fff;border-color:#7c4dff;box-shadow:0 0 12px rgba(124,77,255,0.4)}
+.w3-panel{display:none;padding:0 16px 16px}
+.w3-panel.active{display:block}
+
+/* NFT Cards */
+.nft-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;transition:all .3s;position:relative;overflow:hidden}
+.nft-card:hover{border-color:#7c4dff;box-shadow:0 0 20px rgba(124,77,255,0.2)}
+.nft-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7c4dff,#448aff,#00bcd4)}
+.nft-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.nft-name{font-size:17px;font-weight:700;color:var(--text)}
+.nft-chain{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(124,77,255,0.15);color:#7c4dff}
+.nft-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px}
+.nft-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.nft-stat{text-align:center;background:rgba(124,77,255,0.06);border-radius:10px;padding:8px 4px}
+.nft-stat-val{font-size:13px;font-weight:700;color:#7c4dff}
+.nft-stat-label{font-size:9px;color:var(--text2);text-transform:uppercase}
+.nft-utils{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.nft-util{background:rgba(124,77,255,0.08);border:1px solid rgba(124,77,255,0.2);border-radius:10px;padding:4px 10px;font-size:10px;color:#b388ff}
+.nft-rarity{display:flex;gap:8px;flex-wrap:wrap}
+.nft-rarity-tier{font-size:10px;color:var(--text2);background:rgba(124,77,255,0.05);border-radius:8px;padding:3px 8px}
+.nft-mint-btn{width:100%;padding:12px;background:linear-gradient(135deg,#7c4dff,#448aff);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;transition:all .3s}
+.nft-mint-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(124,77,255,0.4)}
+.mint-result{margin-top:10px;background:rgba(124,77,255,0.1);border:1px solid #7c4dff;border-radius:12px;padding:14px;text-align:center}
+.mint-result-title{font-size:14px;font-weight:700;color:#7c4dff;margin-bottom:4px}
+.mint-result-detail{font-size:11px;color:var(--text2)}
+
+/* Wallet */
+.wallet-section{margin-bottom:16px}
+.wallet-section-title{font-size:14px;font-weight:700;color:#7c4dff;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.chain-card{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;transition:all .3s}
+.chain-card:hover{border-color:#7c4dff}
+.chain-emoji{font-size:28px}
+.chain-name{font-size:14px;font-weight:700;color:var(--text)}
+.chain-type{font-size:10px;color:#7c4dff;font-weight:600}
+.chain-cap{font-size:11px;color:var(--text2)}
+.chain-use{font-size:10px;color:var(--text2)}
+.security-feat{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)}
+.security-feat:last-child{border-bottom:none}
+.security-feat::before{content:'🛡️';font-size:14px}
+
+/* Smart Contracts */
+.sc-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.sc-card:hover{border-color:#7c4dff}
+.sc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sc-name{font-size:15px;font-weight:700;color:var(--text)}
+.sc-lang{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(124,77,255,0.15);color:#7c4dff}
+.sc-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.sc-features{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.sc-feat{background:rgba(124,77,255,0.08);border-radius:8px;padding:4px 10px;font-size:10px;color:#b388ff}
+.sc-meta{display:flex;gap:12px;font-size:11px;color:var(--text2)}
+.sc-audit{font-weight:600}
+
+/* Virtual Venues */
+.vv-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;transition:all .3s;position:relative;overflow:hidden}
+.vv-card:hover{border-color:#7c4dff;transform:translateY(-2px)}
+.vv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.vv-name{font-size:17px;font-weight:700;color:var(--text)}
+.vv-type{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(124,77,255,0.15);color:#7c4dff}
+.vv-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.vv-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.vv-stat{text-align:center;background:rgba(124,77,255,0.06);border-radius:10px;padding:8px}
+.vv-stat-val{font-size:13px;font-weight:700;color:#7c4dff}
+.vv-stat-label{font-size:9px;color:var(--text2)}
+.vv-features{display:flex;flex-wrap:wrap;gap:6px}
+.vv-feat{background:rgba(124,77,255,0.08);border-radius:8px;padding:4px 10px;font-size:10px;color:#b388ff}
+
+/* Token Economy */
+.token-hero{background:linear-gradient(135deg,#1a0a3e,#2d1b69,#1a0a3e);border:2px solid #7c4dff;border-radius:16px;padding:24px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden}
+.token-hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(124,77,255,0.1),transparent);animation:empireRotate 10s linear infinite}
+.token-name{font-size:24px;font-weight:800;color:#7c4dff;position:relative}
+.token-symbol{font-size:14px;color:#b388ff;position:relative}
+.token-price{font-size:32px;font-weight:800;color:#00ff41;margin:12px 0;position:relative}
+.token-mcap{font-size:12px;color:var(--text2);position:relative}
+.token-dist{margin-top:16px}
+.token-dist-bar{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.token-dist-label{font-size:12px;font-weight:600;color:var(--text);min-width:130px}
+.token-dist-track{flex:1;height:20px;background:rgba(124,77,255,0.08);border-radius:10px;overflow:hidden}
+.token-dist-fill{height:100%;background:linear-gradient(90deg,#7c4dff,#448aff);border-radius:10px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.token-dist-pct{font-size:10px;font-weight:700;color:#fff}
+.token-utils{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.token-util-item{background:rgba(124,77,255,0.1);border:1px solid rgba(124,77,255,0.2);border-radius:10px;padding:6px 12px;font-size:11px;color:#b388ff}
+
+/* DeFi */
+.defi-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.defi-card:hover{border-color:#7c4dff}
+.defi-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.defi-name{font-size:15px;font-weight:700;color:var(--text)}
+.defi-apy{font-size:14px;font-weight:800;color:#00ff41;background:rgba(0,255,65,0.1);padding:4px 12px;border-radius:12px}
+.defi-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.defi-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.defi-meta-item{background:rgba(124,77,255,0.06);border-radius:10px;padding:10px;text-align:center}
+.defi-meta-val{font-size:12px;font-weight:700;color:#7c4dff}
+.defi-meta-label{font-size:9px;color:var(--text2)}
+
+/* Explorer */
+.explorer-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.explorer-stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.explorer-stat-val{font-size:14px;font-weight:700;color:#7c4dff}
+.explorer-stat-label{font-size:9px;color:var(--text2)}
+.tx-card{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:6px;font-size:11px}
+.tx-hash{font-family:'Courier New',monospace;color:#7c4dff;min-width:80px}
+.tx-type{font-weight:600;color:var(--text);min-width:90px}
+.tx-amount{color:#00ff41;font-weight:600;min-width:80px}
+.tx-parties{color:var(--text2);flex:1}
+.tx-time{color:var(--text2);min-width:60px;text-align:right}
+
+/* Learn */
+.learn-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.learn-card:hover{border-color:#7c4dff}
+.learn-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.learn-topic{font-size:15px;font-weight:700;color:var(--text)}
+.learn-diff{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px}
+.learn-diff.beginner{background:rgba(0,200,83,0.15);color:#00c853}
+.learn-diff.intermediate{background:rgba(255,193,7,0.15);color:#ffc107}
+.learn-diff.advanced{background:rgba(244,67,54,0.15);color:#f44336}
+.learn-desc{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* ==================== INTEL STYLES ==================== */
+.intel-tabs{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.intel-tabs::-webkit-scrollbar{display:none}
+.intel-tab{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:8px 14px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .3s}
+.intel-tab.active{background:linear-gradient(135deg,#ff6d00,#ff9100);color:#000;border-color:#ff6d00;box-shadow:0 0 12px rgba(255,109,0,0.4)}
+.intel-panel{display:none;padding:0 16px 16px}
+.intel-panel.active{display:block}
+
+/* OSINT Tool Cards */
+.osint-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s;border-left:3px solid #ff6d00}
+.osint-card:hover{border-color:#ff6d00}
+.osint-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.osint-name{font-size:16px;font-weight:700;color:#ff6d00}
+.osint-cat{font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;background:rgba(255,109,0,0.15);color:#ff6d00}
+.osint-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.osint-caps{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.osint-cap{background:rgba(255,109,0,0.08);border:1px solid rgba(255,109,0,0.2);border-radius:8px;padding:4px 10px;font-size:10px;color:#ffab40}
+.osint-meta{display:flex;gap:12px;font-size:11px;color:var(--text2)}
+
+/* Threat Profiles */
+.profile-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.profile-card:hover{border-color:#ff6d00}
+.profile-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.profile-type{font-size:16px;font-weight:700;color:var(--text)}
+.profile-danger{font-size:18px;font-weight:800;color:#ff4444}
+.profile-section{margin-top:10px}
+.profile-section-title{font-size:11px;font-weight:700;color:#ff6d00;margin-bottom:6px}
+.profile-items{display:flex;flex-wrap:wrap;gap:6px}
+.profile-item{background:rgba(255,109,0,0.08);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--text2)}
+.profile-defense{font-size:11px;color:var(--text2);background:rgba(0,200,83,0.06);border-left:2px solid #00c853;padding:8px;margin-top:8px;line-height:1.4}
+
+/* Encrypted Comms */
+.comm-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.comm-card:hover{border-color:#ff6d00}
+.comm-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.comm-name{font-size:16px;font-weight:700;color:var(--text)}
+.comm-rating{font-size:14px;font-weight:800;color:#ff6d00}
+.comm-enc{font-size:11px;color:#ffab40;font-weight:600;margin-bottom:8px}
+.comm-features{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.comm-feat{background:rgba(255,109,0,0.08);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--text2)}
+.comm-platforms{font-size:11px;color:var(--text2);margin-bottom:6px}
+.comm-verdict{font-size:12px;font-weight:600;color:#ff6d00}
+
+/* Social Engineering */
+.soceng-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.soceng-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+.soceng-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.soceng-defense{font-size:11px;color:var(--text2);background:rgba(0,200,83,0.06);border-left:2px solid #00c853;padding:8px;line-height:1.4}
+.soceng-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.soceng-stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.soceng-stat-val{font-size:16px;font-weight:800;color:#ff4444}
+.soceng-stat-label{font-size:9px;color:var(--text2)}
+
+/* Privacy Tools */
+.priv-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.priv-card:hover{border-color:#ff6d00}
+.priv-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.priv-name{font-size:15px;font-weight:700;color:var(--text)}
+.priv-rec{font-size:11px;font-weight:600;color:#ff6d00}
+.priv-desc{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* Counter-Surveillance */
+.cs-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.cs-threat{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
+.cs-section{margin-top:8px}
+.cs-section-title{font-size:11px;font-weight:700;color:#ff6d00;margin-bottom:4px}
+.cs-items{display:flex;flex-wrap:wrap;gap:6px}
+.cs-item{background:rgba(255,109,0,0.08);border-radius:8px;padding:4px 10px;font-size:10px;color:var(--text2)}
+.cs-counter{font-size:11px;color:var(--text2);background:rgba(255,109,0,0.05);border-left:2px solid #ff6d00;padding:8px;margin-top:8px;line-height:1.4}
+
+/* Breach Cards */
+.breach-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:all .3s}
+.breach-card:hover{border-color:#ff4444}
+.breach-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.breach-name{font-size:15px;font-weight:700;color:var(--text)}
+.breach-impact{font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px}
+.breach-impact.catastrophic{background:rgba(244,67,54,0.2);color:#f44336}
+.breach-impact.critical{background:rgba(255,152,0,0.2);color:#ff9800}
+.breach-impact.high{background:rgba(255,193,7,0.2);color:#ffc107}
+.breach-records{font-size:22px;font-weight:800;color:#ff4444;margin:6px 0}
+.breach-type{font-size:11px;color:var(--text2);margin-bottom:6px}
+.breach-lesson{font-size:11px;color:var(--text2);background:rgba(255,109,0,0.05);border-left:2px solid #ff6d00;padding:8px;line-height:1.4}
+/* ========== HUB NAVIGATION ========== */
+.hub-header{text-align:center;padding:30px 20px 20px}
+.hub-title{font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--gold),#ff6b6b,#7c4dff,#00ff41);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hub-sub{font-size:13px;color:var(--text2);margin-top:6px}
+.hub-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:10px 20px}
+.hub-tile{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .25s ease;position:relative;overflow:hidden}
+.hub-tile:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 8px 30px rgba(255,215,0,.15)}
+.hub-tile:active{transform:scale(.96)}
+.hub-tile-icon{font-size:44px;margin-bottom:10px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))}
+.hub-tile-name{font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px}
+.hub-tile-desc{font-size:11px;color:var(--text2);line-height:1.3}
+.hub-tile::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.hub-tile:hover::after{opacity:1}
+/* Offline Badge */
+.offline-badge{position:fixed;top:8px;right:8px;background:linear-gradient(135deg,#00c853,#00e676);color:#000;font-size:9px;font-weight:900;padding:4px 10px;border-radius:20px;z-index:999;letter-spacing:.5px;display:flex;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(0,200,83,.3)}
+.offline-badge::before{content:'';width:6px;height:6px;background:#000;border-radius:50%;animation:pulse-dot 2s ease infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+/* Storage Panel */
+.storage-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
+.storage-card-title{font-size:14px;font-weight:800;color:var(--gold);margin-bottom:8px}
+.storage-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.storage-row:last-child{border:none}
+.storage-key{color:var(--text2)}
+.storage-val{color:var(--text);font-weight:600}
+.storage-bar{height:8px;background:var(--bg3);border-radius:4px;margin-top:8px;overflow:hidden}
+.storage-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),#00e676);border-radius:4px;transition:width .5s}
+.storage-dir{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg3);border-radius:10px;margin-bottom:6px;font-size:11px}
+.storage-dir-name{color:var(--gold);font-weight:700}
+.storage-dir-info{color:var(--text2)}
+/* Back button for sub-pages */
+.back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);color:var(--gold);font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;margin-right:12px}
+.back-btn:hover{background:var(--gold);color:#000}
+.back-btn::before{content:'◀';font-size:10px}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="offline-badge">OFFLINE MODE</div>
+<div id="splash">
+  <div class="splash-logo">🐐</div>
+  <div class="splash-title">GOAT Connect</div>
+  <div class="splash-sub">OFFLINE EDITION v3.0 — Zero Cloud. Zero Tracking.</div>
+  <div class="splash-bar"><div class="splash-fill"></div></div>
+  <div style="font-size:11px;color:#FFD700;margin-top:8px;letter-spacing:1px">🔒 NO LOGINS &bull; 💾 ALL LOCAL &bull; 🛡️ YOUR DATA</div>
+  <div class="splash-copy">&#xA9; 2024 HARVEY L MILLER JR &bull; DJ SPEEDY<br>All Rights Reserved</div>
+</div>
+<div id="auth-page">
+  <div class="auth-hero">
+    <div class="auth-logo">&#x1F495;</div>
+    <div class="auth-title">GOAT Connect</div>
+    <div class="auth-sub">The Ultimate Celebrity Fan Dating Platform</div>
+  </div>
+  <div class="auth-tabs">
+    <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
+    <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+  </div>
+  <div class="auth-form" id="auth-form-login">
+    <input class="auth-input" type="email" placeholder="Email address" id="login-email" value="djspeedy@goatroyaltyapp.org"/>
+    <input class="auth-input" type="password" placeholder="Password" id="login-password" value="password123"/>
+    <button class="auth-btn" onclick="doLogin()">&#x1F513; Sign In</button>
+  </div>
+  <div class="auth-form" id="auth-form-register" style="display:none">
+    <input class="auth-input" type="text" placeholder="Full name" id="reg-name"/>
+    <input class="auth-input" type="email" placeholder="Email" id="reg-email"/>
+    <input class="auth-input" type="password" placeholder="Password (min 8 chars)" id="reg-password"/>
+    <div class="auth-notice"><strong>&#x1F6E1;&#xFE0F; Background Check Required</strong><br>All users must pass background check + facial recognition.<br><strong>&#x1F3E6; Banking Verification</strong> required for premium features.</div>
+    <button class="auth-btn" onclick="doRegister()">&#x1F680; Create Account</button>
+  </div>
+</div>
+<div id="main">
+  <!-- ========== CATEGORY HUB PAGES ========== -->
+  <div class="page active" id="page-dating">
+    <div class="hub-header">
+      <div class="hub-title">💕 Dating</div>
+      <div class="hub-sub">Find your perfect match</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="openSubPage('discover','dating')">
+        <div class="hub-tile-icon">💕</div>
+        <div class="hub-tile-name">Discover</div>
+        <div class="hub-tile-desc">AI-Powered Matching</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('matches','dating')">
+        <div class="hub-tile-icon">💌</div>
+        <div class="hub-tile-name">Matches</div>
+        <div class="hub-tile-desc">Your Connections</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('stars','dating')">
+        <div class="hub-tile-icon">🌍</div>
+        <div class="hub-tile-name">World Stars</div>
+        <div class="hub-tile-desc">30+ Global Celebrities</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('feed','dating')">
+        <div class="hub-tile-icon">📱</div>
+        <div class="hub-tile-name">Feed</div>
+        <div class="hub-tile-desc">Social Timeline</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-creative">
+    <div class="hub-header">
+      <div class="hub-title">🎨 Creative Studio</div>
+      <div class="hub-sub">Music · Writing · Avatar · Gaming</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="openSubPage('music','creative')">
+        <div class="hub-tile-icon">🎵</div>
+        <div class="hub-tile-name">Music Studio</div>
+        <div class="hub-tile-desc">Production · Royalties · Distribution</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('writing','creative')">
+        <div class="hub-tile-icon">✍️</div>
+        <div class="hub-tile-name">Writing Studio</div>
+        <div class="hub-tile-desc">Hollywood Script Engine</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('avatar','creative')">
+        <div class="hub-tile-icon">🎭</div>
+        <div class="hub-tile-name">Avatar Studio</div>
+        <div class="hub-tile-desc">DAZ3D · MetaHuman · FiveM</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('gaming','creative')">
+        <div class="hub-tile-icon">🎮</div>
+        <div class="hub-tile-name">UE5 Studio</div>
+        <div class="hub-tile-desc">C++ · FiveM · Blueprints</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-security">
+    <div class="hub-header">
+      <div class="hub-title">🛡️ Security Center</div>
+      <div class="hub-sub">Defense · Intelligence · Operations</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="openSubPage('cyber','security')">
+        <div class="hub-tile-icon">⚔️</div>
+        <div class="hub-tile-name">Cyber Defense</div>
+        <div class="hub-tile-desc">Military-Grade Protection</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('cyberops','security')">
+        <div class="hub-tile-icon">🔐</div>
+        <div class="hub-tile-name">Cyber Ops</div>
+        <div class="hub-tile-desc">PenTest · OWASP · Forensics</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('intel','security')">
+        <div class="hub-tile-icon">📡</div>
+        <div class="hub-tile-name">Intelligence</div>
+        <div class="hub-tile-desc">OSINT · Threats · Counter-Intel</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('secstatus','security')">
+        <div class="hub-tile-icon">🛡️</div>
+        <div class="hub-tile-name">Security Status</div>
+        <div class="hub-tile-desc">Grade · Encryption · Score</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-business">
+    <div class="hub-header">
+      <div class="hub-title">💰 Business Empire</div>
+      <div class="hub-sub">Royalties · Web3 · Revenue</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="openSubPage('empire','business')">
+        <div class="hub-tile-icon">🏰</div>
+        <div class="hub-tile-name">Royalty Empire</div>
+        <div class="hub-tile-desc">Brand · Merch · Venues · Revenue</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('web3','business')">
+        <div class="hub-tile-icon">🌐</div>
+        <div class="hub-tile-name">Web3 & Metaverse</div>
+        <div class="hub-tile-desc">NFTs · DeFi · $GOAT Token</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('catalog','business')">
+        <div class="hub-tile-icon">📀</div>
+        <div class="hub-tile-name">Real Catalog</div>
+        <div class="hub-tile-desc">333 ASCAP Works · ISRC · Collabs</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('datasets','business')">
+        <div class="hub-tile-icon">🤗</div>
+        <div class="hub-tile-name">HF Datasets</div>
+        <div class="hub-tile-desc">41 AI Datasets · No API Key</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-me">
+    <div class="hub-header">
+      <div class="hub-title">👑 My Profile</div>
+      <div class="hub-sub">Identity · Settings · Security</div>
+    </div>
+    <div class="hub-grid">
+      <div class="hub-tile" onclick="openSubPage('profile','me')">
+        <div class="hub-tile-icon">👑</div>
+        <div class="hub-tile-name">Profile</div>
+        <div class="hub-tile-desc">Your GOAT Identity</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('faceid','me')">
+        <div class="hub-tile-icon">👤</div>
+        <div class="hub-tile-name">Face ID</div>
+        <div class="hub-tile-desc">AI Identity Verification</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('localstorage','me')">
+        <div class="hub-tile-icon">💾</div>
+        <div class="hub-tile-name">Local Storage</div>
+        <div class="hub-tile-desc">Your Data · Backups · Export</div>
+      </div>
+      <div class="hub-tile" onclick="openSubPage('secstatus','security')">
+        <div class="hub-tile-icon">🛡️</div>
+        <div class="hub-tile-name">Security Status</div>
+        <div class="hub-tile-desc">Grade · Encryption · Score</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ========== DATASETS SUBPAGE ========== -->
+  <div class="page" id="page-datasets">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F917; HuggingFace Datasets</div><div class="page-sub">41 AI Datasets &middot; No API Key &middot; Download & Go</div></div>
+      <div class="header-badge" id="ds-count-badge">41</div>
+    </div>
+
+    <div style="padding:0 16px 12px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+        <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center;border:1px solid var(--border)">
+          <div style="font-size:22px;font-weight:800;color:var(--gold)" id="ds-stat-total">41</div>
+          <div style="font-size:10px;color:var(--text2)">Datasets</div>
+        </div>
+        <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center;border:1px solid var(--border)">
+          <div style="font-size:22px;font-weight:800;color:#4CAF50" id="ds-stat-cats">8</div>
+          <div style="font-size:10px;color:var(--text2)">Categories</div>
+        </div>
+        <div style="background:var(--card);border-radius:12px;padding:12px;text-align:center;border:1px solid var(--border)">
+          <div style="font-size:22px;font-weight:800;color:#2196F3" id="ds-stat-local">0</div>
+          <div style="font-size:10px;color:var(--text2)">Downloaded</div>
+        </div>
+      </div>
+
+      <input type="text" id="ds-search" placeholder="&#x1F50D; Search datasets..." oninput="searchDatasets()" style="width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px;outline:none;box-sizing:border-box;margin-bottom:8px">
+
+      <div style="display:flex;gap:8px">
+        <select id="ds-sort" onchange="sortDatasets()" style="flex:1;padding:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px">
+          <option value="name">Sort: Name</option>
+          <option value="downloads">Sort: Downloads</option>
+          <option value="trending">Sort: Trending</option>
+        </select>
+        <select id="ds-category" onchange="filterDatasetCat()" style="flex:1;padding:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px">
+          <option value="all">All Categories</option>
+        </select>
+        <button onclick="liveSearchHF()" style="padding:8px 14px;background:linear-gradient(135deg,#FFD700,#FFA500);border:none;border-radius:10px;color:#000;font-weight:700;font-size:12px;cursor:pointer">&#x1F917; Live</button>
+      </div>
+    </div>
+
+    <div class="section-label">DATASETS CATALOG</div>
+    <div id="datasets-grid" style="display:grid;grid-template-columns:1fr;gap:8px;padding:0 16px 16px"></div>
+
+    <div class="section-label">LOCAL DOWNLOADS</div>
+    <div id="datasets-local" style="padding:0 16px 100px"></div>
+  </div>
+
+  <!-- ========== END CATEGORY HUBS ========== -->
+
+  <div class="page" id="page-discover">
+    <div class="discover-header">
+      <div><div style="font-size:22px;font-weight:800">&#x1F495; Discover</div><div style="font-size:12px;color:var(--text2)">AI-Powered Matching</div></div>
+      <div style="display:flex;gap:10px">
+        <div style="font-size:22px;cursor:pointer" onclick="showToast('Background Check: VERIFIED &#x2705;','success')">&#x1F50D;</div>
+        <div style="font-size:22px;cursor:pointer" onclick="openSubPage('secstatus','security')">&#x1F6E1;&#xFE0F;</div>
+      </div>
+    </div>
+    <div class="swipe-area" id="swipe-area"></div>
+    <div class="swipe-actions">
+      <div class="swipe-btn nope" onclick="swipe('left')">&#x2715;</div>
+      <div class="swipe-btn super" onclick="swipe('super')">&#x2B50;</div>
+      <div class="swipe-btn like" onclick="swipe('right')">&#x2665;</div>
+    </div>
+    <div style="text-align:center;font-size:12px;color:var(--text3);padding-bottom:4px">Swipe cards or use arrow keys</div>
+  </div>
+  <div class="page" id="page-matches">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F48C; Matches</div><div class="page-sub">Your connections</div></div>
+      <div class="header-badge">12 New</div>
+    </div>
+    <div class="section-label">New Matches</div>
+    <div class="match-new-row" id="match-bubbles"></div>
+    <div class="divider" style="margin:0 16px"></div>
+    <div class="section-label">All Matches</div>
+    <div class="match-grid" id="match-grid"></div>
+  </div>
+  <div class="page" id="page-stars">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F30D; World Stars</div><div class="page-sub">20+ Global Celebrities</div></div>
+      <div class="header-badge">Live</div>
+    </div>
+    <input class="stars-search" placeholder="Search celebrities, genres, cities..." id="celeb-search" oninput="filterCelebs()"/>
+    <div class="genre-chips" id="genre-chips"></div>
+    <div class="world-map-section">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">&#x1F5FA;&#xFE0F; Global Reach</div>
+      <div class="world-map-grid" id="world-map-grid"></div>
+    </div>
+    <div class="celeb-grid" id="celeb-grid"></div>
+  </div>
+  <div class="page" id="page-faceid">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F464; Face ID</div><div class="page-sub">AI Identity Verification</div></div>
+      <div class="header-badge" style="background:var(--grad4)">Secure</div>
+    </div>
+    <div class="face-hero">
+      <div class="face-circle" id="face-circle">
+        <div class="face-scan-line"></div>
+        <span id="face-emoji" style="position:relative;z-index:1">&#x1F464;</span>
+      </div>
+      <div class="face-status" id="face-status">Ready to Verify</div>
+      <div class="face-sub">5-Provider AI &bull; AWS Rekognition &bull; NVIDIA Deepfake Detector</div>
+    </div>
+    <button class="face-verify-btn" onclick="startFaceVerification()">&#x1F50D; Start Face Verification</button>
+    <div class="section-label">AI Providers</div>
+    <div class="face-providers" id="face-providers"></div>
+    <div class="section-label">Security Checks</div>
+    <div class="face-checks" id="face-checks"></div>
+    <div class="section-label">Privacy</div>
+    <div class="card" style="margin:0 16px 16px;font-size:12px;color:var(--text2);line-height:1.8">
+      &#x1F510; Face vectors encrypted with <strong style="color:var(--green)">Homomorphic Encryption</strong><br>
+      &#x2705; GDPR &bull; CCPA &bull; BIPA &bull; ISO 27001 Compliant
+    </div>
+  </div>
+  <div class="page" id="page-avatar">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F3AD; Avatar Studio</div><div class="page-sub">DAZ3D + MetaHuman + FiveM</div></div>
+      <div class="header-badge" style="background:var(--grad1)">UE5</div>
+    </div>
+    <div class="avatar-preview" id="avatar-preview">
+      <span id="avatar-emoji">&#x1F9D1;</span>
+      <div class="avatar-preview-badge" id="avatar-platform-badge">DAZ3D Genesis 9</div>
+    </div>
+    <div class="section-label">Platform</div>
+    <div class="platform-tabs" id="platform-tabs"></div>
+    <div class="section-label">Options</div>
+    <div class="option-group">
+      <div class="option-label">Gender</div>
+      <div class="option-row" id="opt-gender"></div>
+    </div>
+    <div class="option-group">
+      <div class="option-label">Style</div>
+      <div class="option-row" id="opt-style"></div>
+    </div>
+    <div class="section-label">Animations</div>
+    <div class="anim-grid" id="anim-grid"></div>
+    <div class="section-label">Hollywood Cameras</div>
+    <div class="camera-grid" id="camera-grid"></div>
+    <button class="create-avatar-btn" onclick="createAvatar()">&#x1F3AD; Create My Avatar</button>
+  </div>
+  <div class="page" id="page-cyber">
+    <div class="page-header">
+      <div><div class="page-title">&#x2694;&#xFE0F; Cyber Defense</div><div class="page-sub">Military-Grade Protection</div></div>
+      <div class="header-badge" style="background:var(--grad4)">A+</div>
+    </div>
+    <div class="cyber-grade">
+      <div class="cyber-grade-letter">A+</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:4px">Security Rating</div>
+      <div style="font-size:11px;color:var(--green);margin-top:6px">&#x2705; Zero active threats</div>
+    </div>
+    <div class="stats-grid" id="cyber-stats-grid"></div>
+    <div class="threat-monitor">
+      <div class="threat-title">Live Threat Monitor <span class="threat-live">LIVE</span></div>
+      <div id="threat-feed"></div>
+    </div>
+    <div class="av-engines">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">&#x1F6E1;&#xFE0F; 6-Engine Antivirus Suite</div>
+      <div id="av-engine-list"></div>
+    </div>
+    <div class="section-label">Breach Check</div>
+    <div class="breach-check-form">
+      <input class="breach-input" type="email" placeholder="Enter email to check for breaches..." id="breach-email"/>
+      <button class="breach-btn" onclick="checkBreach()">&#x1F50D; Check for Data Breaches</button>
+    </div>
+    <div class="section-label">Threat Intelligence</div>
+    <div id="threat-intel-list" style="padding:0 16px 16px"></div>
+  </div>
+  <div class="page" id="page-gaming">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F3AE; UE5 Studio</div><div class="page-sub">C++ &bull; FiveM &bull; Blueprints</div></div>
+      <div class="header-badge" style="background:var(--grad1)">Pro</div>
+    </div>
+    <div class="gaming-tabs">
+      <div class="gaming-tab active" onclick="switchGamingTab('cpp',this)">C++ Books</div>
+      <div class="gaming-tab" onclick="switchGamingTab('ue5',this)">UE5</div>
+      <div class="gaming-tab" onclick="switchGamingTab('fivem',this)">FiveM</div>
+      <div class="gaming-tab" onclick="switchGamingTab('blueprint',this)">Blueprints</div>
+    </div>
+    <div class="gaming-panel active" id="gaming-panel-cpp">
+      <div id="cpp-learning-path"></div>
+      <div id="cpp-books-list"></div>
+    </div>
+    <div class="gaming-panel" id="gaming-panel-ue5"><div id="ue5-tutorials-list"></div></div>
+    <div class="gaming-panel" id="gaming-panel-fivem"><div id="fivem-servers-list"></div></div>
+    <div class="gaming-panel" id="gaming-panel-blueprint"><div id="blueprint-list"></div></div>
+  </div>
+  <!-- ==================== MUSIC PRODUCTION STUDIO PAGE ==================== -->
+  <div class="page" id="page-music">
+    <div class="page-header">
+      <div><div class="page-title">🎵 Music Studio</div><div class="page-sub">Production &bull; Royalties &bull; Distribution</div></div>
+      <div class="header-badge" style="background:linear-gradient(135deg,#1DB954,#191414)">🎧 Pro</div>
+    </div>
+    <div class="music-tabs">
+      <div class="music-tab active" onclick="switchMusicTab('beats',this)">🔊 Beats</div>
+      <div class="music-tab" onclick="switchMusicTab('daws',this)">🎛️ DAWs</div>
+      <div class="music-tab" onclick="switchMusicTab('theory',this)">🎼 Theory</div>
+      <div class="music-tab" onclick="switchMusicTab('royalties',this)">💰 Royalties</div>
+      <div class="music-tab" onclick="switchMusicTab('distro',this)">📡 Distro</div>
+      <div class="music-tab" onclick="switchMusicTab('equipment',this)">🎧 Gear</div>
+      <div class="music-tab" onclick="switchMusicTab('grammys',this)">🏆 Grammys</div>
+      <div class="music-tab" onclick="switchMusicTab('revenue',this)">📊 Revenue</div>
+    </div>
+    <div class="music-panel active" id="music-panel-beats">
+      <div class="music-search-bar">
+        <input type="text" id="beat-search" placeholder="🔍 Search genres, moods, producers..." oninput="searchBeats(this.value)">
+      </div>
+      <div id="beats-count" class="music-count"></div>
+      <div id="beats-grid"></div>
+    </div>
+    <div class="music-panel" id="music-panel-daws"><div id="daws-list"></div></div>
+    <div class="music-panel" id="music-panel-theory"><div id="theory-list"></div></div>
+    <div class="music-panel" id="music-panel-royalties"><div id="royalties-list"></div></div>
+    <div class="music-panel" id="music-panel-distro"><div id="distro-list"></div></div>
+    <div class="music-panel" id="music-panel-equipment"><div id="equipment-list"></div></div>
+    <div class="music-panel" id="music-panel-grammys"><div id="grammys-list"></div></div>
+    <div class="music-panel" id="music-panel-revenue">
+      <div class="revenue-calc-form">
+        <div class="gen-field">
+          <label>🎵 Total Streams</label>
+          <input type="number" id="rev-streams" placeholder="e.g. 1000000" value="1000000">
+        </div>
+        <button class="gen-submit-btn" style="background:linear-gradient(135deg,#1DB954,#191414)" onclick="calculateRevenue()">📊 Calculate Revenue</button>
+      </div>
+      <div id="revenue-output"></div>
+    </div>
+  </div>
+
+  <!-- ==================== SCREENWRITING STUDIO PAGE ==================== -->
+  <div class="page" id="page-writing">
+    <div class="page-header">
+      <div><div class="page-title">✍️ Writing Studio</div><div class="page-sub">Hollywood Script Engine &bull; AI Powered</div></div>
+      <div class="header-badge" style="background:var(--grad1)">🎬 Pro</div>
+    </div>
+    <div class="writing-tabs">
+      <div class="writing-tab active" onclick="switchWritingTab('writers',this)">🏆 Writers</div>
+      <div class="writing-tab" onclick="switchWritingTab('formats',this)">📜 Formats</div>
+      <div class="writing-tab" onclick="switchWritingTab('templates',this)">🎭 Story</div>
+      <div class="writing-tab" onclick="switchWritingTab('software',this)">💻 Software</div>
+      <div class="writing-tab" onclick="switchWritingTab('genres',this)">🎬 Genres</div>
+      <div class="writing-tab" onclick="switchWritingTab('oscars',this)">🏅 Oscars</div>
+      <div class="writing-tab" onclick="switchWritingTab('generate',this)">🤖 AI Script</div>
+    </div>
+    <div class="writing-panel active" id="writing-panel-writers">
+      <div class="writing-search-bar">
+        <input type="text" id="writer-search" placeholder="🔍 Search writers, films, eras..." oninput="searchWriters(this.value)">
+      </div>
+      <div class="writing-filter-row">
+        <select id="writer-era-filter" onchange="filterWriters()">
+          <option value="">All Eras</option>
+          <option value="golden">Golden Age</option>
+          <option value="new hollywood">New Hollywood</option>
+          <option value="modern">Modern</option>
+          <option value="contemporary">Contemporary</option>
+        </select>
+        <select id="writer-genre-filter" onchange="filterWriters()">
+          <option value="">All Genres</option>
+          <option value="drama">Drama</option>
+          <option value="comedy">Comedy</option>
+          <option value="thriller">Thriller</option>
+          <option value="horror">Horror</option>
+          <option value="sci-fi">Sci-Fi</option>
+          <option value="action">Action</option>
+          <option value="romance">Romance</option>
+        </select>
+      </div>
+      <div id="writers-count" class="writing-count"></div>
+      <div id="writers-grid"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-formats">
+      <div id="formats-list"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-templates">
+      <div id="templates-list"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-software">
+      <div id="software-list"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-genres">
+      <div id="genres-list"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-oscars">
+      <div id="oscars-list"></div>
+    </div>
+    <div class="writing-panel" id="writing-panel-generate">
+      <div class="script-generator-form">
+        <div class="gen-field">
+          <label>🎬 Script Title</label>
+          <input type="text" id="gen-title" placeholder="e.g. The Last Rhythm">
+        </div>
+        <div class="gen-field">
+          <label>📝 Logline</label>
+          <textarea id="gen-logline" placeholder="A one-sentence summary of your story..."></textarea>
+        </div>
+        <div class="gen-row">
+          <div class="gen-field">
+            <label>🎭 Genre</label>
+            <select id="gen-genre">
+              <option value="drama">Drama</option>
+              <option value="comedy">Comedy</option>
+              <option value="thriller">Thriller</option>
+              <option value="horror">Horror</option>
+              <option value="scifi">Sci-Fi</option>
+              <option value="action">Action</option>
+              <option value="romance">Romance</option>
+              <option value="crime">Crime</option>
+              <option value="animation">Animation</option>
+              <option value="musical">Musical</option>
+            </select>
+          </div>
+          <div class="gen-field">
+            <label>📐 Structure</label>
+            <select id="gen-template">
+              <option value="three_act">Three-Act</option>
+              <option value="heros_journey">Hero's Journey</option>
+              <option value="save_the_cat">Save the Cat</option>
+              <option value="five_act_tv">Five-Act TV</option>
+              <option value="story_circle">Dan Harmon Circle</option>
+              <option value="music_biopic">Music Biopic GOAT</option>
+            </select>
+          </div>
+        </div>
+        <div class="gen-row">
+          <div class="gen-field">
+            <label>👤 Protagonist</label>
+            <input type="text" id="gen-protagonist" placeholder="e.g. Marcus">
+          </div>
+          <div class="gen-field">
+            <label>📍 Setting</label>
+            <input type="text" id="gen-setting" placeholder="e.g. Atlanta 2024">
+          </div>
+        </div>
+        <button class="gen-submit-btn" onclick="generateScript()">🚀 Generate Script</button>
+      </div>
+      <div id="generated-script-output"></div>
+    </div>
+  </div>
+
+  <!-- ==================== EMPIRE PAGE ==================== -->
+  <div class="page" id="page-empire">
+    <div class="page-header">
+      <div><div class="page-title">🏰 GOAT Royalty Empire</div><div class="page-sub">Business &bull; Merch &bull; Touring &bull; Contracts</div></div>
+    </div>
+
+    <!-- Empire Sub-tabs -->
+    <div class="empire-tabs">
+      <button class="empire-tab active" onclick="switchEmpireTab('brand')">👑 Brand</button>
+      <button class="empire-tab" onclick="switchEmpireTab('merch')">🛍️ Merch</button>
+      <button class="empire-tab" onclick="switchEmpireTab('venues')">🏟️ Venues</button>
+      <button class="empire-tab" onclick="switchEmpireTab('revenue')">💰 Revenue</button>
+      <button class="empire-tab" onclick="switchEmpireTab('contracts')">📝 Contracts</button>
+      <button class="empire-tab" onclick="switchEmpireTab('legal')">⚖️ Legal</button>
+      <button class="empire-tab" onclick="switchEmpireTab('social')">📱 Social</button>
+      <button class="empire-tab" onclick="switchEmpireTab('pitch')">🚀 Pitch</button>
+    </div>
+
+    <!-- Brand Panel -->
+    <div class="empire-panel active" id="empire-brand-panel">
+      <div id="brand-display"></div>
+    </div>
+
+    <!-- Merch Panel -->
+    <div class="empire-panel" id="empire-merch-panel">
+      <div id="merch-grid"></div>
+      <div class="merch-calculator" id="merch-calc-section" style="display:none;">
+        <h3>💵 Merch Revenue Calculator</h3>
+        <div class="calc-row">
+          <label>Item:</label>
+          <select id="merch-item-select"></select>
+        </div>
+        <div class="calc-row">
+          <label>Units to sell:</label>
+          <input type="number" id="merch-units" value="1000" min="1">
+        </div>
+        <button class="empire-action-btn" onclick="calculateMerchRevenue()">Calculate Revenue</button>
+        <div id="merch-calc-result"></div>
+      </div>
+    </div>
+
+    <!-- Venues Panel -->
+    <div class="empire-panel" id="empire-venues-panel">
+      <div id="venues-grid"></div>
+    </div>
+
+    <!-- Revenue Panel -->
+    <div class="empire-panel" id="empire-revenue-panel">
+      <div id="revenue-display"></div>
+    </div>
+
+    <!-- Contracts Panel -->
+    <div class="empire-panel" id="empire-contracts-panel">
+      <div id="contracts-grid"></div>
+    </div>
+
+    <!-- Legal Panel -->
+    <div class="empire-panel" id="empire-legal-panel">
+      <div id="legal-grid"></div>
+    </div>
+
+    <!-- Social Panel -->
+    <div class="empire-panel" id="empire-social-panel">
+      <div id="social-grid"></div>
+    </div>
+
+    <!-- Pitch Generator Panel -->
+    <div class="empire-panel" id="empire-pitch-panel">
+      <div class="pitch-form">
+        <h3>🚀 Investor Pitch Generator</h3>
+        <div class="pitch-field">
+          <label>Artist / Company Name:</label>
+          <input type="text" id="pitch-artist" placeholder="e.g. DJ Speedy">
+        </div>
+        <div class="pitch-field">
+          <label>Genre:</label>
+          <input type="text" id="pitch-genre" placeholder="e.g. Hip-Hop, R&B">
+        </div>
+        <div class="pitch-field">
+          <label>Monthly Streams:</label>
+          <input type="number" id="pitch-streams" placeholder="e.g. 500000" value="500000">
+        </div>
+        <div class="pitch-field">
+          <label>Social Followers:</label>
+          <input type="number" id="pitch-followers" placeholder="e.g. 100000" value="100000">
+        </div>
+        <div class="pitch-field">
+          <label>Funding Ask ($):</label>
+          <input type="number" id="pitch-funding" placeholder="e.g. 500000" value="500000">
+        </div>
+        <button class="empire-action-btn" onclick="generatePitch()">🚀 Generate Pitch Deck</button>
+      </div>
+      <div id="pitch-output"></div>
+    </div>
+  </div>
+
+  <!-- ==================== CYBER OPS PAGE ==================== -->
+  <div class="page" id="page-cyberops">
+    <div class="page-header">
+      <div><div class="page-title">🔐 Advanced Cyber Ops</div><div class="page-sub">PenTest &bull; OWASP &bull; Threat Intel &bull; Forensics</div></div>
+    </div>
+
+    <div class="cyber-ops-tabs">
+      <button class="cop-tab active" onclick="switchCyberOpsTab('pentest')">💀 PenTest</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('owasp')">🔟 OWASP</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('threats')">🎯 Threats</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('forensics')">🔬 Forensics</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('crypto')">🔐 Crypto</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('ir')">🚨 IR</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('compliance')">📋 Compliance</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('certs')">🏆 Certs</button>
+      <button class="cop-tab" onclick="switchCyberOpsTab('simulate')">⚔️ Simulate</button>
+    </div>
+
+    <!-- PenTest Panel -->
+    <div class="cop-panel active" id="cop-pentest-panel">
+      <div id="pentest-grid"></div>
+    </div>
+
+    <!-- OWASP Panel -->
+    <div class="cop-panel" id="cop-owasp-panel">
+      <div id="owasp-grid"></div>
+    </div>
+
+    <!-- Threats Panel -->
+    <div class="cop-panel" id="cop-threats-panel">
+      <div id="threats-display"></div>
+    </div>
+
+    <!-- Forensics Panel -->
+    <div class="cop-panel" id="cop-forensics-panel">
+      <div id="forensics-grid"></div>
+    </div>
+
+    <!-- Crypto Panel -->
+    <div class="cop-panel" id="cop-crypto-panel">
+      <div id="crypto-display"></div>
+    </div>
+
+    <!-- Incident Response Panel -->
+    <div class="cop-panel" id="cop-ir-panel">
+      <div id="ir-display"></div>
+    </div>
+
+    <!-- Compliance Panel -->
+    <div class="cop-panel" id="cop-compliance-panel">
+      <div id="compliance-grid"></div>
+    </div>
+
+    <!-- Certifications Panel -->
+    <div class="cop-panel" id="cop-certs-panel">
+      <div id="certs-grid"></div>
+    </div>
+
+    <!-- Attack Simulator Panel -->
+    <div class="cop-panel" id="cop-simulate-panel">
+      <div class="sim-form">
+        <h3>⚔️ Attack Simulation Engine</h3>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Run simulated attack scenarios to test your defenses.</p>
+        <select id="sim-scenario">
+          <option value="">🎲 Random Scenario</option>
+          <option value="Phishing">🎣 Phishing Campaign</option>
+          <option value="Active Directory">🏢 Active Directory Attack</option>
+          <option value="Web Application">🕸️ Web Application Exploit</option>
+          <option value="Ransomware">🔒 Ransomware Simulation</option>
+          <option value="Social Engineering">🎭 Social Engineering</option>
+        </select>
+        <button class="cop-action-btn" onclick="runSimulation()">⚔️ Launch Simulation</button>
+      </div>
+      <div id="sim-output"></div>
+    </div>
+  </div>
+
+  <!-- ==================== WEB3 PAGE ==================== -->
+  <div class="page" id="page-web3">
+    <div class="page-header">
+      <div><div class="page-title">🌐 Metaverse & Web3</div><div class="page-sub">NFTs &bull; Crypto &bull; DeFi &bull; Metaverse</div></div>
+    </div>
+
+    <div class="w3-tabs">
+      <button class="w3-tab active" onclick="switchWeb3Tab('nfts')">🖼️ NFTs</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('wallet')">💳 Wallet</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('contracts')">📜 Contracts</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('venues')">🏟️ Venues</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('token')">🐐 Token</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('defi')">💱 DeFi</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('explorer')">⛓️ Explorer</button>
+      <button class="w3-tab" onclick="switchWeb3Tab('learn')">📚 Learn</button>
+    </div>
+
+    <div class="w3-panel active" id="w3-nfts-panel"><div id="nfts-grid"></div></div>
+    <div class="w3-panel" id="w3-wallet-panel"><div id="wallet-display"></div></div>
+    <div class="w3-panel" id="w3-contracts-panel"><div id="contracts-display"></div></div>
+    <div class="w3-panel" id="w3-venues-panel"><div id="vvenues-grid"></div></div>
+    <div class="w3-panel" id="w3-token-panel"><div id="token-display"></div></div>
+    <div class="w3-panel" id="w3-defi-panel"><div id="defi-grid"></div></div>
+    <div class="w3-panel" id="w3-explorer-panel"><div id="explorer-display"></div></div>
+    <div class="w3-panel" id="w3-learn-panel"><div id="learn-grid"></div></div>
+  </div>
+
+  <!-- ==================== INTEL PAGE ==================== -->
+  <div class="page" id="page-intel">
+    <div class="page-header">
+      <div><div class="page-title">📡 Intelligence Network</div><div class="page-sub">OSINT &bull; Threats &bull; Privacy &bull; Counter-Intel</div></div>
+    </div>
+
+    <div class="intel-tabs">
+      <button class="intel-tab active" onclick="switchIntelTab('osint')">🕸️ OSINT</button>
+      <button class="intel-tab" onclick="switchIntelTab('profiles')">🎯 Profiles</button>
+      <button class="intel-tab" onclick="switchIntelTab('comms')">🔒 Comms</button>
+      <button class="intel-tab" onclick="switchIntelTab('soceng')">🎭 SocEng</button>
+      <button class="intel-tab" onclick="switchIntelTab('privacy')">🛡️ Privacy</button>
+      <button class="intel-tab" onclick="switchIntelTab('countersurv')">📷 Counter</button>
+      <button class="intel-tab" onclick="switchIntelTab('breaches')">💀 Breaches</button>
+    </div>
+
+    <div class="intel-panel active" id="intel-osint-panel"><div id="osint-grid"></div></div>
+    <div class="intel-panel" id="intel-profiles-panel"><div id="profiles-grid"></div></div>
+    <div class="intel-panel" id="intel-comms-panel"><div id="comms-grid"></div></div>
+    <div class="intel-panel" id="intel-soceng-panel"><div id="soceng-display"></div></div>
+    <div class="intel-panel" id="intel-privacy-panel"><div id="privacy-grid"></div></div>
+    <div class="intel-panel" id="intel-countersurv-panel"><div id="countersurv-grid"></div></div>
+    <div class="intel-panel" id="intel-breaches-panel"><div id="breaches-grid"></div></div>
+  </div>
+
+  <div class="page" id="page-feed">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F4F1; Feed</div><div class="page-sub">Music &bull; Culture &bull; Love</div></div>
+      <div class="header-badge">&#x1F525; Trending</div>
+    </div>
+    <button class="create-post-btn" onclick="openModal('modal-post')">&#x270F;&#xFE0F; Share your vibe...</button>
+    <div id="feed-posts"></div>
+  </div>
+  <!-- ═══ REAL CATALOG PAGE ═══ -->
+  <div class="page" id="page-catalog">
+    <div class="page-header">
+      <div><div class="page-title">📀 Real Catalog</div><div class="page-sub">FASTASSMAN PUBLISHING × BRICK SQUAD MUSIC</div></div>
+    </div>
+    <div id="catalog-content" style="padding:0 16px 100px">
+      <div style="text-align:center;padding:40px 0;color:var(--text2)">Loading catalog...</div>
+    </div>
+  </div>
+
+  <div class="page" id="page-secstatus">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F6E1;&#xFE0F; Security Status</div><div class="page-sub">Your Protection Status</div></div>
+    </div>
+    <div class="sec-grade">
+      <div class="sec-letter">A+</div>
+      <div style="font-size:14px;color:var(--text2);margin-top:4px">Overall Security Score</div>
+      <div style="font-size:13px;color:var(--green);margin-top:6px;font-weight:600">99/100 &bull; Zero Vulnerabilities</div>
+    </div>
+    <div style="font-size:14px;font-weight:700;padding:16px 16px 8px">&#x1F510; Encryption Stack</div>
+    <div id="enc-layers-list" style="padding:0 16px 16px"></div>
+  </div>
+  <div class="page" id="page-localstorage">
+    <div class="page-header">
+      <div><div class="page-title">💾 Local Storage</div><div class="page-sub">Your Data · Zero Cloud · 100% Offline</div></div>
+    </div>
+    <div style="padding:16px">
+      <div id="storage-overview"></div>
+      <div id="storage-dirs"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
+        <button onclick="doBackup()" style="background:var(--gold);color:#000;border:none;padding:14px;border-radius:14px;font-weight:800;font-size:13px;cursor:pointer">📦 Backup All</button>
+        <button onclick="doExport()" style="background:#00c853;color:#000;border:none;padding:14px;border-radius:14px;font-weight:800;font-size:13px;cursor:pointer">📤 Export All</button>
+      </div>
+      <div id="storage-config" style="margin-top:16px"></div>
+    </div>
+  </div>
+
+  <div class="page" id="page-profile">
+    <div class="page-header">
+      <div><div class="page-title">&#x1F451; Profile</div></div>
+      <div style="font-size:22px;cursor:pointer" onclick="showToast('Settings coming soon!','info')">&#x2699;&#xFE0F;</div>
+    </div>
+    <div class="profile-top">
+      <div class="profile-avatar">&#x1F3A4;</div>
+      <div class="profile-name">DJ Speedy</div>
+      <div class="profile-sub">&#x1F3A7; Hip-Hop Producer &bull; Atlanta, GA</div>
+      <div class="profile-badge">&#x2B50; GOAT Verified &#x2713;</div>
+    </div>
+    <div class="profile-stats">
+      <div class="profile-stat"><div class="profile-stat-num">247</div><div class="profile-stat-label">Matches</div></div>
+      <div class="profile-stat"><div class="profile-stat-num">18.4K</div><div class="profile-stat-label">Followers</div></div>
+      <div class="profile-stat"><div class="profile-stat-num">4.2K</div><div class="profile-stat-label">Likes</div></div>
+    </div>
+    <div style="font-size:14px;font-weight:700;padding:8px 16px 12px">&#x1F3B5; Music DNA</div>
+    <div id="music-dna-bars"></div>
+    <div style="font-size:14px;font-weight:700;padding:8px 16px 12px">&#x1F495; Dating Style</div>
+    <div class="pos-items" id="dating-positions"></div>
+  </div>
+  <div class="tab-bar">
+    <div class="tab-item active" onclick="switchMainTab('dating')"><div class="tab-icon">&#x1F495;</div><span>Dating</span></div>
+    <div class="tab-item" onclick="switchMainTab('creative')"><div class="tab-icon">&#x1F3A8;</div><span>Creative</span></div>
+    <div class="tab-item" onclick="switchMainTab('security')"><div class="tab-icon">&#x1F6E1;&#xFE0F;</div><span>Security</span></div>
+    <div class="tab-item" onclick="switchMainTab('business')"><div class="tab-icon">&#x1F4B0;</div><span>Business</span></div>
+    <div class="tab-item" onclick="switchMainTab('me')"><div class="tab-icon">&#x1F451;</div><span>Me</span></div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-celeb">
+  <div class="modal-sheet"><div class="modal-handle"></div><div id="celeb-modal-content"></div></div>
+</div>
+<div class="modal-overlay" id="modal-match">
+  <div class="modal-sheet" style="text-align:center">
+    <div class="modal-handle"></div>
+    <div style="font-size:64px;animation:burst .6s ease">&#x1F389;</div>
+    <div class="modal-title" style="text-align:center">It's a Match!</div>
+    <div id="match-modal-names" style="font-size:14px;color:var(--text2);margin:8px 0 20px"></div>
+    <button class="modal-btn modal-btn-primary" onclick="closeModal('modal-match')">&#x1F48C; Send Message</button>
+    <button class="modal-btn modal-btn-secondary" onclick="closeModal('modal-match')">Keep Swiping</button>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-post">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#x270F;&#xFE0F; Create Post</div>
+    <textarea id="post-content" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;color:var(--text);font-size:14px;min-height:120px;outline:none;resize:none;margin-bottom:12px" placeholder="What's on your mind?"></textarea>
+    <button class="modal-btn modal-btn-primary" onclick="createPost()">&#x1F680; Post</button>
+    <button class="modal-btn modal-btn-secondary" onclick="closeModal('modal-post')">Cancel</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "version": "3.0.0-OFFLINE",
+  "appName": "GOAT Connect OFFLINE EDITION",
+  "owner": "Harvey L. Miller Jr. (DJ Speedy)",
+  "storagePath": "/workspace/dating-app/local-data",
+  "maxStorageGB": 10000,
+  "autoSave": true,
+  "autoBackup": true,
+  "backupInterval": 86400000,
+  "encryptLocal": false,
+  "offlineMode": true,
+  "noTracking": true,
+  "noAnalytics": true,
+  "noExternalCalls": true,
+  "created": "2026-03-20T04:50:54.262Z"
+}

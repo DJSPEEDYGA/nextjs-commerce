@@ -1,6 +1,6 @@
 {
   "name": "super-goat-royalties",
-  "version": "3.0.0",
+  "version": "5.1.0",
   "description": "SUPER GOAT Royalties - Ultimate AI-Powered Creator Platform with NVIDIA NIM, LangChain, RAG & Autonomous Agents",
   "main": "electron-main.js",
   "scripts": {
@@ -104,7 +104,7 @@
         }
       ],
       "icon": "build/icon.ico",
-      "artifactName": "GOAT-Royalties-${version}-Setup.${ext}"
+      "artifactName": "SUPER-GOAT-ROYALTIES-Setup-${version}.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -115,7 +115,7 @@
       "installerHeaderIcon": "build/icon.ico"
     },
     "portable": {
-      "artifactName": "GOAT-Royalties-${version}-Portable.${ext}"
+      "artifactName": "SUPER-GOAT-ROYALTIES-Portable-${version}.${ext}"
     },
     "mac": {
       "target": [
@@ -128,7 +128,7 @@
         }
       ],
       "icon": "build/icon.icns",
-      "artifactName": "GOAT-Royalties-${version}.${ext}",
+      "artifactName": "SUPER-GOAT-ROYALTIES-${version}-${arch}.${ext}",
       "category": "public.app-category.music"
     },
     "linux": {
@@ -147,7 +147,7 @@
         }
       ],
       "icon": "build/icon.png",
-      "artifactName": "GOAT-Royalties-${version}.${ext}",
+      "artifactName": "SUPER-GOAT-ROYALTIES-${version}-${arch}.${ext}",
       "category": "Audio"
     }
   }

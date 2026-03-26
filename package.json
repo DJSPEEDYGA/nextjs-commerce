@@ -9,10 +9,10 @@
     "dev": "nodemon server.js",
     "electron": "electron .",
     "electron:dev": "NODE_ENV=development electron .",
-    "electron:build": "electron-builder",
-    "electron:build:win": "electron-builder --win",
-    "electron:build:mac": "electron-builder --mac",
-    "electron:build:linux": "electron-builder --linux",
+    "electron:build": "electron-builder --publish never",
+    "electron:build:win": "electron-builder --win --publish never",
+    "electron:build:mac": "electron-builder --mac --publish never",
+    "electron:build:linux": "electron-builder --linux --publish never",
     "electron:build:all": "electron-builder --win --mac --linux",
     "test": "jest",
     "vercel-build": "echo 'No build step required for Express server'"
@@ -75,9 +75,6 @@
     "npm": ">=9.0.0"
   },
   "build": {
-    "publish": {
-      "provider": "none"
-    },
     "appId": "com.goatroyalties.superapp",
     "productName": "SUPER GOAT Royalties",
     "copyright": "Copyright © 2024 DJSPEEDYGA",

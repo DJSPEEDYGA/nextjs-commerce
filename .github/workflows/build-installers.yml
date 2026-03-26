@@ -41,7 +41,7 @@ jobs:
             dist/*.AppImage
             dist/*.deb
             dist/*.tar.gz
-          retention-days: 30
+          retention-days: 1
 
   build-windows:
     runs-on: windows-latest
@@ -70,7 +70,7 @@ jobs:
           name: windows-installers
           path: |
             dist/*.exe
-          retention-days: 30
+          retention-days: 1
 
   build-macos:
     runs-on: macos-latest
@@ -99,7 +99,7 @@ jobs:
           name: macos-installers
           path: |
             dist/*.dmg
-          retention-days: 30
+          retention-days: 1
 
   create-release:
     needs: [build-linux, build-windows, build-macos]

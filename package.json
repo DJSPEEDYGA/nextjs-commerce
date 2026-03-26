@@ -33,7 +33,10 @@
     "electron",
     "desktop-app"
   ],
-  "author": "DJSPEEDYGA",
+  "author": {
+    "name": "DJSPEEDYGA",
+    "email": "djspeedyga@lifeimitatesart.org"
+  },
   "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "^0.1.3",

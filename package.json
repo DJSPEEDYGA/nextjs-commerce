@@ -75,7 +75,9 @@
     "npm": ">=9.0.0"
   },
   "build": {
-    "publish": "never",
+    "publish": {
+      "provider": "none"
+    },
     "appId": "com.goatroyalties.superapp",
     "productName": "SUPER GOAT Royalties",
     "copyright": "Copyright © 2024 DJSPEEDYGA",

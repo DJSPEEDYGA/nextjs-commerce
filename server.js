@@ -903,81 +903,63 @@ app.post('/api/llm/config', (req, res) => {
     }
 });
 
-// ==================== MUSIC CATALOG ENDPOINTS ====================
+// ==================== GOAT DATA ENDPOINTS ====================
 
-const MusicCatalog = require('./lib/catalog/music-catalog');
+const goatData = require('./lib/goat-data');
 
-// Get full catalog
+// Music Catalog Endpoints
 app.get('/api/catalog', (req, res) => {
     try {
-        const catalog = MusicCatalog.getFullCatalog();
+        const catalog = goatData.getMusicCatalog();
         res.json(catalog);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Get catalog statistics
+app.get('/api/catalog/songs', (req, res) => {
+    try {
+        const songs = goatData.getAllSongs();
+        res.json({ total: songs.length, songs });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/search', (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q) {
+            return res.status(400).json({ error: 'Query parameter q required' });
+        }
+        const results = goatData.searchSongs(q);
+        res.json({ query: q, total: results.length, results });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.get('/api/catalog/stats', (req, res) => {
     try {
-        const stats = MusicCatalog.getStatistics();
+        const stats = goatData.getCatalogStats();
         res.json(stats);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Get all songs
-app.get('/api/catalog/songs', (req, res) => {
+app.get('/api/catalog/collaborators', (req, res) => {
     try {
-        const songs = MusicCatalog.getAllSongs();
-        res.json({ songs, total: songs.length });
+        const collaborators = goatData.getCollaborators();
+        res.json({ total: collaborators.length, collaborators });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Get song by ID
-app.get('/api/catalog/songs/:id', (req, res) => {
+app.get('/api/catalog/export/csv', (req, res) => {
     try {
-        const song = MusicCatalog.getSongById(req.params.id);
-        if (!song) {
-            return res.status(404).json({ error: 'Song not found' });
-        }
-        res.json(song);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Search songs
-app.get('/api/catalog/search', (req, res) => {
-    try {
-        const { q } = req.query;
-        if (!q) {
-            return res.status(400).json({ error: 'Query parameter q is required' });
-        }
-        const songs = MusicCatalog.searchByTitle(q);
-        res.json({ query: q, results: songs, total: songs.length });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Get collaborations
-app.get('/api/catalog/collaborations', (req, res) => {
-    try {
-        const collabs = MusicCatalog.getCollaborations();
-        res.json({ collaborations: collabs, total: collabs.length });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Export catalog as CSV
-app.get('/api/catalog/export', (req, res) => {
-    try {
-        const csv = MusicCatalog.exportToCSV();
+        const csv = goatData.exportCatalogCSV();
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', 'attachment; filename="waka_catalog.csv"');
         res.send(csv);
@@ -986,7 +968,6 @@ app.get('/api/catalog/export', (req, res) => {
     }
 });
 
-// ==================== NETWORK PROFILES ENDPOINTS ====================
 
 const NetworkProfiles = require('./lib/network/network-profiles');
 
@@ -1003,115 +984,113 @@ app.get('/api/network/profiles', (req, res) => {
             profiles = NetworkProfiles.getAllProfiles();
         }
         res.json({ profiles, total: profiles.length });
+// Network Profiles Endpoints
+app.get('/api/network', (req, res) => {
+    try {
+        const data = goatData.getNetworkProfiles();
+        res.json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Get profile by ID
-app.get('/api/network/profiles/:id', (req, res) => {
+app.get('/api/network/profiles', (req, res) => {
     try {
-        const profile = NetworkProfiles.getProfileById(req.params.id);
-        if (!profile) {
-            return res.status(404).json({ error: 'Profile not found' });
-        }
-        res.json(profile);
+        const data = goatData.getNetworkProfiles();
+        res.json({ total: data.profiles.length, profiles: data.profiles });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Add new profile
-app.post('/api/network/profiles', (req, res) => {
-    try {
-        const profile = NetworkProfiles.addProfile(req.body);
-        res.status(201).json(profile);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// Update profile
-app.put('/api/network/profiles/:id', (req, res) => {
-    try {
-        const profile = NetworkProfiles.updateProfile(req.params.id, req.body);
-        if (!profile) {
-            return res.status(404).json({ error: 'Profile not found' });
-        }
-        res.json(profile);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// Get all connections
 app.get('/api/network/connections', (req, res) => {
     try {
-        const connections = NetworkProfiles.getAllConnections();
-        res.json({ connections, total: connections.length });
+        const data = goatData.getNetworkProfiles();
+        res.json({ total: data.connections.length, connections: data.connections });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Get profile connections
-app.get('/api/network/profiles/:id/connections', (req, res) => {
-    try {
-        const connections = NetworkProfiles.getProfileConnections(req.params.id);
-        res.json({ connections, total: connections.length });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Add connection
-app.post('/api/network/connections', (req, res) => {
-    try {
-        const { from, to, type, metadata } = req.body;
-        const connection = NetworkProfiles.addConnection(from, to, type, metadata);
-        res.status(201).json(connection);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// Get network statistics
 app.get('/api/network/stats', (req, res) => {
     try {
-        const stats = NetworkProfiles.getNetworkStats();
+        const stats = goatData.getNetworkStats();
         res.json(stats);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Get network value for profile
-app.get('/api/network/profiles/:id/value', (req, res) => {
+// Sync Opportunities Endpoints
+app.get('/api/sync/opportunities', (req, res) => {
     try {
-        const value = NetworkProfiles.calculateNetworkValue(req.params.id);
-        res.json({ profileId: req.params.id, networkValue: value });
+        const syncData = goatData.loadDataFile('sync_opportunities.json');
+        res.json(syncData || { opportunities: [], placements: [] });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Get opportunities
-app.get('/api/network/opportunities', (req, res) => {
+// Royalty Calculator Endpoints
+app.post('/api/royalty/calculate/streaming', (req, res) => {
     try {
-        const opportunities = NetworkProfiles.getOpportunities();
-        res.json({ opportunities, total: opportunities.length });
+        const { platform, streams, sharePercent } = req.body;
+        const rates = {
+            spotify: 0.004,
+            appleMusic: 0.008,
+            youtube: 0.002,
+            tidal: 0.012,
+            amazon: 0.006,
+            pandora: 0.0015,
+            deezer: 0.005,
+            soundcloud: 0.003
+        };
+        const rate = rates[platform] || 0.004;
+        const gross = streams * rate;
+        const share = gross * ((sharePercent || 100) / 100);
+        res.json({
+            platform,
+            streams,
+            ratePerStream: rate,
+            grossRoyalty: gross.toFixed(2),
+            sharePercent: sharePercent || 100,
+            netRoyalty: share.toFixed(2)
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Add opportunity
-app.post('/api/network/opportunities', (req, res) => {
+app.post('/api/royalty/calculate/sync', (req, res) => {
     try {
-        const opportunity = NetworkProfiles.addOpportunity(req.body);
-        res.status(201).json(opportunity);
+        const { type, songs } = req.body;
+        const syncRates = {
+            tv_show: 15000,
+            film: 25000,
+            commercial: 50000,
+            videogame: 20000,
+            trailer: 35000
+        };
+        const rate = syncRates[type] || 15000;
+        const total = rate * (songs || 1);
+        res.json({
+            type,
+            ratePerSong: rate,
+            songs: songs || 1,
+            totalSync: total
+        });
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Configuration Endpoint
+app.get('/api/config', (req, res) => {
+    try {
+        const config = goatData.loadDataFile('goat-config.json');
+        res.json(config);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 

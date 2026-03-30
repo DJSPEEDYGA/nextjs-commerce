@@ -87,6 +87,7 @@
       "preload.js",
       "public/**/*",
       "lib/**/*",
+      "data/**/*",
       "node_modules/**/*",
       "package.json",
       "favicon.ico"

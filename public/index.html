@@ -435,6 +435,7 @@
             <div class="nav-item" onclick="showPage('mining', this)"><span class="icon">⛏️</span> Crypto Mining</div>
             <div class="nav-item" onclick="showPage('video', this)"><span class="icon">🎬</span> Video Editor</div>
             <div class="nav-item" onclick="showPage('dsp', this)"><span class="icon">🎵</span> DSP Distribution</div>
+            <div class="nav-item" onclick="showPage('local-llm', this)"><span class="icon">🧠</span> Local LLM</div>
             <div class="nav-item" onclick="showPage('settings', this)"><span class="icon">⚙️</span> Settings</div>
         </nav>
         <div class="sidebar-footer">
@@ -798,6 +799,116 @@
             </div>
         </div>
 
+        <!-- LOCAL LLM -->
+        <div id="page-local-llm" class="page">
+            <div class="page-header">
+                <h2>🧠 Local LLM</h2>
+                <span class="badge" id="llm-status-badge">Offline Ready</span>
+            </div>
+            
+            <!-- Status Cards -->
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin-bottom: 24px;">
+                <div class="card">
+                    <div class="card-label">Model Status</div>
+                    <div class="card-value" id="llm-model-status">No Model Loaded</div>
+                    <div class="card-sub" id="llm-model-name">Select a model to start</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Data Path</div>
+                    <div class="card-value" id="llm-data-path">./goat-data</div>
+                    <div class="card-sub">Models storage location</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Inference</div>
+                    <div class="card-value" id="llm-inference-status">Ready</div>
+                    <div class="card-sub">100% Offline • No API</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Memory</div>
+                    <div class="card-value" id="llm-memory">--</div>
+                    <div class="card-sub">Context window</div>
+                </div>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Model Management -->
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;">📦 Model Management</h3>
+                    <div id="llm-models-list" style="max-height: 300px; overflow-y: auto;">
+                        <!-- Models will be populated here -->
+                    </div>
+                    <div style="margin-top: 16px;">
+                        <button class="btn btn-primary" onclick="refreshModels()">🔄 Refresh Models</button>
+                        <button class="btn btn-secondary" onclick="showDownloadInstructions()">📥 Download Models</button>
+                    </div>
+                </div>
+
+                <!-- Configuration -->
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;">⚙️ Configuration</h3>
+                    <div class="form-group">
+                        <label>Data Storage Path</label>
+                        <input type="text" id="llm-path-input" placeholder="/path/to/external/drive" style="width: 100%;">
+                        <small style="color: var(--text-muted);">Point to your 10TB external drive for model storage</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Default Model</label>
+                        <select id="llm-default-model" style="width: 100%;">
+                            <option value="phi-3-mini">Phi-3 Mini (2.2GB) - Recommended</option>
+                            <option value="llama-3-8b">Llama 3 8B (4.9GB)</option>
+                            <option value="mistral-7b">Mistral 7B (4.1GB)</option>
+                            <option value="gemma-7b">Gemma 7B (4.3GB)</option>
+                            <option value="qwen-7b">Qwen 2 7B (4.2GB)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Temperature: <span id="temp-value">0.7</span></label>
+                        <input type="range" id="llm-temperature" min="0" max="2" step="0.1" value="0.7" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label>Max Tokens: <span id="tokens-value">2048</span></label>
+                        <input type="range" id="llm-max-tokens" min="256" max="8192" step="256" value="2048" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label>Context Size</label>
+                        <select id="llm-context-size" style="width: 100%;">
+                            <option value="4096">4K tokens</option>
+                            <option value="8192" selected>8K tokens</option>
+                            <option value="16384">16K tokens</option>
+                            <option value="32768">32K tokens</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveLLMConfig()">💾 Save Configuration</button>
+                </div>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="card" style="margin-top: 20px;">
+                <h3 style="margin-bottom: 16px;">💬 Local Chat (100% Offline)</h3>
+                <div id="local-chat-messages" style="height: 300px; overflow-y: auto; background: var(--bg-primary); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                    <div class="chat-message system">
+                        <div class="chat-bubble">Welcome to Local LLM! Load a model to start chatting. All processing happens on your machine - no internet required.</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <input type="text" id="local-chat-input" placeholder="Type your message... (100% offline)" style="flex: 1;" onkeypress="if(event.key==='Enter')sendLocalChat()">
+                    <button class="btn btn-primary" onclick="sendLocalChat()">Send</button>
+                    <button class="btn btn-secondary" onclick="clearLocalChat()">Clear</button>
+                </div>
+            </div>
+
+            <!-- Download Instructions Modal -->
+            <div id="download-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+                <div class="card" style="max-width: 600px; max-height: 80vh; overflow-y: auto; margin: 20px;">
+                    <h3 style="margin-bottom: 16px;">📥 Download Models (Manual)</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 16px;">Since this is an offline-first app, download models manually and place them in your data folder:</p>
+                    <div id="download-instructions-content"></div>
+                    <button class="btn btn-secondary" onclick="closeDownloadModal()" style="margin-top: 16px;">Close</button>
+                </div>
+            </div>
+        </div>
+
         <!-- SETTINGS -->
         <div id="page-settings" class="page">
             <div class="page-header"><h2>⚙️ Settings</h2></div>
@@ -863,6 +974,7 @@
                 document.getElementById('nft-value').textContent = '$' + (dashboard.nftPortfolio?.totalValue || 24500).toLocaleString();
             }
             initDashboardCharts();
+            initLocalLLM();
         }
 
         // ==================== CHARTS ====================
@@ -1168,6 +1280,220 @@
         }
 
         function escapeHtml(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+
+        // ==================== LOCAL LLM ====================
+        let currentLLMModel = null;
+        let llmConfig = { temperature: 0.7, maxTokens: 2048, contextSize: 8192 };
+
+        async function initLocalLLM() {
+            try {
+                const status = await apiGet('/api/llm/status');
+                if (status) {
+                    document.getElementById('llm-model-status').textContent = status.modelLoaded ? 'Model Loaded' : 'No Model Loaded';
+                    document.getElementById('llm-model-name').textContent = status.modelLoaded ? status.currentModel : 'Select a model to start';
+                    document.getElementById('llm-data-path').textContent = status.dataPath || './goat-data';
+                    document.getElementById('llm-status-badge').textContent = status.modelLoaded ? 'Ready' : 'Offline Ready';
+                    document.getElementById('llm-memory').textContent = status.contextSize ? status.contextSize + ' tokens' : '--';
+                    currentLLMModel = status.currentModel;
+                }
+                
+                const config = await apiGet('/api/llm/config');
+                if (config) {
+                    llmConfig = { ...llmConfig, ...config };
+                    document.getElementById('llm-temperature').value = llmConfig.temperature || 0.7;
+                    document.getElementById('llm-max-tokens').value = llmConfig.maxTokens || 2048;
+                    document.getElementById('temp-value').textContent = llmConfig.temperature || 0.7;
+                    document.getElementById('tokens-value').textContent = llmConfig.maxTokens || 2048;
+                }
+                
+                await refreshModels();
+            } catch (e) {
+                console.log('Local LLM init:', e);
+            }
+        }
+
+        async function refreshModels() {
+            try {
+                const result = await apiGet('/api/llm/models');
+                const listEl = document.getElementById('llm-models-list');
+                
+                if (!result || !result.models) {
+                    listEl.innerHTML = '<p style="color: var(--text-muted);">No models found. Download models to your data folder.</p>';
+                    return;
+                }
+                
+                let html = '';
+                for (const [id, model] of Object.entries(result.models)) {
+                    const isLoaded = currentLLMModel === id;
+                    html += `<div class="model-item" style="padding: 12px; background: var(--bg-primary); border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 600;">${model.family || id} ${model.size || ''}</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">${model.sizeGB || '?'}GB • ${model.quantization || 'GGUF'}</div>
+                            </div>
+                            <div>
+                                ${isLoaded 
+                                    ? '<span style="color: var(--success);">✓ Loaded</span>'
+                                    : `<button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;" onclick="loadModel('${id}')">Load</button>`
+                                }
+                            </div>
+                        </div>`;
+                }
+                listEl.innerHTML = html || '<p style="color: var(--text-muted);">No models found.</p>';
+            } catch (e) {
+                console.error('Failed to refresh models:', e);
+            }
+        }
+
+        async function loadModel(modelId) {
+            try {
+                document.getElementById('llm-model-status').textContent = 'Loading...';
+                const result = await apiPost('/api/llm/load/' + encodeURIComponent(modelId), {});
+                
+                if (result && result.success) {
+                    currentLLMModel = modelId;
+                    document.getElementById('llm-model-status').textContent = 'Model Loaded';
+                    document.getElementById('llm-model-name').textContent = result.model || modelId;
+                    document.getElementById('llm-status-badge').textContent = 'Ready';
+                    document.getElementById('llm-memory').textContent = (result.contextSize || 8192) + ' tokens';
+                    await refreshModels();
+                } else {
+                    document.getElementById('llm-model-status').textContent = 'Load Failed';
+                    alert(result?.error || 'Failed to load model');
+                }
+            } catch (e) {
+                console.error('Load model error:', e);
+                document.getElementById('llm-model-status').textContent = 'Error';
+            }
+        }
+
+        async function sendLocalChat() {
+            const input = document.getElementById('local-chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            if (!currentLLMModel) {
+                alert('Please load a model first!');
+                return;
+            }
+            
+            const messagesEl = document.getElementById('local-chat-messages');
+            
+            // Add user message
+            messagesEl.innerHTML += `<div class="chat-message user" style="display: flex; justify-content: flex-end; margin: 8px 0;">
+                    <div class="chat-bubble" style="background: var(--accent); border-radius: 12px 12px 4px 12px; padding: 12px 16px; max-width: 80%;">${escapeHtml(message)}</div>
+                </div>`;
+            
+            input.value = '';
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            
+            // Add thinking indicator
+            const thinkingId = 'thinking-' + Date.now();
+            messagesEl.innerHTML += `<div class="chat-message assistant" id="${thinkingId}" style="margin: 8px 0;">
+                    <div class="chat-bubble" style="background: var(--bg-card); border-radius: 12px 12px 12px 4px; padding: 12px 16px;">Thinking...</div>
+                </div>`;
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            
+            try {
+                const result = await apiPost('/api/llm/chat', {
+                    messages: [{ role: 'user', content: message }],
+                    options: llmConfig
+                });
+                
+                const thinkingEl = document.getElementById(thinkingId);
+                if (result && result.response) {
+                    thinkingEl.innerHTML = `<div class="chat-bubble" style="background: var(--bg-card); border-radius: 12px 12px 12px 4px; padding: 12px 16px; white-space: pre-wrap;">${escapeHtml(result.response)}</div>`;
+                } else {
+                    thinkingEl.innerHTML = `<div class="chat-bubble" style="background: var(--bg-card); border-radius: 12px 12px 12px 4px; padding: 12px 16px; color: var(--danger);">Error: ${result?.error || 'Unknown error'}</div>`;
+                }
+            } catch (e) {
+                document.getElementById(thinkingId).innerHTML = `<div class="chat-bubble" style="background: var(--bg-card); border-radius: 12px 12px 12px 4px; padding: 12px 16px; color: var(--danger);">Error: ${e.message}</div>`;
+            }
+            
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function clearLocalChat() {
+            document.getElementById('local-chat-messages').innerHTML = `<div class="chat-message system">
+                    <div class="chat-bubble">Chat cleared. Load a model to start a new conversation.</div>
+                </div>`;
+        }
+
+        async function saveLLMConfig() {
+            const dataPath = document.getElementById('llm-path-input').value;
+            const defaultModel = document.getElementById('llm-default-model').value;
+            
+            llmConfig = {
+                temperature: parseFloat(document.getElementById('llm-temperature').value),
+                maxTokens: parseInt(document.getElementById('llm-max-tokens').value),
+                contextSize: parseInt(document.getElementById('llm-context-size').value),
+                defaultModel: defaultModel
+            };
+            
+            try {
+                if (dataPath) {
+                    await apiPost('/api/llm/data-path', { path: dataPath });
+                    document.getElementById('llm-data-path').textContent = dataPath;
+                }
+                
+                await apiPost('/api/llm/config', llmConfig);
+                alert('Configuration saved!');
+            } catch (e) {
+                console.error('Save config error:', e);
+                alert('Failed to save configuration');
+            }
+        }
+
+        function showDownloadInstructions() {
+            const modal = document.getElementById('download-modal');
+            const content = document.getElementById('download-instructions-content');
+            
+            content.innerHTML = `<div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--accent); margin-bottom: 8px;">🦙 Llama 3 8B (Recommended)</h4>
+                    <code style="background: var(--bg-primary); padding: 8px; display: block; border-radius: 4px; font-size: 12px;">
+                        wget https://huggingface.co/TheBloke/Llama-3-8B-GGUF/resolve/main/llama-3-8b.Q4_K_M.gguf
+                    </code>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Save to: [your-data-path]/models/llama-3-8b/</p>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--accent); margin-bottom: 8px;">🔮 Mistral 7B</h4>
+                    <code style="background: var(--bg-primary); padding: 8px; display: block; border-radius: 4px; font-size: 12px;">
+                        wget https://huggingface.co/TheBloke/Mistral-7B-v0.1-GGUF/resolve/main/mistral-7b-v0.1.Q4_K_M.gguf
+                    </code>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Save to: [your-data-path]/models/mistral-7b/</p>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--accent); margin-bottom: 8px;">📱 Phi-3 Mini (Smallest, Fast)</h4>
+                    <code style="background: var(--bg-primary); padding: 8px; display: block; border-radius: 4px; font-size: 12px;">
+                        wget https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf
+                    </code>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Save to: [your-data-path]/models/phi-3-mini/</p>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--accent); margin-bottom: 8px;">💎 Gemma 7B</h4>
+                    <code style="background: var(--bg-primary); padding: 8px; display: block; border-radius: 4px; font-size: 12px;">
+                        wget https://huggingface.co/google/gemma-7b-it-GGUF/resolve/main/gemma-7b-it.q4_k_m.gguf
+                    </code>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Save to: [your-data-path]/models/gemma-7b/</p>
+                </div>
+                <div style="background: var(--bg-primary); padding: 12px; border-radius: 8px; margin-top: 16px;">
+                    <p style="font-size: 13px; color: var(--warning);">⚠️ Note: These are large files (2-5GB each). Download using a stable internet connection.</p>
+                    <p style="font-size: 13px; margin-top: 8px;">After downloading, point your Data Storage Path to the folder containing the "models" directory.</p>
+                </div>`;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeDownloadModal() {
+            document.getElementById('download-modal').style.display = 'none';
+        }
+
+        // Temperature and tokens sliders
+        document.getElementById('llm-temperature')?.addEventListener('input', function() {
+            document.getElementById('temp-value').textContent = this.value;
+        });
+        document.getElementById('llm-max-tokens')?.addEventListener('input', function() {
+            document.getElementById('tokens-value').textContent = this.value;
+        });
 
         // ==================== WEBSOCKET ====================
         let ws;

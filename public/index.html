@@ -432,6 +432,9 @@
             <div class="nav-item" onclick="showPage('contracts', this)"><span class="icon">📋</span> Contracts</div>
             <div class="nav-item" onclick="showPage('team', this)"><span class="icon">👥</span> Team Hub</div>
             <div class="nav-item" onclick="showPage('market', this)"><span class="icon">📈</span> Market Intel</div>
+            <div class="nav-item" onclick="showPage('mining', this)"><span class="icon">⛏️</span> Crypto Mining</div>
+            <div class="nav-item" onclick="showPage('video', this)"><span class="icon">🎬</span> Video Editor</div>
+            <div class="nav-item" onclick="showPage('dsp', this)"><span class="icon">🎵</span> DSP Distribution</div>
             <div class="nav-item" onclick="showPage('settings', this)"><span class="icon">⚙️</span> Settings</div>
         </nav>
         <div class="sidebar-footer">
@@ -597,6 +600,204 @@
             <div id="market-analysis" class="card" style="display:none;"><h3 style="margin-bottom:12px;">🤖 AI Market Analysis</h3><div id="market-analysis-content" style="color:var(--text-secondary);line-height:1.8;white-space:pre-wrap;"></div></div>
         </div>
 
+        <!-- CRYPTO MINING -->
+        <div id="page-mining" class="page">
+            <div class="page-header"><h2>⛏️ Crypto Mining Dashboard</h2><button class="btn btn-primary" onclick="createMiner()">+ New Miner</button></div>
+            <div class="grid grid-4" style="margin-bottom:24px;">
+                <div class="card stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="mining-hashrate">0 MH/s</div><div class="stat-label">Total Hashrate</div></div>
+                <div class="card stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="mining-earnings">$0.00</div><div class="stat-label">Total Earnings</div></div>
+                <div class="card stat-card"><div class="stat-icon">🖥️</div><div class="stat-value" id="mining-active">0</div><div class="stat-label">Active Miners</div></div>
+                <div class="card stat-card"><div class="stat-icon">🪙</div><div class="stat-value">5</div><div class="stat-label">Supported Coins</div></div>
+            </div>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">💰 Supported Cryptocurrencies</h3>
+                    <div class="table-container"><table><thead><tr><th>Coin</th><th>Algorithm</th><th>Price</th><th>Block Reward</th></tr></thead>
+                    <tbody id="mining-coins-table">
+                        <tr><td>🟠 Bitcoin (BTC)</td><td>SHA-256</td><td>$67,500</td><td>3.125 BTC</td></tr>
+                        <tr><td>🔷 Ethereum (ETH)</td><td>Ethash</td><td>$3,450</td><td>2.0 ETH</td></tr>
+                        <tr><td>🔶 Monero (XMR)</td><td>RandomX</td><td>$125</td><td>0.6 XMR</td></tr>
+                        <tr><td>⚪ Litecoin (LTC)</td><td>Scrypt</td><td>$85</td><td>6.25 LTC</td></tr>
+                        <tr><td>🐕 Dogecoin (DOGE)</td><td>Scrypt</td><td>$0.15</td><td>10,000 DOGE</td></tr>
+                    </tbody></table></div>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">🖥️ Mining Hardware</h3>
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:13px;color:var(--text-secondary);">Hardware Type</label>
+                        <select id="mining-hardware-type" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                            <option value="cpu">CPU Mining</option>
+                            <option value="gpu">GPU Mining</option>
+                            <option value="asic">ASIC Mining</option>
+                            <option value="cloud">Cloud Mining</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:13px;color:var(--text-secondary);">Coin to Mine</label>
+                        <select id="mining-coin-select" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                            <option value="bitcoin">Bitcoin (BTC)</option>
+                            <option value="ethereum">Ethereum (ETH)</option>
+                            <option value="monero">Monero (XMR)</option>
+                            <option value="litecoin">Litecoin (LTC)</option>
+                            <option value="dogecoin">Dogecoin (DOGE)</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:13px;color:var(--text-secondary);">Wallet Address</label>
+                        <input type="text" id="mining-wallet" placeholder="Enter your wallet address" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                    </div>
+                    <button class="btn btn-primary" style="width:100%;" onclick="startMiningSession()">Start Mining</button>
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <h3 style="margin-bottom:16px;">📊 Mining Statistics</h3>
+                <canvas id="miningChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- VIDEO EDITOR -->
+        <div id="page-video" class="page">
+            <div class="page-header"><h2>🎬 Video Editor</h2><button class="btn btn-primary" onclick="createVideoProject()">+ New Project</button></div>
+            <div class="grid grid-4" style="margin-bottom:24px;">
+                <div class="card stat-card"><div class="stat-icon">🎥</div><div class="stat-value" id="video-projects">0</div><div class="stat-label">Projects</div></div>
+                <div class="card stat-card"><div class="stat-icon">✨</div><div class="stat-value">50+</div><div class="stat-label">Effects</div></div>
+                <div class="card stat-card"><div class="stat-icon">🔄</div><div class="stat-value">16</div><div class="stat-label">Transitions</div></div>
+                <div class="card stat-card"><div class="stat-icon">📐</div><div class="stat-value">6</div><div class="stat-label">Templates</div></div>
+            </div>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">✨ Video Effects Library</h3>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+                        <span class="tool-tag">3D Text</span>
+                        <span class="tool-tag">Cinematic LUTs</span>
+                        <span class="tool-tag">Neon Glow</span>
+                        <span class="tool-tag">Glitch</span>
+                        <span class="tool-tag">VHS Effect</span>
+                        <span class="tool-tag">Audio Reactive</span>
+                        <span class="tool-tag">Parallax</span>
+                        <span class="tool-tag">Particle 3D</span>
+                        <span class="tool-tag">Lens Flare</span>
+                        <span class="tool-tag">AI Upscale 4K</span>
+                    </div>
+                    <h4 style="margin:16px 0 12px;color:var(--accent-light);">🎨 Color Grading</h4>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                        <div style="background:linear-gradient(135deg,#667eea,#764ba2);height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;">Cinematic</div>
+                        <div style="background:linear-gradient(135deg,#f093fb,#f5576c);height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;">Neon</div>
+                        <div style="background:linear-gradient(135deg,#4facfe,#00f2fe);height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;">Cool</div>
+                        <div style="background:linear-gradient(135deg,#fa709a,#fee140);height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;">Warm</div>
+                    </div>
+                    <h4 style="margin:16px 0 12px;color:var(--accent-light);">🤖 AI-Powered Effects</h4>
+                    <div class="table-container"><table><thead><tr><th>Effect</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td>AI Upscale 4K</td><td>Enhance video quality to 4K resolution</td></tr>
+                        <tr><td>AI Background Removal</td><td>Remove/replace video backgrounds</td></tr>
+                        <tr><td>AI Stabilization</td><td>Smooth shaky footage</td></tr>
+                        <tr><td>AI Slow Motion</td><td>Generate smooth slow-mo frames</td></tr>
+                        <tr><td>AI Style Transfer</td><td>Apply artistic styles to video</td></tr>
+                    </tbody></table></div>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">🎬 Quick Templates</h3>
+                    <div style="display:grid;gap:12px;">
+                        <div style="background:var(--bg-hover);padding:16px;border-radius:8px;cursor:pointer;" onclick="loadTemplate('music_video')">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <div><strong>🎵 Music Video</strong><br><span style="font-size:12px;color:var(--text-muted);">Beat sync, audio reactive effects</span></div>
+                                <span style="color:var(--accent);">→</span>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-hover);padding:16px;border-radius:8px;cursor:pointer;" onclick="loadTemplate('lyric_video')">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <div><strong>📝 Lyric Video</strong><br><span style="font-size:12px;color:var(--text-muted);">Animated text, kinetic typography</span></div>
+                                <span style="color:var(--accent);">→</span>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-hover);padding:16px;border-radius:8px;cursor:pointer;" onclick="loadTemplate('social_vertical')">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <div><strong>📱 TikTok/Reels (9:16)</strong><br><span style="font-size:12px;color:var(--text-muted);">Vertical format, trending effects</span></div>
+                                <span style="color:var(--accent);">→</span>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-hover);padding:16px;border-radius:8px;cursor:pointer;" onclick="loadTemplate('youtube_intro')">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <div><strong>▶️ YouTube Intro</strong><br><span style="font-size:12px;color:var(--text-muted);">Logo animation, text reveal</span></div>
+                                <span style="color:var(--accent);">→</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DSP DISTRIBUTION -->
+        <div id="page-dsp" class="page">
+            <div class="page-header"><h2>🎵 DSP Distribution</h2><button class="btn btn-primary" onclick="createNewRelease()">+ New Release</button></div>
+            <div class="grid grid-4" style="margin-bottom:24px;">
+                <div class="card stat-card"><div class="stat-icon">💿</div><div class="stat-value" id="dsp-releases">0</div><div class="stat-label">Total Releases</div></div>
+                <div class="card stat-card"><div class="stat-icon">🌐</div><div class="stat-value">10</div><div class="stat-label">Platforms</div></div>
+                <div class="card stat-card"><div class="stat-icon">🌍</div><div class="stat-value">190+</div><div class="stat-label">Territories</div></div>
+                <div class="card stat-card"><div class="stat-icon">📊</div><div class="stat-value">$0.004</div><div class="stat-label">Avg Per Stream</div></div>
+            </div>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">🌐 Distribution Platforms</h3>
+                    <div class="table-container"><table><thead><tr><th>Platform</th><th>Market Share</th><th>Payout</th><th>Territories</th></tr></thead>
+                    <tbody id="dsp-platforms-table">
+                        <tr><td>🟢 Spotify</td><td>31%</td><td>$0.0035/stream</td><td>184</td></tr>
+                        <tr><td>🔴 Apple Music</td><td>15%</td><td>$0.007/stream</td><td>167</td></tr>
+                        <tr><td>▶️ YouTube Music</td><td>10%</td><td>$0.002/stream</td><td>178</td></tr>
+                        <tr><td>🟠 Amazon Music</td><td>13%</td><td>$0.004/stream</td><td>52</td></tr>
+                        <tr><td>🔵 Tidal</td><td>3%</td><td>$0.012/stream</td><td>61</td></tr>
+                        <tr><td>🟣 Deezer</td><td>2%</td><td>$0.0045/stream</td><td>180</td></tr>
+                        <tr><td>🟠 SoundCloud</td><td>1.5%</td><td>$0.003/stream</td><td>190</td></tr>
+                    </tbody></table></div>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">📤 Create New Release</h3>
+                    <div class="form-group"><label>Title</label><input type="text" id="release-title" placeholder="Release title"></div>
+                    <div class="form-group"><label>Artist</label><input type="text" id="release-artist" value="DJSPEEDYGA"></div>
+                    <div class="form-group"><label>Type</label>
+                        <select id="release-type" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);">
+                            <option value="single">Single</option>
+                            <option value="ep">EP</option>
+                            <option value="album">Album</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Release Date</label><input type="date" id="release-date"></div>
+                    <div class="form-group"><label>Genre</label>
+                        <select id="release-genre" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);">
+                            <option value="Hip-Hop">Hip-Hop</option>
+                            <option value="R&B">R&B</option>
+                            <option value="Pop">Pop</option>
+                            <option value="Electronic">Electronic</option>
+                            <option value="Rock">Rock</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%;" onclick="submitRelease()">Create Release</button>
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <h3 style="margin-bottom:16px;">📋 Recent Releases</h3>
+                <div class="table-container"><table><thead><tr><th>Title</th><th>Type</th><th>Date</th><th>Platforms</th><th>Status</th></tr></thead>
+                <tbody id="dsp-releases-table">
+                    <tr><td>GOAT Mode</td><td>Single</td><td>2024-03-15</td><td>Spotify, Apple Music, YouTube</td><td style="color:var(--success);">✅ Delivered</td></tr>
+                    <tr><td>Royalty Kings</td><td>Album</td><td>2024-04-01</td><td>All Platforms</td><td style="color:var(--warning);">⏳ Processing</td></tr>
+                    <tr><td>Digital Dreams</td><td>EP</td><td>2024-05-20</td><td>Spotify, Apple Music</td><td style="color:var(--accent);">📅 Scheduled</td></tr>
+                </tbody></table></div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <h3 style="margin-bottom:16px;">📊 Google Sheets DSP Database</h3>
+                <p style="color:var(--text-secondary);margin-bottom:16px;">Connect your Google Sheets to manage your catalog database. Sync releases, track royalties, and manage metadata.</p>
+                <div class="grid grid-2" style="gap:12px;">
+                    <div class="form-group"><label>Spreadsheet ID</label><input type="text" id="sheets-id" placeholder="Enter Google Sheets ID"></div>
+                    <div class="form-group"><label>API Key</label><input type="password" id="sheets-api-key" placeholder="Enter API Key"></div>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:12px;">
+                    <button class="btn btn-secondary" onclick="syncGoogleSheets()">🔄 Sync from Sheets</button>
+                    <button class="btn btn-secondary" onclick="exportGoogleSheets()">📤 Export to Sheets</button>
+                </div>
+            </div>
+        </div>
+
         <!-- SETTINGS -->
         <div id="page-settings" class="page">
             <div class="page-header"><h2>⚙️ Settings</h2></div>
@@ -632,6 +833,9 @@
             document.querySelector('.sidebar').classList.remove('open');
             if (pageId === 'nft') initNFTChart();
             if (pageId === 'market') initMarketCharts();
+            if (pageId === 'mining') { loadMiningStats(); initMiningChart(); }
+            if (pageId === 'video') loadVideoEffects();
+            if (pageId === 'dsp') loadDSPReleases();
         }
 
         // ==================== API HELPERS ====================
@@ -797,6 +1001,170 @@
                 el.textContent = '● Refreshing...';
                 setTimeout(() => { el.textContent = '● Active'; }, 1000);
             });
+        }
+
+        // ==================== CRYPTO MINING ====================
+        let miningChart = null;
+        async function loadMiningStats() {
+            const stats = await apiGet('/api/mining/stats');
+            if (stats) {
+                document.getElementById('mining-hashrate').textContent = stats.totalHashrate.toFixed(2) + ' MH/s';
+                document.getElementById('mining-earnings').textContent = '$' + stats.totalEarnings.toFixed(2);
+                document.getElementById('mining-active').textContent = stats.activeMiners;
+            }
+        }
+        
+        async function createMiner() {
+            const coin = document.getElementById('mining-coin-select').value;
+            const type = document.getElementById('mining-hardware-type').value;
+            const wallet = document.getElementById('mining-wallet').value;
+            const result = await apiPost('/api/mining/create', { coin, type, wallet, threads: 4 });
+            if (result && result.minerId) {
+                alert('Miner created: ' + result.minerId);
+                loadMiningStats();
+            }
+        }
+        
+        async function startMiningSession() {
+            const coin = document.getElementById('mining-coin-select').value;
+            const type = document.getElementById('mining-hardware-type').value;
+            const wallet = document.getElementById('mining-wallet').value;
+            
+            const createResult = await apiPost('/api/mining/create', { coin, type, wallet, threads: 4 });
+            if (createResult && createResult.minerId) {
+                const startResult = await apiPost('/api/mining/start', { minerId: createResult.minerId });
+                if (startResult && startResult.success) {
+                    alert('Mining started! Hashrate: ' + startResult.hashrate + ' MH/s');
+                    loadMiningStats();
+                }
+            }
+        }
+        
+        function initMiningChart() {
+            if (miningChart) return;
+            const ctx = document.getElementById('miningChart');
+            if (!ctx) return;
+            miningChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Hashrate (MH/s)',
+                        data: [45, 52, 48, 61, 55, 67, 72],
+                        borderColor: '#6c5ce7',
+                        backgroundColor: 'rgba(108,92,231,0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Earnings ($)',
+                        data: [12, 15, 13, 18, 16, 20, 22],
+                        borderColor: '#00cec9',
+                        backgroundColor: 'rgba(0,206,201,0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: '#b2b2d0' } } },
+                    scales: {
+                        x: { ticks: { color: '#6c6c8a' }, grid: { color: 'rgba(45,45,94,0.3)' } },
+                        y: { ticks: { color: '#6c6c8a' }, grid: { color: 'rgba(45,45,94,0.3)' } }
+                    }
+                }
+            });
+        }
+
+        // ==================== VIDEO EDITOR ====================
+        async function createVideoProject() {
+            const result = await apiPost('/api/video/project', {
+                name: 'New Video Project',
+                resolution: { width: 1920, height: 1080 },
+                fps: 30
+            });
+            if (result && result.id) {
+                alert('Video project created: ' + result.id);
+                document.getElementById('video-projects').textContent = parseInt(document.getElementById('video-projects').textContent) + 1;
+            }
+        }
+        
+        async function loadTemplate(templateId) {
+            const templates = await apiGet('/api/video/templates');
+            const template = templates?.find(t => t.id === templateId);
+            if (template) {
+                const result = await apiPost('/api/video/project', {
+                    name: template.name,
+                    resolution: template.resolution || { width: 1920, height: 1080 },
+                    fps: 30
+                });
+                if (result) {
+                    alert('Template loaded: ' + template.name);
+                }
+            }
+        }
+        
+        async function loadVideoEffects() {
+            const effects = await apiGet('/api/video/effects');
+            console.log('Loaded effects:', effects);
+        }
+
+        // ==================== DSP DISTRIBUTION ====================
+        async function loadDSPReleases() {
+            const releases = await apiGet('/api/dsp/releases');
+            if (releases) {
+                document.getElementById('dsp-releases').textContent = releases.length;
+            }
+        }
+        
+        async function createNewRelease() {
+            const title = document.getElementById('release-title')?.value || 'New Release';
+            const artist = document.getElementById('release-artist')?.value || 'DJSPEEDYGA';
+            const type = document.getElementById('release-type')?.value || 'single';
+            const genre = document.getElementById('release-genre')?.value || 'Hip-Hop';
+            const releaseDate = document.getElementById('release-date')?.value || new Date().toISOString().split('T')[0];
+            
+            const result = await apiPost('/api/dsp/releases', {
+                title,
+                artist,
+                type,
+                genre,
+                releaseDate,
+                platforms: ['spotify', 'appleMusic', 'youtubeMusic', 'amazonMusic']
+            });
+            
+            if (result && result.id) {
+                alert('Release created: ' + result.title);
+                loadDSPReleases();
+            }
+        }
+        
+        async function submitRelease() {
+            await createNewRelease();
+        }
+        
+        async function syncGoogleSheets() {
+            const spreadsheetId = document.getElementById('sheets-id')?.value;
+            const apiKey = document.getElementById('sheets-api-key')?.value;
+            
+            if (!spreadsheetId) {
+                alert('Please enter a Spreadsheet ID');
+                return;
+            }
+            
+            await apiPost('/api/dsp/google-sheets/config', { spreadsheetId, apiKey });
+            const result = await apiPost('/api/dsp/google-sheets/sync', {});
+            
+            if (result && result.success) {
+                alert('Synced ' + result.releases + ' releases from Google Sheets');
+                loadDSPReleases();
+            }
+        }
+        
+        async function exportGoogleSheets() {
+            const result = await apiPost('/api/dsp/google-sheets/export', {});
+            if (result && result.success) {
+                alert('Exported ' + result.exported + ' releases to Google Sheets');
+            }
         }
 
         function escapeHtml(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }

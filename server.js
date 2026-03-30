@@ -903,6 +903,218 @@ app.post('/api/llm/config', (req, res) => {
     }
 });
 
+// ==================== MUSIC CATALOG ENDPOINTS ====================
+
+const MusicCatalog = require('./lib/catalog/music-catalog');
+
+// Get full catalog
+app.get('/api/catalog', (req, res) => {
+    try {
+        const catalog = MusicCatalog.getFullCatalog();
+        res.json(catalog);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get catalog statistics
+app.get('/api/catalog/stats', (req, res) => {
+    try {
+        const stats = MusicCatalog.getStatistics();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get all songs
+app.get('/api/catalog/songs', (req, res) => {
+    try {
+        const songs = MusicCatalog.getAllSongs();
+        res.json({ songs, total: songs.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get song by ID
+app.get('/api/catalog/songs/:id', (req, res) => {
+    try {
+        const song = MusicCatalog.getSongById(req.params.id);
+        if (!song) {
+            return res.status(404).json({ error: 'Song not found' });
+        }
+        res.json(song);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Search songs
+app.get('/api/catalog/search', (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q) {
+            return res.status(400).json({ error: 'Query parameter q is required' });
+        }
+        const songs = MusicCatalog.searchByTitle(q);
+        res.json({ query: q, results: songs, total: songs.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get collaborations
+app.get('/api/catalog/collaborations', (req, res) => {
+    try {
+        const collabs = MusicCatalog.getCollaborations();
+        res.json({ collaborations: collabs, total: collabs.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Export catalog as CSV
+app.get('/api/catalog/export', (req, res) => {
+    try {
+        const csv = MusicCatalog.exportToCSV();
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="waka_catalog.csv"');
+        res.send(csv);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== NETWORK PROFILES ENDPOINTS ====================
+
+const NetworkProfiles = require('./lib/network/network-profiles');
+
+// Get all profiles
+app.get('/api/network/profiles', (req, res) => {
+    try {
+        const { type, search } = req.query;
+        let profiles;
+        if (search) {
+            profiles = NetworkProfiles.searchProfiles(search);
+        } else if (type) {
+            profiles = NetworkProfiles.getProfilesByType(type);
+        } else {
+            profiles = NetworkProfiles.getAllProfiles();
+        }
+        res.json({ profiles, total: profiles.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get profile by ID
+app.get('/api/network/profiles/:id', (req, res) => {
+    try {
+        const profile = NetworkProfiles.getProfileById(req.params.id);
+        if (!profile) {
+            return res.status(404).json({ error: 'Profile not found' });
+        }
+        res.json(profile);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Add new profile
+app.post('/api/network/profiles', (req, res) => {
+    try {
+        const profile = NetworkProfiles.addProfile(req.body);
+        res.status(201).json(profile);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Update profile
+app.put('/api/network/profiles/:id', (req, res) => {
+    try {
+        const profile = NetworkProfiles.updateProfile(req.params.id, req.body);
+        if (!profile) {
+            return res.status(404).json({ error: 'Profile not found' });
+        }
+        res.json(profile);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get all connections
+app.get('/api/network/connections', (req, res) => {
+    try {
+        const connections = NetworkProfiles.getAllConnections();
+        res.json({ connections, total: connections.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get profile connections
+app.get('/api/network/profiles/:id/connections', (req, res) => {
+    try {
+        const connections = NetworkProfiles.getProfileConnections(req.params.id);
+        res.json({ connections, total: connections.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Add connection
+app.post('/api/network/connections', (req, res) => {
+    try {
+        const { from, to, type, metadata } = req.body;
+        const connection = NetworkProfiles.addConnection(from, to, type, metadata);
+        res.status(201).json(connection);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get network statistics
+app.get('/api/network/stats', (req, res) => {
+    try {
+        const stats = NetworkProfiles.getNetworkStats();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get network value for profile
+app.get('/api/network/profiles/:id/value', (req, res) => {
+    try {
+        const value = NetworkProfiles.calculateNetworkValue(req.params.id);
+        res.json({ profileId: req.params.id, networkValue: value });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get opportunities
+app.get('/api/network/opportunities', (req, res) => {
+    try {
+        const opportunities = NetworkProfiles.getOpportunities();
+        res.json({ opportunities, total: opportunities.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Add opportunity
+app.post('/api/network/opportunities', (req, res) => {
+    try {
+        const opportunity = NetworkProfiles.addOpportunity(req.body);
+        res.status(201).json(opportunity);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 // ==================== MARKET ANALYSIS ENDPOINTS ====================
 
 app.get('/api/market/trends', (req, res) => {

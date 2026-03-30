@@ -412,6 +412,111 @@
             border-radius: 50%; animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+    /* ==================== CATALOG & NETWORK STYLES ==================== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .data-table th {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .data-table tr:hover {
+            background: var(--bg-hover);
+        }
+        .data-table code {
+            background: var(--bg-primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .profile-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .profile-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .profile-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .profile-info h4 {
+            margin: 0 0 4px;
+            color: var(--text-primary);
+        }
+        .profile-info p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        .influence {
+            color: var(--success);
+            font-size: 12px;
+        }
+        .connection-item, .opportunity-item {
+            background: var(--bg-primary);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .connection-type {
+            background: var(--accent);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        .opportunity-item h4 {
+            margin: 0 0 4px;
+        }
+        .opportunity-item p {
+            margin: 0 0 8px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        .badge.open { background: var(--success); }
+        .badge.closed { background: var(--danger); }
+        .value {
+            color: var(--success);
+            font-weight: bold;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -433,6 +538,8 @@
             <div class="nav-item" onclick="showPage('team', this)"><span class="icon">👥</span> Team Hub</div>
             <div class="nav-item" onclick="showPage('market', this)"><span class="icon">📈</span> Market Intel</div>
             <div class="nav-item" onclick="showPage('mining', this)"><span class="icon">⛏️</span> Crypto Mining</div>
+            <div class="nav-item" onclick="showPage('catalog', this)"><span class="icon">🎵</span> Music Catalog</div>
+            <div class="nav-item" onclick="showPage('network', this)"><span class="icon">🔗</span> Network</div>
             <div class="nav-item" onclick="showPage('video', this)"><span class="icon">🎬</span> Video Editor</div>
             <div class="nav-item" onclick="showPage('dsp', this)"><span class="icon">🎵</span> DSP Distribution</div>
             <div class="nav-item" onclick="showPage('local-llm', this)"><span class="icon">🧠</span> Local LLM</div>
@@ -686,6 +793,103 @@
                 </div>
                 <button class="btn btn-primary" onclick="saveWalletConfig()" style="margin-top:12px;">💾 Save Wallet Addresses</button>
                 <div id="wallet-status" style="margin-top:12px;font-size:13px;"></div>
+            </div>
+        </div>
+
+        <!-- MUSIC CATALOG PAGE -->
+        <div id="page-catalog" class="page">
+            <div class="page-header"><h2>🎵 Music Catalog - WAKA FLOCKA FLAME</h2><button class="btn btn-primary" onclick="exportCatalog()">📥 Export CSV</button></div>
+            
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-value" id="catalog-total-songs">0</div><div class="stat-label">Total Songs</div></div>
+                <div class="stat-card"><div class="stat-value" id="catalog-total-share">0%</div><div class="stat-label">Total Share %</div></div>
+                <div class="stat-card"><div class="stat-value" id="catalog-albums">0</div><div class="stat-label">Albums</div></div>
+                <div class="stat-card"><div class="stat-value" id="catalog-labels">0</div><div class="stat-label">Labels</div></div>
+                <div class="stat-card"><div class="stat-value" id="catalog-collabs">0</div><div class="stat-label">Collaborations</div></div>
+                <div class="stat-card"><div class="stat-value" id="catalog-isrc">0</div><div class="stat-label">With ISRC</div></div>
+            </div>
+
+            <div class="card">
+                <h3>🔍 Search Catalog</h3>
+                <div class="form-group">
+                    <input type="text" id="catalog-search" placeholder="Search by song title..." onkeyup="searchCatalog(this.value)" style="width: 100%; padding: 12px; background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px;">
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Top Albums</h3>
+                <div id="catalog-top-albums"></div>
+            </div>
+
+            <div class="card">
+                <h3>🏢 Top Labels</h3>
+                <div id="catalog-top-labels"></div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Song Catalog</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="catalog-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Song Title</th>
+                                <th>ISWC</th>
+                                <th>Share %</th>
+                                <th>Album</th>
+                                <th>Label</th>
+                                <th>ISRC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="catalog-tbody"></tbody>
+                    </table>
+                </div>
+                <div id="catalog-pagination" style="margin-top: 16px; text-align: center;"></div>
+            </div>
+        </div>
+
+        <!-- NETWORK PAGE -->
+        <div id="page-network" class="page">
+            <div class="page-header"><h2>🔗 Our Network = Our Net Worth</h2><button class="btn btn-primary" onclick="addNetworkProfile()">+ Add Contact</button></div>
+            
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-value" id="network-total-profiles">0</div><div class="stat-label">Total Contacts</div></div>
+                <div class="stat-card"><div class="stat-value" id="network-connections">0</div><div class="stat-label">Connections</div></div>
+                <div class="stat-card"><div class="stat-value" id="network-net-worth">$0</div><div class="stat-label">Network Value</div></div>
+                <div class="stat-card"><div class="stat-value" id="network-opportunities">0</div><div class="stat-label">Opportunities</div></div>
+            </div>
+
+            <div class="card">
+                <h3>⭐ Key Profiles</h3>
+                <div id="network-key-profiles" class="profiles-grid"></div>
+            </div>
+
+            <div class="card">
+                <h3>🤝 Recent Connections</h3>
+                <div id="network-recent-connections"></div>
+            </div>
+
+            <div class="card">
+                <h3>💼 Opportunities</h3>
+                <div id="network-opportunities-list"></div>
+            </div>
+
+            <div class="card">
+                <h3>👥 All Contacts</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="network-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Company</th>
+                                <th>Influence</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="network-tbody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -980,6 +1184,8 @@
             if (pageId === 'mining') { loadMiningStats(); initMiningChart(); loadWalletConfig(); }
             if (pageId === 'video') loadVideoEffects();
             if (pageId === 'dsp') loadDSPReleases();
+            if (pageId === 'catalog') { loadCatalogStats(); loadCatalogSongs(); }
+            if (pageId === 'network') { loadNetworkStats(); loadNetworkProfiles(); }
         }
 
         // ==================== API HELPERS ====================
@@ -1574,6 +1780,216 @@
         document.getElementById('llm-max-tokens')?.addEventListener('input', function() {
             document.getElementById('tokens-value').textContent = this.value;
         });
+
+        // ==================== MUSIC CATALOG ====================
+        let catalogData = { songs: [] };
+        let catalogPage = 1;
+        const catalogPageSize = 20;
+
+        async function loadCatalogStats() {
+            const stats = await apiGet('/api/catalog/stats');
+            if (stats) {
+                document.getElementById('catalog-total-songs').textContent = stats.totalSongs?.toLocaleString() || '0';
+                document.getElementById('catalog-total-share').textContent = stats.totalShare?.toFixed(1) + '%' || '0%';
+                document.getElementById('catalog-albums').textContent = stats.uniqueAlbums || '0';
+                document.getElementById('catalog-labels').textContent = stats.uniqueLabels || '0';
+                document.getElementById('catalog-collabs').textContent = stats.songsWithAlbum || '0';
+                document.getElementById('catalog-isrc').textContent = stats.songsWithISRC || '0';
+                
+                // Top albums
+                const albumsHtml = (stats.topAlbums || []).map(a => 
+                    `<div class="list-item"><span>${a.name}</span><span class="badge">${a.count} songs</span></div>`
+                ).join('');
+                document.getElementById('catalog-top-albums').innerHTML = albumsHtml || '<p>No albums found</p>';
+                
+                // Top labels
+                const labelsHtml = (stats.topLabels || []).map(l => 
+                    `<div class="list-item"><span>${l.name}</span><span class="badge">${l.count} songs</span></div>`
+                ).join('');
+                document.getElementById('catalog-top-labels').innerHTML = labelsHtml || '<p>No labels found</p>';
+            }
+        }
+
+        async function loadCatalogSongs() {
+            const data = await apiGet('/api/catalog');
+            if (data) {
+                catalogData = data;
+                renderCatalogTable();
+            }
+        }
+
+        function renderCatalogTable() {
+            const songs = catalogData.songs || [];
+            const start = (catalogPage - 1) * catalogPageSize;
+            const end = start + catalogPageSize;
+            const pageSongs = songs.slice(start, end);
+            
+            const tbody = document.getElementById('catalog-tbody');
+            tbody.innerHTML = pageSongs.map((song, i) => `
+                <tr>
+                    <td>${start + i + 1}</td>
+                    <td><strong>${escapeHtml(song.song_title || '')}</strong></td>
+                    <td><code>${song.iswc || '-'}</code></td>
+                    <td>${song.share_percent?.toFixed(2) || '0'}%</td>
+                    <td>${escapeHtml(song.album || '-')}</td>
+                    <td>${escapeHtml(song.label || '-')}</td>
+                    <td><code>${song.isrc || '-'}</code></td>
+                </tr>
+            `).join('');
+            
+            // Pagination
+            const totalPages = Math.ceil(songs.length / catalogPageSize);
+            document.getElementById('catalog-pagination').innerHTML = `
+                <button onclick="catalogPrevPage()" ${catalogPage === 1 ? 'disabled' : ''}>← Prev</button>
+                <span style="margin: 0 16px;">Page ${catalogPage} of ${totalPages}</span>
+                <button onclick="catalogNextPage()" ${catalogPage === totalPages ? 'disabled' : ''}>Next →</button>
+            `;
+        }
+
+        function catalogNextPage() {
+            const totalPages = Math.ceil((catalogData.songs || []).length / catalogPageSize);
+            if (catalogPage < totalPages) {
+                catalogPage++;
+                renderCatalogTable();
+            }
+        }
+
+        function catalogPrevPage() {
+            if (catalogPage > 1) {
+                catalogPage--;
+                renderCatalogTable();
+            }
+        }
+
+        async function searchCatalog(query) {
+            if (query.length < 2) {
+                loadCatalogSongs();
+                return;
+            }
+            const data = await apiGet(`/api/catalog/search?q=${encodeURIComponent(query)}`);
+            if (data) {
+                catalogData = { songs: data.results };
+                catalogPage = 1;
+                renderCatalogTable();
+            }
+        }
+
+        async function exportCatalog() {
+            window.location.href = '/api/catalog/export';
+        }
+
+        // ==================== NETWORK PROFILES ====================
+        let networkData = { profiles: [], connections: [] };
+
+        async function loadNetworkStats() {
+            const stats = await apiGet('/api/network/stats');
+            if (stats) {
+                document.getElementById('network-total-profiles').textContent = stats.totalProfiles || '0';
+                document.getElementById('network-connections').textContent = stats.totalConnections || '0';
+                document.getElementById('network-net-worth').textContent = '$' + (stats.totalNetworkNetWorth || 0).toLocaleString();
+                document.getElementById('network-opportunities').textContent = stats.totalProfiles || '0';
+            }
+        }
+
+        async function loadNetworkProfiles() {
+            const data = await apiGet('/api/network/profiles');
+            if (data) {
+                networkData = data;
+                renderNetworkTable();
+                renderKeyProfiles();
+            }
+            
+            const connections = await apiGet('/api/network/connections');
+            if (connections) {
+                renderConnections(connections.connections || []);
+            }
+            
+            const opportunities = await apiGet('/api/network/opportunities');
+            if (opportunities) {
+                renderOpportunities(opportunities.opportunities || []);
+            }
+        }
+
+        function renderNetworkTable() {
+            const profiles = networkData.profiles || [];
+            const tbody = document.getElementById('network-tbody');
+            tbody.innerHTML = profiles.slice(0, 20).map(profile => `
+                <tr>
+                    <td><strong>${escapeHtml(profile.name || '')}</strong>${profile.verified ? ' ✓' : ''}</td>
+                    <td><span class="badge">${profile.type || 'unknown'}</span></td>
+                    <td>${escapeHtml(profile.company || '-')}</td>
+                    <td>${profile.influence || 0}</td>
+                    <td><button class="btn btn-sm" onclick="viewProfile('${profile.id}')">View</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderKeyProfiles() {
+            const profiles = (networkData.profiles || [])
+                .filter(p => p.influence >= 70 || p.verified)
+                .slice(0, 6);
+            
+            const html = profiles.map(p => `
+                <div class="profile-card" onclick="viewProfile('${p.id}')">
+                    <div class="profile-avatar">${(p.name || '?')[0].toUpperCase()}</div>
+                    <div class="profile-info">
+                        <h4>${escapeHtml(p.name || 'Unknown')}${p.verified ? ' ✓' : ''}</h4>
+                        <p>${escapeHtml(p.company || p.type || '')}</p>
+                        <span class="influence">Influence: ${p.influence || 0}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('network-key-profiles').innerHTML = html || '<p>No key profiles yet</p>';
+        }
+
+        function renderConnections(connections) {
+            const html = connections.slice(0, 10).map(c => `
+                <div class="connection-item">
+                    <span class="connection-type">${c.type || 'connection'}</span>
+                    <span class="connection-strength">Strength: ${c.strength || 1}</span>
+                </div>
+            `).join('');
+            document.getElementById('network-recent-connections').innerHTML = html || '<p>No connections yet</p>';
+        }
+
+        function renderOpportunities(opportunities) {
+            const html = opportunities.map(o => `
+                <div class="opportunity-item">
+                    <h4>${escapeHtml(o.title || 'Untitled')}</h4>
+                    <p>${escapeHtml(o.description || '')}</p>
+                    <span class="badge ${o.status}">${o.status || 'open'}</span>
+                    ${o.value ? `<span class="value">$${o.value.toLocaleString()}</span>` : ''}
+                </div>
+            `).join('');
+            document.getElementById('network-opportunities-list').innerHTML = html || '<p>No opportunities yet</p>';
+        }
+
+        async function viewProfile(id) {
+            const profile = await apiGet(`/api/network/profiles/${id}`);
+            if (profile) {
+                alert(`Profile: ${profile.name}\\nType: ${profile.type}\\nCompany: ${profile.company || 'N/A'}\\nInfluence: ${profile.influence || 0}\\nNet Worth: $${(profile.netWorth || 0).toLocaleString()}`);
+            }
+        }
+
+        async function addNetworkProfile() {
+            const name = prompt('Enter contact name:');
+            if (!name) return;
+            
+            const type = prompt('Enter type (artist, producer, label, executive, etc.):') || 'artist';
+            const company = prompt('Enter company (optional):') || '';
+            
+            const response = await fetch('/api/network/profiles', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, type, company, influence: 50 })
+            });
+            
+            if (response.ok) {
+                loadNetworkProfiles();
+                loadNetworkStats();
+            }
+        }
 
         // ==================== WEBSOCKET ====================
         let ws;

@@ -1,0 +1,128 @@
+name: Build GOAT App - All Platforms
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build'
+        required: false
+        default: '5.1.0'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            artifact: linux-build
+          - os: windows-latest
+            platform: win
+            artifact: windows-build
+          - os: macos-latest
+            platform: mac
+            artifact: macos-build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build Electron app (Linux)
+        if: matrix.platform == 'linux'
+        run: npm run electron:build:linux
+
+      - name: Build Electron app (Windows)
+        if: matrix.platform == 'win'
+        run: npm run electron:build:win
+
+      - name: Build Electron app (macOS)
+        if: matrix.platform == 'mac'
+        run: npm run electron:build:mac
+
+      - name: Upload Linux artifacts
+        if: matrix.platform == 'linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+
+      - name: Upload Windows artifacts
+        if: matrix.platform == 'win'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            dist/*.exe
+            dist/*-portable.exe
+
+      - name: Upload macOS artifacts
+        if: matrix.platform == 'mac'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            dist/*.dmg
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Display structure of downloaded files
+        run: ls -R artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.event.inputs.version || '5.1.0' }}
+          name: SUPER GOAT Royalties v${{ github.event.inputs.version || '5.1.0' }}
+          body: |
+            ## 🚀 SUPER GOAT Royalties Release
+            
+            ### Features
+            - ✅ AI-Powered Dashboard with NVIDIA NIM
+            - ✅ RAG System with Knowledge Base
+            - ✅ 4 Autonomous AI Agents
+            - ✅ Revenue & Royalty Tracking
+            - ✅ NFT Portfolio Management
+            - ✅ Smart Contract Generation
+            - ✅ Crypto Mining Dashboard (NEW!)
+            - ✅ Video Editor with 3D Effects (NEW!)
+            - ✅ DSP Distribution with Google Sheets (NEW!)
+            - ✅ Team Collaboration Hub
+            - ✅ Market Intelligence
+            
+            ### Downloads
+            - **Windows**: Download the .exe installer or portable version
+            - **macOS**: Download the .dmg file
+            - **Linux**: Download the .AppImage (portable) or .deb package
+            
+          files: |
+            artifacts/**/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

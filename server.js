@@ -42,6 +42,11 @@ const {
     MarketAnalysis
 } = require('./lib/models/data-models');
 
+// New Feature Modules
+const cryptoMining = require('./lib/mining/crypto-mining');
+const videoEditor = require('./lib/video/video-editor');
+const dspDistribution = require('./lib/dsp/dsp-distribution');
+
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
@@ -485,6 +490,228 @@ app.get('/api/nft/portfolio', (req, res) => {
         chains: nftPortfolio.chains ?? {},
         recentSales: nftPortfolio.salesHistory?.slice(-5) ?? []
     });
+});
+
+// ==================== CRYPTO MINING ENDPOINTS ====================
+
+// Get mining stats
+app.get('/api/mining/stats', (req, res) => {
+    res.json(cryptoMining.getStats());
+});
+
+// Get hardware recommendations
+app.get('/api/mining/hardware', (req, res) => {
+    res.json(cryptoMining.getHardwareRecommendations());
+});
+
+// Create miner
+app.post('/api/mining/create', (req, res) => {
+    try {
+        const { coin, type, threads, walletAddress, poolIndex } = req.body;
+        const minerId = cryptoMining.createMiner({
+            coin,
+            type: type || 'cpu',
+            threads: threads || 4,
+            walletAddress,
+            poolIndex
+        });
+        res.json({ success: true, minerId });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Start mining
+app.post('/api/mining/start', (req, res) => {
+    try {
+        const { minerId } = req.body;
+        const result = cryptoMining.startMining(minerId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Stop mining
+app.post('/api/mining/stop', (req, res) => {
+    try {
+        const { minerId } = req.body;
+        const result = cryptoMining.stopMining(minerId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Calculate earnings
+app.get('/api/mining/earnings/:minerId', (req, res) => {
+    try {
+        const earnings = cryptoMining.calculateEarnings(req.params.minerId);
+        res.json(earnings);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// ==================== VIDEO EDITOR ENDPOINTS ====================
+
+// Get effects library
+app.get('/api/video/effects', (req, res) => {
+    res.json(videoEditor.getEffects());
+});
+
+// Get transitions
+app.get('/api/video/transitions', (req, res) => {
+    res.json(videoEditor.getTransitions());
+});
+
+// Get templates
+app.get('/api/video/templates', (req, res) => {
+    res.json(videoEditor.getTemplates());
+});
+
+// Create video project
+app.post('/api/video/project', (req, res) => {
+    try {
+        const project = videoEditor.createProject(req.body);
+        res.json(project);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get project
+app.get('/api/video/project/:projectId', (req, res) => {
+    const project = videoEditor.getProject(req.params.projectId);
+    if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json(project);
+});
+
+// Add media to project
+app.post('/api/video/project/:projectId/media', (req, res) => {
+    try {
+        const media = videoEditor.addMedia(req.params.projectId, req.body);
+        res.json(media);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Apply effect
+app.post('/api/video/effect', (req, res) => {
+    try {
+        const { projectId, clipId, effectId, params } = req.body;
+        const effect = videoEditor.applyEffect(projectId, clipId, effectId, params);
+        res.json(effect);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Render project
+app.post('/api/video/render', (req, res) => {
+    try {
+        const { projectId, settings } = req.body;
+        const job = videoEditor.renderProject(projectId, settings);
+        res.json(job);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get music video presets
+app.get('/api/video/presets/music-video', (req, res) => {
+    res.json(videoEditor.getMusicVideoPresets());
+});
+
+// ==================== DSP DISTRIBUTION ENDPOINTS ====================
+
+// Get all platforms
+app.get('/api/dsp/platforms', (req, res) => {
+    res.json(dspDistribution.getPlatformStats());
+});
+
+// Get all releases
+app.get('/api/dsp/releases', (req, res) => {
+    res.json(dspDistribution.getReleases());
+});
+
+// Get single release
+app.get('/api/dsp/releases/:releaseId', (req, res) => {
+    const release = dspDistribution.getRelease(req.params.releaseId);
+    if (!release) {
+        return res.status(404).json({ error: 'Release not found' });
+    }
+    res.json(release);
+});
+
+// Create new release
+app.post('/api/dsp/releases', (req, res) => {
+    try {
+        const release = dspDistribution.createRelease(req.body);
+        res.json(release);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Submit to platforms
+app.post('/api/dsp/submit/:releaseId', (req, res) => {
+    try {
+        const { platforms } = req.body;
+        const result = dspDistribution.submitToPlatforms(req.params.releaseId, platforms);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Check delivery status
+app.get('/api/dsp/status/:releaseId', (req, res) => {
+    try {
+        const status = dspDistribution.checkDeliveryStatus(req.params.releaseId);
+        res.json(status);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get distribution recommendations
+app.post('/api/dsp/recommendations', (req, res) => {
+    const recommendations = dspDistribution.getDistributionRecommendations(req.body);
+    res.json(recommendations);
+});
+
+// Configure Google Sheets
+app.post('/api/dsp/google-sheets/config', (req, res) => {
+    try {
+        const result = dspDistribution.configureGoogleSheets(req.body);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Sync from Google Sheets
+app.post('/api/dsp/google-sheets/sync', async (req, res) => {
+    try {
+        const result = await dspDistribution.syncFromGoogleSheets();
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Export to Google Sheets
+app.post('/api/dsp/google-sheets/export', async (req, res) => {
+    try {
+        const result = await dspDistribution.exportToGoogleSheets();
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 });
 
 // ==================== COLLABORATION ENDPOINTS ====================

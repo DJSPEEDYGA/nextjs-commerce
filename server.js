@@ -553,6 +553,37 @@ app.get('/api/mining/earnings/:minerId', (req, res) => {
     }
 });
 
+// Get wallet configuration status
+app.get('/api/mining/wallets', (req, res) => {
+    try {
+        const walletStatus = cryptoMining.getWalletStatus();
+        res.json({ wallets: walletStatus, config: cryptoMining.walletConfig.wallets });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update wallet address
+app.post('/api/mining/wallets/:coin', (req, res) => {
+    try {
+        const { address } = req.body;
+        const coin = req.params.coin;
+        
+        if (!address) {
+            return res.status(400).json({ error: 'Wallet address is required' });
+        }
+        
+        const success = cryptoMining.setWalletAddress(coin, address);
+        if (success) {
+            res.json({ success: true, coin, message: `${coin} wallet address updated` });
+        } else {
+            res.status(400).json({ error: `Unsupported coin: ${coin}` });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // ==================== VIDEO EDITOR ENDPOINTS ====================
 
 // Get effects library

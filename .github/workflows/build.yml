@@ -1,4 +1,4 @@
-<name: Build GOAT App - All Platforms
+name: Build GOAT App - All Platforms
 
 on:
   push:

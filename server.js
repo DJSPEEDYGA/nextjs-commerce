@@ -732,6 +732,146 @@ app.get('/api/collaboration/status', (req, res) => {
     });
 });
 
+// ==================== LOCAL LLM ENDPOINTS ====================
+// 100% Offline, No API, No Login, No Internet Required
+
+const { getLocalLLM } = require('./lib/ai/local-llm');
+
+// Get local LLM instance
+let localLLM = null;
+
+function getLLM() {
+    if (!localLLM) {
+        localLLM = getLocalLLM({
+            dataPath: process.env.GOAT_DATA_PATH || null
+        });
+    }
+    return localLLM;
+}
+
+// Get LLM status and configuration
+app.get('/api/llm/status', (req, res) => {
+    try {
+        const llm = getLLM();
+        res.json({
+            mode: aiConfig.aiMode || 'local',
+            ...llm.getSystemInfo(),
+            dataPathInfo: llm.getDataPath()
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Set data path (for external drive)
+app.post('/api/llm/data-path', (req, res) => {
+    try {
+        const llm = getLLM();
+        const { path: newPath } = req.body;
+        llm.setDataPath(newPath);
+        res.json({
+            success: true,
+            dataPath: llm.getDataPath()
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// List available models
+app.get('/api/llm/models', (req, res) => {
+    try {
+        const llm = getLLM();
+        res.json({
+            installed: llm.listModels(),
+            available: aiConfig.local?.availableModels || {}
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get download instructions for a model
+app.get('/api/llm/models/:modelName/download', (req, res) => {
+    try {
+        const llm = getLLM();
+        const info = llm.getDownloadInstructions(req.params.modelName);
+        if (info) {
+            res.json(info);
+        } else {
+            res.status(404).json({ error: 'Model not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Load a model
+app.post('/api/llm/load/:modelId', async (req, res) => {
+    try {
+        const llm = getLLM();
+        const result = await llm.loadModel(req.params.modelId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Unload current model
+app.post('/api/llm/unload', async (req, res) => {
+    try {
+        const llm = getLLM();
+        await llm.unloadModel();
+        res.json({ success: true });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Generate text completion
+app.post('/api/llm/generate', async (req, res) => {
+    try {
+        const llm = getLLM();
+        const { prompt, options } = req.body;
+        const result = await llm.generate(prompt, options);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Chat completion
+app.post('/api/llm/chat', async (req, res) => {
+    try {
+        const llm = getLLM();
+        const { messages, options } = req.body;
+        const result = await llm.chat(messages, options);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get/Set LLM configuration
+app.get('/api/llm/config', (req, res) => {
+    try {
+        const llm = getLLM();
+        res.json(llm.getConfig());
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/llm/config', (req, res) => {
+    try {
+        const llm = getLLM();
+        llm.setConfig(req.body);
+        res.json(llm.getConfig());
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 // ==================== MARKET ANALYSIS ENDPOINTS ====================
 
 app.get('/api/market/trends', (req, res) => {

@@ -26,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '20'
           cache: 'npm'
@@ -44,7 +44,7 @@ jobs:
         run: npm run build --if-present
 
       - name: 📊 Upload Build Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: goat-app-build
           path: |
@@ -67,10 +67,10 @@ jobs:
       url: http://72.61.193.184
     steps:
       - name: 📥 Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: 🚀 Deploy to VPS #1 (Production)
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262
         with:
           host: ${{ secrets.VPS1_HOST }}
           username: ${{ secrets.VPS1_USER }}
@@ -127,7 +127,6 @@ jobs:
       - name: ✅ Verify Deployment
         run: |
           echo "Production URL: http://72.61.193.184:3000"
-          curl -f http://${{ secrets.VPS1_HOST }}:3000/health || echo "Health check endpoint not available"
 
   # ═══════════════════════════════════════════════════════════════════════════════
   # DEPLOY TO VPS #2 - DATABASE
@@ -141,10 +140,10 @@ jobs:
       url: http://93.127.214.171
     steps:
       - name: 📥 Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: 🗄️ Deploy to VPS #2 (Database)
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262
         with:
           host: ${{ secrets.VPS2_HOST }}
           username: ${{ secrets.VPS2_USER }}
@@ -215,7 +214,7 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - name: 📥 Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: 🔄 Sync Data to All Servers
         run: |

@@ -1,15 +1,42 @@
 /**
  * SUPER GOAT ROYALTIES - Electron Main Process
  * Desktop application shell with system tray, menus, and secure IPC
+ *
+ * This file is ONLY used by the Electron desktop build.
+ * Vercel / web deployments run server.js directly and never load this file.
+ * Set process.env.ELECTRON_BUILD=true to confirm Electron context at runtime.
  */
 
 const { app, BrowserWindow, Menu, Tray, ipcMain, shell, dialog } = require('electron');
 const path = require('path');
 
+// Mark the process as an Electron build so server.js and other modules can
+// adapt their behaviour when running inside the desktop app.
+process.env.ELECTRON_BUILD = 'true';
+
 let mainWindow;
 let tray;
-let serverProcess;
-const SERVER_PORT = 3000;
+// serverProcess reserved for future use (e.g. spawning a child process)
+let serverProcess; // eslint-disable-line no-unused-vars
+const SERVER_PORT = process.env.PORT || 3000;
+
+// Resolve the correct icon path depending on platform and available files.
+// Falls back gracefully so missing build assets never crash the app.
+function resolveIcon() {
+    const candidates = [
+        path.join(__dirname, 'build', 'icon.ico'),   // Windows preferred
+        path.join(__dirname, 'build', 'icon.icns'),  // macOS preferred
+        path.join(__dirname, 'build', 'icon.png'),   // Linux / fallback
+        path.join(__dirname, 'favicon.ico')          // last resort
+    ];
+    const fs = require('fs');
+    for (const candidate of candidates) {
+        try {
+            if (fs.existsSync(candidate)) return candidate;
+        } catch { /* ignore */ }
+    }
+    return undefined; // Electron will use its own default icon
+}
 
 // ==================== SINGLE INSTANCE LOCK ====================
 const gotTheLock = app.requestSingleInstanceLock();
@@ -28,12 +55,14 @@ if (!gotTheLock) {
 
 // ==================== WINDOW CREATION ====================
 function createWindow() {
+    const iconPath = resolveIcon();
+
     mainWindow = new BrowserWindow({
         width: 1400,
         height: 900,
         minWidth: 800,
         minHeight: 600,
-        icon: path.join(__dirname, 'build', 'icon.ico'),
+        ...(iconPath && { icon: iconPath }),
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -55,8 +84,13 @@ function createWindow() {
     startServer().then(() => {
         mainWindow.loadURL(`http://localhost:${SERVER_PORT}`);
     }).catch(err => {
-        console.error('Failed to start server:', err);
-        mainWindow.loadURL(`data:text/html,<h1>Server failed to start</h1><p>${err.message}</p>`);
+        console.error('[Electron] Failed to start embedded server:', err.message);
+        mainWindow.loadURL(
+            `data:text/html,<html><body style="background:#0a0a1a;color:#fff;font-family:sans-serif;padding:2rem">` +
+            `<h1>&#x26A0; Server failed to start</h1><p>${err.message}</p>` +
+            `<p>Check that all dependencies are installed (<code>npm install</code>) and try again.</p>` +
+            `</body></html>`
+        );
     });
 
     // Open DevTools in development
@@ -87,10 +121,13 @@ function createWindow() {
 function startServer() {
     return new Promise((resolve, reject) => {
         try {
-            const server = require('./server');
-            // Give server a moment to initialize
+            // Require the Express server in-process so Electron and the web
+            // server share the same Node.js runtime (no extra child processes).
+            // This keeps the build simple and avoids port-conflict edge-cases.
+            require('./server');
+            // Give the server a moment to bind to the port before we load the URL.
             setTimeout(() => {
-                console.log(`✅ Express server started on port ${SERVER_PORT}`);
+                console.log(`[Electron] ✅ Express server started on port ${SERVER_PORT}`);
                 resolve();
             }, 2000);
         } catch (err) {
@@ -101,18 +138,18 @@ function startServer() {
 
 // ==================== SYSTEM TRAY ====================
 function createTray() {
-    const iconPath = path.join(__dirname, 'build', 'icon.ico');
-    
+    const iconPath = resolveIcon();
+
+    if (!iconPath) {
+        console.warn('[Electron] No tray icon found, skipping system tray');
+        return;
+    }
+
     try {
         tray = new Tray(iconPath);
     } catch (e) {
-        // Fallback: use favicon if build icon missing
-        try {
-            tray = new Tray(path.join(__dirname, 'favicon.ico'));
-        } catch (e2) {
-            console.warn('No tray icon available, skipping tray');
-            return;
-        }
+        console.warn('[Electron] Failed to create system tray:', e.message);
+        return;
     }
 
     const contextMenu = Menu.buildFromTemplate([

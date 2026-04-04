@@ -13,6 +13,11 @@ build/*.AppImage
 build/*.deb
 build/*.snap
 build/*.msi
+build/*.icns
+build/*.png
+
+# Electron builder cache
+.electron-builder-cache/
 
 # Environment
 .env
@@ -39,13 +44,5 @@ desktop.ini
 
 # Misc
 *.log
-.cache/todo.md
-
-# Logs
-logs/
-*.log
-combined.log
-error.log
-
-# DAW project data (user-generated)
-data/daw-projects/*.json
+.cache/
+todo.md

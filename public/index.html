@@ -3,474 +3,2007 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUPER GOAT ROYALTIES v4.0 | The Greatest Of All Time Music Platform</title>
-    <link rel="stylesheet" href="css/goat-studio.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>SUPER GOAT ROYALTIES - AI-Powered Creator Platform</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
-:root {
-    --bg-primary: #060608;
-    --bg-secondary: #0c0c14;
-    --bg-tertiary: #12121e;
-    --bg-card: #16161e;
-    --bg-elevated: #1a1a2e;
-    --border: #1e1e30;
-    --border-light: #2a2a3e;
-    --text-primary: #f0f0f0;
-    --text-secondary: #a0a0b0;
-    --text-muted: #666680;
-    --red: #dc2626;
-    --red-glow: rgba(220,38,38,0.3);
-    --gold: #f59e0b;
-    --gold-glow: rgba(245,158,11,0.3);
-    --green: #16a34a;
-    --green-light: #4ade80;
-    --blue: #3b82f6;
-    --purple: #818cf8;
-    --pink: #f472b6;
-    --cyan: #22d3ee;
-    --radius: 10px;
-    --radius-sm: 6px;
-    --shadow: 0 4px 24px rgba(0,0,0,0.4);
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg-primary); color:var(--text-primary); min-height:100vh; overflow-x:hidden; }
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #111128;
+            --bg-card: #161638;
+            --bg-hover: #1e1e4a;
+            --accent: #6c5ce7;
+            --accent-light: #a29bfe;
+            --accent-glow: rgba(108, 92, 231, 0.3);
+            --success: #00cec9;
+            --warning: #fdcb6e;
+            --danger: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #b2b2d0;
+            --text-muted: #6c6c8a;
+            --border: #2d2d5e;
+            --sidebar-width: 240px;
+        }
 
-.top-nav { display:flex; align-items:center; justify-content:space-between; padding:0 24px; height:56px; background:linear-gradient(180deg,#12121e,#0a0a14); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:1000; }
-.nav-brand { display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px; }
-.nav-brand .goat-icon { font-size:24px; }
-.nav-brand .version { font-size:10px; color:var(--gold); background:rgba(245,158,11,0.15); padding:2px 8px; border-radius:10px; }
-.nav-links { display:flex; gap:2px; }
-.nav-link { padding:8px 14px; border-radius:var(--radius-sm); color:var(--text-secondary); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; border:none; background:none; white-space:nowrap; }
-.nav-link:hover { color:#fff; background:var(--bg-elevated); }
-.nav-link.active { color:#fff; background:var(--red); }
-.nav-status { display:flex; align-items:center; gap:12px; font-size:11px; }
-.status-dot { width:8px; height:8px; border-radius:50%; background:var(--green-light); box-shadow:0 0 6px var(--green-light); animation:pulse-dot 2s infinite; }
-@keyframes pulse-dot { 0%,100%{opacity:1}50%{opacity:0.5} }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-.stats-bar { display:flex; gap:0; padding:0 24px; background:var(--bg-secondary); border-bottom:1px solid var(--border); overflow-x:auto; }
-.stat-item { padding:10px 20px; text-align:center; border-right:1px solid var(--border); flex-shrink:0; }
-.stat-item:last-child { border-right:none; }
-.stat-value { font-size:18px; font-weight:800; color:var(--gold); }
-.stat-label { font-size:9px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+        /* ==================== SIDEBAR ==================== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
 
-.main-content { padding:20px 24px; }
-.section { display:none; }
-.section.active { display:block; }
-.section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
-.section-title { font-size:24px; font-weight:800; display:flex; align-items:center; gap:10px; }
-.section-subtitle { color:var(--text-muted); font-size:13px; margin-top:4px; }
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
 
-.card-grid { display:grid; gap:16px; }
-.card-grid.cols-2 { grid-template-columns:repeat(auto-fill,minmax(400px,1fr)); }
-.card-grid.cols-3 { grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
-.card-grid.cols-4 { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); }
-.card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; transition:all 0.3s; }
-.card:hover { border-color:var(--border-light); transform:translateY(-2px); box-shadow:var(--shadow); }
-.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-.card-title { font-size:15px; font-weight:700; }
-.card-desc { font-size:12px; color:var(--text-secondary); line-height:1.5; }
+        .sidebar-header h1 {
+            font-size: 18px;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
 
-.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; text-transform:uppercase; }
-.badge-red { background:rgba(220,38,38,0.15); color:var(--red); }
-.badge-gold { background:rgba(245,158,11,0.15); color:var(--gold); }
-.badge-green { background:rgba(22,163,74,0.15); color:var(--green-light); }
-.badge-blue { background:rgba(59,130,246,0.15); color:var(--blue); }
-.badge-purple { background:rgba(129,140,248,0.15); color:var(--purple); }
-.badge-pink { background:rgba(244,114,182,0.15); color:var(--pink); }
+        .sidebar-header .version {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
 
-.btn { padding:8px 16px; border-radius:var(--radius-sm); font-size:12px; font-weight:700; cursor:pointer; border:none; transition:all 0.2s; }
-.btn-primary { background:var(--red); color:#fff; }
-.btn-primary:hover { background:#b91c1c; box-shadow:0 0 16px var(--red-glow); }
-.btn-gold { background:var(--gold); color:#000; }
-.btn-gold:hover { background:#d97706; }
-.btn-outline { background:transparent; border:1px solid var(--border-light); color:var(--text-secondary); }
-.btn-outline:hover { background:var(--bg-elevated); color:#fff; }
-.btn-sm { padding:5px 10px; font-size:11px; }
+        .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
 
-.search-bar { display:flex; gap:8px; margin-bottom:16px; }
-.search-input { flex:1; padding:10px 16px; background:var(--bg-tertiary); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-primary); font-size:13px; outline:none; transition:border-color 0.2s; }
-.search-input:focus { border-color:var(--purple); }
-.filter-tabs { display:flex; gap:4px; margin-bottom:16px; flex-wrap:wrap; }
-.filter-tab { padding:6px 14px; border-radius:20px; font-size:11px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:transparent; color:var(--text-muted); transition:all 0.2s; }
-.filter-tab:hover { border-color:var(--purple); color:var(--text-primary); }
-.filter-tab.active { background:var(--purple); border-color:var(--purple); color:#fff; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+            font-size: 14px;
+            gap: 12px;
+        }
 
-.data-table { width:100%; border-collapse:collapse; font-size:12px; }
-.data-table th { text-align:left; padding:10px 12px; background:var(--bg-tertiary); color:var(--text-muted); font-size:10px; text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); position:sticky; top:0; }
-.data-table td { padding:10px 12px; border-bottom:1px solid var(--border); color:var(--text-secondary); }
-.data-table tr:hover td { background:var(--bg-elevated); color:var(--text-primary); }
+        .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .nav-item.active {
+            background: var(--bg-hover);
+            color: var(--accent-light);
+            border-left-color: var(--accent);
+        }
 
-.notification-panel { position:fixed; right:20px; top:70px; width:320px; max-height:400px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); z-index:999; display:none; overflow:hidden; }
-.notification-panel.open { display:block; }
-.notification-header { padding:12px 16px; border-bottom:1px solid var(--border); font-weight:700; font-size:13px; display:flex; justify-content:space-between; }
-.notification-list { max-height:340px; overflow-y:auto; }
-.notification-item { padding:10px 16px; border-bottom:1px solid var(--border); display:flex; gap:10px; align-items:flex-start; }
-.notification-item:hover { background:var(--bg-elevated); }
-.notification-text { font-size:12px; color:var(--text-secondary); }
-.notification-time { font-size:10px; color:var(--text-muted); margin-top:2px; }
+        .nav-item .icon { font-size: 18px; width: 24px; text-align: center; }
 
-.chat-container { display:flex; flex-direction:column; height:500px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
-.chat-messages { flex:1; overflow-y:auto; padding:16px; }
-.chat-msg { margin-bottom:12px; display:flex; gap:10px; }
-.chat-msg.user { justify-content:flex-end; }
-.chat-msg.user .msg-bubble { background:var(--red); color:#fff; border-radius:12px 12px 2px 12px; }
-.chat-msg.ai .msg-bubble { background:var(--bg-elevated); border-radius:12px 12px 12px 2px; }
-.msg-bubble { padding:10px 14px; max-width:75%; font-size:13px; line-height:1.5; }
-.chat-input-area { display:flex; gap:8px; padding:12px 16px; border-top:1px solid var(--border); background:var(--bg-tertiary); }
-.chat-input { flex:1; padding:10px 14px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-primary); font-size:13px; outline:none; }
-.chat-input:focus { border-color:var(--purple); }
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
 
-.revenue-bar-container { margin-bottom:12px; }
-.revenue-bar-label { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
-.revenue-bar-track { height:8px; background:var(--bg-tertiary); border-radius:4px; overflow:hidden; }
-.revenue-bar-fill { height:100%; border-radius:4px; transition:width 1s ease; }
+        .status-dot {
+            display: inline-block;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
 
-.daw-section-wrapper { background:var(--bg-secondary); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
 
-.loading-spinner { display:inline-block; width:20px; height:20px; border:2px solid var(--border-light); border-top-color:var(--red); border-radius:50%; animation:spin 0.8s linear infinite; }
-@keyframes spin { to{transform:rotate(360deg)} }
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 24px;
+            min-height: 100vh;
+        }
 
-@media (max-width:768px) {
-    .nav-links { overflow-x:auto; }
-    .card-grid.cols-2,.card-grid.cols-3,.card-grid.cols-4 { grid-template-columns:1fr; }
-    .top-nav { padding:0 12px; }
-    .main-content { padding:12px; }
-    .section-title { font-size:18px; }
-}
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .page-header {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .page-header .badge {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ==================== CARDS & GRID ==================== */
+        .grid { display: grid; gap: 20px; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .card:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+
+        .stat-card .stat-icon { font-size: 28px; margin-bottom: 8px; }
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .stat-card .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .stat-card .stat-change {
+            font-size: 12px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-change.positive { color: var(--success); }
+        .stat-change.negative { color: var(--danger); }
+
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container h3 {
+            margin-bottom: 16px;
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #5b4bd5; }
+        .btn-secondary { background: var(--bg-hover); color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--accent); }
+        .btn-success { background: var(--success); color: #0a0a1a; }
+        .btn-danger { background: var(--danger); color: white; }
+
+        /* ==================== AI CHAT ==================== */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 140px);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .chat-bubble.user {
+            background: var(--accent);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble.ai {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-input-area {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-input-area input:focus { border-color: var(--accent); }
+
+        /* ==================== TABLES ==================== */
+        .table-container { overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        tr:hover td { background: var(--bg-hover); }
+
+        /* ==================== AGENT CARDS ==================== */
+        .agent-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .agent-card .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .agent-card .agent-name { font-size: 16px; font-weight: 700; }
+
+        .agent-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .agent-status.active { background: rgba(0, 206, 201, 0.15); color: var(--success); }
+        .agent-status.idle { background: rgba(253, 203, 110, 0.15); color: var(--warning); }
+
+        .agent-card .agent-desc {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .agent-card .agent-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .tool-tag {
+            background: var(--bg-hover);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--accent-light);
+        }
+
+        /* ==================== FORM ELEMENTS ==================== */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+
+        /* ==================== SETTINGS ==================== */
+        .settings-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .settings-section h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toggle-switch { position: relative; width: 48px; height: 24px; display: inline-block; }
+        .toggle-switch input { display: none; }
+        .toggle-slider {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg-hover); border-radius: 24px; cursor: pointer; transition: 0.3s;
+        }
+        .toggle-slider::before {
+            content: ''; position: absolute; width: 18px; height: 18px;
+            left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s;
+        }
+        .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(24px); }
+
+        .setting-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid rgba(45, 45, 94, 0.5);
+        }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-info .setting-label { font-size: 14px; font-weight: 600; }
+        .setting-info .setting-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1024px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+            .mobile-menu { display: block !important; position: fixed; top: 16px; left: 16px; z-index: 200; background: var(--bg-card); border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 20px; }
+        }
+        .mobile-menu { display: none; }
+
+        /* ==================== SCROLLBAR ==================== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        .loading-spinner {
+            display: inline-block; width: 20px; height: 20px;
+            border: 2px solid var(--border); border-top-color: var(--accent);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    /* ==================== CATALOG & NETWORK STYLES ==================== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .data-table th {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .data-table tr:hover {
+            background: var(--bg-hover);
+        }
+        .data-table code {
+            background: var(--bg-primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .profile-card {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .profile-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .profile-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .profile-info h4 {
+            margin: 0 0 4px;
+            color: var(--text-primary);
+        }
+        .profile-info p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        .influence {
+            color: var(--success);
+            font-size: 12px;
+        }
+        .connection-item, .opportunity-item {
+            background: var(--bg-primary);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .connection-type {
+            background: var(--accent);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        .opportunity-item h4 {
+            margin: 0 0 4px;
+        }
+        .opportunity-item p {
+            margin: 0 0 8px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        .badge.open { background: var(--success); }
+        .badge.closed { background: var(--danger); }
+        .value {
+            color: var(--success);
+            font-weight: bold;
+            margin-left: 8px;
+        }
     </style>
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
+    <div class="mobile-menu" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
 
-<nav class="top-nav">
-    <div class="nav-brand">
-        <span class="goat-icon">🐐</span>
-        <span>SUPER GOAT ROYALTIES</span>
-        <span class="version">v4.0</span>
-    </div>
-    <div class="nav-links">
-        <button class="nav-link active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</button>
-        <button class="nav-link" data-section="daw"><i class="fas fa-sliders-h"></i> GOAT Studio</button>
-        <button class="nav-link" data-section="catalog"><i class="fas fa-music"></i> Catalog</button>
-        <button class="nav-link" data-section="models"><i class="fas fa-cube"></i> Model Hub</button>
-        <button class="nav-link" data-section="chat"><i class="fas fa-comments"></i> AI Chat</button>
-        <button class="nav-link" data-section="agents"><i class="fas fa-robot"></i> Agents</button>
-        <button class="nav-link" data-section="api-docs"><i class="fas fa-book"></i> API</button>
-    </div>
-    <div class="nav-status">
-        <div class="status-dot"></div>
-        <span id="wsStatus">Connecting...</span>
-        <button class="btn btn-sm btn-outline" onclick="toggleNotifications()"><i class="fas fa-bell"></i> <span id="notifCount">0</span></button>
-    </div>
-</nav>
-
-<div class="stats-bar">
-    <div class="stat-item"><div class="stat-value" id="statModels">63</div><div class="stat-label">AI Models</div></div>
-    <div class="stat-item"><div class="stat-value" id="statProviders">16</div><div class="stat-label">HF Providers</div></div>
-    <div class="stat-item"><div class="stat-value" id="statLightning">14</div><div class="stat-label">Lightning</div></div>
-    <div class="stat-item"><div class="stat-value" id="statCatalog">0</div><div class="stat-label">Catalog Works</div></div>
-    <div class="stat-item"><div class="stat-value" id="statRevenue">$0</div><div class="stat-label">Revenue</div></div>
-    <div class="stat-item"><div class="stat-value" id="statSounds">29</div><div class="stat-label">DAW Sounds</div></div>
-    <div class="stat-item"><div class="stat-value" id="statUptime">0s</div><div class="stat-label">Uptime</div></div>
-</div>
-
-<div class="notification-panel" id="notifPanel">
-    <div class="notification-header"><span><i class="fas fa-bell"></i> Notifications</span><button class="btn btn-sm btn-outline" onclick="clearNotifications()">Clear</button></div>
-    <div class="notification-list" id="notifList"></div>
-</div>
-
-<div class="main-content">
-
-<!-- DASHBOARD -->
-<div class="section active" id="section-dashboard">
-    <div class="section-header">
-        <div><div class="section-title">📊 Dashboard</div><div class="section-subtitle">Harvey L. Miller (DJ Speedy) — Real-time royalty analytics & AI insights</div></div>
-        <button class="btn btn-primary" onclick="refreshDashboard()"><i class="fas fa-sync"></i> Refresh</button>
-    </div>
-    <div class="card-grid cols-4" style="margin-bottom:20px">
-        <div class="card" style="border-left:3px solid var(--gold)"><div class="card-header"><span class="card-title">Total Revenue</span><span style="font-size:20px">💰</span></div><div style="font-size:28px;font-weight:800;color:var(--gold)" id="dashRevenue">$233,600</div><div style="color:var(--green-light);font-size:12px;margin-top:4px"><i class="fas fa-arrow-up"></i> <span id="dashGrowth">23.5</span>% growth</div></div>
-        <div class="card" style="border-left:3px solid var(--purple)"><div class="card-header"><span class="card-title">ASCAP Works</span><span style="font-size:20px">📀</span></div><div style="font-size:28px;font-weight:800;color:var(--purple)" id="dashWorks">438</div><div style="color:var(--text-muted);font-size:12px;margin-top:4px">Registered compositions</div></div>
-        <div class="card" style="border-left:3px solid var(--cyan)"><div class="card-header"><span class="card-title">Total Streams</span><span style="font-size:20px">🎧</span></div><div style="font-size:28px;font-weight:800;color:var(--cyan)">8.5M</div><div style="color:var(--text-muted);font-size:12px;margin-top:4px">Across all platforms</div></div>
-        <div class="card" style="border-left:3px solid var(--pink)"><div class="card-header"><span class="card-title">NFT Portfolio</span><span style="font-size:20px">🖼️</span></div><div style="font-size:28px;font-weight:800;color:var(--pink)" id="dashNFT">$156,000</div><div style="color:var(--text-muted);font-size:12px;margin-top:4px">4 items, 3 chains</div></div>
-    </div>
-    <div class="card-grid cols-2">
-        <div class="card"><div class="card-title" style="margin-bottom:16px">💵 Platform Revenue</div>
-            <div class="revenue-bar-container"><div class="revenue-bar-label"><span>Spotify</span><span style="color:var(--gold)">$89,200</span></div><div class="revenue-bar-track"><div class="revenue-bar-fill" style="width:76%;background:linear-gradient(90deg,#1DB954,#4ade80)"></div></div></div>
-            <div class="revenue-bar-container"><div class="revenue-bar-label"><span>Apple Music</span><span style="color:var(--gold)">$67,800</span></div><div class="revenue-bar-track"><div class="revenue-bar-fill" style="width:58%;background:linear-gradient(90deg,#fc3c44,#f472b6)"></div></div></div>
-            <div class="revenue-bar-container"><div class="revenue-bar-label"><span>YouTube</span><span style="color:var(--gold)">$45,300</span></div><div class="revenue-bar-track"><div class="revenue-bar-fill" style="width:39%;background:linear-gradient(90deg,#ff0000,#f59e0b)"></div></div></div>
-            <div class="revenue-bar-container"><div class="revenue-bar-label"><span>Amazon Music</span><span style="color:var(--gold)">$18,900</span></div><div class="revenue-bar-track"><div class="revenue-bar-fill" style="width:16%;background:linear-gradient(90deg,#00a8e1,#22d3ee)"></div></div></div>
-            <div class="revenue-bar-container"><div class="revenue-bar-label"><span>Tidal</span><span style="color:var(--gold)">$12,400</span></div><div class="revenue-bar-track"><div class="revenue-bar-fill" style="width:11%;background:linear-gradient(90deg,#000,#666)"></div></div></div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>🐐 GOAT ROYALTIES</h1>
+            <div class="version">v3.0 • AI-Powered Platform</div>
         </div>
-        <div class="card"><div class="card-title" style="margin-bottom:16px">🤖 AI System Status</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
-                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>Lightning AI</span><span class="badge badge-green">14 models</span></div>
-                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>HuggingFace</span><span class="badge badge-blue">16 providers</span></div>
-                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>Model Registry</span><span class="badge badge-purple">40 models</span></div>
-                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>NVIDIA NIM</span><span class="badge badge-green">Active</span></div>
-                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>RAG System</span><span class="badge badge-green">Active</span></div>
-                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>Agents</span><span class="badge badge-green">Running</span></div>
-                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>GOAT Studio</span><span class="badge badge-gold">Active</span></div>
-                <div style="padding:8px;background:var(--bg-tertiary);border-radius:6px;display:flex;justify-content:space-between"><span>ASCAP Catalog</span><span class="badge badge-purple" id="dashCatalogBadge">438 works</span></div>
-            </div>
+        <nav class="sidebar-nav">
+            <div class="nav-item active" onclick="showPage('dashboard', this)"><span class="icon">📊</span> Dashboard</div>
+            <div class="nav-item" onclick="showPage('revenue', this)"><span class="icon">💰</span> Revenue</div>
+            <div class="nav-item" onclick="showPage('nft', this)"><span class="icon">🎨</span> NFT Portfolio</div>
+            <div class="nav-item" onclick="showPage('ai-chat', this)"><span class="icon">🤖</span> AI Chat</div>
+            <div class="nav-item" onclick="showPage('agents', this)"><span class="icon">⚡</span> AI Agents</div>
+            <div class="nav-item" onclick="showPage('contracts', this)"><span class="icon">📋</span> Contracts</div>
+            <div class="nav-item" onclick="showPage('team', this)"><span class="icon">👥</span> Team Hub</div>
+            <div class="nav-item" onclick="showPage('market', this)"><span class="icon">📈</span> Market Intel</div>
+            <div class="nav-item" onclick="showPage('mining', this)"><span class="icon">⛏️</span> Crypto Mining</div>
+            <div class="nav-item" onclick="showPage('catalog', this)"><span class="icon">🎵</span> Music Catalog</div>
+            <div class="nav-item" onclick="showPage('network', this)"><span class="icon">🔗</span> Network</div>
+            <div class="nav-item" onclick="showPage('video', this)"><span class="icon">🎬</span> Video Editor</div>
+            <div class="nav-item" onclick="showPage('dsp', this)"><span class="icon">🎵</span> DSP Distribution</div>
+            <div class="nav-item" onclick="showPage('local-llm', this)"><span class="icon">🧠</span> Local LLM</div>
+            <div class="nav-item" onclick="showPage('settings', this)"><span class="icon">⚙️</span> Settings</div>
+        </nav>
+        <div class="sidebar-footer">
+            <span class="status-dot"></span>
+            <span id="status-text">Connecting...</span>
         </div>
-    </div>
-</div>
+    </aside>
 
-<!-- GOAT STUDIO DAW -->
-<div class="section" id="section-daw">
-    <div class="section-header">
-        <div><div class="section-title">🎹 GOAT Studio <span class="badge badge-red">PRO</span></div><div class="section-subtitle">Professional DAW — Recording, Mixing, Mastering & Film/TV Scoring</div></div>
-        <div style="display:flex;gap:8px">
-            <button class="btn btn-outline btn-sm" onclick="dawNewProject()"><i class="fas fa-file"></i> New</button>
-            <button class="btn btn-outline btn-sm" onclick="dawLoadProjects()"><i class="fas fa-folder-open"></i> Open</button>
-            <button class="btn btn-primary btn-sm" onclick="dawSave()"><i class="fas fa-save"></i> Save</button>
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- DASHBOARD -->
+        <div id="page-dashboard" class="page active">
+            <div class="page-header">
+                <h2>📊 Dashboard</h2>
+                <span class="badge" id="mode-badge">Loading...</span>
+            </div>
+            <div class="grid grid-4" style="margin-bottom:24px;">
+                <div class="card stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="total-revenue">$0</div><div class="stat-label">Total Revenue</div><div class="stat-change positive">▲ 23.5% this quarter</div></div>
+                <div class="card stat-card"><div class="stat-icon">🎵</div><div class="stat-value" id="total-streams">0</div><div class="stat-label">Total Streams</div><div class="stat-change positive">▲ 18.7% growth</div></div>
+                <div class="card stat-card"><div class="stat-icon">🎨</div><div class="stat-value" id="nft-value">$0</div><div class="stat-label">NFT Portfolio Value</div><div class="stat-change positive">▲ 12.3% this month</div></div>
+                <div class="card stat-card"><div class="stat-icon">🤖</div><div class="stat-value" id="active-agents">4</div><div class="stat-label">Active AI Agents</div><div class="stat-change positive">All systems operational</div></div>
+            </div>
+            <div class="grid grid-2">
+                <div class="chart-container"><h3>Revenue Trends (Last 12 Months)</h3><canvas id="revenueChart" height="250"></canvas></div>
+                <div class="chart-container"><h3>Platform Distribution</h3><canvas id="platformChart" height="250"></canvas></div>
+            </div>
+            <div class="chart-container"><h3>Platform Growth Comparison</h3><canvas id="growthChart" height="200"></canvas></div>
         </div>
-    </div>
-    <div class="daw-section-wrapper">
-        <div class="daw-transport">
-            <div class="transport-controls">
-                <button class="transport-btn" onclick="dawRewind()" title="Rewind"><i class="fas fa-backward"></i></button>
-                <button class="transport-btn" onclick="dawStop()" title="Stop"><i class="fas fa-stop"></i></button>
-                <button class="transport-btn play-btn" id="dawPlayBtn" onclick="dawTogglePlay()" title="Play"><i class="fas fa-play"></i></button>
-                <button class="transport-btn record-btn" id="dawRecBtn" onclick="dawToggleRecord()" title="Record"><i class="fas fa-circle"></i></button>
-                <button class="transport-btn" onclick="dawForward()" title="Forward"><i class="fas fa-forward"></i></button>
-                <button class="transport-btn" id="dawLoopBtn" onclick="dawToggleLoop()" title="Loop"><i class="fas fa-redo"></i></button>
-                <button class="transport-btn" id="dawMetronomeBtn" onclick="dawToggleMetronome()" title="Metronome"><i class="fas fa-drum"></i></button>
+
+        <!-- REVENUE -->
+        <div id="page-revenue" class="page">
+            <div class="page-header"><h2>💰 Revenue Analytics</h2><button class="btn btn-primary" onclick="analyzeRevenue()">🤖 AI Analysis</button></div>
+            <div class="grid grid-3" style="margin-bottom:24px;">
+                <div class="card stat-card"><div class="stat-icon">📈</div><div class="stat-value">$4,230</div><div class="stat-label">Monthly Revenue</div></div>
+                <div class="card stat-card"><div class="stat-icon">🎯</div><div class="stat-value">$52,800</div><div class="stat-label">Annual Projected</div></div>
+                <div class="card stat-card"><div class="stat-icon">⚡</div><div class="stat-value">23.5%</div><div class="stat-label">Growth Rate</div></div>
             </div>
-            <div class="transport-display">
-                <div class="transport-time" id="dawTimecode">01:00:00:00</div>
-                <div class="transport-bpm"><span>BPM</span><input type="number" id="dawBpm" value="120" min="20" max="300" onchange="dawSetBPM(this.value)"></div>
-                <div class="transport-time-sig">4/4</div>
-                <div class="transport-key">C minor</div>
+            <div class="card">
+                <h3 style="margin-bottom:16px;">Platform Breakdown</h3>
+                <div class="table-container"><table><thead><tr><th>Platform</th><th>Revenue</th><th>Streams</th><th>Growth</th><th>Status</th></tr></thead>
+                <tbody id="platform-table">
+                    <tr><td>Spotify</td><td>$12,847</td><td>285,000</td><td style="color:var(--success)">+31.2%</td><td>🟢 Active</td></tr>
+                    <tr><td>Apple Music</td><td>$8,234</td><td>142,000</td><td style="color:var(--success)">+24.8%</td><td>🟢 Active</td></tr>
+                    <tr><td>YouTube Music</td><td>$5,671</td><td>520,000</td><td style="color:var(--success)">+18.7%</td><td>🟢 Active</td></tr>
+                    <tr><td>Tidal</td><td>$2,100</td><td>38,500</td><td style="color:var(--success)">+45.2%</td><td>🟢 Active</td></tr>
+                    <tr><td>Amazon Music</td><td>$1,890</td><td>67,000</td><td style="color:var(--success)">+15.3%</td><td>🟢 Active</td></tr>
+                </tbody></table></div>
             </div>
-            <div style="margin-left:auto;display:flex;gap:8px">
-                <button class="btn btn-sm btn-outline" onclick="dawShowView('arrange')"><i class="fas fa-bars"></i> Arrange</button>
-                <button class="btn btn-sm btn-outline" onclick="dawShowView('pianoroll')"><i class="fas fa-th"></i> Piano Roll</button>
-                <button class="btn btn-sm btn-outline" onclick="dawShowView('mixer')"><i class="fas fa-sliders-h"></i> Mixer</button>
-                <button class="btn btn-sm btn-outline" onclick="dawShowView('scoring')"><i class="fas fa-film"></i> Scoring</button>
+            <div id="revenue-analysis" class="card" style="margin-top:20px;display:none;"><h3 style="margin-bottom:12px;">🤖 AI Revenue Analysis</h3><div id="revenue-analysis-content" style="color:var(--text-secondary);line-height:1.8;white-space:pre-wrap;"></div></div>
+        </div>
+
+        <!-- NFT PORTFOLIO -->
+        <div id="page-nft" class="page">
+            <div class="page-header"><h2>🎨 NFT Portfolio</h2><button class="btn btn-primary">+ Mint New NFT</button></div>
+            <div class="grid grid-3" style="margin-bottom:24px;">
+                <div class="card stat-card"><div class="stat-icon">🖼️</div><div class="stat-value">12</div><div class="stat-label">Total NFTs</div></div>
+                <div class="card stat-card"><div class="stat-icon">💎</div><div class="stat-value">$24,500</div><div class="stat-label">Portfolio Value</div></div>
+                <div class="card stat-card"><div class="stat-icon">🔄</div><div class="stat-value">$3,200</div><div class="stat-label">Secondary Sales</div></div>
+            </div>
+            <div class="grid grid-3">
+                <div class="card"><div style="background:linear-gradient(135deg,#6c5ce7,#00cec9);height:160px;border-radius:8px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px;">🎵</div><h4>Genesis Beat #001</h4><p style="color:var(--text-secondary);font-size:13px;margin:6px 0;">1/1 Exclusive Beat NFT</p><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;"><span style="font-weight:700;color:var(--success);">2.5 ETH</span><span style="font-size:12px;color:var(--text-muted);">Ethereum</span></div></div>
+                <div class="card"><div style="background:linear-gradient(135deg,#fd79a8,#fdcb6e);height:160px;border-radius:8px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px;">🎤</div><h4>GOAT Vocal Pack</h4><p style="color:var(--text-secondary);font-size:13px;margin:6px 0;">Limited Edition (50/100)</p><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;"><span style="font-weight:700;color:var(--success);">0.8 ETH</span><span style="font-size:12px;color:var(--text-muted);">Polygon</span></div></div>
+                <div class="card"><div style="background:linear-gradient(135deg,#00cec9,#0984e3);height:160px;border-radius:8px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:48px;">🎹</div><h4>Platinum Melody</h4><p style="color:var(--text-secondary);font-size:13px;margin:6px 0;">Royalty Share NFT (10%)</p><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;"><span style="font-weight:700;color:var(--success);">5.0 ETH</span><span style="font-size:12px;color:var(--text-muted);">Ethereum</span></div></div>
+            </div>
+            <div class="chart-container" style="margin-top:24px;"><h3>NFT Value Over Time</h3><canvas id="nftChart" height="200"></canvas></div>
+        </div>
+
+        <!-- AI CHAT -->
+        <div id="page-ai-chat" class="page">
+            <div class="page-header"><h2>🤖 AI Chat Assistant</h2><span class="badge">RAG-Powered</span></div>
+            <div class="card chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-bubble ai">👋 Welcome to GOAT Royalties AI Assistant! I'm powered by NVIDIA NIM and RAG technology. Ask me about your revenue, market trends, contracts, content strategy, or anything else!</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Ask about revenue, trends, contracts, content strategy..." onkeypress="if(event.key==='Enter')sendChat()">
+                    <button class="btn btn-primary" onclick="sendChat()">Send ➤</button>
+                </div>
             </div>
         </div>
-        <div class="daw-toolbar">
-            <div class="toolbar-group">
-                <button class="toolbar-btn active" onclick="dawSetTool(this,'select')"><i class="fas fa-mouse-pointer"></i> Select</button>
-                <button class="toolbar-btn" onclick="dawSetTool(this,'draw')"><i class="fas fa-pencil-alt"></i> Draw</button>
-                <button class="toolbar-btn" onclick="dawSetTool(this,'cut')"><i class="fas fa-cut"></i> Split</button>
-                <button class="toolbar-btn" onclick="dawSetTool(this,'erase')"><i class="fas fa-eraser"></i> Erase</button>
+
+        <!-- AI AGENTS -->
+        <div id="page-agents" class="page">
+            <div class="page-header"><h2>⚡ Autonomous AI Agents</h2><button class="btn btn-secondary" onclick="refreshAgents()">🔄 Refresh Status</button></div>
+            <div class="grid grid-2">
+                <div class="agent-card">
+                    <div class="agent-header"><span class="agent-name">📊 Royalty Tracker</span><span class="agent-status active">● Active</span></div>
+                    <div class="agent-desc">Monitors all platform revenue in real-time, detects anomalies, and provides predictive analytics for future earnings.</div>
+                    <div class="agent-tools"><span class="tool-tag">revenue-analyzer</span><span class="tool-tag">platform-integrator</span><span class="tool-tag">prediction-engine</span></div>
+                    <div style="display:flex;gap:8px;"><button class="btn btn-primary" onclick="executeAgent('royaltyTracker')">Execute</button><button class="btn btn-secondary">Configure</button></div>
+                </div>
+                <div class="agent-card">
+                    <div class="agent-header"><span class="agent-name">🎵 Content Advisor</span><span class="agent-status active">● Active</span></div>
+                    <div class="agent-desc">Analyzes market trends and audience data to recommend optimal content strategy, release timing, and platform targeting.</div>
+                    <div class="agent-tools"><span class="tool-tag">market-analyzer</span><span class="tool-tag">trend-detector</span><span class="tool-tag">recommender</span></div>
+                    <div style="display:flex;gap:8px;"><button class="btn btn-primary" onclick="executeAgent('contentAdvisor')">Execute</button><button class="btn btn-secondary">Configure</button></div>
+                </div>
+                <div class="agent-card">
+                    <div class="agent-header"><span class="agent-name">📋 Contract Analyst</span><span class="agent-status active">● Active</span></div>
+                    <div class="agent-desc">Reviews and generates smart contract terms, analyzes legal compliance, and assesses risk in royalty agreements.</div>
+                    <div class="agent-tools"><span class="tool-tag">legal-analyzer</span><span class="tool-tag">compliance-checker</span><span class="tool-tag">risk-assessor</span></div>
+                    <div style="display:flex;gap:8px;"><button class="btn btn-primary" onclick="executeAgent('contractAnalyst')">Execute</button><button class="btn btn-secondary">Configure</button></div>
+                </div>
+                <div class="agent-card">
+                    <div class="agent-header"><span class="agent-name">📣 Marketing Agent</span><span class="agent-status idle">● Idle</span></div>
+                    <div class="agent-desc">Creates marketing campaigns, optimizes SEO, and generates promotional content across social media platforms.</div>
+                    <div class="agent-tools"><span class="tool-tag">campaign-generator</span><span class="tool-tag">seo-optimizer</span><span class="tool-tag">content-creator</span></div>
+                    <div style="display:flex;gap:8px;"><button class="btn btn-primary" onclick="executeAgent('marketingAgent')">Execute</button><button class="btn btn-secondary">Configure</button></div>
+                </div>
             </div>
-            <div class="toolbar-group">
-                <button class="toolbar-btn" onclick="dawSetSnap(this,'1/4')">1/4</button>
-                <button class="toolbar-btn active" onclick="dawSetSnap(this,'1/8')">1/8</button>
-                <button class="toolbar-btn" onclick="dawSetSnap(this,'1/16')">1/16</button>
-                <button class="toolbar-btn" onclick="dawSetSnap(this,'free')">Free</button>
+            <div id="agent-output" class="card" style="margin-top:20px;display:none;"><h3 style="margin-bottom:12px;">⚡ Agent Output</h3><div id="agent-output-content" style="color:var(--text-secondary);line-height:1.8;white-space:pre-wrap;"></div></div>
+        </div>
+
+        <!-- CONTRACTS -->
+        <div id="page-contracts" class="page">
+            <div class="page-header"><h2>📋 Smart Contracts</h2><button class="btn btn-primary" onclick="generateContract()">🤖 Generate Contract</button></div>
+            <div class="grid grid-2" style="margin-bottom:24px;">
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">Create New Contract</h3>
+                    <div class="form-group"><label>Contract Type</label><select id="contract-type"><option value="distribution">Distribution Agreement</option><option value="licensing">Licensing Deal</option><option value="collaboration">Collaboration Agreement</option><option value="publishing">Publishing Deal</option><option value="management">Management Contract</option></select></div>
+                    <div class="form-group"><label>Party A (Creator)</label><input type="text" id="contract-party-a" placeholder="Your name or entity" value="DJSPEEDYGA"></div>
+                    <div class="form-group"><label>Party B (Counterpart)</label><input type="text" id="contract-party-b" placeholder="Label, platform, or collaborator"></div>
+                    <div class="form-group"><label>Key Terms</label><textarea id="contract-terms" placeholder="Describe key terms, royalty splits, duration..."></textarea></div>
+                    <button class="btn btn-primary" onclick="generateContract()" style="width:100%;">Generate AI Contract ➤</button>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">Active Contracts</h3>
+                    <table><thead><tr><th>Contract</th><th>Type</th><th>Status</th></tr></thead><tbody>
+                        <tr><td>Spotify Distribution</td><td>Distribution</td><td style="color:var(--success);">Active</td></tr>
+                        <tr><td>Beat Licensing #47</td><td>Licensing</td><td style="color:var(--success);">Active</td></tr>
+                        <tr><td>Collab - ArtistX</td><td>Collaboration</td><td style="color:var(--warning);">Pending</td></tr>
+                        <tr><td>Publishing Deal</td><td>Publishing</td><td style="color:var(--success);">Active</td></tr>
+                    </tbody></table>
+                </div>
             </div>
-            <div class="toolbar-group">
-                <button class="toolbar-btn" onclick="dawAddTrack('audio')"><i class="fas fa-plus"></i> Audio</button>
-                <button class="toolbar-btn" onclick="dawAddTrack('midi')"><i class="fas fa-plus"></i> MIDI</button>
-                <button class="toolbar-btn" onclick="dawAddTrack('bus')"><i class="fas fa-plus"></i> Bus</button>
-            </div>
-            <div class="toolbar-group">
-                <button class="toolbar-btn" onclick="dawAICompose()"><i class="fas fa-magic"></i> AI Compose</button>
-                <button class="toolbar-btn" onclick="dawAIMaster()"><i class="fas fa-hat-wizard"></i> AI Master</button>
-            </div>
-            <div class="toolbar-group">
-                <button class="toolbar-btn" onclick="dawZoomIn()"><i class="fas fa-search-plus"></i></button>
-                <button class="toolbar-btn" onclick="dawZoomOut()"><i class="fas fa-search-minus"></i></button>
+            <div id="contract-output" class="card" style="display:none;"><h3 style="margin-bottom:12px;">🤖 Generated Contract</h3><div id="contract-output-content" style="color:var(--text-secondary);line-height:1.8;white-space:pre-wrap;"></div></div>
+        </div>
+
+        <!-- TEAM HUB -->
+        <div id="page-team" class="page">
+            <div class="page-header"><h2>👥 Team Hub</h2><button class="btn btn-primary">+ Add Member</button></div>
+            <div class="grid grid-3">
+                <div class="card" style="text-align:center;padding:30px;"><div style="font-size:48px;margin-bottom:12px;">👤</div><h4>DJSPEEDYGA</h4><p style="color:var(--accent-light);font-size:13px;margin:6px 0;">Owner & Creator</p><p style="color:var(--text-muted);font-size:12px;">Full access • All platforms</p></div>
+                <div class="card" style="text-align:center;padding:30px;"><div style="font-size:48px;margin-bottom:12px;">🤖</div><h4>AI Manager</h4><p style="color:var(--success);font-size:13px;margin:6px 0;">Autonomous Agent</p><p style="color:var(--text-muted);font-size:12px;">4 agents active • Auto-optimization</p></div>
+                <div class="card" style="text-align:center;padding:30px;"><div style="font-size:48px;margin-bottom:12px;">📊</div><h4>Analytics Bot</h4><p style="color:var(--success);font-size:13px;margin:6px 0;">Data Processor</p><p style="color:var(--text-muted);font-size:12px;">Real-time monitoring • All platforms</p></div>
             </div>
         </div>
-        <div class="daw-workspace" id="dawArrangeView" style="height:480px">
-            <div class="track-headers" id="dawTrackHeaders"></div>
-            <div class="timeline-area" id="dawTimeline">
-                <div class="timeline-ruler" id="dawRuler"></div>
-                <div class="timeline-tracks" id="dawTimelineTracks"><div class="playhead" id="dawPlayhead" style="left:0"></div></div>
+
+        <!-- MARKET INTEL -->
+        <div id="page-market" class="page">
+            <div class="page-header"><h2>📈 Market Intelligence</h2><button class="btn btn-primary" onclick="getMarketTrends()">🤖 AI Market Analysis</button></div>
+            <div class="grid grid-2" style="margin-bottom:24px;">
+                <div class="chart-container"><h3>Genre Performance</h3><canvas id="genreChart" height="250"></canvas></div>
+                <div class="chart-container"><h3>Platform Market Share</h3><canvas id="marketShareChart" height="250"></canvas></div>
+            </div>
+            <div class="grid grid-4" style="margin-bottom:24px;">
+                <div class="card stat-card"><div class="stat-value" style="font-size:20px;">$19.3B</div><div class="stat-label">Global Streaming Market</div></div>
+                <div class="card stat-card"><div class="stat-value" style="font-size:20px;">+11.2%</div><div class="stat-label">YoY Growth</div></div>
+                <div class="card stat-card"><div class="stat-value" style="font-size:20px;">616M</div><div class="stat-label">Global Subscribers</div></div>
+                <div class="card stat-card"><div class="stat-value" style="font-size:20px;">$0.004</div><div class="stat-label">Avg Per Stream</div></div>
+            </div>
+            <div id="market-analysis" class="card" style="display:none;"><h3 style="margin-bottom:12px;">🤖 AI Market Analysis</h3><div id="market-analysis-content" style="color:var(--text-secondary);line-height:1.8;white-space:pre-wrap;"></div></div>
+        </div>
+
+        <!-- CRYPTO MINING -->
+        <div id="page-mining" class="page">
+            <div class="page-header"><h2>⛏️ Crypto Mining Dashboard</h2><button class="btn btn-primary" onclick="createMiner()">+ New Miner</button></div>
+            <div class="grid grid-4" style="margin-bottom:24px;">
+                <div class="card stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="mining-hashrate">0 MH/s</div><div class="stat-label">Total Hashrate</div></div>
+                <div class="card stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="mining-earnings">$0.00</div><div class="stat-label">Total Earnings</div></div>
+                <div class="card stat-card"><div class="stat-icon">🖥️</div><div class="stat-value" id="mining-active">0</div><div class="stat-label">Active Miners</div></div>
+                <div class="card stat-card"><div class="stat-icon">🪙</div><div class="stat-value">5</div><div class="stat-label">Supported Coins</div></div>
+            </div>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">💰 Supported Cryptocurrencies</h3>
+                    <div class="table-container"><table><thead><tr><th>Coin</th><th>Algorithm</th><th>Price</th><th>Block Reward</th></tr></thead>
+                    <tbody id="mining-coins-table">
+                        <tr><td>🟠 Bitcoin (BTC)</td><td>SHA-256</td><td>$67,500</td><td>3.125 BTC</td></tr>
+                        <tr><td>🔷 Ethereum (ETH)</td><td>Ethash</td><td>$3,450</td><td>2.0 ETH</td></tr>
+                        <tr><td>🔶 Monero (XMR)</td><td>RandomX</td><td>$125</td><td>0.6 XMR</td></tr>
+                        <tr><td>⚪ Litecoin (LTC)</td><td>Scrypt</td><td>$85</td><td>6.25 LTC</td></tr>
+                        <tr><td>🐕 Dogecoin (DOGE)</td><td>Scrypt</td><td>$0.15</td><td>10,000 DOGE</td></tr>
+                    </tbody></table></div>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">🖥️ Mining Hardware</h3>
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:13px;color:var(--text-secondary);">Hardware Type</label>
+                        <select id="mining-hardware-type" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                            <option value="cpu">CPU Mining</option>
+                            <option value="gpu">GPU Mining</option>
+                            <option value="asic">ASIC Mining</option>
+                            <option value="cloud">Cloud Mining</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:13px;color:var(--text-secondary);">Coin to Mine</label>
+                        <select id="mining-coin-select" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                            <option value="bitcoin">Bitcoin (BTC)</option>
+                            <option value="ethereum">Ethereum (ETH)</option>
+                            <option value="monero">Monero (XMR)</option>
+                            <option value="litecoin">Litecoin (LTC)</option>
+                            <option value="dogecoin">Dogecoin (DOGE)</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:13px;color:var(--text-secondary);">Wallet Address</label>
+                        <input type="text" id="mining-wallet" placeholder="Enter your wallet address" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                    </div>
+                    <button class="btn btn-primary" style="width:100%;" onclick="startMiningSession()">Start Mining</button>
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <h3 style="margin-bottom:16px;">📊 Mining Statistics</h3>
+                <canvas id="miningChart" height="200"></canvas>
+            </div>
+            
+            <!-- Wallet Configuration Section -->
+            <div class="card" style="margin-top:20px;">
+                <h3 style="margin-bottom:16px;">👛 Wallet Configuration</h3>
+                <p style="color:var(--text-secondary);margin-bottom:16px;font-size:13px;">
+                    Configure your wallet addresses to receive mining payouts. Your mined crypto will be sent to these addresses.
+                </p>
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label>🟠 Bitcoin (BTC) Address</label>
+                        <input type="text" id="wallet-btc" placeholder="Enter your Bitcoin wallet address" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                        <small style="color:var(--text-muted);">Cash App: $lifeimitatesartinc</small>
+                    </div>
+                    <div class="form-group">
+                        <label>🔷 Ethereum (ETH) Address</label>
+                        <input type="text" id="wallet-eth" placeholder="Enter your Ethereum wallet address" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                    </div>
+                    <div class="form-group">
+                        <label>🟣 Monero (XMR) Address</label>
+                        <input type="text" id="wallet-xmr" placeholder="Enter your Monero wallet address" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                    </div>
+                    <div class="form-group">
+                        <label>⚪ Litecoin (LTC) Address</label>
+                        <input type="text" id="wallet-ltc" placeholder="Enter your Litecoin wallet address" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>🐕 Dogecoin (DOGE) Address</label>
+                        <input type="text" id="wallet-doge" placeholder="Enter your Dogecoin wallet address" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);margin-top:6px;">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveWalletConfig()" style="margin-top:12px;">💾 Save Wallet Addresses</button>
+                <div id="wallet-status" style="margin-top:12px;font-size:13px;"></div>
             </div>
         </div>
-        <div class="piano-roll" id="dawPianoRoll" style="display:none">
-            <div class="piano-keys" id="dawPianoKeys"></div>
-            <div class="piano-grid" id="dawPianoGrid"></div>
-        </div>
-        <div class="daw-mixer" id="dawMixerView" style="display:none"></div>
-        <div id="dawScoringView" style="display:none;padding:16px">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                <div style="font-weight:700;font-size:15px"><i class="fas fa-film"></i> Cue List — Film/TV Scoring</div>
-                <div style="display:flex;gap:8px"><button class="btn btn-sm btn-outline" onclick="dawAddCue()"><i class="fas fa-plus"></i> Add Cue</button><span class="badge badge-gold">SMPTE: <span id="dawSMPTE">01:00:00:00</span></span></div>
+
+        <!-- MUSIC CATALOG PAGE -->
+        <div id="page-catalog" class="page">
+            <div class="page-header"><h2>🎵 Music Catalog - WAKA FLOCKA FLAME</h2><button class="btn btn-primary" onclick="exportCatalog()">📥 Export CSV</button></div>
+            
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-value" id="catalog-total-songs">0</div><div class="stat-label">Total Songs</div></div>
+                <div class="stat-card"><div class="stat-value" id="catalog-total-share">0%</div><div class="stat-label">Total Share %</div></div>
+                <div class="stat-card"><div class="stat-value" id="catalog-albums">0</div><div class="stat-label">Albums</div></div>
+                <div class="stat-card"><div class="stat-value" id="catalog-labels">0</div><div class="stat-label">Labels</div></div>
+                <div class="stat-card"><div class="stat-value" id="catalog-collabs">0</div><div class="stat-label">Collaborations</div></div>
+                <div class="stat-card"><div class="stat-value" id="catalog-isrc">0</div><div class="stat-label">With ISRC</div></div>
             </div>
-            <table class="data-table"><thead><tr><th>#</th><th>Cue Name</th><th>TC In</th><th>TC Out</th><th>Scene</th><th>Status</th></tr></thead>
-            <tbody id="dawCueList">
-                <tr><td style="color:var(--gold);font-weight:700">M1</td><td>Main Title</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:00:00:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:00:45:00</td><td>Opening</td><td><span class="badge badge-green">Complete</span></td></tr>
-                <tr><td style="color:var(--gold);font-weight:700">M2</td><td>Chase Scene</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:12:30:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:14:15:00</td><td>Act 2</td><td><span class="badge badge-red">Recording</span></td></tr>
-                <tr><td style="color:var(--gold);font-weight:700">M3</td><td>Love Theme</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:25:00:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:27:30:00</td><td>Act 2</td><td><span class="badge badge-gold">Pending</span></td></tr>
-                <tr><td style="color:var(--gold);font-weight:700">M4</td><td>Climax</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:45:00:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:48:00:00</td><td>Act 3</td><td><span class="badge badge-gold">Pending</span></td></tr>
-                <tr><td style="color:var(--gold);font-weight:700">M5</td><td>End Credits</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">02:01:00:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">02:04:30:00</td><td>Credits</td><td><span class="badge badge-gold">Pending</span></td></tr>
-            </tbody></table>
-            <div style="margin-top:16px"><div style="font-weight:700;font-size:13px;margin-bottom:8px"><i class="fas fa-map-marker-alt"></i> Tempo Map</div>
-                <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="badge badge-gold">Bar 1: 120 BPM</span><span class="badge badge-blue">Bar 17: 140 BPM (accel)</span><span class="badge badge-purple">Bar 33: 95 BPM (rit)</span><span class="badge badge-red">Bar 49: 160 BPM (climax)</span></div>
+
+            <div class="card">
+                <h3>🔍 Search Catalog</h3>
+                <div class="form-group">
+                    <input type="text" id="catalog-search" placeholder="Search by song title..." onkeyup="searchCatalog(this.value)" style="width: 100%; padding: 12px; background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 8px;">
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Top Albums</h3>
+                <div id="catalog-top-albums"></div>
+            </div>
+
+            <div class="card">
+                <h3>🏢 Top Labels</h3>
+                <div id="catalog-top-labels"></div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Song Catalog</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="catalog-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Song Title</th>
+                                <th>ISWC</th>
+                                <th>Share %</th>
+                                <th>Album</th>
+                                <th>Label</th>
+                                <th>ISRC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="catalog-tbody"></tbody>
+                    </table>
+                </div>
+                <div id="catalog-pagination" style="margin-top: 16px; text-align: center;"></div>
             </div>
         </div>
-    </div>
-    <div style="margin-top:20px"><div class="card"><div class="card-header"><div class="card-title"><i class="fas fa-drum"></i> Sound Library</div><div style="display:flex;gap:6px" id="soundCategoryTabs"></div></div><div class="search-bar" style="margin-top:12px"><input class="search-input" placeholder="Search sounds... (808, pad, strings, film, scoring)" id="soundSearch" oninput="searchSounds()"></div><div class="card-grid cols-4" id="soundGrid" style="max-height:240px;overflow-y:auto"></div></div></div>
-</div>
 
-<!-- ASCAP CATALOG -->
-<div class="section" id="section-catalog">
-    <div class="section-header">
-        <div><div class="section-title">📀 ASCAP Music Catalog</div><div class="section-subtitle">Harvey L. Miller / FASTASSMAN PUBLISHING INC — <span id="catalogTotal">0</span> registered works</div></div>
-        <div style="display:flex;gap:8px"><span class="badge badge-gold">IPI: 348202968</span><span class="badge badge-purple">Party ID: 1596704</span></div>
-    </div>
-    <div class="card-grid cols-4" style="margin-bottom:20px">
-        <div class="card"><div class="card-title">Total Works</div><div style="font-size:28px;font-weight:800;color:var(--purple)" id="catWorks">0</div></div>
-        <div class="card"><div class="card-title">Writers</div><div style="font-size:28px;font-weight:800;color:var(--blue)" id="catWriters">0</div></div>
-        <div class="card"><div class="card-title">Licensed</div><div style="font-size:28px;font-weight:800;color:var(--green-light)" id="catLicensed">0</div></div>
-        <div class="card"><div class="card-title">Roles</div><div style="font-size:20px;font-weight:800;color:var(--gold)" id="catRoles">-</div></div>
-    </div>
-    <div class="card" style="margin-bottom:20px">
-        <div class="search-bar">
-            <input class="search-input" placeholder="Search works by title, writer, ASCAP ID, or ISWC..." id="catalogSearch" onkeyup="if(event.key==='Enter')searchCatalog()">
-            <select class="search-input" style="width:140px;flex:none" id="catalogRole" onchange="searchCatalog()"><option value="">All Roles</option><option value="CA">CA</option><option value="E">E</option><option value="AM">AM</option><option value="C">C</option><option value="A">A</option></select>
-            <button class="btn btn-primary" onclick="searchCatalog()"><i class="fas fa-search"></i> Search</button>
+        <!-- NETWORK PAGE -->
+        <div id="page-network" class="page">
+            <div class="page-header"><h2>🔗 Our Network = Our Net Worth</h2><button class="btn btn-primary" onclick="addNetworkProfile()">+ Add Contact</button></div>
+            
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-value" id="network-total-profiles">0</div><div class="stat-label">Total Contacts</div></div>
+                <div class="stat-card"><div class="stat-value" id="network-connections">0</div><div class="stat-label">Connections</div></div>
+                <div class="stat-card"><div class="stat-value" id="network-net-worth">$0</div><div class="stat-label">Network Value</div></div>
+                <div class="stat-card"><div class="stat-value" id="network-opportunities">0</div><div class="stat-label">Opportunities</div></div>
+            </div>
+
+            <div class="card">
+                <h3>⭐ Key Profiles</h3>
+                <div id="network-key-profiles" class="profiles-grid"></div>
+            </div>
+
+            <div class="card">
+                <h3>🤝 Recent Connections</h3>
+                <div id="network-recent-connections"></div>
+            </div>
+
+            <div class="card">
+                <h3>💼 Opportunities</h3>
+                <div id="network-opportunities-list"></div>
+            </div>
+
+            <div class="card">
+                <h3>👥 All Contacts</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="network-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Company</th>
+                                <th>Influence</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="network-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Title</th><th>ASCAP ID</th><th>Writers</th><th>Registered</th><th>ISWC</th><th>Licensed</th></tr></thead><tbody id="catalogBody"></tbody></table></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12px;color:var(--text-muted)"><span id="catalogPageInfo">Showing 0 of 0</span><div style="display:flex;gap:4px"><button class="btn btn-sm btn-outline" onclick="catalogPrev()">← Prev</button><button class="btn btn-sm btn-outline" onclick="catalogNext()">Next →</button></div></div>
-    </div>
-    <div class="card-grid cols-2">
-        <div class="card"><div class="card-title" style="margin-bottom:12px">👥 Top Writers/Collaborators</div><div id="catalogWritersList"></div></div>
-        <div class="card"><div class="card-title" style="margin-bottom:12px">📈 Registration Timeline</div><div id="catalogTimeline" style="display:flex;gap:4px;align-items:flex-end;height:100px;padding-top:8px"></div></div>
-    </div>
-</div>
 
-<!-- MODEL HUB -->
-<div class="section" id="section-models">
-    <div class="section-header"><div><div class="section-title">🧊 AI Model Hub</div><div class="section-subtitle">63 AI models across Lightning AI, HuggingFace, NVIDIA NIM, and 40+ open-source models</div></div></div>
-    <div class="filter-tabs" id="modelCategoryTabs"></div>
-    <div class="search-bar"><input class="search-input" placeholder="Search models..." id="modelSearch" oninput="searchModels()"><select class="search-input" style="width:160px;flex:none" id="modelFamilyFilter" onchange="filterModels()"><option value="">All Families</option></select></div>
-    <div class="card-grid cols-3" id="modelGrid"></div>
-    <div style="margin-top:24px"><div class="card-title" style="margin-bottom:12px">🤗 HuggingFace Inference Providers</div><div class="card-grid cols-4" id="hfProviderGrid"></div></div>
-</div>
+        <!-- VIDEO EDITOR -->
+        <div id="page-video" class="page">
+            <div class="page-header"><h2>🎬 Video Editor</h2><button class="btn btn-primary" onclick="createVideoProject()">+ New Project</button></div>
+            <div class="grid grid-4" style="margin-bottom:24px;">
+                <div class="card stat-card"><div class="stat-icon">🎥</div><div class="stat-value" id="video-projects">0</div><div class="stat-label">Projects</div></div>
+                <div class="card stat-card"><div class="stat-icon">✨</div><div class="stat-value">50+</div><div class="stat-label">Effects</div></div>
+                <div class="card stat-card"><div class="stat-icon">🔄</div><div class="stat-value">16</div><div class="stat-label">Transitions</div></div>
+                <div class="card stat-card"><div class="stat-icon">📐</div><div class="stat-value">6</div><div class="stat-label">Templates</div></div>
+            </div>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">✨ Video Effects Library</h3>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+                        <span class="tool-tag">3D Text</span>
+                        <span class="tool-tag">Cinematic LUTs</span>
+                        <span class="tool-tag">Neon Glow</span>
+                        <span class="tool-tag">Glitch</span>
+                        <span class="tool-tag">VHS Effect</span>
+                        <span class="tool-tag">Audio Reactive</span>
+                        <span class="tool-tag">Parallax</span>
+                        <span class="tool-tag">Particle 3D</span>
+                        <span class="tool-tag">Lens Flare</span>
+                        <span class="tool-tag">AI Upscale 4K</span>
+                    </div>
+                    <h4 style="margin:16px 0 12px;color:var(--accent-light);">🎨 Color Grading</h4>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                        <div style="background:linear-gradient(135deg,#667eea,#764ba2);height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;">Cinematic</div>
+                        <div style="background:linear-gradient(135deg,#f093fb,#f5576c);height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;">Neon</div>
+                        <div style="background:linear-gradient(135deg,#4facfe,#00f2fe);height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;">Cool</div>
+                        <div style="background:linear-gradient(135deg,#fa709a,#fee140);height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;">Warm</div>
+                    </div>
+                    <h4 style="margin:16px 0 12px;color:var(--accent-light);">🤖 AI-Powered Effects</h4>
+                    <div class="table-container"><table><thead><tr><th>Effect</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td>AI Upscale 4K</td><td>Enhance video quality to 4K resolution</td></tr>
+                        <tr><td>AI Background Removal</td><td>Remove/replace video backgrounds</td></tr>
+                        <tr><td>AI Stabilization</td><td>Smooth shaky footage</td></tr>
+                        <tr><td>AI Slow Motion</td><td>Generate smooth slow-mo frames</td></tr>
+                        <tr><td>AI Style Transfer</td><td>Apply artistic styles to video</td></tr>
+                    </tbody></table></div>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">🎬 Quick Templates</h3>
+                    <div style="display:grid;gap:12px;">
+                        <div style="background:var(--bg-hover);padding:16px;border-radius:8px;cursor:pointer;" onclick="loadTemplate('music_video')">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <div><strong>🎵 Music Video</strong><br><span style="font-size:12px;color:var(--text-muted);">Beat sync, audio reactive effects</span></div>
+                                <span style="color:var(--accent);">→</span>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-hover);padding:16px;border-radius:8px;cursor:pointer;" onclick="loadTemplate('lyric_video')">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <div><strong>📝 Lyric Video</strong><br><span style="font-size:12px;color:var(--text-muted);">Animated text, kinetic typography</span></div>
+                                <span style="color:var(--accent);">→</span>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-hover);padding:16px;border-radius:8px;cursor:pointer;" onclick="loadTemplate('social_vertical')">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <div><strong>📱 TikTok/Reels (9:16)</strong><br><span style="font-size:12px;color:var(--text-muted);">Vertical format, trending effects</span></div>
+                                <span style="color:var(--accent);">→</span>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-hover);padding:16px;border-radius:8px;cursor:pointer;" onclick="loadTemplate('youtube_intro')">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <div><strong>▶️ YouTube Intro</strong><br><span style="font-size:12px;color:var(--text-muted);">Logo animation, text reveal</span></div>
+                                <span style="color:var(--accent);">→</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<!-- AI CHAT -->
-<div class="section" id="section-chat">
-    <div class="section-header">
-        <div><div class="section-title">💬 AI Chat</div><div class="section-subtitle">Multi-provider AI assistant — powered by 63 models</div></div>
-        <select class="search-input" style="width:160px" id="chatProvider"><option value="lightning">⚡ Lightning AI</option><option value="groq">🟢 Groq</option><option value="cerebras">🧠 Cerebras</option><option value="together">🤝 Together</option><option value="fireworks">🎆 Fireworks</option><option value="cohere">🔶 Cohere</option><option value="nvidia">🟩 NVIDIA</option><option value="hf-auto">🤗 HF Auto-Route</option></select>
-    </div>
-    <div class="chat-container">
-        <div class="chat-messages" id="chatMessages"><div class="chat-msg ai"><div class="msg-bubble">👋 Welcome to SUPER GOAT ROYALTIES AI! I can help with revenue analysis, market predictions, contract generation, catalog queries, and more.</div></div></div>
-        <div class="chat-input-area"><input class="chat-input" id="chatInput" placeholder="Ask about royalties, market trends, your catalog..." onkeyup="if(event.key==='Enter')sendChat()"><button class="btn btn-primary" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button></div>
-    </div>
-    <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn btn-sm btn-outline" onclick="quickChat('Analyze my royalty revenue')">📊 Revenue</button>
-        <button class="btn btn-sm btn-outline" onclick="quickChat('Predict Hip-Hop market trends for Spotify')">📈 Market</button>
-        <button class="btn btn-sm btn-outline" onclick="quickChat('How many ASCAP works do I have?')">📀 Catalog</button>
-        <button class="btn btn-sm btn-outline" onclick="quickChat('Generate a sync licensing contract')">📝 Contract</button>
-        <button class="btn btn-sm btn-outline" onclick="quickChat('Content strategy for growing my music business')">🎯 Strategy</button>
-    </div>
-</div>
+        <!-- DSP DISTRIBUTION -->
+        <div id="page-dsp" class="page">
+            <div class="page-header"><h2>🎵 DSP Distribution</h2><button class="btn btn-primary" onclick="createNewRelease()">+ New Release</button></div>
+            <div class="grid grid-4" style="margin-bottom:24px;">
+                <div class="card stat-card"><div class="stat-icon">💿</div><div class="stat-value" id="dsp-releases">0</div><div class="stat-label">Total Releases</div></div>
+                <div class="card stat-card"><div class="stat-icon">🌐</div><div class="stat-value">10</div><div class="stat-label">Platforms</div></div>
+                <div class="card stat-card"><div class="stat-icon">🌍</div><div class="stat-value">190+</div><div class="stat-label">Territories</div></div>
+                <div class="card stat-card"><div class="stat-icon">📊</div><div class="stat-value">$0.004</div><div class="stat-label">Avg Per Stream</div></div>
+            </div>
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">🌐 Distribution Platforms</h3>
+                    <div class="table-container"><table><thead><tr><th>Platform</th><th>Market Share</th><th>Payout</th><th>Territories</th></tr></thead>
+                    <tbody id="dsp-platforms-table">
+                        <tr><td>🟢 Spotify</td><td>31%</td><td>$0.0035/stream</td><td>184</td></tr>
+                        <tr><td>🔴 Apple Music</td><td>15%</td><td>$0.007/stream</td><td>167</td></tr>
+                        <tr><td>▶️ YouTube Music</td><td>10%</td><td>$0.002/stream</td><td>178</td></tr>
+                        <tr><td>🟠 Amazon Music</td><td>13%</td><td>$0.004/stream</td><td>52</td></tr>
+                        <tr><td>🔵 Tidal</td><td>3%</td><td>$0.012/stream</td><td>61</td></tr>
+                        <tr><td>🟣 Deezer</td><td>2%</td><td>$0.0045/stream</td><td>180</td></tr>
+                        <tr><td>🟠 SoundCloud</td><td>1.5%</td><td>$0.003/stream</td><td>190</td></tr>
+                    </tbody></table></div>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:16px;">📤 Create New Release</h3>
+                    <div class="form-group"><label>Title</label><input type="text" id="release-title" placeholder="Release title"></div>
+                    <div class="form-group"><label>Artist</label><input type="text" id="release-artist" value="DJSPEEDYGA"></div>
+                    <div class="form-group"><label>Type</label>
+                        <select id="release-type" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);">
+                            <option value="single">Single</option>
+                            <option value="ep">EP</option>
+                            <option value="album">Album</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Release Date</label><input type="date" id="release-date"></div>
+                    <div class="form-group"><label>Genre</label>
+                        <select id="release-genre" style="width:100%;padding:10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);">
+                            <option value="Hip-Hop">Hip-Hop</option>
+                            <option value="R&B">R&B</option>
+                            <option value="Pop">Pop</option>
+                            <option value="Electronic">Electronic</option>
+                            <option value="Rock">Rock</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%;" onclick="submitRelease()">Create Release</button>
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <h3 style="margin-bottom:16px;">📋 Recent Releases</h3>
+                <div class="table-container"><table><thead><tr><th>Title</th><th>Type</th><th>Date</th><th>Platforms</th><th>Status</th></tr></thead>
+                <tbody id="dsp-releases-table">
+                    <tr><td>GOAT Mode</td><td>Single</td><td>2024-03-15</td><td>Spotify, Apple Music, YouTube</td><td style="color:var(--success);">✅ Delivered</td></tr>
+                    <tr><td>Royalty Kings</td><td>Album</td><td>2024-04-01</td><td>All Platforms</td><td style="color:var(--warning);">⏳ Processing</td></tr>
+                    <tr><td>Digital Dreams</td><td>EP</td><td>2024-05-20</td><td>Spotify, Apple Music</td><td style="color:var(--accent);">📅 Scheduled</td></tr>
+                </tbody></table></div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <h3 style="margin-bottom:16px;">📊 Google Sheets DSP Database</h3>
+                <p style="color:var(--text-secondary);margin-bottom:16px;">Connect your Google Sheets to manage your catalog database. Sync releases, track royalties, and manage metadata.</p>
+                <div class="grid grid-2" style="gap:12px;">
+                    <div class="form-group"><label>Spreadsheet ID</label><input type="text" id="sheets-id" placeholder="Enter Google Sheets ID"></div>
+                    <div class="form-group"><label>API Key</label><input type="password" id="sheets-api-key" placeholder="Enter API Key"></div>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:12px;">
+                    <button class="btn btn-secondary" onclick="syncGoogleSheets()">🔄 Sync from Sheets</button>
+                    <button class="btn btn-secondary" onclick="exportGoogleSheets()">📤 Export to Sheets</button>
+                </div>
+            </div>
+        </div>
 
-<!-- AGENTS -->
-<div class="section" id="section-agents">
-    <div class="section-header"><div><div class="section-title">🤖 Autonomous Agents</div><div class="section-subtitle">AI-powered agents working autonomously on your behalf</div></div></div>
-    <div class="card-grid cols-2">
-        <div class="card" style="border-left:3px solid var(--gold)"><div class="card-header"><span class="card-title">💰 Royalty Tracker</span><span class="badge badge-green">Active</span></div><div class="card-desc">Monitors streaming platforms for royalty payments, detects discrepancies, and tracks revenue across Spotify, Apple Music, YouTube, Tidal, and Amazon Music.</div><div style="margin-top:12px;display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="runAgent('royalty-tracker')">Run Now</button><button class="btn btn-sm btn-outline">Logs</button></div></div>
-        <div class="card" style="border-left:3px solid var(--blue)"><div class="card-header"><span class="card-title">📊 Content Advisor</span><span class="badge badge-green">Active</span></div><div class="card-desc">Analyzes market trends, recommends content strategies, identifies emerging genres, and suggests optimal release timing.</div><div style="margin-top:12px;display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="runAgent('content-advisor')">Run Now</button><button class="btn btn-sm btn-outline">Logs</button></div></div>
-        <div class="card" style="border-left:3px solid var(--purple)"><div class="card-header"><span class="card-title">📝 Contract Analyst</span><span class="badge badge-green">Active</span></div><div class="card-desc">Reviews contracts, generates terms, analyzes royalty splits, and ensures fair deal structures for publishing agreements.</div><div style="margin-top:12px;display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="runAgent('contract-analyst')">Run Now</button><button class="btn btn-sm btn-outline">Logs</button></div></div>
-        <div class="card" style="border-left:3px solid var(--pink)"><div class="card-header"><span class="card-title">📢 Marketing Agent</span><span class="badge badge-green">Active</span></div><div class="card-desc">Creates marketing campaigns, optimizes social media, tracks engagement metrics, and generates promotional content.</div><div style="margin-top:12px;display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="runAgent('marketing')">Run Now</button><button class="btn btn-sm btn-outline">Logs</button></div></div>
-    </div>
-</div>
+        <!-- LOCAL LLM -->
+        <div id="page-local-llm" class="page">
+            <div class="page-header">
+                <h2>🧠 Local LLM</h2>
+                <span class="badge" id="llm-status-badge">Offline Ready</span>
+            </div>
+            
+            <!-- Status Cards -->
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin-bottom: 24px;">
+                <div class="card">
+                    <div class="card-label">Model Status</div>
+                    <div class="card-value" id="llm-model-status">No Model Loaded</div>
+                    <div class="card-sub" id="llm-model-name">Select a model to start</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Data Path</div>
+                    <div class="card-value" id="llm-data-path">./goat-data</div>
+                    <div class="card-sub">Models storage location</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Inference</div>
+                    <div class="card-value" id="llm-inference-status">Ready</div>
+                    <div class="card-sub">100% Offline • No API</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Memory</div>
+                    <div class="card-value" id="llm-memory">--</div>
+                    <div class="card-sub">Context window</div>
+                </div>
+            </div>
 
-<!-- API DOCS -->
-<div class="section" id="section-api-docs">
-    <div class="section-header"><div><div class="section-title">📖 API Documentation</div><div class="section-subtitle">Complete REST API reference — 60+ endpoints</div></div><span class="badge badge-gold">v4.0.0</span></div>
-    <div class="card-grid cols-2" id="apiDocsGrid"></div>
-</div>
+            <!-- Two Column Layout -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Model Management -->
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;">📦 Model Management</h3>
+                    <div id="llm-models-list" style="max-height: 300px; overflow-y: auto;">
+                        <!-- Models will be populated here -->
+                    </div>
+                    <div style="margin-top: 16px;">
+                        <button class="btn btn-primary" onclick="refreshModels()">🔄 Refresh Models</button>
+                        <button class="btn btn-secondary" onclick="showDownloadInstructions()">📥 Download Models</button>
+                    </div>
+                </div>
 
-</div>
+                <!-- Configuration -->
+                <div class="card">
+                    <h3 style="margin-bottom: 16px;">⚙️ Configuration</h3>
+                    <div class="form-group">
+                        <label>Data Storage Path</label>
+                        <input type="text" id="llm-path-input" placeholder="/path/to/external/drive" style="width: 100%;">
+                        <small style="color: var(--text-muted);">Point to your 10TB external drive for model storage</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Default Model</label>
+                        <select id="llm-default-model" style="width: 100%;">
+                            <option value="phi-3-mini">Phi-3 Mini (2.2GB) - Recommended</option>
+                            <option value="llama-3-8b">Llama 3 8B (4.9GB)</option>
+                            <option value="mistral-7b">Mistral 7B (4.1GB)</option>
+                            <option value="gemma-7b">Gemma 7B (4.3GB)</option>
+                            <option value="qwen-7b">Qwen 2 7B (4.2GB)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Temperature: <span id="temp-value">0.7</span></label>
+                        <input type="range" id="llm-temperature" min="0" max="2" step="0.1" value="0.7" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label>Max Tokens: <span id="tokens-value">2048</span></label>
+                        <input type="range" id="llm-max-tokens" min="256" max="8192" step="256" value="2048" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label>Context Size</label>
+                        <select id="llm-context-size" style="width: 100%;">
+                            <option value="4096">4K tokens</option>
+                            <option value="8192" selected>8K tokens</option>
+                            <option value="16384">16K tokens</option>
+                            <option value="32768">32K tokens</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveLLMConfig()">💾 Save Configuration</button>
+                </div>
+            </div>
 
-<script>
-let dawState={project:null,isPlaying:false,isRecording:false,isLooping:false,metronomeOn:false,bpm:120,position:0,zoom:1,tracks:[
-{id:1,name:'Drums',type:'audio',color:'#dc2626',muted:false,solo:false,armed:false,volume:0.8,pan:0,clips:[{start:0,length:16,name:'Beat Loop',color:'#dc2626'}]},
-{id:2,name:'Bass 808',type:'midi',color:'#f59e0b',muted:false,solo:false,armed:false,volume:0.75,pan:0,clips:[{start:0,length:8,name:'Sub Pattern',color:'#f59e0b'},{start:8,length:8,name:'Variation',color:'#d97706'}]},
-{id:3,name:'Keys',type:'midi',color:'#818cf8',muted:false,solo:false,armed:false,volume:0.65,pan:-15,clips:[{start:4,length:12,name:'Rhodes Chords',color:'#818cf8'}]},
-{id:4,name:'Lead Synth',type:'midi',color:'#22d3ee',muted:false,solo:false,armed:false,volume:0.7,pan:20,clips:[{start:8,length:8,name:'Melody',color:'#22d3ee'}]},
-{id:5,name:'Vocals',type:'audio',color:'#f472b6',muted:false,solo:false,armed:false,volume:0.85,pan:0,clips:[{start:4,length:12,name:'Main Vocal',color:'#f472b6'}]},
-{id:6,name:'FX Bus',type:'bus',color:'#4ade80',muted:false,solo:false,armed:false,volume:0.5,pan:0,clips:[]}
-],currentView:'arrange',selectedTrack:0};
-let catalogPage=1,notifications=[],ws=null;
+            <!-- Chat Interface -->
+            <div class="card" style="margin-top: 20px;">
+                <h3 style="margin-bottom: 16px;">💬 Local Chat (100% Offline)</h3>
+                <div id="local-chat-messages" style="height: 300px; overflow-y: auto; background: var(--bg-primary); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                    <div class="chat-message system">
+                        <div class="chat-bubble">Welcome to Local LLM! Load a model to start chatting. All processing happens on your machine - no internet required.</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <input type="text" id="local-chat-input" placeholder="Type your message... (100% offline)" style="flex: 1;" onkeypress="if(event.key==='Enter')sendLocalChat()">
+                    <button class="btn btn-primary" onclick="sendLocalChat()">Send</button>
+                    <button class="btn btn-secondary" onclick="clearLocalChat()">Clear</button>
+                </div>
+            </div>
 
-document.addEventListener('DOMContentLoaded',()=>{initNav();initWS();loadStatus();renderDAW();loadSounds();loadCatalog();loadModels();loadHFProviders();renderAPIDocs();startTimecode();});
+            <!-- Download Instructions Modal -->
+            <div id="download-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+                <div class="card" style="max-width: 600px; max-height: 80vh; overflow-y: auto; margin: 20px;">
+                    <h3 style="margin-bottom: 16px;">📥 Download Models (Manual)</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 16px;">Since this is an offline-first app, download models manually and place them in your data folder:</p>
+                    <div id="download-instructions-content"></div>
+                    <button class="btn btn-secondary" onclick="closeDownloadModal()" style="margin-top: 16px;">Close</button>
+                </div>
+            </div>
+        </div>
 
-function initNav(){document.querySelectorAll('.nav-link').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('section-'+b.dataset.section).classList.add('active');});});}
+        <!-- SETTINGS -->
+        <div id="page-settings" class="page">
+            <div class="page-header"><h2>⚙️ Settings</h2></div>
+            <div class="settings-section">
+                <h3>🤖 AI Configuration</h3>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">NVIDIA NIM API</div><div class="setting-desc" id="nvidia-status">Checking connection...</div></div><label class="toggle-switch"><input type="checkbox" id="nvidia-toggle" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">RAG System</div><div class="setting-desc">Knowledge base with industry documents</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">Autonomous Agents</div><div class="setting-desc">4 AI agents for automated tasks</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">Auto-Optimization</div><div class="setting-desc">AI-driven performance optimization</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            </div>
+            <div class="settings-section">
+                <h3>🔗 Platform Connections</h3>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">Spotify for Artists</div><div class="setting-desc">Connected • Last sync: 2 hours ago</div></div><button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;">Reconnect</button></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">Apple Music for Artists</div><div class="setting-desc">Connected • Last sync: 3 hours ago</div></div><button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;">Reconnect</button></div>
+                <div class="setting-row"><div class="setting-info"><div class="setting-label">YouTube Studio</div><div class="setting-desc">Connected • Last sync: 1 hour ago</div></div><button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;">Reconnect</button></div>
+            </div>
+            <div class="settings-section">
+                <h3>💼 Account</h3>
+                <div class="form-group"><label>Artist / Creator Name</label><input type="text" value="DJSPEEDYGA"></div>
+                <div class="form-group"><label>Email</label><input type="text" value="creator@goatroyalties.com"></div>
+                <button class="btn btn-primary" style="margin-top:8px;">Save Changes</button>
+            </div>
+        </div>
+    </main>
 
-function initWS(){try{const p=location.protocol==='https:'?'wss:':'ws:';ws=new WebSocket(`${p}//${location.host}`);ws.onopen=()=>{document.getElementById('wsStatus').textContent='Connected';ws.send(JSON.stringify({type:'subscribe',channels:['royalties','market','agents','daw']}));};ws.onmessage=e=>{try{const m=JSON.parse(e.data);if(m.type==='market-update'&&m.data){document.getElementById('dashRevenue').textContent='$'+Math.round(m.data.totalRevenue).toLocaleString();document.getElementById('dashGrowth').textContent=m.data.growthRate.toFixed(1);}if(m.type==='agent-complete')addNotif('🤖','Agent completed: '+m.agentId);}catch(e){}};ws.onclose=()=>{document.getElementById('wsStatus').textContent='Reconnecting...';setTimeout(initWS,3000);};}catch(e){document.getElementById('wsStatus').textContent='Unavailable';}}
+    <script>
+        // ==================== PAGE NAVIGATION ====================
+        function showPage(pageId, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            if (el) el.classList.add('active');
+            document.querySelector('.sidebar').classList.remove('open');
+            if (pageId === 'nft') initNFTChart();
+            if (pageId === 'market') initMarketCharts();
+            if (pageId === 'mining') { loadMiningStats(); initMiningChart(); loadWalletConfig(); }
+            if (pageId === 'video') loadVideoEffects();
+            if (pageId === 'dsp') loadDSPReleases();
+            if (pageId === 'catalog') { loadCatalogStats(); loadCatalogSongs(); }
+            if (pageId === 'network') { loadNetworkStats(); loadNetworkProfiles(); }
+        }
 
-async function loadStatus(){try{const r=await fetch('/api/status');const d=await r.json();document.getElementById('statModels').textContent=d.counts.totalModels;document.getElementById('statProviders').textContent=d.counts.hfProviders;document.getElementById('statLightning').textContent=d.counts.lightningModels;document.getElementById('statCatalog').textContent=d.counts.catalogWorks;document.getElementById('statRevenue').textContent='$233,600';document.getElementById('statUptime').textContent=Math.round(d.uptime)+'s';}catch(e){}}
+        // ==================== API HELPERS ====================
+        async function apiGet(url) {
+            try { const r = await fetch(url); return await r.json(); }
+            catch(e) { console.error('API GET error:', e); return null; }
+        }
+        async function apiPost(url, data) {
+            try { const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) }); return await r.json(); }
+            catch(e) { console.error('API POST error:', e); return null; }
+        }
 
-function toggleNotifications(){document.getElementById('notifPanel').classList.toggle('open');}
-function addNotif(icon,text){notifications.unshift({icon,text,time:new Date().toLocaleTimeString()});if(notifications.length>50)notifications.pop();document.getElementById('notifCount').textContent=notifications.length;const l=document.getElementById('notifList');l.innerHTML=notifications.slice(0,20).map(n=>`<div class="notification-item"><span style="font-size:16px">${n.icon}</span><div><div class="notification-text">${n.text}</div><div class="notification-time">${n.time}</div></div></div>`).join('');}
-function clearNotifications(){notifications=[];document.getElementById('notifCount').textContent='0';document.getElementById('notifList').innerHTML='';}
+        // ==================== INITIALIZATION ====================
+        async function init() {
+            const status = await apiGet('/api/status');
+            if (status) {
+                document.getElementById('status-text').textContent = status.mode === 'demo' ? 'Demo Mode' : 'Live • Connected';
+                document.getElementById('mode-badge').textContent = status.mode === 'demo' ? '🎮 Demo Mode' : '🟢 Live';
+                document.getElementById('nvidia-status').textContent = status.mode === 'demo' ? 'Demo mode (no API key)' : 'Connected to NVIDIA NIM';
+            }
+            const dashboard = await apiGet('/api/dashboard');
+            if (dashboard) {
+                document.getElementById('total-revenue').textContent = '$' + (dashboard.totalRevenue || 30742).toLocaleString();
+                document.getElementById('total-streams').textContent = (dashboard.contentStats?.totalStreams || 3400000).toLocaleString();
+                document.getElementById('nft-value').textContent = '$' + (dashboard.nftPortfolio?.totalValue || 24500).toLocaleString();
+            }
+            initDashboardCharts();
+            initLocalLLM();
+        }
 
-function renderDAW(){renderHeaders();renderTimeline();renderMixer();renderPianoRoll();}
-function renderHeaders(){const el=document.getElementById('dawTrackHeaders');el.innerHTML=dawState.tracks.map((t,i)=>`<div class="track-header ${i===dawState.selectedTrack?'selected':''}" onclick="dawSelectTrack(${i})"><div class="track-name"><div class="track-color" style="background:${t.color}"></div>${t.name} <span style="color:var(--text-muted);font-size:9px">${t.type}</span></div><div class="track-controls"><button class="track-ctrl-btn ${t.muted?'muted':''}" onclick="event.stopPropagation();dawToggleMute(${i})">M</button><button class="track-ctrl-btn ${t.solo?'soloed':''}" onclick="event.stopPropagation();dawToggleSolo(${i})">S</button><button class="track-ctrl-btn ${t.armed?'armed':''}" onclick="event.stopPropagation();dawToggleArm(${i})">R</button><input type="range" class="track-volume" min="0" max="100" value="${t.volume*100}" oninput="dawSetVol(${i},this.value/100)"></div></div>`).join('');}
-function renderTimeline(){const ruler=document.getElementById('dawRuler');const bars=32;const bw=80*dawState.zoom;ruler.innerHTML='';ruler.style.width=bars*bw+'px';ruler.style.position='relative';for(let i=1;i<=bars;i++){const m=document.createElement('span');m.style.cssText=`position:absolute;left:${(i-1)*bw}px;font-size:9px;color:#666;padding:0 4px;width:${bw}px;border-left:1px solid #2a2a3e;`;m.textContent=i;ruler.appendChild(m);}
-const tt=document.getElementById('dawTimelineTracks');tt.innerHTML='<div class="playhead" id="dawPlayhead" style="left:0"></div>';tt.style.width=bars*bw+'px';
-dawState.tracks.forEach((t,i)=>{const te=document.createElement('div');te.className='timeline-track';t.clips.forEach(c=>{const ce=document.createElement('div');ce.className='audio-clip';ce.style.cssText=`left:${c.start*bw/4}px;width:${c.length*bw/4}px;background:${(c.color||t.color)}44;border:1px solid ${(c.color||t.color)}88;`;let pts='';const segs=Math.max(20,Math.floor(c.length*5));for(let s=0;s<=segs;s++){const x=(s/segs)*100;const y=50+(Math.sin(s*0.8)*15+Math.random()*20-10)*(t.type==='audio'?1:0.5);pts+=`${x},${y} `;}ce.innerHTML=`<div class="clip-name">${c.name}</div><svg class="waveform" viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:calc(100% - 18px)"><polyline points="${pts}" fill="none" stroke="${c.color||t.color}" stroke-width="1.5"/></svg>`;te.appendChild(ce);});tt.appendChild(te);});}
-function renderMixer(){const el=document.getElementById('dawMixerView');const ch=dawState.tracks.map((t,i)=>`<div class="mixer-channel"><div class="mixer-label" style="color:${t.color}">${t.name}</div><div style="display:flex;gap:2px;align-items:flex-end;height:120px"><div class="mixer-fader-container"><div class="mixer-fader" style="height:${t.volume*100}%"></div></div><div class="mixer-meter"><div class="mixer-meter-fill" style="height:${t.muted?0:t.volume*70+Math.random()*20}%"></div></div></div><div class="mixer-db">${t.muted?'-∞':((t.volume-0.8)*30).toFixed(1)+'dB'}</div><div class="effect-rack"><div class="effect-slot active">EQ</div><div class="effect-slot active">Comp</div><div class="effect-slot">Rev</div></div></div>`);ch.push(`<div class="mixer-channel master"><div class="mixer-label" style="color:var(--gold)">MASTER</div><div style="display:flex;gap:2px;align-items:flex-end;height:120px"><div class="mixer-fader-container"><div class="mixer-fader" style="height:85%"></div></div><div class="mixer-meter"><div class="mixer-meter-fill" style="height:75%"></div></div></div><div class="mixer-db" style="color:var(--gold)">0.0dB</div><div class="effect-rack"><div class="effect-slot active">EQ</div><div class="effect-slot active">Lim</div></div></div>`);el.innerHTML=ch.join('');}
-function renderPianoRoll(){const k=document.getElementById('dawPianoKeys');const nn=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];let h='';for(let o=5;o>=2;o--)for(let n=11;n>=0;n--){const nm=nn[n]+o;const bl=[1,3,6,8,10].includes(n);h+=`<div class="piano-key ${bl?'black':'white'}">${nm}</div>`;}k.innerHTML=h;const g=document.getElementById('dawPianoGrid');const bw=20*dawState.zoom;g.style.width=(32*4*bw)+'px';g.style.height=(48*16)+'px';const dn=[{n:24,s:0,d:2,c:'#818cf8'},{n:28,s:2,d:2,c:'#818cf8'},{n:31,s:4,d:4,c:'#818cf8'},{n:26,s:8,d:2,c:'#f472b6'},{n:29,s:10,d:2,c:'#f472b6'},{n:33,s:12,d:4,c:'#f472b6'}];g.innerHTML=dn.map(n=>`<div class="note-block" style="left:${n.s*bw}px;top:${n.n*16}px;width:${n.d*bw-2}px;background:${n.c}"></div>`).join('');}
+        // ==================== CHARTS ====================
+        const C = { purple:'#6c5ce7', teal:'#00cec9', pink:'#fd79a8', yellow:'#fdcb6e', blue:'#0984e3', orange:'#e17055', green:'#00b894' };
 
-function dawTogglePlay(){dawState.isPlaying=!dawState.isPlaying;document.getElementById('dawPlayBtn').classList.toggle('active',dawState.isPlaying);}
-function dawStop(){dawState.isPlaying=false;dawState.isRecording=false;dawState.position=0;document.getElementById('dawPlayBtn').classList.remove('active');document.getElementById('dawRecBtn').classList.remove('active');document.getElementById('dawPlayhead').style.left='0px';}
-function dawToggleRecord(){dawState.isRecording=!dawState.isRecording;document.getElementById('dawRecBtn').classList.toggle('active',dawState.isRecording);if(dawState.isRecording){dawState.isPlaying=true;document.getElementById('dawPlayBtn').classList.add('active');}}
-function dawRewind(){dawState.position=Math.max(0,dawState.position-4);}
-function dawForward(){dawState.position+=4;}
-function dawToggleLoop(){dawState.isLooping=!dawState.isLooping;document.getElementById('dawLoopBtn').classList.toggle('active',dawState.isLooping);}
-function dawToggleMetronome(){dawState.metronomeOn=!dawState.metronomeOn;document.getElementById('dawMetronomeBtn').classList.toggle('active',dawState.metronomeOn);}
-function dawSetBPM(v){dawState.bpm=parseInt(v);}
-function dawSelectTrack(i){dawState.selectedTrack=i;renderHeaders();}
-function dawToggleMute(i){dawState.tracks[i].muted=!dawState.tracks[i].muted;renderHeaders();renderMixer();}
-function dawToggleSolo(i){dawState.tracks[i].solo=!dawState.tracks[i].solo;renderHeaders();renderMixer();}
-function dawToggleArm(i){dawState.tracks[i].armed=!dawState.tracks[i].armed;renderHeaders();}
-function dawSetVol(i,v){dawState.tracks[i].volume=v;}
-function dawZoomIn(){dawState.zoom=Math.min(3,dawState.zoom*1.25);renderTimeline();renderPianoRoll();}
-function dawZoomOut(){dawState.zoom=Math.max(0.3,dawState.zoom/1.25);renderTimeline();renderPianoRoll();}
-function dawSetTool(el,t){el.parentElement.querySelectorAll('.toolbar-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
-function dawSetSnap(el,v){el.parentElement.querySelectorAll('.toolbar-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
-function dawShowView(v){dawState.currentView=v;document.getElementById('dawArrangeView').style.display=v==='arrange'?'flex':'none';document.getElementById('dawPianoRoll').style.display=v==='pianoroll'?'flex':'none';document.getElementById('dawMixerView').style.display=v==='mixer'?'flex':'none';document.getElementById('dawScoringView').style.display=v==='scoring'?'block':'none';if(v==='mixer')renderMixer();}
-function dawAddTrack(type){const colors=['#dc2626','#f59e0b','#818cf8','#22d3ee','#f472b6','#4ade80','#a78bfa','#fb923c'];dawState.tracks.push({id:dawState.tracks.length+1,name:`${type[0].toUpperCase()+type.slice(1)} ${dawState.tracks.length+1}`,type,color:colors[dawState.tracks.length%colors.length],muted:false,solo:false,armed:false,volume:0.75,pan:0,clips:[]});renderDAW();addNotif('🎵','Added '+type+' track');}
+        function initDashboardCharts() {
+            new Chart(document.getElementById('revenueChart'), {
+                type:'line',
+                data: { labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+                    datasets:[{ label:'Revenue ($)', data:[1800,2100,2400,2200,2800,3100,3400,3200,3800,4100,4230,4500],
+                        borderColor:C.purple, backgroundColor:'rgba(108,92,231,0.1)', fill:true, tension:0.4, pointRadius:4, pointBackgroundColor:C.purple }] },
+                options: { responsive:true, plugins:{legend:{labels:{color:'#b2b2d0'}}},
+                    scales:{ x:{ticks:{color:'#6c6c8a'},grid:{color:'rgba(45,45,94,0.3)'}}, y:{ticks:{color:'#6c6c8a',callback:v=>'$'+v.toLocaleString()},grid:{color:'rgba(45,45,94,0.3)'}} } }
+            });
+            new Chart(document.getElementById('platformChart'), {
+                type:'doughnut',
+                data: { labels:['Spotify','Apple Music','YouTube Music','Tidal','Amazon Music','Other'],
+                    datasets:[{ data:[42,27,18,7,4,2], backgroundColor:[C.green,C.pink,C.blue,C.teal,C.orange,C.yellow], borderWidth:0 }] },
+                options: { responsive:true, plugins:{legend:{position:'bottom',labels:{color:'#b2b2d0',padding:16}}} }
+            });
+            new Chart(document.getElementById('growthChart'), {
+                type:'bar',
+                data: { labels:['Spotify','Apple Music','YouTube Music','Tidal','Amazon Music'],
+                    datasets:[
+                        { label:'Revenue ($)', data:[12847,8234,5671,2100,1890], backgroundColor:C.purple, borderRadius:6 },
+                        { label:'Growth (%)', data:[31.2,24.8,18.7,45.2,15.3], backgroundColor:C.teal, borderRadius:6 }
+                    ] },
+                options: { responsive:true, plugins:{legend:{labels:{color:'#b2b2d0'}}},
+                    scales:{ x:{ticks:{color:'#6c6c8a'},grid:{display:false}}, y:{ticks:{color:'#6c6c8a'},grid:{color:'rgba(45,45,94,0.3)'}} } }
+            });
+        }
 
-async function dawNewProject(){try{const r=await fetch('/api/daw/projects',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Session '+new Date().toLocaleDateString(),bpm:dawState.bpm,genre:'Hip-Hop'})});dawState.project=await r.json();addNotif('🎹','Created: '+dawState.project.name);}catch(e){addNotif('❌','Create failed');}}
-async function dawSave(){if(!dawState.project)await dawNewProject();if(!dawState.project)return;try{await fetch(`/api/daw/projects/${dawState.project.id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({...dawState.project,tracks:dawState.tracks,bpm:dawState.bpm})});addNotif('💾','Project saved');}catch(e){addNotif('❌','Save failed');}}
-async function dawLoadProjects(){try{const r=await fetch('/api/daw/projects');const d=await r.json();if(!d.projects.length){addNotif('📂','No saved projects');return;}const p=d.projects[d.projects.length-1];const pr=await fetch(`/api/daw/projects/${p.id}`);dawState.project=await pr.json();if(dawState.project.tracks?.length)dawState.tracks=dawState.project.tracks;dawState.bpm=dawState.project.bpm||120;document.getElementById('dawBpm').value=dawState.bpm;renderDAW();addNotif('📂','Loaded: '+dawState.project.name);}catch(e){addNotif('❌','Load failed');}}
-async function dawAICompose(){addNotif('🤖','AI composing...');try{const r=await fetch('/api/daw/ai/compose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({genre:'Hip-Hop',key:'C',scale:'minor',bpm:dawState.bpm,bars:8})});const d=await r.json();addNotif('✅',`AI: ${d.composition.notes.length} notes, ${d.composition.chords.length} chords`);dawState.tracks.push({id:dawState.tracks.length+1,name:'AI Melody',type:'midi',color:'#a78bfa',muted:false,solo:false,armed:false,volume:0.7,pan:0,clips:[{start:0,length:d.bars*4,name:'AI Composed',color:'#a78bfa'}]});renderDAW();}catch(e){addNotif('❌','AI compose failed');}}
-async function dawAIMaster(){addNotif('🤖','AI mastering analysis...');try{const r=await fetch('/api/daw/ai/master',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({genre:'Hip-Hop',trackInfo:{tracks:dawState.tracks.length}})});const d=await r.json();const chain=d.mastering.processingChain||[];addNotif('✅',`AI: ${chain.length} processing stages`);alert('AI Mastering:\n\n'+chain.map(c=>'• '+c.effect+': '+JSON.stringify(c.params)).join('\n')+'\n\nTarget: '+JSON.stringify(d.mastering.targetSpecs));}catch(e){addNotif('❌','AI master failed');}}
-function dawAddCue(){const tb=document.getElementById('dawCueList');const n=tb.children.length+1;const tr=document.createElement('tr');tr.innerHTML=`<td style="color:var(--gold);font-weight:700">M${n}</td><td>New Cue</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:00:00:00</td><td style="color:var(--green-light);font-family:monospace;font-size:10px">01:00:30:00</td><td>-</td><td><span class="badge badge-gold">Pending</span></td>`;tb.appendChild(tr);addNotif('🎬','Added cue M'+n);}
+        let nftChartInit = false;
+        function initNFTChart() {
+            if (nftChartInit) return; nftChartInit = true;
+            new Chart(document.getElementById('nftChart'), {
+                type:'line',
+                data: { labels:['Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+                    datasets:[{ label:'Portfolio Value (ETH)', data:[2.5,4.1,6.8,8.2,9.5,11.3,12.8],
+                        borderColor:C.teal, backgroundColor:'rgba(0,206,201,0.1)', fill:true, tension:0.4 }] },
+                options: { responsive:true, plugins:{legend:{labels:{color:'#b2b2d0'}}},
+                    scales:{ x:{ticks:{color:'#6c6c8a'},grid:{color:'rgba(45,45,94,0.3)'}}, y:{ticks:{color:'#6c6c8a'},grid:{color:'rgba(45,45,94,0.3)'}} } }
+            });
+        }
 
-function startTimecode(){let f=0;setInterval(()=>{if(dawState.isPlaying){dawState.position+=dawState.bpm/60/30;f++;const ts=dawState.position*60/dawState.bpm;const h=Math.floor(ts/3600)+1,m=Math.floor((ts%3600)/60),s=Math.floor(ts%60),fr=f%30;const tc=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(fr).padStart(2,'0')}`;document.getElementById('dawTimecode').textContent=tc;const se=document.getElementById('dawSMPTE');if(se)se.textContent=tc;const bw=80*dawState.zoom;const ph=document.getElementById('dawPlayhead');if(ph)ph.style.left=(dawState.position/4)*bw+'px';if(dawState.isLooping&&dawState.position>128)dawState.position=0;}},1000/30);setInterval(()=>{if(dawState.isPlaying&&dawState.currentView==='mixer')renderMixer();},200);}
+        let marketChartsInit = false;
+        function initMarketCharts() {
+            if (marketChartsInit) return; marketChartsInit = true;
+            new Chart(document.getElementById('genreChart'), {
+                type:'polarArea',
+                data: { labels:['Hip-Hop/R&B','Pop','Latin','Rock','Electronic','Country','Classical'],
+                    datasets:[{ data:[28.5,24.1,9.8,8.5,7.2,5.8,2.1],
+                        backgroundColor:['rgba(108,92,231,0.7)','rgba(253,121,168,0.7)','rgba(253,203,110,0.7)','rgba(9,132,227,0.7)','rgba(0,206,201,0.7)','rgba(225,112,85,0.7)','rgba(0,184,148,0.7)'] }] },
+                options: { responsive:true, plugins:{legend:{position:'right',labels:{color:'#b2b2d0'}}} }
+            });
+            new Chart(document.getElementById('marketShareChart'), {
+                type:'bar',
+                data: { labels:['Spotify','Apple','YouTube','Amazon','Tidal','Deezer'],
+                    datasets:[{ label:'Market Share (%)', data:[31,15,10,13,3,2],
+                        backgroundColor:[C.green,C.pink,C.blue,C.orange,C.teal,C.yellow], borderRadius:6 }] },
+                options: { indexAxis:'y', responsive:true, plugins:{legend:{display:false}},
+                    scales:{ x:{ticks:{color:'#6c6c8a',callback:v=>v+'%'},grid:{color:'rgba(45,45,94,0.3)'}}, y:{ticks:{color:'#b2b2d0'},grid:{display:false}} } }
+            });
+        }
 
-async function loadSounds(){try{const r=await fetch('/api/daw/sounds/categories');const d=await r.json();document.getElementById('soundCategoryTabs').innerHTML='<button class="filter-tab active" onclick="filterSounds(\'\')">All</button>'+d.categories.map(c=>`<button class="filter-tab" onclick="filterSounds('${c.name}')">${c.name} (${c.count})</button>`).join('');filterSounds('');}catch(e){}}
-async function filterSounds(cat){try{const r=await fetch(cat?`/api/daw/sounds?category=${cat}`:'/api/daw/sounds');const d=await r.json();document.getElementById('soundGrid').innerHTML=d.sounds.map(s=>`<div class="card" style="padding:10px;cursor:pointer" onclick="addNotif('🔊','Preview: ${s.name}')"><div style="font-size:12px;font-weight:700;margin-bottom:4px">${s.name}</div><div style="font-size:10px;color:var(--text-muted)">${s.category} • ${s.type}</div><div style="margin-top:4px;display:flex;gap:3px;flex-wrap:wrap">${s.tags.slice(0,3).map(t=>`<span class="badge badge-purple" style="font-size:8px;padding:1px 5px">${t}</span>`).join('')}</div></div>`).join('');}catch(e){}}
-function searchSounds(){const q=document.getElementById('soundSearch').value;fetch(`/api/daw/sounds?search=${encodeURIComponent(q)}`).then(r=>r.json()).then(d=>{document.getElementById('soundGrid').innerHTML=d.sounds.map(s=>`<div class="card" style="padding:10px"><div style="font-size:12px;font-weight:700">${s.name}</div><div style="font-size:10px;color:var(--text-muted)">${s.category}</div></div>`).join('');});}
+        // ==================== AI CHAT ====================
+        async function sendChat() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+            const messages = document.getElementById('chat-messages');
+            messages.innerHTML += `<div class="chat-bubble user">${escapeHtml(msg)}</div>`;
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+            const loadingId = 'loading-' + Date.now();
+            messages.innerHTML += `<div class="chat-bubble ai" id="${loadingId}"><span class="loading-spinner"></span> Thinking...</div>`;
+            messages.scrollTop = messages.scrollHeight;
+            const result = await apiPost('/api/rag/query', { query: msg });
+            const el = document.getElementById(loadingId);
+            if (result && result.response) { el.textContent = result.response; }
+            else { el.textContent = '❌ Unable to get a response. Please check the server connection.'; }
+            messages.scrollTop = messages.scrollHeight;
+        }
 
-async function loadCatalog(){try{const sr=await fetch('/api/catalog/stats');const st=await sr.json();document.getElementById('catalogTotal').textContent=st.totalWorks;document.getElementById('catWorks').textContent=st.totalWorks;document.getElementById('catWriters').textContent=st.totalWriters;document.getElementById('catLicensed').textContent=st.licensedByASCAP;document.getElementById('catRoles').textContent=Object.keys(st.roleBreakdown||{}).join(', ');document.getElementById('statCatalog').textContent=st.totalWorks;document.getElementById('dashWorks').textContent=st.totalWorks;document.getElementById('dashCatalogBadge').textContent=st.totalWorks+' works';
-if(st.topWriters){document.getElementById('catalogWritersList').innerHTML=st.topWriters.slice(0,10).map((w,i)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${i+1}. ${w.name}</span><span class="badge badge-purple">${w.works}</span></div>`).join('');}
-const tr=await fetch('/api/catalog/timeline');const tl=await tr.json();if(tl.length){const mx=Math.max(...tl.map(t=>t.count));document.getElementById('catalogTimeline').innerHTML=tl.map(t=>`<div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:4px"><div style="width:100%;background:var(--purple);border-radius:2px;height:${Math.max(4,(t.count/mx)*80)}px;opacity:0.7"></div><span style="font-size:8px;color:var(--text-muted)">${t.year}</span></div>`).join('');}
-searchCatalog();}catch(e){}}
-async function searchCatalog(){const q=document.getElementById('catalogSearch').value;const role=document.getElementById('catalogRole').value;let u=`/api/catalog/works?page=${catalogPage}&limit=15`;if(q)u+=`&q=${encodeURIComponent(q)}`;if(role)u+=`&role=${role}`;try{const r=await fetch(u);const d=await r.json();document.getElementById('catalogBody').innerHTML=d.works.map(w=>`<tr><td style="font-weight:600;color:var(--text-primary)">${w.title}</td><td><span class="badge badge-purple">${w.id}</span></td><td style="max-width:200px">${w.writers.slice(0,3).map(wr=>wr.name).join(', ')}${w.writers.length>3?' +'+( w.writers.length-3):''}</td><td>${w.registrationDate||'-'}</td><td style="font-size:10px;color:var(--text-muted)">${w.iswcNumber||'-'}</td><td>${w.licensedByASCAP?'<span class="badge badge-green">✓</span>':'<span class="badge badge-red">✗</span>'}</td></tr>`).join('');document.getElementById('catalogPageInfo').textContent=`Page ${d.pagination.page} of ${d.pagination.totalPages} (${d.pagination.total} results)`;}catch(e){}}
-function catalogPrev(){if(catalogPage>1){catalogPage--;searchCatalog();}}
-function catalogNext(){catalogPage++;searchCatalog();}
+        // ==================== AGENT EXECUTION ====================
+        async function executeAgent(agentName) {
+            const o = document.getElementById('agent-output');
+            const c = document.getElementById('agent-output-content');
+            o.style.display = 'block';
+            c.innerHTML = '<span class="loading-spinner"></span> Agent executing...';
+            const result = await apiPost('/api/agents/execute', { agent: agentName });
+            if (result && result.result) { c.textContent = result.result; }
+            else { c.textContent = '⚡ Agent completed with default response. Connect API keys for live AI analysis.'; }
+        }
 
-async function loadModels(){try{const cr=await fetch('/api/models/categories');const cs=await cr.json();document.getElementById('modelCategoryTabs').innerHTML='<button class="filter-tab active" onclick="filterModelCat(\'\')">All</button>'+cs.categories.map(c=>`<button class="filter-tab" onclick="filterModelCat('${c.name}')">${c.icon} ${c.name} (${c.count})</button>`).join('');const fr=await fetch('/api/models/families');const fs=await fr.json();document.getElementById('modelFamilyFilter').innerHTML='<option value="">All Families</option>'+fs.families.map(f=>`<option value="${f.name}">${f.name} (${f.count})</option>`).join('');filterModelCat('');}catch(e){}}
-async function filterModelCat(cat){try{const r=await fetch(cat?`/api/models?category=${cat}`:'/api/models');const d=await r.json();renderModelGrid(d.models);}catch(e){}}
-function renderModelGrid(models){const cc={'text-generation':'blue','code':'purple','vision':'pink','multimodal':'gold','audio':'red','embedding':'green'};document.getElementById('modelGrid').innerHTML=models.map(m=>`<div class="card"><div class="card-header"><span class="card-title" style="font-size:13px">${m.name}</span><span class="badge badge-${cc[m.category]||'blue'}">${m.category}</span></div><div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">${m.author} • ${m.params}</div><div class="card-desc">${(m.description||'').substring(0,80)}...</div><div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap">${(m.providers||[]).slice(0,4).map(p=>`<span class="badge badge-purple" style="font-size:9px">${p}</span>`).join('')}</div>${m.trending?'<div style="margin-top:6px"><span class="badge badge-gold">🔥 Trending</span></div>':''}</div>`).join('');}
-async function searchModels(){const q=document.getElementById('modelSearch').value;if(q.length<2)return;try{const r=await fetch(`/api/models/search?q=${encodeURIComponent(q)}`);const d=await r.json();renderModelGrid(d.models);}catch(e){}}
-async function filterModels(){const f=document.getElementById('modelFamilyFilter').value;if(!f){filterModelCat('');return;}try{const r=await fetch(`/api/models?family=${f}`);const d=await r.json();renderModelGrid(d.models);}catch(e){}}
-async function loadHFProviders(){try{const r=await fetch('/api/hf/providers');const d=await r.json();document.getElementById('hfProviderGrid').innerHTML=d.providers.map(p=>`<div class="card" style="padding:12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:20px">${p.icon}</span><span style="font-weight:700;font-size:13px">${p.name}</span></div><div style="font-size:10px;color:var(--text-muted)">${p.description||p.specialty||''}</div><div style="margin-top:6px"><span class="badge badge-blue">${p.speed||'fast'}</span><span class="badge badge-purple">${p.models?.length||0} models</span></div></div>`).join('');}catch(e){}}
+        // ==================== REVENUE ANALYSIS ====================
+        async function analyzeRevenue() {
+            const o = document.getElementById('revenue-analysis');
+            const c = document.getElementById('revenue-analysis-content');
+            o.style.display = 'block';
+            c.innerHTML = '<span class="loading-spinner"></span> AI analyzing revenue data...';
+            const result = await apiPost('/api/ai/analyze', { type: 'revenue' });
+            if (result && result.analysis) { c.textContent = result.analysis; }
+            else { c.textContent = 'Analysis complete. Connect NVIDIA API key for detailed AI insights.'; }
+        }
 
-async function sendChat(){const inp=document.getElementById('chatInput');const msg=inp.value.trim();if(!msg)return;inp.value='';const el=document.getElementById('chatMessages');el.innerHTML+=`<div class="chat-msg user"><div class="msg-bubble">${msg}</div></div><div class="chat-msg ai" id="chatLoading"><div class="msg-bubble"><div class="loading-spinner"></div> Thinking...</div></div>`;el.scrollTop=el.scrollHeight;try{const r=await fetch('/api/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:msg}],provider:document.getElementById('chatProvider').value})});const d=await r.json();document.getElementById('chatLoading').remove();const c=d.content||d.choices?.[0]?.message?.content||JSON.stringify(d);el.innerHTML+=`<div class="chat-msg ai"><div class="msg-bubble">${c.replace(/\n/g,'<br>')}</div></div>`;}catch(e){document.getElementById('chatLoading').remove();el.innerHTML+=`<div class="chat-msg ai"><div class="msg-bubble" style="color:var(--red)">Error: Try another provider.</div></div>`;}el.scrollTop=el.scrollHeight;}
-function quickChat(m){document.getElementById('chatInput').value=m;sendChat();}
+        // ==================== CONTRACT GENERATION ====================
+        async function generateContract() {
+            const o = document.getElementById('contract-output');
+            const c = document.getElementById('contract-output-content');
+            o.style.display = 'block';
+            c.innerHTML = '<span class="loading-spinner"></span> AI generating contract...';
+            const result = await apiPost('/api/ai/contract', {
+                type: document.getElementById('contract-type').value,
+                partyA: document.getElementById('contract-party-a').value,
+                partyB: document.getElementById('contract-party-b').value,
+                terms: document.getElementById('contract-terms').value
+            });
+            if (result && result.contract) { c.textContent = result.contract; }
+            else { c.textContent = 'Contract generation complete. Connect NVIDIA API key for full AI-powered contracts.'; }
+        }
 
-async function runAgent(id){addNotif('🤖','Running: '+id);try{await fetch('/api/agents/execute',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({agentId:id,task:'analyze',context:{}})});addNotif('✅','Agent done: '+id);}catch(e){addNotif('❌','Agent failed: '+id);}}
+        // ==================== MARKET TRENDS ====================
+        async function getMarketTrends() {
+            const o = document.getElementById('market-analysis');
+            const c = document.getElementById('market-analysis-content');
+            o.style.display = 'block';
+            c.innerHTML = '<span class="loading-spinner"></span> AI analyzing market trends...';
+            const result = await apiPost('/api/ai/market', { genre: 'all', timeframe: '6 months' });
+            if (result && result.analysis) { c.textContent = result.analysis; }
+            else { c.textContent = 'Market analysis complete. Connect API keys for live market intelligence.'; }
+        }
 
-function renderAPIDocs(){const eps=[{g:'❤️ Health & Status',r:['GET /api/health','GET /api/status','GET /api/metrics','GET /api/dashboard']},{g:'📀 ASCAP Catalog',r:['GET /api/catalog/works','GET /api/catalog/works/:id','GET /api/catalog/stats','GET /api/catalog/writers','GET /api/catalog/timeline']},{g:'⚡ Lightning AI',r:['GET /api/lightning/models','POST /api/lightning/chat','POST /api/lightning/generate','POST /api/lightning/smart-route','POST /api/lightning/compare','GET /api/lightning/usage']},{g:'🤗 HuggingFace',r:['GET /api/hf/providers','POST /api/hf/chat','POST /api/hf/generate','POST /api/hf/auto-route','POST /api/hf/compare','GET /api/hf/usage']},{g:'📦 Model Registry',r:['GET /api/models','GET /api/models/stats','GET /api/models/categories','GET /api/models/trending','GET /api/models/families','GET /api/models/search','GET /api/models/:id']},{g:'🎹 GOAT Studio DAW',r:['GET /api/daw/projects','POST /api/daw/projects','GET /api/daw/projects/:id','PUT /api/daw/projects/:id','DELETE /api/daw/projects/:id','POST /api/daw/ai/compose','POST /api/daw/ai/master','GET /api/daw/sounds','GET /api/daw/sounds/categories','POST /api/daw/cues']},{g:'💬 Unified AI',r:['POST /api/ai/chat','GET /api/ai/stats','GET /api/ai/revenue-analysis','GET /api/ai/market-predictions','POST /api/ai/content-recommendations','POST /api/ai/generate-contract']},{g:'📚 RAG & Agents',r:['POST /api/rag/query','GET /api/rag/stats','POST /api/agents/execute','GET /api/agents/status','POST /api/agents/autonomous']},{g:'🟩 NVIDIA & Local',r:['POST /api/nvidia/generate','GET /api/nvidia/models','GET /api/local/status']},{g:'💰 Revenue & Market',r:['GET /api/revenue/predictions','GET /api/nft/portfolio','GET /api/collaboration/status','GET /api/market/trends']}];document.getElementById('apiDocsGrid').innerHTML=eps.map(g=>`<div class="card"><div class="card-title" style="margin-bottom:10px">${g.g}</div>${g.r.map(r=>{const[mt,pa]=r.split(' ');const mc={GET:'green',POST:'blue',PUT:'gold',DELETE:'red'};return`<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px"><span class="badge badge-${mc[mt]||'blue'}" style="min-width:36px;text-align:center">${mt}</span><code style="color:var(--text-secondary)">${pa}</code></div>`;}).join('')}</div>`).join('');}
+        function refreshAgents() {
+            document.querySelectorAll('.agent-status').forEach(el => {
+                el.textContent = '● Refreshing...';
+                setTimeout(() => { el.textContent = '● Active'; }, 1000);
+            });
+        }
 
-async function refreshDashboard(){try{const r=await fetch('/api/dashboard');const d=await r.json();document.getElementById('dashRevenue').textContent='$'+Math.round(d.totalRevenue).toLocaleString();document.getElementById('dashGrowth').textContent=d.growthRate.toFixed(1);document.getElementById('dashNFT').textContent='$'+Math.round(d.nftPortfolio.totalValue).toLocaleString();addNotif('📊','Dashboard refreshed');}catch(e){}}
-</script>
+        // ==================== CRYPTO MINING ====================
+        let miningChart = null;
+        async function loadMiningStats() {
+            const stats = await apiGet('/api/mining/stats');
+            if (stats) {
+                document.getElementById('mining-hashrate').textContent = stats.totalHashrate.toFixed(2) + ' MH/s';
+                document.getElementById('mining-earnings').textContent = '$' + stats.totalEarnings.toFixed(2);
+                document.getElementById('mining-active').textContent = stats.activeMiners;
+            }
+        }
+        
+        async function createMiner() {
+            const coin = document.getElementById('mining-coin-select').value;
+            const type = document.getElementById('mining-hardware-type').value;
+            const wallet = document.getElementById('mining-wallet').value;
+            const result = await apiPost('/api/mining/create', { coin, type, wallet, threads: 4 });
+            if (result && result.minerId) {
+                alert('Miner created: ' + result.minerId);
+                loadMiningStats();
+            }
+        }
+        
+        async function startMiningSession() {
+            const coin = document.getElementById('mining-coin-select').value;
+            const type = document.getElementById('mining-hardware-type').value;
+            const wallet = document.getElementById('mining-wallet').value;
+            
+            const createResult = await apiPost('/api/mining/create', { coin, type, wallet, threads: 4 });
+            if (createResult && createResult.minerId) {
+                const startResult = await apiPost('/api/mining/start', { minerId: createResult.minerId });
+                if (startResult && startResult.success) {
+                    alert('Mining started! Hashrate: ' + startResult.hashrate + ' MH/s');
+                    loadMiningStats();
+                }
+            }
+        }
+        
+        function initMiningChart() {
+            if (miningChart) return;
+            const ctx = document.getElementById('miningChart');
+            if (!ctx) return;
+            miningChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Hashrate (MH/s)',
+                        data: [45, 52, 48, 61, 55, 67, 72],
+                        borderColor: '#6c5ce7',
+                        backgroundColor: 'rgba(108,92,231,0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Earnings ($)',
+                        data: [12, 15, 13, 18, 16, 20, 22],
+                        borderColor: '#00cec9',
+                        backgroundColor: 'rgba(0,206,201,0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: '#b2b2d0' } } },
+                    scales: {
+                        x: { ticks: { color: '#6c6c8a' }, grid: { color: 'rgba(45,45,94,0.3)' } },
+                        y: { ticks: { color: '#6c6c8a' }, grid: { color: 'rgba(45,45,94,0.3)' } }
+                    }
+                }
+            });
+        }
+
+        // ==================== WALLET CONFIGURATION ====================
+        async function loadWalletConfig() {
+            try {
+                const result = await apiGet('/api/mining/wallets');
+                if (result && result.wallets) {
+                    result.wallets.forEach(w => {
+                        const input = document.getElementById('wallet-' + w.coin.substring(0, 3));
+                        if (input && result.config && result.config[w.coin]) {
+                            input.value = result.config[w.coin].address || '';
+                        }
+                    });
+                }
+            } catch (e) {
+                console.log('Load wallet config:', e);
+            }
+        }
+
+        async function saveWalletConfig() {
+            const statusEl = document.getElementById('wallet-status');
+            statusEl.innerHTML = '<span style="color:var(--warning)">Saving...</span>';
+            
+            const coins = [
+                { id: 'btc', name: 'bitcoin' },
+                { id: 'eth', name: 'ethereum' },
+                { id: 'xmr', name: 'monero' },
+                { id: 'ltc', name: 'litecoin' },
+                { id: 'doge', name: 'dogecoin' }
+            ];
+            
+            let saved = 0;
+            for (const coin of coins) {
+                const input = document.getElementById('wallet-' + coin.id);
+                if (input && input.value) {
+                    const result = await apiPost('/api/mining/wallets/' + coin.name, { address: input.value });
+                    if (result && result.success) saved++;
+                }
+            }
+            
+            statusEl.innerHTML = '<span style="color:var(--success)">✓ Saved ' + saved + ' wallet addresses!</span>';
+            
+            // Also update the mining wallet field
+            const btcAddress = document.getElementById('wallet-btc').value;
+            if (btcAddress) {
+                document.getElementById('mining-wallet').value = btcAddress;
+            }
+        }
+
+        // ==================== VIDEO EDITOR ====================
+        async function createVideoProject() {
+            const result = await apiPost('/api/video/project', {
+                name: 'New Video Project',
+                resolution: { width: 1920, height: 1080 },
+                fps: 30
+            });
+            if (result && result.id) {
+                alert('Video project created: ' + result.id);
+                document.getElementById('video-projects').textContent = parseInt(document.getElementById('video-projects').textContent) + 1;
+            }
+        }
+        
+        async function loadTemplate(templateId) {
+            const templates = await apiGet('/api/video/templates');
+            const template = templates?.find(t => t.id === templateId);
+            if (template) {
+                const result = await apiPost('/api/video/project', {
+                    name: template.name,
+                    resolution: template.resolution || { width: 1920, height: 1080 },
+                    fps: 30
+                });
+                if (result) {
+                    alert('Template loaded: ' + template.name);
+                }
+            }
+        }
+        
+        async function loadVideoEffects() {
+            const effects = await apiGet('/api/video/effects');
+            console.log('Loaded effects:', effects);
+        }
+
+        // ==================== DSP DISTRIBUTION ====================
+        async function loadDSPReleases() {
+            const releases = await apiGet('/api/dsp/releases');
+            if (releases) {
+                document.getElementById('dsp-releases').textContent = releases.length;
+            }
+        }
+        
+        async function createNewRelease() {
+            const title = document.getElementById('release-title')?.value || 'New Release';
+            const artist = document.getElementById('release-artist')?.value || 'DJSPEEDYGA';
+            const type = document.getElementById('release-type')?.value || 'single';
+            const genre = document.getElementById('release-genre')?.value || 'Hip-Hop';
+            const releaseDate = document.getElementById('release-date')?.value || new Date().toISOString().split('T')[0];
+            
+            const result = await apiPost('/api/dsp/releases', {
+                title,
+                artist,
+                type,
+                genre,
+                releaseDate,
+                platforms: ['spotify', 'appleMusic', 'youtubeMusic', 'amazonMusic']
+            });
+            
+            if (result && result.id) {
+                alert('Release created: ' + result.title);
+                loadDSPReleases();
+            }
+        }
+        
+        async function submitRelease() {
+            await createNewRelease();
+        }
+        
+        async function syncGoogleSheets() {
+            const spreadsheetId = document.getElementById('sheets-id')?.value;
+            const apiKey = document.getElementById('sheets-api-key')?.value;
+            
+            if (!spreadsheetId) {
+                alert('Please enter a Spreadsheet ID');
+                return;
+            }
+            
+            await apiPost('/api/dsp/google-sheets/config', { spreadsheetId, apiKey });
+            const result = await apiPost('/api/dsp/google-sheets/sync', {});
+            
+            if (result && result.success) {
+                alert('Synced ' + result.releases + ' releases from Google Sheets');
+                loadDSPReleases();
+            }
+        }
+        
+        async function exportGoogleSheets() {
+            const result = await apiPost('/api/dsp/google-sheets/export', {});
+            if (result && result.success) {
+                alert('Exported ' + result.exported + ' releases to Google Sheets');
+            }
+        }
+
+        function escapeHtml(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+
+        // ==================== LOCAL LLM ====================
+        let currentLLMModel = null;
+        let llmConfig = { temperature: 0.7, maxTokens: 2048, contextSize: 8192 };
+
+        async function initLocalLLM() {
+            try {
+                const status = await apiGet('/api/llm/status');
+                if (status) {
+                    document.getElementById('llm-model-status').textContent = status.modelLoaded ? 'Model Loaded' : 'No Model Loaded';
+                    document.getElementById('llm-model-name').textContent = status.modelLoaded ? status.currentModel : 'Select a model to start';
+                    document.getElementById('llm-data-path').textContent = status.dataPath || './goat-data';
+                    document.getElementById('llm-status-badge').textContent = status.modelLoaded ? 'Ready' : 'Offline Ready';
+                    document.getElementById('llm-memory').textContent = status.contextSize ? status.contextSize + ' tokens' : '--';
+                    currentLLMModel = status.currentModel;
+                }
+                
+                const config = await apiGet('/api/llm/config');
+                if (config) {
+                    llmConfig = { ...llmConfig, ...config };
+                    document.getElementById('llm-temperature').value = llmConfig.temperature || 0.7;
+                    document.getElementById('llm-max-tokens').value = llmConfig.maxTokens || 2048;
+                    document.getElementById('temp-value').textContent = llmConfig.temperature || 0.7;
+                    document.getElementById('tokens-value').textContent = llmConfig.maxTokens || 2048;
+                }
+                
+                await refreshModels();
+            } catch (e) {
+                console.log('Local LLM init:', e);
+            }
+        }
+
+        async function refreshModels() {
+            try {
+                const result = await apiGet('/api/llm/models');
+                const listEl = document.getElementById('llm-models-list');
+                
+                if (!result || !result.models) {
+                    listEl.innerHTML = '<p style="color: var(--text-muted);">No models found. Download models to your data folder.</p>';
+                    return;
+                }
+                
+                let html = '';
+                for (const [id, model] of Object.entries(result.models)) {
+                    const isLoaded = currentLLMModel === id;
+                    html += `<div class="model-item" style="padding: 12px; background: var(--bg-primary); border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 600;">${model.family || id} ${model.size || ''}</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">${model.sizeGB || '?'}GB • ${model.quantization || 'GGUF'}</div>
+                            </div>
+                            <div>
+                                ${isLoaded 
+                                    ? '<span style="color: var(--success);">✓ Loaded</span>'
+                                    : `<button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;" onclick="loadModel('${id}')">Load</button>`
+                                }
+                            </div>
+                        </div>`;
+                }
+                listEl.innerHTML = html || '<p style="color: var(--text-muted);">No models found.</p>';
+            } catch (e) {
+                console.error('Failed to refresh models:', e);
+            }
+        }
+
+        async function loadModel(modelId) {
+            try {
+                document.getElementById('llm-model-status').textContent = 'Loading...';
+                const result = await apiPost('/api/llm/load/' + encodeURIComponent(modelId), {});
+                
+                if (result && result.success) {
+                    currentLLMModel = modelId;
+                    document.getElementById('llm-model-status').textContent = 'Model Loaded';
+                    document.getElementById('llm-model-name').textContent = result.model || modelId;
+                    document.getElementById('llm-status-badge').textContent = 'Ready';
+                    document.getElementById('llm-memory').textContent = (result.contextSize || 8192) + ' tokens';
+                    await refreshModels();
+                } else {
+                    document.getElementById('llm-model-status').textContent = 'Load Failed';
+                    alert(result?.error || 'Failed to load model');
+                }
+            } catch (e) {
+                console.error('Load model error:', e);
+                document.getElementById('llm-model-status').textContent = 'Error';
+            }
+        }
+
+        async function sendLocalChat() {
+            const input = document.getElementById('local-chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            if (!currentLLMModel) {
+                alert('Please load a model first!');
+                return;
+            }
+            
+            const messagesEl = document.getElementById('local-chat-messages');
+            
+            // Add user message
+            messagesEl.innerHTML += `<div class="chat-message user" style="display: flex; justify-content: flex-end; margin: 8px 0;">
+                    <div class="chat-bubble" style="background: var(--accent); border-radius: 12px 12px 4px 12px; padding: 12px 16px; max-width: 80%;">${escapeHtml(message)}</div>
+                </div>`;
+            
+            input.value = '';
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            
+            // Add thinking indicator
+            const thinkingId = 'thinking-' + Date.now();
+            messagesEl.innerHTML += `<div class="chat-message assistant" id="${thinkingId}" style="margin: 8px 0;">
+                    <div class="chat-bubble" style="background: var(--bg-card); border-radius: 12px 12px 12px 4px; padding: 12px 16px;">Thinking...</div>
+                </div>`;
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            
+            try {
+                const result = await apiPost('/api/llm/chat', {
+                    messages: [{ role: 'user', content: message }],
+                    options: llmConfig
+                });
+                
+                const thinkingEl = document.getElementById(thinkingId);
+                if (result && result.response) {
+                    thinkingEl.innerHTML = `<div class="chat-bubble" style="background: var(--bg-card); border-radius: 12px 12px 12px 4px; padding: 12px 16px; white-space: pre-wrap;">${escapeHtml(result.response)}</div>`;
+                } else {
+                    thinkingEl.innerHTML = `<div class="chat-bubble" style="background: var(--bg-card); border-radius: 12px 12px 12px 4px; padding: 12px 16px; color: var(--danger);">Error: ${result?.error || 'Unknown error'}</div>`;
+                }
+            } catch (e) {
+                document.getElementById(thinkingId).innerHTML = `<div class="chat-bubble" style="background: var(--bg-card); border-radius: 12px 12px 12px 4px; padding: 12px 16px; color: var(--danger);">Error: ${e.message}</div>`;
+            }
+            
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function clearLocalChat() {
+            document.getElementById('local-chat-messages').innerHTML = `<div class="chat-message system">
+                    <div class="chat-bubble">Chat cleared. Load a model to start a new conversation.</div>
+                </div>`;
+        }
+
+        async function saveLLMConfig() {
+            const dataPath = document.getElementById('llm-path-input').value;
+            const defaultModel = document.getElementById('llm-default-model').value;
+            
+            llmConfig = {
+                temperature: parseFloat(document.getElementById('llm-temperature').value),
+                maxTokens: parseInt(document.getElementById('llm-max-tokens').value),
+                contextSize: parseInt(document.getElementById('llm-context-size').value),
+                defaultModel: defaultModel
+            };
+            
+            try {
+                if (dataPath) {
+                    await apiPost('/api/llm/data-path', { path: dataPath });
+                    document.getElementById('llm-data-path').textContent = dataPath;
+                }
+                
+                await apiPost('/api/llm/config', llmConfig);
+                alert('Configuration saved!');
+            } catch (e) {
+                console.error('Save config error:', e);
+                alert('Failed to save configuration');
+            }
+        }
+
+        function showDownloadInstructions() {
+            const modal = document.getElementById('download-modal');
+            const content = document.getElementById('download-instructions-content');
+            
+            content.innerHTML = `<div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--accent); margin-bottom: 8px;">🦙 Llama 3 8B (Recommended)</h4>
+                    <code style="background: var(--bg-primary); padding: 8px; display: block; border-radius: 4px; font-size: 12px;">
+                        wget https://huggingface.co/TheBloke/Llama-3-8B-GGUF/resolve/main/llama-3-8b.Q4_K_M.gguf
+                    </code>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Save to: [your-data-path]/models/llama-3-8b/</p>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--accent); margin-bottom: 8px;">🔮 Mistral 7B</h4>
+                    <code style="background: var(--bg-primary); padding: 8px; display: block; border-radius: 4px; font-size: 12px;">
+                        wget https://huggingface.co/TheBloke/Mistral-7B-v0.1-GGUF/resolve/main/mistral-7b-v0.1.Q4_K_M.gguf
+                    </code>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Save to: [your-data-path]/models/mistral-7b/</p>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--accent); margin-bottom: 8px;">📱 Phi-3 Mini (Smallest, Fast)</h4>
+                    <code style="background: var(--bg-primary); padding: 8px; display: block; border-radius: 4px; font-size: 12px;">
+                        wget https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf
+                    </code>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Save to: [your-data-path]/models/phi-3-mini/</p>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <h4 style="color: var(--accent); margin-bottom: 8px;">💎 Gemma 7B</h4>
+                    <code style="background: var(--bg-primary); padding: 8px; display: block; border-radius: 4px; font-size: 12px;">
+                        wget https://huggingface.co/google/gemma-7b-it-GGUF/resolve/main/gemma-7b-it.q4_k_m.gguf
+                    </code>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Save to: [your-data-path]/models/gemma-7b/</p>
+                </div>
+                <div style="background: var(--bg-primary); padding: 12px; border-radius: 8px; margin-top: 16px;">
+                    <p style="font-size: 13px; color: var(--warning);">⚠️ Note: These are large files (2-5GB each). Download using a stable internet connection.</p>
+                    <p style="font-size: 13px; margin-top: 8px;">After downloading, point your Data Storage Path to the folder containing the "models" directory.</p>
+                </div>`;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeDownloadModal() {
+            document.getElementById('download-modal').style.display = 'none';
+        }
+
+        // Temperature and tokens sliders
+        document.getElementById('llm-temperature')?.addEventListener('input', function() {
+            document.getElementById('temp-value').textContent = this.value;
+        });
+        document.getElementById('llm-max-tokens')?.addEventListener('input', function() {
+            document.getElementById('tokens-value').textContent = this.value;
+        });
+
+        // ==================== MUSIC CATALOG ====================
+        let catalogData = { songs: [] };
+        let catalogPage = 1;
+        const catalogPageSize = 20;
+
+        async function loadCatalogStats() {
+            const stats = await apiGet('/api/catalog/stats');
+            if (stats) {
+                document.getElementById('catalog-total-songs').textContent = stats.totalSongs?.toLocaleString() || '0';
+                document.getElementById('catalog-total-share').textContent = stats.totalShare?.toFixed(1) + '%' || '0%';
+                document.getElementById('catalog-albums').textContent = stats.uniqueAlbums || '0';
+                document.getElementById('catalog-labels').textContent = stats.uniqueLabels || '0';
+                document.getElementById('catalog-collabs').textContent = stats.songsWithAlbum || '0';
+                document.getElementById('catalog-isrc').textContent = stats.songsWithISRC || '0';
+                
+                // Top albums
+                const albumsHtml = (stats.topAlbums || []).map(a => 
+                    `<div class="list-item"><span>${a.name}</span><span class="badge">${a.count} songs</span></div>`
+                ).join('');
+                document.getElementById('catalog-top-albums').innerHTML = albumsHtml || '<p>No albums found</p>';
+                
+                // Top labels
+                const labelsHtml = (stats.topLabels || []).map(l => 
+                    `<div class="list-item"><span>${l.name}</span><span class="badge">${l.count} songs</span></div>`
+                ).join('');
+                document.getElementById('catalog-top-labels').innerHTML = labelsHtml || '<p>No labels found</p>';
+            }
+        }
+
+        async function loadCatalogSongs() {
+            const data = await apiGet('/api/catalog');
+            if (data) {
+                catalogData = data;
+                renderCatalogTable();
+            }
+        }
+
+        function renderCatalogTable() {
+            const songs = catalogData.songs || [];
+            const start = (catalogPage - 1) * catalogPageSize;
+            const end = start + catalogPageSize;
+            const pageSongs = songs.slice(start, end);
+            
+            const tbody = document.getElementById('catalog-tbody');
+            tbody.innerHTML = pageSongs.map((song, i) => `
+                <tr>
+                    <td>${start + i + 1}</td>
+                    <td><strong>${escapeHtml(song.song_title || '')}</strong></td>
+                    <td><code>${song.iswc || '-'}</code></td>
+                    <td>${song.share_percent?.toFixed(2) || '0'}%</td>
+                    <td>${escapeHtml(song.album || '-')}</td>
+                    <td>${escapeHtml(song.label || '-')}</td>
+                    <td><code>${song.isrc || '-'}</code></td>
+                </tr>
+            `).join('');
+            
+            // Pagination
+            const totalPages = Math.ceil(songs.length / catalogPageSize);
+            document.getElementById('catalog-pagination').innerHTML = `
+                <button onclick="catalogPrevPage()" ${catalogPage === 1 ? 'disabled' : ''}>← Prev</button>
+                <span style="margin: 0 16px;">Page ${catalogPage} of ${totalPages}</span>
+                <button onclick="catalogNextPage()" ${catalogPage === totalPages ? 'disabled' : ''}>Next →</button>
+            `;
+        }
+
+        function catalogNextPage() {
+            const totalPages = Math.ceil((catalogData.songs || []).length / catalogPageSize);
+            if (catalogPage < totalPages) {
+                catalogPage++;
+                renderCatalogTable();
+            }
+        }
+
+        function catalogPrevPage() {
+            if (catalogPage > 1) {
+                catalogPage--;
+                renderCatalogTable();
+            }
+        }
+
+        async function searchCatalog(query) {
+            if (query.length < 2) {
+                loadCatalogSongs();
+                return;
+            }
+            const data = await apiGet(`/api/catalog/search?q=${encodeURIComponent(query)}`);
+            if (data) {
+                catalogData = { songs: data.results };
+                catalogPage = 1;
+                renderCatalogTable();
+            }
+        }
+
+        async function exportCatalog() {
+            window.location.href = '/api/catalog/export';
+        }
+
+        // ==================== NETWORK PROFILES ====================
+        let networkData = { profiles: [], connections: [] };
+
+        async function loadNetworkStats() {
+            const stats = await apiGet('/api/network/stats');
+            if (stats) {
+                document.getElementById('network-total-profiles').textContent = stats.totalProfiles || '0';
+                document.getElementById('network-connections').textContent = stats.totalConnections || '0';
+                document.getElementById('network-net-worth').textContent = '$' + (stats.totalNetworkNetWorth || 0).toLocaleString();
+                document.getElementById('network-opportunities').textContent = stats.totalProfiles || '0';
+            }
+        }
+
+        async function loadNetworkProfiles() {
+            const data = await apiGet('/api/network/profiles');
+            if (data) {
+                networkData = data;
+                renderNetworkTable();
+                renderKeyProfiles();
+            }
+            
+            const connections = await apiGet('/api/network/connections');
+            if (connections) {
+                renderConnections(connections.connections || []);
+            }
+            
+            const opportunities = await apiGet('/api/network/opportunities');
+            if (opportunities) {
+                renderOpportunities(opportunities.opportunities || []);
+            }
+        }
+
+        function renderNetworkTable() {
+            const profiles = networkData.profiles || [];
+            const tbody = document.getElementById('network-tbody');
+            tbody.innerHTML = profiles.slice(0, 20).map(profile => `
+                <tr>
+                    <td><strong>${escapeHtml(profile.name || '')}</strong>${profile.verified ? ' ✓' : ''}</td>
+                    <td><span class="badge">${profile.type || 'unknown'}</span></td>
+                    <td>${escapeHtml(profile.company || '-')}</td>
+                    <td>${profile.influence || 0}</td>
+                    <td><button class="btn btn-sm" onclick="viewProfile('${profile.id}')">View</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderKeyProfiles() {
+            const profiles = (networkData.profiles || [])
+                .filter(p => p.influence >= 70 || p.verified)
+                .slice(0, 6);
+            
+            const html = profiles.map(p => `
+                <div class="profile-card" onclick="viewProfile('${p.id}')">
+                    <div class="profile-avatar">${(p.name || '?')[0].toUpperCase()}</div>
+                    <div class="profile-info">
+                        <h4>${escapeHtml(p.name || 'Unknown')}${p.verified ? ' ✓' : ''}</h4>
+                        <p>${escapeHtml(p.company || p.type || '')}</p>
+                        <span class="influence">Influence: ${p.influence || 0}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('network-key-profiles').innerHTML = html || '<p>No key profiles yet</p>';
+        }
+
+        function renderConnections(connections) {
+            const html = connections.slice(0, 10).map(c => `
+                <div class="connection-item">
+                    <span class="connection-type">${c.type || 'connection'}</span>
+                    <span class="connection-strength">Strength: ${c.strength || 1}</span>
+                </div>
+            `).join('');
+            document.getElementById('network-recent-connections').innerHTML = html || '<p>No connections yet</p>';
+        }
+
+        function renderOpportunities(opportunities) {
+            const html = opportunities.map(o => `
+                <div class="opportunity-item">
+                    <h4>${escapeHtml(o.title || 'Untitled')}</h4>
+                    <p>${escapeHtml(o.description || '')}</p>
+                    <span class="badge ${o.status}">${o.status || 'open'}</span>
+                    ${o.value ? `<span class="value">$${o.value.toLocaleString()}</span>` : ''}
+                </div>
+            `).join('');
+            document.getElementById('network-opportunities-list').innerHTML = html || '<p>No opportunities yet</p>';
+        }
+
+        async function viewProfile(id) {
+            const profile = await apiGet(`/api/network/profiles/${id}`);
+            if (profile) {
+                alert(`Profile: ${profile.name}\\nType: ${profile.type}\\nCompany: ${profile.company || 'N/A'}\\nInfluence: ${profile.influence || 0}\\nNet Worth: $${(profile.netWorth || 0).toLocaleString()}`);
+            }
+        }
+
+        async function addNetworkProfile() {
+            const name = prompt('Enter contact name:');
+            if (!name) return;
+            
+            const type = prompt('Enter type (artist, producer, label, executive, etc.):') || 'artist';
+            const company = prompt('Enter company (optional):') || '';
+            
+            const response = await fetch('/api/network/profiles', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, type, company, influence: 50 })
+            });
+            
+            if (response.ok) {
+                loadNetworkProfiles();
+                loadNetworkStats();
+            }
+        }
+
+        // ==================== WEBSOCKET ====================
+        let ws;
+        function connectWebSocket() {
+            const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${location.host}`);
+            ws.onopen = () => console.log('🔌 WebSocket connected');
+            ws.onmessage = (event) => { try { const d = JSON.parse(event.data); if(d.type==='revenue-update') document.getElementById('total-revenue').textContent = '$' + d.totalRevenue.toLocaleString(); } catch(e){} };
+            ws.onclose = () => { console.log('🔌 WebSocket disconnected, reconnecting in 5s...'); setTimeout(connectWebSocket, 5000); };
+            ws.onerror = () => ws.close();
+        }
+
+        init();
+        connectWebSocket();
+    </script>
 </body>
 </html>

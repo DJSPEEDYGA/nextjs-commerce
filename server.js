@@ -2,1169 +2,1228 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
+const morgan = require('morgan');
 const path = require('path');
-const fs = require('fs');
 const http = require('http');
 const WebSocket = require('ws');
 require('dotenv').config();
-
-// Core config
 const aiConfig = require('./lib/ai/ai-config');
 
-// Security & Logging
-const {
-    globalLimiter, aiLimiter, authLimiter,
-    validate, apiKeyAuth, jwtAuth,
-    sanitizeError, requestEnhancer, securityHeaders
-} = require('./lib/middleware/security');
-const { logger, metrics, requestLogger } = require('./lib/utils/logger');
+// Structured logger (winston is already a project dependency)
+let logger;
+try {
+    const winston = require('winston');
+    logger = winston.createLogger({
+        level: process.env.LOG_LEVEL || 'info',
+        format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.printf(({ timestamp, level, message }) => `${timestamp} [${level.toUpperCase()}] ${message}`)
+        ),
+        transports: [new winston.transports.Console()]
+    });
+} catch {
+    // Fallback if winston is unavailable
+    logger = {
+        info: (...a) => console.log('[INFO]', ...a),
+        warn: (...a) => console.warn('[WARN]', ...a),
+        error: (...a) => console.error('[ERROR]', ...a)
+    };
+}
 
 // AI & ML Components
 const nvidiaClient = require('./lib/nvidia/nvidia-nim-client');
-const lightningClient = require('./lib/lightning/lightning-ai-client');
-const hfClient = require('./lib/huggingface/hf-inference-client');
-const modelRegistry = require('./lib/models/model-registry');
 const ragSystem = require('./lib/rag/rag-system');
 const agentManager = require('./lib/agents/autonomous-agent-manager');
-const ascapCatalog = require('./lib/catalog/ascap-catalog');
+const rateLimit = require('express-rate-limit');
 const {
-    RevenueData, NFTPortfolio, CollaborationHub, MarketAnalysis
+    RevenueData,
+    NFTPortfolio,
+    CollaborationHub,
+    MarketAnalysis
 } = require('./lib/models/data-models');
+
+// New Feature Modules
+const cryptoMining = require('./lib/mining/crypto-mining');
+const videoEditor = require('./lib/video/video-editor');
+const dspDistribution = require('./lib/dsp/dsp-distribution');
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
+
 const PORT = process.env.PORT || 3000;
-const VERSION = '4.0.0';
 
-// ==================== DATA INITIALIZATION ====================
+// Rate limiter: max 100 requests per minute per IP for API routes
+const apiLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please try again later.' }
+});
 
+// Stricter rate limiter for AI/compute-heavy endpoints
+const aiLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many AI requests, please wait before retrying.' }
+});
+
+// Initialize data models
 const revenueData = new RevenueData();
 const nftPortfolio = new NFTPortfolio();
 const collaborationHub = new CollaborationHub();
 const marketAnalysis = new MarketAnalysis();
 
+// Initialize sample data
+initializeSampleData();
+
 async function initializeSampleData() {
+    // Initialize revenue data
     revenueData.update('spotify', 89200, { streams: 2500000, growth: 15.2 });
     revenueData.update('appleMusic', 67800, { streams: 1800000, growth: 18.7 });
     revenueData.update('youtube', 45300, { streams: 3200000, growth: 22.3 });
     revenueData.update('tidal', 12400, { streams: 450000, growth: 8.9 });
     revenueData.update('amazonMusic', 18900, { streams: 560000, growth: 12.4 });
+    
     revenueData.growthRate = 23.5;
 
-    nftPortfolio.addItem({ name: 'Genesis Track NFT', value: 45000, chain: 'Ethereum', description: 'First ever release as NFT' });
-    nftPortfolio.addItem({ name: 'Album Art Collection', value: 32000, chain: 'Polygon', description: 'Complete album artwork series' });
-    nftPortfolio.addItem({ name: 'Exclusive Beat Pack', value: 28000, chain: 'Solana', description: '10 exclusive beats' });
-    nftPortfolio.addItem({ name: 'Limited Edition Single', value: 51000, chain: 'Ethereum', description: 'Limited to 100 copies' });
+    // Initialize NFT portfolio
+    nftPortfolio.addItem({
+        name: 'Genesis Track NFT',
+        value: 45000,
+        chain: 'Ethereum',
+        description: 'First ever release as NFT'
+    });
+    nftPortfolio.addItem({
+        name: 'Album Art Collection',
+        value: 32000,
+        chain: 'Polygon',
+        description: 'Complete album artwork series'
+    });
+    nftPortfolio.addItem({
+        name: 'Exclusive Beat Pack',
+        value: 28000,
+        chain: 'Solana',
+        description: '10 exclusive beats'
+    });
+    nftPortfolio.addItem({
+        name: 'Limited Edition Single',
+        value: 51000,
+        chain: 'Ethereum',
+        description: 'Limited to 100 copies'
+    });
 
+    // Initialize collaboration hub
     collaborationHub.addMember({ name: 'Producer Mike', role: 'producer', email: 'mike@example.com' });
     collaborationHub.addMember({ name: 'Sarah Vocals', role: 'vocalist', email: 'sarah@example.com' });
     collaborationHub.addMember({ name: 'DJ Alex', role: 'dj', email: 'alex@example.com' });
-    collaborationHub.createProject({ name: 'New Album Production', description: '2025 Album Project', members: ['Producer Mike', 'Sarah Vocals'] });
 
+    collaborationHub.createProject({
+        name: 'New Album Production',
+        description: '2025 Album Project',
+        members: ['Producer Mike', 'Sarah Vocals']
+    });
+
+    // Initialize market analysis
     marketAnalysis.updateGenreTrends('Hip-Hop', { growth: 25.4, streams: '1.2B', audience: '18-35' });
     marketAnalysis.updateGenreTrends('Pop', { growth: 18.7, streams: '980M', audience: '16-40' });
     marketAnalysis.updateGenreTrends('R&B', { growth: 22.1, streams: '650M', audience: '20-45' });
 
+    // Initialize RAG knowledge base
     await ragSystem.initializeIndustryKnowledge();
-
-    // Load ASCAP catalogs
-    const catalogFiles = [
-        path.join(__dirname, '..', 'WorksCatalog2 HARVEY L MILLER WRITERS.csv'),
-        path.join(__dirname, '..', 'WorksCatalogFASTASSMAN PUBLISHING INC ASCAP.csv')
-    ];
-    const existingFiles = catalogFiles.filter(f => fs.existsSync(f));
-    if (existingFiles.length > 0) {
-        const catalogStats = await ascapCatalog.loadFromFiles(existingFiles);
-        logger.info(`ASCAP Catalog loaded: ${catalogStats.totalWorks} works, ${catalogStats.totalWriters} writers`);
-
-        // Feed catalog to RAG
-        const ragDocs = ascapCatalog.toRAGDocuments();
-        for (const doc of ragDocs) {
-            await ragSystem.addDocument(doc.id, doc.content, doc.metadata);
-        }
-        logger.info(`ASCAP catalog fed to RAG: ${ragDocs.length} documents`);
-    }
-
-    logger.info('All data initialized successfully');
+    
+    console.log('Sample data initialized successfully');
 }
 
-initializeSampleData();
-
-// ==================== MIDDLEWARE STACK ====================
-
-// Security headers
+// Middleware
 app.use(helmet({
+    // Enable Content Security Policy with a policy that allows the app's own
+    // assets and the Chart.js CDN used by the dashboard UI.
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
-            fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
-            imgSrc: ["'self'", "data:", "blob:", "https:"],
-            mediaSrc: ["'self'", "blob:", "data:"],
-            connectSrc: ["'self'", "ws:", "wss:", "https:"],
-            workerSrc: ["'self'", "blob:"]
+            scriptSrc: [
+                "'self'",
+                "'unsafe-inline'",  // required for inline scripts in public/index.html
+                'https://cdn.jsdelivr.net'
+            ],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", 'data:', 'https:'],
+            connectSrc: ["'self'", 'ws:', 'wss:'],
+            fontSrc: ["'self'", 'data:'],
+            objectSrc: ["'none'"],
+            upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null
         }
     },
     crossOriginEmbedderPolicy: false
 }));
-app.use(securityHeaders);
-
-// CORS with whitelist
-const allowedOrigins = process.env.CORS_ORIGINS
-    ? process.env.CORS_ORIGINS.split(',')
-    : ['http://localhost:3000', 'http://localhost:5173'];
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true
-}));
-
+app.use(cors());
 app.use(compression());
-app.use(requestEnhancer);
-app.use(requestLogger);
-app.use(globalLimiter);
+app.use(morgan('combined'));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Apply rate limiting to all /api/* routes
+app.use('/api/', apiLimiter);
+// Tighter limits on compute-heavy AI/RAG/agent endpoints
+app.use('/api/ai/', aiLimiter);
+app.use('/api/rag/query', aiLimiter);
+app.use('/api/nvidia/generate', aiLimiter);
+app.use('/api/agents/execute', aiLimiter);
+
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Ensure directories exist
-const logsDir = path.join(__dirname, 'logs');
-const dawProjectsDir = path.join(__dirname, 'data', 'daw-projects');
-if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
-if (!fs.existsSync(dawProjectsDir)) fs.mkdirSync(dawProjectsDir, { recursive: true });
-
-// ==================== WEBSOCKET SYSTEM ====================
-
-const wsClients = new Map();
-let wsIdCounter = 0;
-
-wss.on('connection', (ws, req) => {
-    const clientId = ++wsIdCounter;
-    wsClients.set(clientId, { ws, subscriptions: new Set(), connectedAt: Date.now() });
-    logger.info(`WebSocket client connected: #${clientId}`);
-
+// WebSocket for real-time updates
+wss.on('connection', (ws) => {
+    console.log('New WebSocket connection established');
+    
     ws.send(JSON.stringify({
         type: 'connection',
-        clientId,
-        message: 'Connected to SUPER GOAT ROYALTIES v' + VERSION,
-        channels: ['royalties', 'market', 'agents', 'daw', 'catalog', 'notifications']
+        message: 'Connected to SUPER GOAT ROYALTIES real-time updates'
     }));
 
-    ws.on('message', (raw) => {
+    ws.on('message', (message) => {
         try {
-            const data = JSON.parse(raw);
-            handleWebSocketMessage(clientId, data);
-        } catch (err) {
-            ws.send(JSON.stringify({ type: 'error', message: 'Invalid message format' }));
+            const data = JSON.parse(message);
+            handleWebSocketMessage(ws, data);
+        } catch (error) {
+            console.error('WebSocket message error:', error);
         }
     });
 
     ws.on('close', () => {
-        wsClients.delete(clientId);
-        logger.info(`WebSocket client disconnected: #${clientId}`);
-    });
-
-    ws.on('error', (err) => {
-        logger.error(`WebSocket error for client #${clientId}: ${err.message}`);
+        console.log('WebSocket connection closed');
     });
 });
 
-function handleWebSocketMessage(clientId, data) {
-    const client = wsClients.get(clientId);
-    if (!client) return;
-
+function handleWebSocketMessage(ws, data) {
     switch (data.type) {
         case 'subscribe':
-            (data.channels || []).forEach(ch => client.subscriptions.add(ch));
-            client.ws.send(JSON.stringify({ type: 'subscribed', channels: Array.from(client.subscriptions) }));
-            break;
-        case 'unsubscribe':
-            (data.channels || []).forEach(ch => client.subscriptions.delete(ch));
-            client.ws.send(JSON.stringify({ type: 'unsubscribed', channels: Array.from(client.subscriptions) }));
+            ws.subscriptions = data.channels || [];
             break;
         case 'ping':
-            client.ws.send(JSON.stringify({ type: 'pong', timestamp: Date.now() }));
-            break;
-        case 'daw-sync':
-            // Broadcast DAW state to other connected clients (collaboration)
-            broadcast('daw', { type: 'daw-sync', data: data.payload, from: clientId }, clientId);
+            ws.send(JSON.stringify({ type: 'pong' }));
             break;
     }
 }
 
-function broadcast(channel, message, excludeClientId = null) {
-    wsClients.forEach((client, id) => {
-        if (id === excludeClientId) return;
-        if (client.ws.readyState === WebSocket.OPEN) {
-            if (client.subscriptions.size === 0 || client.subscriptions.has(channel)) {
-                client.ws.send(JSON.stringify({ channel, timestamp: Date.now(), ...message }));
+function broadcast(channel, message) {
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            if (!client.subscriptions || client.subscriptions.includes(channel)) {
+                client.send(JSON.stringify({ channel, ...message }));
             }
         }
     });
 }
 
-// Periodic market updates
-setInterval(() => {
-    const update = {
-        type: 'market-update',
-        data: {
-            totalRevenue: revenueData.totalRevenue,
-            growthRate: revenueData.growthRate + (Math.random() * 2 - 1),
-            timestamp: Date.now()
-        }
-    };
-    broadcast('market', update);
-}, 30000);
+// ==================== API ROUTES ====================
 
-// Periodic agent status
-setInterval(() => {
-    broadcast('agents', {
-        type: 'agent-status',
-        data: agentManager.getMetrics()
-    });
-}, 15000);
-
-function getCategoryIcon(category) {
-    const icons = { 'text-generation': '💬', 'code': '💻', 'vision': '👁️', 'multimodal': '🌐', 'audio': '🎵', 'embedding': '📊' };
-    return icons[category] || '🤖';
-}
-
-// ==================== HEALTH & STATUS ENDPOINTS ====================
-
-app.get('/api/health', (req, res) => {
-    const memUsage = process.memoryUsage();
-    const catalogStats = ascapCatalog.getStats();
-    res.json({
-        status: 'healthy',
-        version: VERSION,
-        uptime: process.uptime(),
-        timestamp: new Date().toISOString(),
-        memory: {
-            rss: Math.round(memUsage.rss / 1024 / 1024) + 'MB',
-            heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024) + 'MB',
-            heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024) + 'MB',
-            external: Math.round(memUsage.external / 1024 / 1024) + 'MB'
-        },
-        services: {
-            lightning: { active: !!aiConfig.lightning.apiKey, models: Object.keys(aiConfig.lightning.models).length },
-            nvidia: { active: !aiConfig.demoMode, models: Object.keys(aiConfig.nvidia.models).length },
-            huggingface: { active: !!aiConfig.huggingface?.token, providers: hfClient.getAvailableProviders().length },
-            modelRegistry: { active: true, models: modelRegistry.getStats().totalModels },
-            rag: { active: true, ...ragSystem.getStats() },
-            agents: { active: true, ...agentManager.getMetrics() },
-            catalog: { active: ascapCatalog.loaded, works: catalogStats.totalWorks || 0 },
-            websocket: { active: true, clients: wsClients.size },
-            daw: { active: true }
-        },
-        metrics: metrics.getSnapshot()
-    });
-});
-
+// Health & Status
 app.get('/api/status', (req, res) => {
-    const registryStats = modelRegistry.getStats();
-    const hfProviders = hfClient.getAvailableProviders();
-    const catalogStats = ascapCatalog.getStats();
     res.json({
         status: 'online',
         message: 'SUPER GOAT ROYALTIES API is running',
-        version: VERSION,
+        version: '3.0.0',
         app: 'SUPER GOAT Royalties',
         mode: aiConfig.demoMode ? 'demo' : 'live',
         uptime: process.uptime(),
         features: {
-            ai: true, nvidia: !aiConfig.demoMode, lightning: !!aiConfig.lightning.apiKey,
-            huggingface: !!aiConfig.huggingface?.token, rag: true, agents: true,
-            websocket: true, modelRegistry: true, ascapCatalog: ascapCatalog.loaded,
-            dawStudio: true, healthMonitoring: true
-        },
-        counts: {
-            lightningModels: Object.keys(aiConfig.lightning.models).length,
-            nvidiaModels: Object.keys(aiConfig.nvidia.models).length,
-            hfProviders: hfProviders.length,
-            registryModels: registryStats.totalModels,
-            registryCategories: registryStats.categories,
-            catalogWorks: catalogStats.totalWorks || 0,
-            catalogWriters: catalogStats.totalWriters || 0,
-            wsClients: wsClients.size,
-            totalModels: Object.keys(aiConfig.lightning.models).length + Object.keys(aiConfig.nvidia.models).length + registryStats.totalModels
+            ai: true,
+            nvidia: !aiConfig.demoMode,
+            rag: true,
+            agents: true,
+            websocket: true
         },
         timestamp: new Date().toISOString()
     });
 });
 
-app.get('/api/metrics', (req, res) => { res.json(metrics.getSnapshot()); });
-
-// ==================== DASHBOARD ====================
-
+// Dashboard
 app.get('/api/dashboard', async (req, res) => {
     try {
-        const registryStats = modelRegistry.getStats();
-        const hfProviders = hfClient.getAvailableProviders();
-        const catalogStats = ascapCatalog.getStats();
-        res.json({
-            totalRevenue: revenueData.totalRevenue,
-            growthRate: revenueData.growthRate,
-            platforms: revenueData.platforms,
-            contentStats: { protectedTracks: catalogStats.totalWorks || 156, totalStreams: 3400000, downloads: 78000 },
-            nftPortfolio: { totalValue: nftPortfolio.totalValue, items: nftPortfolio.items.length, chains: Object.keys(nftPortfolio.chains) },
-            collaboration: { teamMembers: collaborationHub.members.length, sharedFiles: collaborationHub.files.length, activeProjects: collaborationHub.getActiveProjects().length },
-            catalog: catalogStats,
+        const metrics = agentManager.getMetrics() || {};
+        const dashboardData = {
+            totalRevenue: revenueData.totalRevenue ?? 0,
+            growthRate: revenueData.growthRate ?? 0,
+            platforms: revenueData.platforms ?? {},
+            contentStats: {
+                protectedTracks: 156,
+                totalStreams: 3400000,
+                downloads: 78000
+            },
+            nftPortfolio: {
+                totalValue: nftPortfolio.totalValue ?? 0,
+                items: nftPortfolio.items?.length ?? 0,
+                chains: Object.keys(nftPortfolio.chains ?? {})
+            },
+            collaboration: {
+                teamMembers: collaborationHub.members?.length ?? 0,
+                sharedFiles: collaborationHub.files?.length ?? 0,
+                activeProjects: collaborationHub.getActiveProjects?.()?.length ?? 0
+            },
             aiFeatures: {
                 ragEnabled: true,
-                agentsRunning: agentManager.getMetrics().activeAgents,
-                autonomousMode: agentManager.getMetrics().autonomousMode,
-                lightningModels: Object.keys(aiConfig.lightning.models).length,
-                nvidiaModels: Object.keys(aiConfig.nvidia.models).length,
-                hfProviders: hfProviders.length,
-                registryModels: registryStats.totalModels,
-                totalModels: Object.keys(aiConfig.lightning.models).length + Object.keys(aiConfig.nvidia.models).length + registryStats.totalModels
+                agentsRunning: metrics.activeAgents ?? 0,
+                autonomousMode: metrics.autonomousMode ?? false
             }
-        });
+        };
+
+        res.json(dashboardData);
     } catch (error) {
-        logger.error('Dashboard error:', error);
-        res.status(500).json({ error: 'Failed to load dashboard data' });
+        logger.error(`Dashboard error: ${error.message}`);
+        res.status(500).json({ error: error.message });
     }
 });
 
-// ==================== ASCAP CATALOG ENDPOINTS ====================
+// ==================== AI & LLM ENDPOINTS ====================
 
-app.get('/api/catalog/works', validate('catalogSearch', 'query'), (req, res) => {
-    const { q, title, writer, role, status, page, limit, sort, order } = req.query;
-    const searchQuery = q || title || writer || '';
-    const results = ascapCatalog.search(searchQuery, {
-        page: parseInt(page) || 1,
-        limit: parseInt(limit) || 20,
-        sort: sort || 'title',
-        order: order || 'asc',
-        role: role || null,
-        status: status || null
-    });
-    res.json(results);
-});
-
-app.get('/api/catalog/works/:workId', (req, res) => {
-    const work = ascapCatalog.getWork(req.params.workId);
-    if (!work) return res.status(404).json({ error: 'Work not found' });
-    res.json(work);
-});
-
-app.get('/api/catalog/stats', (req, res) => {
-    res.json(ascapCatalog.getStats());
-});
-
-app.get('/api/catalog/writers', (req, res) => {
-    const { page, limit } = req.query;
-    res.json(ascapCatalog.getWriters(parseInt(page) || 1, parseInt(limit) || 20));
-});
-
-app.get('/api/catalog/timeline', (req, res) => {
-    res.json(ascapCatalog.getTimeline());
-});
-
-// ==================== LIGHTNING AI ENDPOINTS ====================
-
-app.get('/api/lightning/models', (req, res) => {
-    const { provider, sortBy, order } = req.query;
-    let models = lightningClient.getAllModels();
-    if (provider) models = models.filter(m => m.provider.toLowerCase() === provider.toLowerCase());
-    if (sortBy) {
-        const ascending = order !== 'desc';
-        models.sort((a, b) => ascending ? (a[sortBy] || 0) - (b[sortBy] || 0) : (b[sortBy] || 0) - (a[sortBy] || 0));
-    }
-    res.json({ total: models.length, mode: aiConfig.demoMode ? 'demo' : 'live', models });
-});
-
-app.get('/api/lightning/models/:key', (req, res) => {
-    const model = lightningClient.getModel(req.params.key);
-    if (!model) return res.status(404).json({ error: `Model "${req.params.key}" not found` });
-    res.json(model);
-});
-
-app.post('/api/lightning/chat', aiLimiter, validate('chat'), async (req, res) => {
-    try {
-        const { messages, model, options } = req.body;
-        const result = await lightningClient.chatCompletion(messages, model || 'llama-3.3-70b', options || {});
-        metrics.recordAIRequest('lightning', model || 'llama-3.3-70b', Date.now() - req.startTime, true);
-        res.json(result);
-    } catch (error) {
-        metrics.recordAIRequest('lightning', req.body.model, Date.now() - req.startTime, false);
-        res.status(500).json({ error: 'AI request failed' });
-    }
-});
-
-app.post('/api/lightning/generate', aiLimiter, validate('generate'), async (req, res) => {
-    try {
-        const { prompt, model, options } = req.body;
-        const content = await lightningClient.generateText(prompt, model || 'llama-3.3-70b', options || {});
-        res.json({ content, model: model || 'llama-3.3-70b' });
-    } catch (error) { res.status(500).json({ error: 'Generation failed' }); }
-});
-
-app.post('/api/lightning/smart-route', aiLimiter, validate('autoRoute'), async (req, res) => {
-    try {
-        const { prompt, taskType, options } = req.body;
-        const content = await lightningClient.smartRoute(prompt, taskType || 'general', options || {});
-        res.json({ content, taskType: taskType || 'general' });
-    } catch (error) { res.status(500).json({ error: 'Smart routing failed' }); }
-});
-
-app.post('/api/lightning/compare', aiLimiter, async (req, res) => {
-    try {
-        const { prompt, models, options } = req.body;
-        if (!prompt) return res.status(400).json({ error: 'prompt is required' });
-        const results = await lightningClient.compareModels(prompt, models || [], options || {});
-        res.json({ results });
-    } catch (error) { res.status(500).json({ error: 'Comparison failed' }); }
-});
-
-app.get('/api/lightning/usage', (req, res) => { res.json(lightningClient.getUsageStats()); });
-
-// ==================== HUGGING FACE INFERENCE ENDPOINTS ====================
-
-app.get('/api/hf/providers', (req, res) => {
-    const providers = hfClient.getAvailableProviders();
-    res.json({ total: providers.length, mode: aiConfig.demoMode ? 'demo' : 'live', providers });
-});
-
-app.get('/api/hf/providers/:providerId', (req, res) => {
-    const provider = hfClient.getProviderInfo(req.params.providerId);
-    if (!provider) return res.status(404).json({ error: `Provider "${req.params.providerId}" not found` });
-    res.json(provider);
-});
-
-app.post('/api/hf/chat', aiLimiter, validate('chat'), async (req, res) => {
-    try {
-        const { messages, model, provider, options } = req.body;
-        const result = await hfClient.chatCompletion(messages, model || 'meta-llama/Llama-3.3-70B-Instruct', provider || 'groq', options || {});
-        metrics.recordAIRequest(provider || 'groq', model, Date.now() - req.startTime, true);
-        res.json(result);
-    } catch (error) {
-        metrics.recordAIRequest(req.body.provider || 'groq', req.body.model, Date.now() - req.startTime, false);
-        res.status(500).json({ error: 'HF chat request failed' });
-    }
-});
-
-app.post('/api/hf/generate', aiLimiter, validate('generate'), async (req, res) => {
-    try {
-        const { prompt, model, provider, options } = req.body;
-        const messages = [
-            { role: 'system', content: options?.systemPrompt || 'You are an AI assistant for the GOAT Royalties platform.' },
-            { role: 'user', content: prompt }
-        ];
-        const result = await hfClient.chatCompletion(messages, model || 'meta-llama/Llama-3.3-70B-Instruct', provider || 'groq', options || {});
-        res.json(result);
-    } catch (error) { res.status(500).json({ error: 'HF generation failed' }); }
-});
-
-app.post('/api/hf/auto-route', aiLimiter, validate('chat'), async (req, res) => {
-    try {
-        const { messages, model, options } = req.body;
-        const result = await hfClient.autoRoute(messages, model || 'meta-llama/Llama-3.3-70B-Instruct', options || {});
-        res.json(result);
-    } catch (error) { res.status(500).json({ error: 'Auto-route failed' }); }
-});
-
-app.post('/api/hf/compare', aiLimiter, validate('compareModels'), async (req, res) => {
-    try {
-        const { prompt, model, providers, options } = req.body;
-        const messages = [
-            { role: 'system', content: options?.systemPrompt || 'You are an AI assistant.' },
-            { role: 'user', content: prompt }
-        ];
-        const targetProviders = providers || ['groq', 'cerebras', 'together'];
-        const targetModel = model || 'meta-llama/Llama-3.3-70B-Instruct';
-        const results = await Promise.allSettled(
-            targetProviders.map(async (prov) => {
-                const result = await hfClient.chatCompletion(messages, targetModel, prov, options || {});
-                return { provider: prov, ...result };
-            })
-        );
-        res.json({
-            model: targetModel,
-            results: results.map((r, i) => ({
-                provider: targetProviders[i],
-                status: r.status,
-                ...(r.status === 'fulfilled' ? r.value : { error: r.reason?.message })
-            }))
-        });
-    } catch (error) { res.status(500).json({ error: 'Comparison failed' }); }
-});
-
-app.get('/api/hf/usage', (req, res) => { res.json(hfClient.getUsageStats()); });
-
-// ==================== LOCAL RUNNER DETECTION ====================
-
-app.get('/api/local/ollama', async (req, res) => {
-    try { res.json(await hfClient.checkOllamaStatus()); }
-    catch (error) { res.json({ running: false }); }
-});
-
-app.get('/api/local/vllm', async (req, res) => {
-    try { res.json(await hfClient.checkVLLMStatus()); }
-    catch (error) { res.json({ running: false }); }
-});
-
-app.get('/api/local/status', async (req, res) => {
-    try {
-        const [ollama, vllm] = await Promise.allSettled([hfClient.checkOllamaStatus(), hfClient.checkVLLMStatus()]);
-        res.json({
-            ollama: ollama.status === 'fulfilled' ? ollama.value : { running: false },
-            vllm: vllm.status === 'fulfilled' ? vllm.value : { running: false }
-        });
-    } catch (error) { res.json({ ollama: { running: false }, vllm: { running: false } }); }
-});
-
-// ==================== MODEL REGISTRY ENDPOINTS ====================
-
-app.get('/api/models', (req, res) => {
-    const { category, provider, trending, search, family } = req.query;
-    let models;
-    if (search) models = modelRegistry.searchModels(search);
-    else if (category) models = modelRegistry.getModelsByCategory(category);
-    else if (provider) models = modelRegistry.getModelsByProvider(provider);
-    else if (family) models = modelRegistry.getModelsByFamily(family);
-    else if (trending === 'true') models = modelRegistry.getTrendingModels();
-    else models = modelRegistry.getAllModels();
-    res.json({ total: models.length, models });
-});
-
-app.get('/api/models/stats', (req, res) => { res.json(modelRegistry.getStats()); });
-
-app.get('/api/models/categories', (req, res) => {
-    const stats = modelRegistry.getStats();
-    const categories = Object.entries(stats.byCategory).map(([name, count]) => ({ name, count, icon: getCategoryIcon(name) }));
-    res.json({ categories });
-});
-
-app.get('/api/models/trending', (req, res) => {
-    const trending = modelRegistry.getTrendingModels();
-    res.json({ total: trending.length, models: trending });
-});
-
-app.get('/api/models/families', (req, res) => {
-    const stats = modelRegistry.getStats();
-    const families = Object.entries(stats.byFamily).map(([name, count]) => ({ name, count }));
-    families.sort((a, b) => b.count - a.count);
-    res.json({ families });
-});
-
-app.get('/api/models/search', (req, res) => {
-    const { q } = req.query;
-    if (!q) return res.status(400).json({ error: 'Search query "q" is required' });
-    const results = modelRegistry.searchModels(q);
-    res.json({ query: q, total: results.length, models: results });
-});
-
-app.get('/api/models/:id(*)', (req, res) => {
-    const model = modelRegistry.getModel(req.params.id);
-    if (!model) return res.status(404).json({ error: `Model "${req.params.id}" not found` });
-    res.json(model);
-});
-
-// ==================== UNIFIED AI CHAT ENDPOINT ====================
-
-app.post('/api/ai/chat', aiLimiter, validate('chat'), async (req, res) => {
-    try {
-        const { messages, model, provider, taskType, options } = req.body;
-
-        const chatMessages = messages || [
-            { role: 'system', content: options?.systemPrompt || 'You are an AI assistant for the GOAT Royalties platform.' },
-            { role: 'user', content: req.body.prompt }
-        ];
-
-        let result;
-        const hfProviderList = ['groq', 'cerebras', 'sambanova', 'together', 'fireworks', 'novita',
-            'replicate', 'cohere', 'scaleway', 'hyperbolic', 'fal', 'featherless',
-            'nscale', 'hf-inference', 'ollama', 'vllm'];
-
-        if (provider === 'nvidia' || model?.startsWith('nvidia/')) {
-            const lastMsg = chatMessages[chatMessages.length - 1]?.content || '';
-            const nvidiaModel = model?.replace('nvidia/', '') || 'mixtral-8x7b';
-            const content = await nvidiaClient.generateText(lastMsg, nvidiaModel, options || {});
-            result = { content, model: nvidiaModel, provider: 'nvidia' };
-        } else if (provider === 'hf' || provider === 'huggingface' || hfProviderList.includes(provider)) {
-            const hfProvider = (provider === 'hf' || provider === 'huggingface') ? 'groq' : provider;
-            result = await hfClient.chatCompletion(chatMessages, model || 'meta-llama/Llama-3.3-70B-Instruct', hfProvider, options || {});
-        } else if (provider === 'hf-auto') {
-            result = await hfClient.autoRoute(chatMessages, model || 'meta-llama/Llama-3.3-70B-Instruct', options || {});
-        } else if (taskType) {
-            const lastMsg = chatMessages[chatMessages.length - 1]?.content || '';
-            const content = await lightningClient.smartRoute(lastMsg, taskType, options || {});
-            result = { content, provider: 'lightning', taskType };
-        } else {
-            result = await lightningClient.chatCompletion(chatMessages, model || 'llama-3.3-70b', options || {});
-        }
-
-        res.json(result);
-    } catch (error) { res.status(500).json({ error: 'Chat request failed' }); }
-});
-
-// ==================== AI STATS ====================
-
-app.get('/api/ai/stats', (req, res) => {
-    const registryStats = modelRegistry.getStats();
-    const hfProviders = hfClient.getAvailableProviders();
-    const catalogStats = ascapCatalog.getStats();
-    res.json({
-        platform: 'SUPER GOAT Royalties',
-        version: VERSION,
-        providers: {
-            lightning: { models: Object.keys(aiConfig.lightning.models).length, usage: lightningClient.getUsageStats() },
-            nvidia: { models: Object.keys(aiConfig.nvidia.models).length },
-            huggingface: { providers: hfProviders.length, providerList: hfProviders.map(p => p.name), usage: hfClient.getUsageStats() }
-        },
-        modelRegistry: registryStats,
-        catalog: catalogStats,
-        totalModels: Object.keys(aiConfig.lightning.models).length + Object.keys(aiConfig.nvidia.models).length + registryStats.totalModels,
-        capabilities: ['text-generation', 'code', 'vision', 'multimodal', 'audio', 'embedding', 'rag', 'autonomous-agents', 'smart-routing', 'multi-provider', 'local-runners', 'ascap-catalog', 'daw-studio', 'film-scoring']
-    });
-});
-
-// ==================== AI & LLM ENHANCED ENDPOINTS ====================
-
+// AI-powered revenue analysis
 app.get('/api/ai/revenue-analysis', async (req, res) => {
     try {
-        const { model, provider } = req.query;
-        const revenueInfo = { totalRevenue: revenueData.totalRevenue, growthRate: revenueData.growthRate, platforms: revenueData.platforms };
-        let analysis;
-        if (provider && ['groq', 'cerebras', 'together', 'fireworks'].includes(provider)) {
-            const messages = [{ role: 'user', content: `Analyze this music royalty revenue data and provide insights:\n${JSON.stringify(revenueInfo)}` }];
-            const result = await hfClient.chatCompletion(messages, model || 'meta-llama/Llama-3.3-70B-Instruct', provider, {});
-            analysis = result.content;
-        } else if (model && aiConfig.lightning.models[model]) {
-            analysis = await lightningClient.analyzeRevenue(revenueInfo, model);
-        } else {
-            analysis = await nvidiaClient.analyzeRoyaltyData(revenueInfo);
-        }
-        res.json({ analysis, model: model || 'default', provider: provider || 'default' });
-    } catch (error) { res.status(500).json({ error: 'Revenue analysis failed' }); }
+        const analysis = await nvidiaClient.analyzeRoyaltyData({
+            totalRevenue: revenueData.totalRevenue ?? 0,
+            growthRate: revenueData.growthRate ?? 0,
+            platforms: revenueData.platforms ?? {}
+        });
+
+        res.json({ analysis });
+    } catch (error) {
+        logger.error(`AI revenue-analysis failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
 });
 
+// AI market predictions
 app.get('/api/ai/market-predictions', async (req, res) => {
     try {
-        const { genre, platform, timeframe, model, provider } = req.query;
-        let predictions;
-        if (provider && ['groq', 'cerebras', 'together', 'fireworks'].includes(provider)) {
-            const messages = [{ role: 'user', content: `Predict market trends for ${genre || 'Hip-Hop'} music on ${platform || 'Spotify'} over the next ${timeframe || '6 months'}. Provide specific predictions with data.` }];
-            const result = await hfClient.chatCompletion(messages, model || 'meta-llama/Llama-3.3-70B-Instruct', provider, {});
-            predictions = result.content;
-        } else if (model && aiConfig.lightning.models[model]) {
-            predictions = await lightningClient.predictMarketTrends(genre || 'Hip-Hop', platform || 'Spotify', timeframe || '6 months', model);
-        } else {
-            predictions = await nvidiaClient.predictMarketTrends(genre || 'Hip-Hop', platform || 'Spotify', timeframe || '6 months');
-        }
+        const { genre, platform, timeframe } = req.query;
+        const predictions = await nvidiaClient.predictMarketTrends(
+            genre || 'Hip-Hop',
+            platform || 'Spotify',
+            timeframe || '6 months'
+        );
+
         res.json({ predictions });
-    } catch (error) { res.status(500).json({ error: 'Market prediction failed' }); }
+    } catch (error) {
+        logger.error(`AI market-predictions failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
 });
 
-app.post('/api/ai/content-recommendations', aiLimiter, validate('contentRecommendation'), async (req, res) => {
+// AI content recommendations
+app.post('/api/ai/content-recommendations', async (req, res) => {
     try {
-        const { artistProfile, currentContent, model, provider } = req.body;
-        let recommendations;
-        if (provider && ['groq', 'cerebras', 'together', 'fireworks'].includes(provider)) {
-            const messages = [{ role: 'user', content: `Generate content strategy recommendations for this artist:\n${JSON.stringify({ artistProfile, currentContent })}` }];
-            const result = await hfClient.chatCompletion(messages, model || 'meta-llama/Llama-3.3-70B-Instruct', provider, {});
-            recommendations = result.content;
-        } else if (model && aiConfig.lightning.models[model]) {
-            recommendations = await lightningClient.generateContentStrategy(artistProfile, currentContent, model);
-        } else {
-            recommendations = await nvidiaClient.generateContentRecommendations(artistProfile, currentContent);
-        }
+        const { artistProfile, currentContent } = req.body;
+        const recommendations = await nvidiaClient.generateContentRecommendations(
+            artistProfile,
+            currentContent
+        );
+
         res.json({ recommendations });
-    } catch (error) { res.status(500).json({ error: 'Content recommendation failed' }); }
+    } catch (error) {
+        logger.error(`AI content-recommendations failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
 });
 
-app.post('/api/ai/generate-contract', aiLimiter, validate('contractGeneration'), async (req, res) => {
+// AI contract generation
+app.post('/api/ai/generate-contract', async (req, res) => {
     try {
-        const { contractType, parties, terms, model, provider } = req.body;
-        let contract;
-        if (provider && ['groq', 'cerebras', 'together', 'fireworks'].includes(provider)) {
-            const messages = [{ role: 'user', content: `Generate a ${contractType || 'music licensing'} contract for:\nParties: ${JSON.stringify(parties)}\nTerms: ${JSON.stringify(terms)}` }];
-            const result = await hfClient.chatCompletion(messages, model || 'meta-llama/Llama-3.3-70B-Instruct', provider, {});
-            contract = result.content;
-        } else if (model && aiConfig.lightning.models[model]) {
-            contract = await lightningClient.generateContract(contractType, parties, terms, model);
-        } else {
-            contract = await nvidiaClient.generateContractTerms(contractType, parties, terms);
-        }
+        const { contractType, parties, terms } = req.body;
+        const contract = await nvidiaClient.generateContractTerms(
+            contractType,
+            parties,
+            terms
+        );
+
         res.json({ contract });
-    } catch (error) { res.status(500).json({ error: 'Contract generation failed' }); }
+    } catch (error) {
+        logger.error(`AI generate-contract failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== FRONTEND COMPATIBILITY ENDPOINTS ====================
+
+// AI Analyze (alias for revenue-analysis)
+app.post('/api/ai/analyze', async (req, res) => {
+    try {
+        const { type } = req.body;
+        const analysis = await nvidiaClient.analyzeRoyaltyData({
+            totalRevenue: revenueData.totalRevenue ?? 0,
+            growthRate: revenueData.growthRate ?? 0,
+            platforms: revenueData.platforms ?? {}
+        });
+        res.json({ analysis, type });
+    } catch (error) {
+        logger.error(`AI analyze failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// AI Contract (alias for generate-contract)
+app.post('/api/ai/contract', async (req, res) => {
+    try {
+        const { contractType, parties, terms } = req.body;
+        const contract = await nvidiaClient.generateContractTerms(
+            contractType || 'management',
+            parties || ['Artist', 'Manager'],
+            terms || {}
+        );
+        res.json({ contract });
+    } catch (error) {
+        logger.error(`AI contract failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// AI Market (alias for market-predictions)
+app.post('/api/ai/market', async (req, res) => {
+    try {
+        const { genre, platform, timeframe } = req.body;
+        const predictions = await nvidiaClient.predictMarketTrends(
+            genre || 'Hip-Hop',
+            platform || 'Spotify',
+            timeframe || '6 months'
+        );
+        res.json({ predictions });
+    } catch (error) {
+        logger.error(`AI market failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Catalog export (CSV)
+app.get('/api/catalog/export', (req, res) => {
+    try {
+        const csv = goatData.exportCatalogCSV();
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="goat_catalog.csv"');
+        res.send(csv);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Network opportunities
+app.get('/api/network/opportunities', (req, res) => {
+    try {
+        const opportunities = goatData.getSyncOpportunities ? goatData.getSyncOpportunities() : [
+            { id: 1, title: 'Film Sync Opportunity', type: 'film', status: 'open', value: '$5,000 - $15,000' },
+            { id: 2, title: 'TV Placement', type: 'tv', status: 'pending', value: '$2,000 - $8,000' },
+            { id: 3, title: 'Brand Partnership', type: 'brand', status: 'open', value: '$10,000 - $25,000' }
+        ];
+        res.json({ opportunities, total: opportunities.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // ==================== RAG ENDPOINTS ====================
 
-app.post('/api/rag/query', aiLimiter, validate('ragQuery'), async (req, res) => {
-    try { const { query } = req.body; res.json({ response: await ragSystem.generateResponse(query) }); }
-    catch (error) { res.status(500).json({ error: 'RAG query failed' }); }
+// RAG query endpoint
+app.post('/api/rag/query', async (req, res) => {
+    try {
+        const { query } = req.body;
+        if (!query || typeof query !== 'string' || query.trim() === '') {
+            return res.status(400).json({ error: 'query is required and must be a non-empty string' });
+        }
+        const response = await ragSystem.generateResponse(query);
+        
+        res.json({ response });
+    } catch (error) {
+        logger.error(`RAG query failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
 });
 
+// Add document to knowledge base
 app.post('/api/rag/document', async (req, res) => {
-    try { const { id, content, metadata } = req.body; res.json({ success: true, ...(await ragSystem.addDocument(id, content, metadata)) }); }
-    catch (error) { res.status(500).json({ error: 'Document ingestion failed' }); }
+    try {
+        const { id, content, metadata } = req.body;
+        if (!id || !content) {
+            return res.status(400).json({ error: 'id and content are required' });
+        }
+        const result = await ragSystem.addDocument(id, content, metadata);
+        
+        res.json({ success: true, ...result });
+    } catch (error) {
+        logger.error(`RAG add-document failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
 });
 
-app.get('/api/rag/stats', (req, res) => { res.json(ragSystem.getStats()); });
+// RAG stats
+app.get('/api/rag/stats', (req, res) => {
+    res.json(ragSystem.getStats());
+});
 
 // ==================== AGENT ENDPOINTS ====================
 
-app.post('/api/agents/execute', aiLimiter, async (req, res) => {
+// Execute agent task
+app.post('/api/agents/execute', async (req, res) => {
     try {
         const { agentId, task, context } = req.body;
         const result = await agentManager.executeAgent(agentId, task, context);
-        broadcast('agents', { type: 'agent-complete', agentId, task });
+        
         res.json({ success: true, result });
-    } catch (error) { res.status(500).json({ error: 'Agent execution failed' }); }
+    } catch (error) {
+        logger.error(`Agent execute failed (agent=${req.body?.agentId}): ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
 });
 
+// Queue agent task
 app.post('/api/agents/queue', (req, res) => {
     const { agentId, task, context } = req.body;
     agentManager.queueTask(agentId, task, context);
+    
     res.json({ success: true, message: 'Task queued' });
 });
 
+// Agent status
 app.get('/api/agents/status', (req, res) => {
-    res.json({ agents: agentManager.getAgentStatus(), metrics: agentManager.getMetrics() });
+    res.json({
+        agents: agentManager.getAgentStatus(),
+        metrics: agentManager.getMetrics()
+    });
 });
 
+// Toggle autonomous mode
 app.post('/api/agents/autonomous', (req, res) => {
     const { enabled } = req.body;
     agentManager.setAutonomousMode(enabled);
+    
     res.json({ success: true, autonomousMode: enabled });
 });
 
 // ==================== NVIDIA NIM ENDPOINTS ====================
 
-app.post('/api/nvidia/generate', aiLimiter, validate('generate'), async (req, res) => {
-    try { const { prompt, model, options } = req.body; res.json({ result: await nvidiaClient.generateText(prompt, model, options) }); }
-    catch (error) { res.status(500).json({ error: 'NVIDIA generation failed' }); }
+// Generate text with NVIDIA NIM
+app.post('/api/nvidia/generate', async (req, res) => {
+    try {
+        const { prompt, model, options } = req.body;
+        if (!prompt) {
+            return res.status(400).json({ error: 'prompt is required' });
+        }
+        const result = await nvidiaClient.generateText(prompt, model, options);
+        
+        res.json({ result });
+    } catch (error) {
+        logger.error(`NVIDIA generate failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
 });
 
-app.get('/api/nvidia/models', (req, res) => { res.json(nvidiaClient.getModelCapabilities()); });
+// Get model capabilities
+app.get('/api/nvidia/models', (req, res) => {
+    res.json(nvidiaClient.getModelCapabilities());
+});
 
 // ==================== REVENUE ENDPOINTS ====================
 
+// Revenue predictions
 app.get('/api/revenue/predictions', async (req, res) => {
     try {
-        const aiAnalysis = await nvidiaClient.analyzeRoyaltyData({ totalRevenue: revenueData.totalRevenue, growthRate: revenueData.growthRate, platforms: revenueData.platforms });
+        // Use AI for enhanced predictions
+        const aiAnalysis = await nvidiaClient.analyzeRoyaltyData({
+            totalRevenue: revenueData.totalRevenue ?? 0,
+            growthRate: revenueData.growthRate ?? 0,
+            platforms: revenueData.platforms ?? {}
+        });
+        const totalRev = revenueData.totalRevenue ?? 0;
+
         res.json({
-            nextMonth: { predicted: revenueData.totalRevenue * 1.23, increase: revenueData.totalRevenue * 0.23, confidence: 95 },
+            nextMonth: {
+                predicted: totalRev * 1.23,
+                increase: totalRev * 0.23,
+                confidence: 95
+            },
             opportunities: [
                 { platform: 'TikTok', potential: 25000, priority: 'high' },
                 { platform: 'Spotify Playlists', potential: 18000, priority: 'high' },
                 { platform: 'YouTube Sync', potential: 15000, priority: 'medium' }
             ],
-            aiAnalysis: typeof aiAnalysis === 'string' ? aiAnalysis.substring(0, 500) : JSON.stringify(aiAnalysis).substring(0, 500)
+            aiAnalysis: typeof aiAnalysis === 'string' ? aiAnalysis.substring(0, 500) + '...' : ''
         });
-    } catch (error) { res.status(500).json({ error: 'Revenue prediction failed' }); }
+    } catch (error) {
+        logger.error(`Revenue predictions failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // ==================== NFT ENDPOINTS ====================
 
 app.get('/api/nft/portfolio', (req, res) => {
-    res.json({ totalValue: nftPortfolio.totalValue, items: nftPortfolio.items, chains: nftPortfolio.chains, recentSales: nftPortfolio.salesHistory.slice(-5) });
+    res.json({
+        totalValue: nftPortfolio.totalValue ?? 0,
+        items: nftPortfolio.items ?? [],
+        chains: nftPortfolio.chains ?? {},
+        recentSales: nftPortfolio.salesHistory?.slice(-5) ?? []
+    });
+});
+
+// ==================== CRYPTO MINING ENDPOINTS ====================
+
+// Get mining stats
+app.get('/api/mining/stats', (req, res) => {
+    res.json(cryptoMining.getStats());
+});
+
+// Get hardware recommendations
+app.get('/api/mining/hardware', (req, res) => {
+    res.json(cryptoMining.getHardwareRecommendations());
+});
+
+// Create miner
+app.post('/api/mining/create', (req, res) => {
+    try {
+        const { coin, type, threads, walletAddress, poolIndex } = req.body;
+        const minerId = cryptoMining.createMiner({
+            coin,
+            type: type || 'cpu',
+            threads: threads || 4,
+            walletAddress,
+            poolIndex
+        });
+        res.json({ success: true, minerId });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Start mining
+app.post('/api/mining/start', (req, res) => {
+    try {
+        const { minerId } = req.body;
+        const result = cryptoMining.startMining(minerId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Stop mining
+app.post('/api/mining/stop', (req, res) => {
+    try {
+        const { minerId } = req.body;
+        const result = cryptoMining.stopMining(minerId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Calculate earnings
+app.get('/api/mining/earnings/:minerId', (req, res) => {
+    try {
+        const earnings = cryptoMining.calculateEarnings(req.params.minerId);
+        res.json(earnings);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get wallet configuration status
+app.get('/api/mining/wallets', (req, res) => {
+    try {
+        const walletStatus = cryptoMining.getWalletStatus();
+        res.json({ wallets: walletStatus, config: cryptoMining.walletConfig.wallets });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update wallet address
+app.post('/api/mining/wallets/:coin', (req, res) => {
+    try {
+        const { address } = req.body;
+        const coin = req.params.coin;
+        
+        if (!address) {
+            return res.status(400).json({ error: 'Wallet address is required' });
+        }
+        
+        const success = cryptoMining.setWalletAddress(coin, address);
+        if (success) {
+            res.json({ success: true, coin, message: `${coin} wallet address updated` });
+        } else {
+            res.status(400).json({ error: `Unsupported coin: ${coin}` });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== VIDEO EDITOR ENDPOINTS ====================
+
+// Get effects library
+app.get('/api/video/effects', (req, res) => {
+    res.json(videoEditor.getEffects());
+});
+
+// Get transitions
+app.get('/api/video/transitions', (req, res) => {
+    res.json(videoEditor.getTransitions());
+});
+
+// Get templates
+app.get('/api/video/templates', (req, res) => {
+    res.json(videoEditor.getTemplates());
+});
+
+// Create video project
+app.post('/api/video/project', (req, res) => {
+    try {
+        const project = videoEditor.createProject(req.body);
+        res.json(project);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get project
+app.get('/api/video/project/:projectId', (req, res) => {
+    const project = videoEditor.getProject(req.params.projectId);
+    if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json(project);
+});
+
+// Add media to project
+app.post('/api/video/project/:projectId/media', (req, res) => {
+    try {
+        const media = videoEditor.addMedia(req.params.projectId, req.body);
+        res.json(media);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Apply effect
+app.post('/api/video/effect', (req, res) => {
+    try {
+        const { projectId, clipId, effectId, params } = req.body;
+        const effect = videoEditor.applyEffect(projectId, clipId, effectId, params);
+        res.json(effect);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Render project
+app.post('/api/video/render', (req, res) => {
+    try {
+        const { projectId, settings } = req.body;
+        const job = videoEditor.renderProject(projectId, settings);
+        res.json(job);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get music video presets
+app.get('/api/video/presets/music-video', (req, res) => {
+    res.json(videoEditor.getMusicVideoPresets());
+});
+
+// ==================== DSP DISTRIBUTION ENDPOINTS ====================
+
+// Get all platforms
+app.get('/api/dsp/platforms', (req, res) => {
+    res.json(dspDistribution.getPlatformStats());
+});
+
+// Get all releases
+app.get('/api/dsp/releases', (req, res) => {
+    res.json(dspDistribution.getReleases());
+});
+
+// Get single release
+app.get('/api/dsp/releases/:releaseId', (req, res) => {
+    const release = dspDistribution.getRelease(req.params.releaseId);
+    if (!release) {
+        return res.status(404).json({ error: 'Release not found' });
+    }
+    res.json(release);
+});
+
+// Create new release
+app.post('/api/dsp/releases', (req, res) => {
+    try {
+        const release = dspDistribution.createRelease(req.body);
+        res.json(release);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Submit to platforms
+app.post('/api/dsp/submit/:releaseId', (req, res) => {
+    try {
+        const { platforms } = req.body;
+        const result = dspDistribution.submitToPlatforms(req.params.releaseId, platforms);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Check delivery status
+app.get('/api/dsp/status/:releaseId', (req, res) => {
+    try {
+        const status = dspDistribution.checkDeliveryStatus(req.params.releaseId);
+        res.json(status);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get distribution recommendations
+app.post('/api/dsp/recommendations', (req, res) => {
+    const recommendations = dspDistribution.getDistributionRecommendations(req.body);
+    res.json(recommendations);
+});
+
+// Configure Google Sheets
+app.post('/api/dsp/google-sheets/config', (req, res) => {
+    try {
+        const result = dspDistribution.configureGoogleSheets(req.body);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Sync from Google Sheets
+app.post('/api/dsp/google-sheets/sync', async (req, res) => {
+    try {
+        const result = await dspDistribution.syncFromGoogleSheets();
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Export to Google Sheets
+app.post('/api/dsp/google-sheets/export', async (req, res) => {
+    try {
+        const result = await dspDistribution.exportToGoogleSheets();
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 });
 
 // ==================== COLLABORATION ENDPOINTS ====================
 
 app.get('/api/collaboration/status', (req, res) => {
     res.json({
-        activeMembers: collaborationHub.getActiveMembers().length,
-        totalMembers: collaborationHub.members.length,
-        sharedFiles: collaborationHub.files.length,
-        activeProjects: collaborationHub.getActiveProjects().length,
+        activeMembers: collaborationHub.getActiveMembers?.()?.length ?? 0,
+        totalMembers: collaborationHub.members?.length ?? 0,
+        sharedFiles: collaborationHub.files?.length ?? 0,
+        activeProjects: collaborationHub.getActiveProjects?.()?.length ?? 0,
         recentActivity: [
             { user: 'Producer Mike', action: 'uploaded new beat', time: '5 min ago' },
             { user: 'Sarah Vocals', action: 'commented on track', time: '12 min ago' },
             { user: 'DJ Alex', action: 'shared mix', time: '1 hour ago' }
         ],
-        storageUsed: '450GB', storageTotal: '1TB'
+        storageUsed: '450GB',
+        storageTotal: '1TB'
     });
 });
 
-// ==================== MARKET ANALYSIS ====================
+// ==================== LOCAL LLM ENDPOINTS ====================
+// 100% Offline, No API, No Login, No Internet Required
 
-app.get('/api/market/trends', (req, res) => {
-    res.json({ trendingGenres: marketAnalysis.getTrendingGenres(), platformInsights: marketAnalysis.platformInsights, lastUpdated: marketAnalysis.lastUpdated });
-});
+const { getLocalLLM } = require('./lib/ai/local-llm');
 
-// ==================== DAW STUDIO ENDPOINTS ====================
+// Get local LLM instance
+let localLLM = null;
 
-// DAW project management
-app.get('/api/daw/projects', (req, res) => {
-    try {
-        const projects = [];
-        if (fs.existsSync(dawProjectsDir)) {
-            const files = fs.readdirSync(dawProjectsDir).filter(f => f.endsWith('.json'));
-            for (const file of files) {
-                try {
-                    const data = JSON.parse(fs.readFileSync(path.join(dawProjectsDir, file), 'utf-8'));
-                    projects.push({ id: data.id, name: data.name, bpm: data.bpm, timeSignature: data.timeSignature, createdAt: data.createdAt, updatedAt: data.updatedAt, trackCount: (data.tracks || []).length });
-                } catch (e) { /* skip corrupted */ }
-            }
-        }
-        res.json({ projects, total: projects.length });
-    } catch (error) { res.status(500).json({ error: 'Failed to list projects' }); }
-});
-
-app.post('/api/daw/projects', (req, res) => {
-    try {
-        const { name, bpm, timeSignature, genre } = req.body;
-        const id = require('uuid').v4();
-        const project = {
-            id, name: name || 'Untitled Project',
-            bpm: bpm || 120,
-            timeSignature: timeSignature || '4/4',
-            genre: genre || 'Hip-Hop',
-            sampleRate: 44100,
-            bitDepth: 24,
-            tracks: [],
-            markers: [],
-            cueList: [],
-            tempoMap: [{ position: 0, bpm: bpm || 120 }],
-            timecodeOffset: '01:00:00:00',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        };
-        fs.writeFileSync(path.join(dawProjectsDir, `${id}.json`), JSON.stringify(project, null, 2));
-        broadcast('daw', { type: 'project-created', project: { id, name: project.name } });
-        res.json(project);
-    } catch (error) { res.status(500).json({ error: 'Failed to create project' }); }
-});
-
-app.get('/api/daw/projects/:id', (req, res) => {
-    try {
-        const filePath = path.join(dawProjectsDir, `${req.params.id}.json`);
-        if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Project not found' });
-        res.json(JSON.parse(fs.readFileSync(filePath, 'utf-8')));
-    } catch (error) { res.status(500).json({ error: 'Failed to load project' }); }
-});
-
-app.put('/api/daw/projects/:id', (req, res) => {
-    try {
-        const filePath = path.join(dawProjectsDir, `${req.params.id}.json`);
-        if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Project not found' });
-        const existing = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-        const updated = { ...existing, ...req.body, id: existing.id, createdAt: existing.createdAt, updatedAt: new Date().toISOString() };
-        fs.writeFileSync(filePath, JSON.stringify(updated, null, 2));
-        broadcast('daw', { type: 'project-updated', projectId: existing.id });
-        res.json(updated);
-    } catch (error) { res.status(500).json({ error: 'Failed to update project' }); }
-});
-
-app.delete('/api/daw/projects/:id', (req, res) => {
-    try {
-        const filePath = path.join(dawProjectsDir, `${req.params.id}.json`);
-        if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Project not found' });
-        fs.unlinkSync(filePath);
-        res.json({ success: true, message: 'Project deleted' });
-    } catch (error) { res.status(500).json({ error: 'Failed to delete project' }); }
-});
-
-// DAW AI Composition Assistant
-app.post('/api/daw/ai/compose', aiLimiter, async (req, res) => {
-    try {
-        const { genre, mood, key, scale, bpm, bars, style, instrument } = req.body;
-        const prompt = `You are an expert music composer and producer. Generate a ${bars || 8}-bar ${genre || 'Hip-Hop'} ${instrument || 'melody'} composition.
-
-Requirements:
-- Genre: ${genre || 'Hip-Hop'}
-- Mood: ${mood || 'energetic'}
-- Key: ${key || 'C'} ${scale || 'minor'}
-- BPM: ${bpm || 120}
-- Style: ${style || 'modern trap beat'}
-
-Return a JSON object with:
-1. "notes": Array of note objects with {note (e.g. "C4"), startBeat, duration (in beats), velocity (0-127)}
-2. "chords": Array of chord objects with {chord (e.g. "Cm7"), startBeat, duration}
-3. "description": Brief description of the composition
-4. "arrangement": Suggested arrangement/structure`;
-
-        let result;
-        try {
-            result = await lightningClient.chatCompletion(
-                [{ role: 'system', content: 'You are an expert music composer. Always respond with valid JSON.' }, { role: 'user', content: prompt }],
-                'llama-3.3-70b', { temperature: 0.8, max_tokens: 2000 }
-            );
-        } catch (e) {
-            // Demo fallback
-            result = { content: JSON.stringify(generateDemoComposition(genre, key, scale, bpm, bars)) };
-        }
-
-        let composition;
-        try {
-            const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
-            const jsonMatch = content.match(/\{[\s\S]*\}/);
-            composition = jsonMatch ? JSON.parse(jsonMatch[0]) : generateDemoComposition(genre, key, scale, bpm, bars);
-        } catch (e) {
-            composition = generateDemoComposition(genre, key, scale, bpm, bars);
-        }
-
-        res.json({ composition, genre, key, scale, bpm, bars, aiPowered: true });
-    } catch (error) { res.status(500).json({ error: 'AI composition failed' }); }
-});
-
-// DAW AI Mastering suggestions
-app.post('/api/daw/ai/master', aiLimiter, async (req, res) => {
-    try {
-        const { genre, trackInfo, targetLoudness } = req.body;
-        const prompt = `As a professional mastering engineer, provide mastering chain recommendations for:
-Genre: ${genre || 'Hip-Hop'}
-Track Info: ${JSON.stringify(trackInfo || { tracks: 4, duration: '3:30' })}
-Target Loudness: ${targetLoudness || '-14 LUFS (streaming standard)'}
-
-Provide JSON with: processingChain (array of effects with parameters), recommendations (array of tips), targetSpecs (object with loudness/dynamics targets)`;
-
-        let result;
-        try {
-            result = await lightningClient.chatCompletion(
-                [{ role: 'system', content: 'You are an expert mastering engineer. Respond with valid JSON.' }, { role: 'user', content: prompt }],
-                'llama-3.3-70b', { temperature: 0.3, max_tokens: 1500 }
-            );
-        } catch (e) {
-            result = { content: JSON.stringify(getDemoMasteringChain(genre)) };
-        }
-
-        let mastering;
-        try {
-            const content = typeof result.content === 'string' ? result.content : JSON.stringify(result.content);
-            const jsonMatch = content.match(/\{[\s\S]*\}/);
-            mastering = jsonMatch ? JSON.parse(jsonMatch[0]) : getDemoMasteringChain(genre);
-        } catch (e) {
-            mastering = getDemoMasteringChain(genre);
-        }
-
-        res.json({ mastering, genre, aiPowered: true });
-    } catch (error) { res.status(500).json({ error: 'AI mastering analysis failed' }); }
-});
-
-// DAW Sound Library - built-in instruments & presets
-app.get('/api/daw/sounds', (req, res) => {
-    const { category, search } = req.query;
-    let sounds = getBuiltInSounds();
-    if (category) sounds = sounds.filter(s => s.category === category);
-    if (search) {
-        const q = search.toLowerCase();
-        sounds = sounds.filter(s => s.name.toLowerCase().includes(q) || s.tags.some(t => t.includes(q)));
-    }
-    res.json({ total: sounds.length, sounds });
-});
-
-app.get('/api/daw/sounds/categories', (req, res) => {
-    const sounds = getBuiltInSounds();
-    const cats = {};
-    sounds.forEach(s => { cats[s.category] = (cats[s.category] || 0) + 1; });
-    res.json({ categories: Object.entries(cats).map(([name, count]) => ({ name, count })) });
-});
-
-// DAW Film Scoring - Cue Management
-app.post('/api/daw/cues', (req, res) => {
-    try {
-        const { projectId, name, timecodeIn, timecodeOut, description, scene } = req.body;
-        const filePath = path.join(dawProjectsDir, `${projectId}.json`);
-        if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Project not found' });
-        const project = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-        const cue = {
-            id: require('uuid').v4(),
-            name: name || 'New Cue',
-            timecodeIn: timecodeIn || '01:00:00:00',
-            timecodeOut: timecodeOut || '01:00:30:00',
-            description: description || '',
-            scene: scene || '',
-            status: 'pending',
-            createdAt: new Date().toISOString()
-        };
-        project.cueList = project.cueList || [];
-        project.cueList.push(cue);
-        project.updatedAt = new Date().toISOString();
-        fs.writeFileSync(filePath, JSON.stringify(project, null, 2));
-        res.json(cue);
-    } catch (error) { res.status(500).json({ error: 'Failed to create cue' }); }
-});
-
-// ==================== HELPER FUNCTIONS ====================
-
-function generateDemoComposition(genre, key, scale, bpm, bars) {
-    const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-    const minorScale = [0, 2, 3, 5, 7, 8, 10];
-    const majorScale = [0, 2, 4, 5, 7, 9, 11];
-    const scaleIntervals = (scale || 'minor') === 'minor' ? minorScale : majorScale;
-    const rootIdx = notes.indexOf((key || 'C').charAt(0));
-
-    const composition = { notes: [], chords: [], description: '', arrangement: '' };
-    const numBars = parseInt(bars) || 8;
-
-    // Generate melody
-    for (let bar = 0; bar < numBars; bar++) {
-        const notesPerBar = genre === 'Hip-Hop' ? 4 : genre === 'Classical' ? 8 : 4;
-        for (let n = 0; n < notesPerBar; n++) {
-            const scaleIdx = Math.floor(Math.random() * scaleIntervals.length);
-            const semitone = (rootIdx + scaleIntervals[scaleIdx]) % 12;
-            const octave = 3 + Math.floor(Math.random() * 2);
-            const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-            composition.notes.push({
-                note: noteNames[semitone] + octave,
-                startBeat: bar * 4 + n * (4 / notesPerBar),
-                duration: 4 / notesPerBar * 0.9,
-                velocity: 60 + Math.floor(Math.random() * 60)
-            });
-        }
-    }
-
-    // Generate chord progression
-    const chordPatterns = {
-        'Hip-Hop': ['m7', 'm7', '7', 'm7'],
-        'Pop': ['maj7', 'min7', 'min7', 'maj7'],
-        'R&B': ['maj9', 'min7', '7', 'min9'],
-        'Jazz': ['maj7', 'min7', 'dom7', 'dim7'],
-        'Classical': ['', 'min', '', 'min'],
-        'Electronic': ['min', 'min', 'maj', 'min']
-    };
-    const pattern = chordPatterns[genre] || chordPatterns['Hip-Hop'];
-    for (let bar = 0; bar < numBars; bar++) {
-        const chordType = pattern[bar % pattern.length];
-        const rootNote = notes[(rootIdx + scaleIntervals[bar % scaleIntervals.length]) % 7];
-        composition.chords.push({
-            chord: rootNote + chordType,
-            startBeat: bar * 4,
-            duration: 4
+function getLLM() {
+    if (!localLLM) {
+        localLLM = getLocalLLM({
+            dataPath: process.env.GOAT_DATA_PATH || null
         });
     }
-
-    composition.description = `AI-generated ${numBars}-bar ${genre || 'Hip-Hop'} composition in ${key || 'C'} ${scale || 'minor'} at ${bpm || 120} BPM`;
-    composition.arrangement = `Intro (2 bars) → Verse (${numBars - 4} bars) → Hook (2 bars)`;
-
-    return composition;
+    return localLLM;
 }
 
-function getDemoMasteringChain(genre) {
-    const chains = {
-        'Hip-Hop': {
-            processingChain: [
-                { effect: 'EQ', type: 'Parametric', params: { lowCut: '30Hz', highShelf: '+2dB @ 12kHz', midScoop: '-1.5dB @ 400Hz' } },
-                { effect: 'Compressor', type: 'Bus', params: { threshold: '-8dB', ratio: '2:1', attack: '10ms', release: '100ms' } },
-                { effect: 'Multiband Compressor', type: '4-band', params: { lowBand: '0-100Hz', midLow: '100-1kHz', midHigh: '1k-8kHz', high: '8k+' } },
-                { effect: 'Stereo Widener', params: { width: '110%', mode: 'mid-side' } },
-                { effect: 'Limiter', type: 'True Peak', params: { ceiling: '-1dBTP', release: '50ms' } }
-            ],
-            recommendations: ['Boost sub-bass 40-60Hz for punch', 'Use parallel compression for drums', 'Keep vocals forward with mid-side EQ', 'Reference against Drake/Metro Boomin masters'],
-            targetSpecs: { loudness: '-8 to -10 LUFS', truePeak: '-1 dBTP', dynamicRange: '6-8 dB' }
-        },
-        'default': {
-            processingChain: [
-                { effect: 'EQ', type: 'Linear Phase', params: { lowCut: '25Hz', corrections: 'genre-dependent' } },
-                { effect: 'Compressor', type: 'Glue', params: { threshold: '-6dB', ratio: '2:1', attack: '20ms', release: '200ms' } },
-                { effect: 'Stereo Imaging', params: { width: '105%' } },
-                { effect: 'Limiter', type: 'True Peak', params: { ceiling: '-1dBTP' } }
-            ],
-            recommendations: ['Always reference against commercial releases', 'Check on multiple playback systems', 'Leave dynamic range for streaming normalization'],
-            targetSpecs: { loudness: '-14 LUFS (streaming)', truePeak: '-1 dBTP', dynamicRange: '8-12 dB' }
+// Get LLM status and configuration
+app.get('/api/llm/status', (req, res) => {
+    try {
+        const llm = getLLM();
+        res.json({
+            mode: aiConfig.aiMode || 'local',
+            ...llm.getSystemInfo(),
+            dataPathInfo: llm.getDataPath()
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Set data path (for external drive)
+app.post('/api/llm/data-path', (req, res) => {
+    try {
+        const llm = getLLM();
+        const { path: newPath } = req.body;
+        llm.setDataPath(newPath);
+        res.json({
+            success: true,
+            dataPath: llm.getDataPath()
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// List available models
+app.get('/api/llm/models', (req, res) => {
+    try {
+        const llm = getLLM();
+        res.json({
+            installed: llm.listModels(),
+            available: aiConfig.local?.availableModels || {}
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get download instructions for a model
+app.get('/api/llm/models/:modelName/download', (req, res) => {
+    try {
+        const llm = getLLM();
+        const info = llm.getDownloadInstructions(req.params.modelName);
+        if (info) {
+            res.json(info);
+        } else {
+            res.status(404).json({ error: 'Model not found' });
         }
-    };
-    return chains[genre] || chains['default'];
-}
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
-function getBuiltInSounds() {
-    return [
-        // Drums
-        { id: 'kick-808', name: '808 Kick', category: 'drums', type: 'synth', params: { oscillator: 'sine', frequency: 55, decay: 0.5 }, tags: ['808', 'kick', 'bass', 'trap'] },
-        { id: 'kick-boom', name: 'Boom Kick', category: 'drums', type: 'synth', params: { oscillator: 'sine', frequency: 60, decay: 0.3 }, tags: ['kick', 'boom', 'hip-hop'] },
-        { id: 'snare-crack', name: 'Crack Snare', category: 'drums', type: 'noise', params: { filter: 'highpass', frequency: 200, decay: 0.15 }, tags: ['snare', 'crack', 'sharp'] },
-        { id: 'snare-rim', name: 'Rim Shot', category: 'drums', type: 'noise', params: { filter: 'bandpass', frequency: 1000, decay: 0.08 }, tags: ['snare', 'rim', 'tight'] },
-        { id: 'hihat-closed', name: 'Closed Hi-Hat', category: 'drums', type: 'noise', params: { filter: 'highpass', frequency: 8000, decay: 0.03 }, tags: ['hihat', 'closed', 'tight'] },
-        { id: 'hihat-open', name: 'Open Hi-Hat', category: 'drums', type: 'noise', params: { filter: 'highpass', frequency: 6000, decay: 0.2 }, tags: ['hihat', 'open', 'sizzle'] },
-        { id: 'clap-layered', name: 'Layered Clap', category: 'drums', type: 'noise', params: { filter: 'bandpass', frequency: 1500, decay: 0.12 }, tags: ['clap', 'layered', 'big'] },
-        { id: 'perc-conga', name: 'Conga', category: 'drums', type: 'synth', params: { oscillator: 'sine', frequency: 200, decay: 0.1 }, tags: ['conga', 'percussion', 'latin'] },
-        // Bass
-        { id: 'bass-sub', name: 'Sub Bass', category: 'bass', type: 'synth', params: { oscillator: 'sine', filter: 'lowpass', cutoff: 200 }, tags: ['sub', 'bass', 'deep'] },
-        { id: 'bass-808-long', name: '808 Bass (Long)', category: 'bass', type: 'synth', params: { oscillator: 'sine', glide: true, decay: 2.0 }, tags: ['808', 'bass', 'trap', 'glide'] },
-        { id: 'bass-reese', name: 'Reese Bass', category: 'bass', type: 'synth', params: { oscillator: 'saw', detune: 10, filter: 'lowpass' }, tags: ['reese', 'bass', 'dnb', 'dark'] },
-        { id: 'bass-acid', name: 'Acid Bass', category: 'bass', type: 'synth', params: { oscillator: 'saw', filter: 'lowpass', resonance: 0.8, envMod: 0.7 }, tags: ['acid', 'bass', 'tb303'] },
-        // Synths
-        { id: 'synth-pad-warm', name: 'Warm Pad', category: 'synths', type: 'synth', params: { oscillator: 'saw', voices: 4, filter: 'lowpass', cutoff: 2000, attack: 0.5, release: 2.0 }, tags: ['pad', 'warm', 'ambient', 'lush'] },
-        { id: 'synth-lead-saw', name: 'Saw Lead', category: 'synths', type: 'synth', params: { oscillator: 'saw', filter: 'lowpass', cutoff: 5000 }, tags: ['lead', 'saw', 'bright'] },
-        { id: 'synth-pluck', name: 'Pluck', category: 'synths', type: 'synth', params: { oscillator: 'triangle', decay: 0.2, filter: 'lowpass', envMod: 0.5 }, tags: ['pluck', 'short', 'percussive'] },
-        { id: 'synth-strings', name: 'Analog Strings', category: 'synths', type: 'synth', params: { oscillator: 'saw', voices: 8, chorus: true, attack: 0.8 }, tags: ['strings', 'analog', 'lush', 'orchestral'] },
-        { id: 'synth-brass', name: 'Brass Stab', category: 'synths', type: 'synth', params: { oscillator: 'saw', voices: 3, decay: 0.3 }, tags: ['brass', 'stab', 'funky'] },
-        // Keys
-        { id: 'keys-epiano', name: 'Electric Piano', category: 'keys', type: 'fm', params: { algorithm: 'rhodes', harmonics: 4, tremolo: true }, tags: ['epiano', 'rhodes', 'keys', 'warm'] },
-        { id: 'keys-organ', name: 'B3 Organ', category: 'keys', type: 'additive', params: { drawbars: [8, 8, 6, 0, 0, 0, 0, 0, 0], leslie: true }, tags: ['organ', 'b3', 'hammond'] },
-        { id: 'keys-piano', name: 'Grand Piano', category: 'keys', type: 'sample', params: { velocity: true, sustain: true }, tags: ['piano', 'grand', 'acoustic', 'classical'] },
-        // FX
-        { id: 'fx-riser', name: 'White Noise Riser', category: 'fx', type: 'noise', params: { filter: 'highpass', sweep: true, duration: 4 }, tags: ['riser', 'transition', 'buildup'] },
-        { id: 'fx-impact', name: 'Cinematic Impact', category: 'fx', type: 'noise', params: { filter: 'lowpass', reverb: 2.0, decay: 3.0 }, tags: ['impact', 'cinematic', 'hit', 'film'] },
-        { id: 'fx-sweep-down', name: 'Sweep Down', category: 'fx', type: 'noise', params: { filter: 'lowpass', sweep: true, direction: 'down', duration: 2 }, tags: ['sweep', 'down', 'transition'] },
-        { id: 'fx-vinyl-crackle', name: 'Vinyl Crackle', category: 'fx', type: 'noise', params: { filter: 'bandpass', density: 0.3 }, tags: ['vinyl', 'lofi', 'texture', 'crackle'] },
-        // Scoring
-        { id: 'score-tension', name: 'Tension Strings', category: 'scoring', type: 'synth', params: { oscillator: 'saw', voices: 12, dissonance: 0.3, tremolo: true }, tags: ['tension', 'strings', 'film', 'score', 'suspense'] },
-        { id: 'score-epic-brass', name: 'Epic Brass Ensemble', category: 'scoring', type: 'synth', params: { oscillator: 'saw', voices: 6, reverb: 1.5 }, tags: ['brass', 'epic', 'film', 'score', 'trailer'] },
-        { id: 'score-choir', name: 'Ethereal Choir', category: 'scoring', type: 'synth', params: { oscillator: 'sine', voices: 8, reverb: 3.0, formant: true }, tags: ['choir', 'ethereal', 'film', 'score', 'vocal'] },
-        { id: 'score-heartbeat', name: 'Heartbeat Pulse', category: 'scoring', type: 'synth', params: { oscillator: 'sine', frequency: 40, rhythmic: true }, tags: ['heartbeat', 'pulse', 'tension', 'film'] },
-        { id: 'score-drone-dark', name: 'Dark Drone', category: 'scoring', type: 'synth', params: { oscillator: 'saw', frequency: 30, filter: 'lowpass', cutoff: 200, reverb: 5.0 }, tags: ['drone', 'dark', 'ambient', 'film', 'horror'] }
-    ];
-}
+// Load a model
+app.post('/api/llm/load/:modelId', async (req, res) => {
+    try {
+        const llm = getLLM();
+        const result = await llm.loadModel(req.params.modelId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
 
-// ==================== CATCH-ALL & ERROR HANDLING ====================
+// Unload current model
+app.post('/api/llm/unload', async (req, res) => {
+    try {
+        const llm = getLLM();
+        await llm.unloadModel();
+        res.json({ success: true });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
 
-app.get('*', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
-app.use(sanitizeError);
+// Generate text completion
+app.post('/api/llm/generate', async (req, res) => {
+    try {
+        const llm = getLLM();
+        const { prompt, options } = req.body;
+        const result = await llm.generate(prompt, options);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
 
-// ==================== START SERVER ====================
+// Chat completion
+app.post('/api/llm/chat', async (req, res) => {
+    try {
+        const llm = getLLM();
+        const { messages, options } = req.body;
+        const result = await llm.chat(messages, options);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
 
+// Get/Set LLM configuration
+app.get('/api/llm/config', (req, res) => {
+    try {
+        const llm = getLLM();
+        res.json(llm.getConfig());
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/llm/config', (req, res) => {
+    try {
+        const llm = getLLM();
+        llm.setConfig(req.body);
+        res.json(llm.getConfig());
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// ==================== GOAT DATA ENDPOINTS ====================
+
+const goatData = require('./lib/goat-data');
+
+// Music Catalog Endpoints
+app.get('/api/catalog', (req, res) => {
+    try {
+        const catalog = goatData.getMusicCatalog();
+        res.json(catalog);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/songs', (req, res) => {
+    try {
+        const songs = goatData.getAllSongs();
+        res.json({ total: songs.length, songs });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/search', (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q) {
+            return res.status(400).json({ error: 'Query parameter q required' });
+        }
+        const results = goatData.searchSongs(q);
+        res.json({ query: q, total: results.length, results });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/stats', (req, res) => {
+    try {
+        const stats = goatData.getCatalogStats();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/collaborators', (req, res) => {
+    try {
+        const collaborators = goatData.getCollaborators();
+        res.json({ total: collaborators.length, collaborators });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/export/csv', (req, res) => {
+    try {
+        const csv = goatData.exportCatalogCSV();
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="waka_catalog.csv"');
+        res.send(csv);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+const NetworkProfiles = require('./lib/network/network-profiles');
+
+// Get all profiles
+app.get('/api/network/profiles', (req, res) => {
+    try {
+        const { type, search } = req.query;
+        let profiles;
+        if (search) {
+            profiles = NetworkProfiles.searchProfiles(search);
+        } else if (type) {
+            profiles = NetworkProfiles.getProfilesByType(type);
+        } else {
+            profiles = NetworkProfiles.getAllProfiles();
+        }
+        res.json({ profiles, total: profiles.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Network Profiles Endpoints
+app.get('/api/network', (req, res) => {
+    try {
+        const data = goatData.getNetworkProfiles();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/network/profiles', (req, res) => {
+    try {
+        const data = goatData.getNetworkProfiles();
+        res.json({ total: data.profiles.length, profiles: data.profiles });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/network/connections', (req, res) => {
+    try {
+        const data = goatData.getNetworkProfiles();
+        res.json({ total: data.connections.length, connections: data.connections });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/network/stats', (req, res) => {
+    try {
+        const stats = goatData.getNetworkStats();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Sync Opportunities Endpoints
+app.get('/api/sync/opportunities', (req, res) => {
+    try {
+        const syncData = goatData.loadDataFile('sync_opportunities.json');
+        res.json(syncData || { opportunities: [], placements: [] });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Royalty Calculator Endpoints
+app.post('/api/royalty/calculate/streaming', (req, res) => {
+    try {
+        const { platform, streams, sharePercent } = req.body;
+        const rates = {
+            spotify: 0.004,
+            appleMusic: 0.008,
+            youtube: 0.002,
+            tidal: 0.012,
+            amazon: 0.006,
+            pandora: 0.0015,
+            deezer: 0.005,
+            soundcloud: 0.003
+        };
+        const rate = rates[platform] || 0.004;
+        const gross = streams * rate;
+        const share = gross * ((sharePercent || 100) / 100);
+        res.json({
+            platform,
+            streams,
+            ratePerStream: rate,
+            grossRoyalty: gross.toFixed(2),
+            sharePercent: sharePercent || 100,
+            netRoyalty: share.toFixed(2)
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/royalty/calculate/sync', (req, res) => {
+    try {
+        const { type, songs } = req.body;
+        const syncRates = {
+            tv_show: 15000,
+            film: 25000,
+            commercial: 50000,
+            videogame: 20000,
+            trailer: 35000
+        };
+        const rate = syncRates[type] || 15000;
+        const total = rate * (songs || 1);
+        res.json({
+            type,
+            ratePerSong: rate,
+            songs: songs || 1,
+            totalSync: total
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Configuration Endpoint
+app.get('/api/config', (req, res) => {
+    try {
+        const config = goatData.loadDataFile('goat-config.json');
+        res.json(config);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== MARKET ANALYSIS ENDPOINTS ====================
+
+app.get('/api/market/trends', (req, res) => {
+    res.json({
+        trendingGenres: marketAnalysis.getTrendingGenres?.() ?? [],
+        platformInsights: marketAnalysis.platformInsights ?? {},
+        lastUpdated: marketAnalysis.lastUpdated ?? null
+    });
+});
+
+// Catch-all route - serve index.html for client-side routing
+// Rate limited to prevent file-system abuse
+const staticLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 200,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: 'Too many requests, please slow down.'
+});
+app.get('*', staticLimiter, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+    logger.error(err.stack || err.message);
+    res.status(500).json({
+        error: 'Something went wrong!',
+        message: err.message
+    });
+});
+
+// Start server
 server.listen(PORT, '0.0.0.0', () => {
-    const registryStats = modelRegistry.getStats();
-    const hfProviders = hfClient.getAvailableProviders();
-    const catalogStats = ascapCatalog.getStats();
-
-    console.log('');
-    console.log('╔══════════════════════════════════════════════════════════════╗');
-    console.log('║          🐐 SUPER GOAT ROYALTIES v' + VERSION + '                      ║');
-    console.log('║          The Greatest Of All Time Music Platform             ║');
-    console.log('╠══════════════════════════════════════════════════════════════╣');
-    console.log('║  🚀 Server:        http://localhost:' + PORT + '                     ║');
-    console.log('║  📊 Dashboard:     http://localhost:' + PORT + '                     ║');
-    console.log('║  🔌 API Status:    http://localhost:' + PORT + '/api/status           ║');
-    console.log('║  ❤️  Health:        http://localhost:' + PORT + '/api/health           ║');
-    console.log('╠══════════════════════════════════════════════════════════════╣');
-    console.log('║  ⚡ Lightning AI:  ' + String(Object.keys(aiConfig.lightning.models).length).padEnd(3) + ' models loaded                         ║');
-    console.log('║  🤗 HuggingFace:   ' + String(hfProviders.length).padEnd(3) + ' inference providers                    ║');
-    console.log('║  📦 Model Registry:' + String(registryStats.totalModels).padEnd(3) + ' curated models (' + registryStats.categories + ' categories)    ║');
-    console.log('║  🎯 NVIDIA NIM:    Integrated                               ║');
-    console.log('║  📚 RAG System:    Active                                   ║');
-    console.log('║  🤝 Agents:        Running                                  ║');
-    console.log('║  📡 WebSocket:     Connected                                ║');
-    console.log('║  📀 ASCAP Catalog: ' + String(catalogStats.totalWorks || 0).padEnd(4) + 'works / ' + String(catalogStats.totalWriters || 0).padEnd(3) + ' writers             ║');
-    console.log('║  🎹 DAW Studio:    Active                                   ║');
-    console.log('║  🔒 Security:      Rate limiting + validation + CSP         ║');
-    console.log('║  📈 Metrics:       Request tracking active                  ║');
-    console.log('╠══════════════════════════════════════════════════════════════╣');
-    console.log('║  Total AI Models:  ' + String(Object.keys(aiConfig.lightning.models).length + Object.keys(aiConfig.nvidia.models).length + registryStats.totalModels).padEnd(40) + '║');
-    console.log('╚══════════════════════════════════════════════════════════════╝');
-    console.log('');
+    logger.info(`🚀 SUPER GOAT ROYALTIES Server running on port ${PORT}`);
+    logger.info(`📊 Dashboard: http://localhost:${PORT}`);
+    logger.info(`🔌 API Status: http://localhost:${PORT}/api/status`);
+    logger.info(`🤖 AI Features: Enabled | Mode: ${aiConfig.demoMode ? 'DEMO' : 'LIVE'}`);
+    logger.info('📚 RAG System: Active');
+    logger.info('🤝 Autonomous Agents: Running');
+    logger.info('📡 WebSocket: Connected');
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
     logger.info('SIGTERM signal received: closing HTTP server');
-    wsClients.forEach((client) => {
-        client.ws.send(JSON.stringify({ type: 'server-shutdown', message: 'Server is shutting down' }));
-        client.ws.close();
+    server.close(() => {
+        logger.info('HTTP server closed');
     });
-    server.close(() => { logger.info('HTTP server closed'); process.exit(0); });
-});
-
-process.on('uncaughtException', (err) => {
-    logger.error('Uncaught Exception:', err);
-});
-
-process.on('unhandledRejection', (reason) => {
-    logger.error('Unhandled Rejection:', reason);
 });
 
 module.exports = { app, server };

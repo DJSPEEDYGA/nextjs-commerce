@@ -42,6 +42,11 @@ const {
     MarketAnalysis
 } = require('./lib/models/data-models');
 
+// New Feature Modules
+const cryptoMining = require('./lib/mining/crypto-mining');
+const videoEditor = require('./lib/video/video-editor');
+const dspDistribution = require('./lib/dsp/dsp-distribution');
+
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
@@ -343,6 +348,82 @@ app.post('/api/ai/generate-contract', async (req, res) => {
     }
 });
 
+// ==================== FRONTEND COMPATIBILITY ENDPOINTS ====================
+
+// AI Analyze (alias for revenue-analysis)
+app.post('/api/ai/analyze', async (req, res) => {
+    try {
+        const { type } = req.body;
+        const analysis = await nvidiaClient.analyzeRoyaltyData({
+            totalRevenue: revenueData.totalRevenue ?? 0,
+            growthRate: revenueData.growthRate ?? 0,
+            platforms: revenueData.platforms ?? {}
+        });
+        res.json({ analysis, type });
+    } catch (error) {
+        logger.error(`AI analyze failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// AI Contract (alias for generate-contract)
+app.post('/api/ai/contract', async (req, res) => {
+    try {
+        const { contractType, parties, terms } = req.body;
+        const contract = await nvidiaClient.generateContractTerms(
+            contractType || 'management',
+            parties || ['Artist', 'Manager'],
+            terms || {}
+        );
+        res.json({ contract });
+    } catch (error) {
+        logger.error(`AI contract failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// AI Market (alias for market-predictions)
+app.post('/api/ai/market', async (req, res) => {
+    try {
+        const { genre, platform, timeframe } = req.body;
+        const predictions = await nvidiaClient.predictMarketTrends(
+            genre || 'Hip-Hop',
+            platform || 'Spotify',
+            timeframe || '6 months'
+        );
+        res.json({ predictions });
+    } catch (error) {
+        logger.error(`AI market failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Catalog export (CSV)
+app.get('/api/catalog/export', (req, res) => {
+    try {
+        const csv = goatData.exportCatalogCSV();
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="goat_catalog.csv"');
+        res.send(csv);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Network opportunities
+app.get('/api/network/opportunities', (req, res) => {
+    try {
+        const opportunities = goatData.getSyncOpportunities ? goatData.getSyncOpportunities() : [
+            { id: 1, title: 'Film Sync Opportunity', type: 'film', status: 'open', value: '$5,000 - $15,000' },
+            { id: 2, title: 'TV Placement', type: 'tv', status: 'pending', value: '$2,000 - $8,000' },
+            { id: 3, title: 'Brand Partnership', type: 'brand', status: 'open', value: '$10,000 - $25,000' }
+        ];
+        res.json({ opportunities, total: opportunities.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // ==================== RAG ENDPOINTS ====================
 
 // RAG query endpoint
@@ -487,6 +568,259 @@ app.get('/api/nft/portfolio', (req, res) => {
     });
 });
 
+// ==================== CRYPTO MINING ENDPOINTS ====================
+
+// Get mining stats
+app.get('/api/mining/stats', (req, res) => {
+    res.json(cryptoMining.getStats());
+});
+
+// Get hardware recommendations
+app.get('/api/mining/hardware', (req, res) => {
+    res.json(cryptoMining.getHardwareRecommendations());
+});
+
+// Create miner
+app.post('/api/mining/create', (req, res) => {
+    try {
+        const { coin, type, threads, walletAddress, poolIndex } = req.body;
+        const minerId = cryptoMining.createMiner({
+            coin,
+            type: type || 'cpu',
+            threads: threads || 4,
+            walletAddress,
+            poolIndex
+        });
+        res.json({ success: true, minerId });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Start mining
+app.post('/api/mining/start', (req, res) => {
+    try {
+        const { minerId } = req.body;
+        const result = cryptoMining.startMining(minerId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Stop mining
+app.post('/api/mining/stop', (req, res) => {
+    try {
+        const { minerId } = req.body;
+        const result = cryptoMining.stopMining(minerId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Calculate earnings
+app.get('/api/mining/earnings/:minerId', (req, res) => {
+    try {
+        const earnings = cryptoMining.calculateEarnings(req.params.minerId);
+        res.json(earnings);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get wallet configuration status
+app.get('/api/mining/wallets', (req, res) => {
+    try {
+        const walletStatus = cryptoMining.getWalletStatus();
+        res.json({ wallets: walletStatus, config: cryptoMining.walletConfig.wallets });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update wallet address
+app.post('/api/mining/wallets/:coin', (req, res) => {
+    try {
+        const { address } = req.body;
+        const coin = req.params.coin;
+        
+        if (!address) {
+            return res.status(400).json({ error: 'Wallet address is required' });
+        }
+        
+        const success = cryptoMining.setWalletAddress(coin, address);
+        if (success) {
+            res.json({ success: true, coin, message: `${coin} wallet address updated` });
+        } else {
+            res.status(400).json({ error: `Unsupported coin: ${coin}` });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==================== VIDEO EDITOR ENDPOINTS ====================
+
+// Get effects library
+app.get('/api/video/effects', (req, res) => {
+    res.json(videoEditor.getEffects());
+});
+
+// Get transitions
+app.get('/api/video/transitions', (req, res) => {
+    res.json(videoEditor.getTransitions());
+});
+
+// Get templates
+app.get('/api/video/templates', (req, res) => {
+    res.json(videoEditor.getTemplates());
+});
+
+// Create video project
+app.post('/api/video/project', (req, res) => {
+    try {
+        const project = videoEditor.createProject(req.body);
+        res.json(project);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get project
+app.get('/api/video/project/:projectId', (req, res) => {
+    const project = videoEditor.getProject(req.params.projectId);
+    if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+    }
+    res.json(project);
+});
+
+// Add media to project
+app.post('/api/video/project/:projectId/media', (req, res) => {
+    try {
+        const media = videoEditor.addMedia(req.params.projectId, req.body);
+        res.json(media);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Apply effect
+app.post('/api/video/effect', (req, res) => {
+    try {
+        const { projectId, clipId, effectId, params } = req.body;
+        const effect = videoEditor.applyEffect(projectId, clipId, effectId, params);
+        res.json(effect);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Render project
+app.post('/api/video/render', (req, res) => {
+    try {
+        const { projectId, settings } = req.body;
+        const job = videoEditor.renderProject(projectId, settings);
+        res.json(job);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get music video presets
+app.get('/api/video/presets/music-video', (req, res) => {
+    res.json(videoEditor.getMusicVideoPresets());
+});
+
+// ==================== DSP DISTRIBUTION ENDPOINTS ====================
+
+// Get all platforms
+app.get('/api/dsp/platforms', (req, res) => {
+    res.json(dspDistribution.getPlatformStats());
+});
+
+// Get all releases
+app.get('/api/dsp/releases', (req, res) => {
+    res.json(dspDistribution.getReleases());
+});
+
+// Get single release
+app.get('/api/dsp/releases/:releaseId', (req, res) => {
+    const release = dspDistribution.getRelease(req.params.releaseId);
+    if (!release) {
+        return res.status(404).json({ error: 'Release not found' });
+    }
+    res.json(release);
+});
+
+// Create new release
+app.post('/api/dsp/releases', (req, res) => {
+    try {
+        const release = dspDistribution.createRelease(req.body);
+        res.json(release);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Submit to platforms
+app.post('/api/dsp/submit/:releaseId', (req, res) => {
+    try {
+        const { platforms } = req.body;
+        const result = dspDistribution.submitToPlatforms(req.params.releaseId, platforms);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Check delivery status
+app.get('/api/dsp/status/:releaseId', (req, res) => {
+    try {
+        const status = dspDistribution.checkDeliveryStatus(req.params.releaseId);
+        res.json(status);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get distribution recommendations
+app.post('/api/dsp/recommendations', (req, res) => {
+    const recommendations = dspDistribution.getDistributionRecommendations(req.body);
+    res.json(recommendations);
+});
+
+// Configure Google Sheets
+app.post('/api/dsp/google-sheets/config', (req, res) => {
+    try {
+        const result = dspDistribution.configureGoogleSheets(req.body);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Sync from Google Sheets
+app.post('/api/dsp/google-sheets/sync', async (req, res) => {
+    try {
+        const result = await dspDistribution.syncFromGoogleSheets();
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Export to Google Sheets
+app.post('/api/dsp/google-sheets/export', async (req, res) => {
+    try {
+        const result = await dspDistribution.exportToGoogleSheets();
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 // ==================== COLLABORATION ENDPOINTS ====================
 
 app.get('/api/collaboration/status', (req, res) => {
@@ -503,6 +837,342 @@ app.get('/api/collaboration/status', (req, res) => {
         storageUsed: '450GB',
         storageTotal: '1TB'
     });
+});
+
+// ==================== LOCAL LLM ENDPOINTS ====================
+// 100% Offline, No API, No Login, No Internet Required
+
+const { getLocalLLM } = require('./lib/ai/local-llm');
+
+// Get local LLM instance
+let localLLM = null;
+
+function getLLM() {
+    if (!localLLM) {
+        localLLM = getLocalLLM({
+            dataPath: process.env.GOAT_DATA_PATH || null
+        });
+    }
+    return localLLM;
+}
+
+// Get LLM status and configuration
+app.get('/api/llm/status', (req, res) => {
+    try {
+        const llm = getLLM();
+        res.json({
+            mode: aiConfig.aiMode || 'local',
+            ...llm.getSystemInfo(),
+            dataPathInfo: llm.getDataPath()
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Set data path (for external drive)
+app.post('/api/llm/data-path', (req, res) => {
+    try {
+        const llm = getLLM();
+        const { path: newPath } = req.body;
+        llm.setDataPath(newPath);
+        res.json({
+            success: true,
+            dataPath: llm.getDataPath()
+        });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// List available models
+app.get('/api/llm/models', (req, res) => {
+    try {
+        const llm = getLLM();
+        res.json({
+            installed: llm.listModels(),
+            available: aiConfig.local?.availableModels || {}
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get download instructions for a model
+app.get('/api/llm/models/:modelName/download', (req, res) => {
+    try {
+        const llm = getLLM();
+        const info = llm.getDownloadInstructions(req.params.modelName);
+        if (info) {
+            res.json(info);
+        } else {
+            res.status(404).json({ error: 'Model not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Load a model
+app.post('/api/llm/load/:modelId', async (req, res) => {
+    try {
+        const llm = getLLM();
+        const result = await llm.loadModel(req.params.modelId);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Unload current model
+app.post('/api/llm/unload', async (req, res) => {
+    try {
+        const llm = getLLM();
+        await llm.unloadModel();
+        res.json({ success: true });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Generate text completion
+app.post('/api/llm/generate', async (req, res) => {
+    try {
+        const llm = getLLM();
+        const { prompt, options } = req.body;
+        const result = await llm.generate(prompt, options);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Chat completion
+app.post('/api/llm/chat', async (req, res) => {
+    try {
+        const llm = getLLM();
+        const { messages, options } = req.body;
+        const result = await llm.chat(messages, options);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// Get/Set LLM configuration
+app.get('/api/llm/config', (req, res) => {
+    try {
+        const llm = getLLM();
+        res.json(llm.getConfig());
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/llm/config', (req, res) => {
+    try {
+        const llm = getLLM();
+        llm.setConfig(req.body);
+        res.json(llm.getConfig());
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// ==================== GOAT DATA ENDPOINTS ====================
+
+const goatData = require('./lib/goat-data');
+
+// Music Catalog Endpoints
+app.get('/api/catalog', (req, res) => {
+    try {
+        const catalog = goatData.getMusicCatalog();
+        res.json(catalog);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/songs', (req, res) => {
+    try {
+        const songs = goatData.getAllSongs();
+        res.json({ total: songs.length, songs });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/search', (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q) {
+            return res.status(400).json({ error: 'Query parameter q required' });
+        }
+        const results = goatData.searchSongs(q);
+        res.json({ query: q, total: results.length, results });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/stats', (req, res) => {
+    try {
+        const stats = goatData.getCatalogStats();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/collaborators', (req, res) => {
+    try {
+        const collaborators = goatData.getCollaborators();
+        res.json({ total: collaborators.length, collaborators });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/catalog/export/csv', (req, res) => {
+    try {
+        const csv = goatData.exportCatalogCSV();
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="waka_catalog.csv"');
+        res.send(csv);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+const NetworkProfiles = require('./lib/network/network-profiles');
+
+// Get all profiles
+app.get('/api/network/profiles', (req, res) => {
+    try {
+        const { type, search } = req.query;
+        let profiles;
+        if (search) {
+            profiles = NetworkProfiles.searchProfiles(search);
+        } else if (type) {
+            profiles = NetworkProfiles.getProfilesByType(type);
+        } else {
+            profiles = NetworkProfiles.getAllProfiles();
+        }
+        res.json({ profiles, total: profiles.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Network Profiles Endpoints
+app.get('/api/network', (req, res) => {
+    try {
+        const data = goatData.getNetworkProfiles();
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/network/profiles', (req, res) => {
+    try {
+        const data = goatData.getNetworkProfiles();
+        res.json({ total: data.profiles.length, profiles: data.profiles });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/network/connections', (req, res) => {
+    try {
+        const data = goatData.getNetworkProfiles();
+        res.json({ total: data.connections.length, connections: data.connections });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/network/stats', (req, res) => {
+    try {
+        const stats = goatData.getNetworkStats();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Sync Opportunities Endpoints
+app.get('/api/sync/opportunities', (req, res) => {
+    try {
+        const syncData = goatData.loadDataFile('sync_opportunities.json');
+        res.json(syncData || { opportunities: [], placements: [] });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Royalty Calculator Endpoints
+app.post('/api/royalty/calculate/streaming', (req, res) => {
+    try {
+        const { platform, streams, sharePercent } = req.body;
+        const rates = {
+            spotify: 0.004,
+            appleMusic: 0.008,
+            youtube: 0.002,
+            tidal: 0.012,
+            amazon: 0.006,
+            pandora: 0.0015,
+            deezer: 0.005,
+            soundcloud: 0.003
+        };
+        const rate = rates[platform] || 0.004;
+        const gross = streams * rate;
+        const share = gross * ((sharePercent || 100) / 100);
+        res.json({
+            platform,
+            streams,
+            ratePerStream: rate,
+            grossRoyalty: gross.toFixed(2),
+            sharePercent: sharePercent || 100,
+            netRoyalty: share.toFixed(2)
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/royalty/calculate/sync', (req, res) => {
+    try {
+        const { type, songs } = req.body;
+        const syncRates = {
+            tv_show: 15000,
+            film: 25000,
+            commercial: 50000,
+            videogame: 20000,
+            trailer: 35000
+        };
+        const rate = syncRates[type] || 15000;
+        const total = rate * (songs || 1);
+        res.json({
+            type,
+            ratePerSong: rate,
+            songs: songs || 1,
+            totalSync: total
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Configuration Endpoint
+app.get('/api/config', (req, res) => {
+    try {
+        const config = goatData.loadDataFile('goat-config.json');
+        res.json(config);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // ==================== MARKET ANALYSIS ENDPOINTS ====================

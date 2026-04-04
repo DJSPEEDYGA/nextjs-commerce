@@ -1,153 +1,137 @@
-# 📦 SUPER GOAT ROYALTIES APP - Build & Installation Guide
+# SUPER GOAT ROYALTIES - Build Guide
 
-## Overview
-This guide covers building and installing the SUPER GOAT ROYALTIES APP on all platforms.
+## Version 5.1.0
+
+The ultimate AI-powered creator platform with NVIDIA NIM, LangChain, RAG & Autonomous Agents.
 
 ---
 
-## 📥 Download & Install
+## Quick Start - Copy & Paste Build Script
+
+### Linux / macOS:
+```bash
+git clone https://github.com/DJSPEEDYGA/nextjs-commerce.git goat-royalties
+cd goat-royalties
+chmod +x BUILD_AND_RUN.sh && ./BUILD_AND_RUN.sh
+```
+
+### Windows (PowerShell):
+```powershell
+git clone https://github.com/DJSPEEDYGA/nextjs-commerce.git goat-royalties
+cd goat-royalties
+npm install --legacy-peer-deps
+npm run electron:build:win
+```
+
+---
+
+## Available Build Formats
+
+| Format | Platform | File | Size |
+|--------|----------|------|------|
+| **Portable EXE** | Windows | `SUPER-GOAT-ROYALTIES-Portable-5.1.0.exe` | ~88 MB |
+| **Windows ZIP** | Windows | `SUPER-GOAT-ROYALTIES-Windows-5.1.0.zip` | ~153 MB |
+| **AppImage** | Linux | `SUPER-GOAT-ROYALTIES-5.1.0-x86_64.AppImage` | ~147 MB |
+| **DMG** | macOS | `SUPER-GOAT-ROYALTIES-5.1.0.dmg` | Build on macOS |
+| **NSIS Installer** | Windows | `SUPER-GOAT-ROYALTIES-Setup-5.1.0.exe` | Build on Windows/macOS |
+
+---
+
+## Build Commands
+
+```bash
+# Install dependencies
+npm install --legacy-peer-deps
+
+# Development mode
+npm run dev
+
+# Run Electron app in development
+npm run electron:dev
+
+# Build for Windows (Portable + NSIS)
+npm run electron:build:win
+
+# Build for macOS (DMG)
+npm run electron:build:mac
+
+# Build for Linux (AppImage + DEB)
+npm run electron:build:linux
+
+# Build for all platforms
+npm run electron:build:all
+```
+
+---
+
+## Platform-Specific Notes
 
 ### Windows
-1. Download `SUPER-GOAT-ROYALTIES-Setup-5.1.0.exe`
-2. Run the installer
-3. Follow the setup wizard
-4. Launch from desktop shortcut or Start menu
-
-**Portable Version:**
-1. Download `SUPER-GOAT-ROYALTIES-Portable-5.1.0.exe`
-2. Place anywhere on your computer
-3. Double-click to run (no installation needed)
+- **Portable EXE**: Works on any Windows machine, no installation required
+- **NSIS Installer**: Requires Windows or macOS with proper signing tools
 
 ### macOS
-1. Download the appropriate DMG:
-   - `SUPER-GOAT-ROYALTIES-5.1.0-x64.dmg` for Intel Macs
-   - `SUPER-GOAT-ROYALTIES-5.1.0-arm64.dmg` for Apple Silicon (M1/M2/M3)
-2. Open the DMG file
-3. Drag the app to Applications folder
-4. Launch from Applications
-
-**Note:** First launch may show a security warning. Right-click → Open → Confirm.
+- DMG builds require a macOS machine
+- Code signing requires Apple Developer certificate
 
 ### Linux
+- AppImage is portable and works on most Linux distributions
+- DEB package for Debian/Ubuntu-based systems
 
-**AppImage (Recommended):**
+---
+
+## Features
+
+- **Royalty Tracking**: Track and manage music royalties
+- **Blockchain Integration**: Secure royalty payments on blockchain
+- **Crypto Mining**: Built-in crypto mining capabilities
+- **DSP Distribution**: Distribute to all major streaming platforms
+- **Video Editing**: AI-powered video editing tools
+- **AI Integration**: NVIDIA NIM, LangChain, RAG, Autonomous Agents
+- **No Login Required**: Standalone app, all tools ready to use
+
+---
+
+## Requirements
+
+- **Node.js**: v18.0.0 or higher
+- **npm**: v9.0.0 or higher
+- **RAM**: 4GB minimum, 8GB recommended
+- **Storage**: 500MB for app, additional for projects
+
+---
+
+## Troubleshooting
+
+### "Cannot find module" errors
 ```bash
-# Download
-wget https://github.com/DJSPEEDYGA/nextjs-commerce/releases/download/v5.1.0/SUPER-GOAT-ROYALTIES-5.1.0-x64.AppImage
-
-# Make executable
-chmod +x SUPER-GOAT-ROYALTIES-5.1.0-x64.AppImage
-
-# Run
-./SUPER-GOAT-ROYALTIES-5.1.0-x64.AppImage
+rm -rf node_modules package-lock.json
+npm install --legacy-peer-deps
 ```
 
-**DEB (Debian/Ubuntu):**
+### Build fails on Linux for Windows
 ```bash
-# Download
-wget https://github.com/DJSPEEDYGA/nextjs-commerce/releases/download/v5.1.0/SUPER-GOAT-ROYALTIES-5.1.0-x64.deb
-
-# Install
-sudo dpkg -i SUPER-GOAT-ROYALTIES-5.1.0-x64.deb
-
-# Run
-super-goat-royalties
+# Install wine for Windows builds on Linux
+sudo apt-get install wine wine64
 ```
 
-**TAR.GZ (Portable):**
+### Electron won't start
 ```bash
-# Download and extract
-wget https://github.com/DJSPEEDYGA/nextjs-commerce/releases/download/v5.1.0/SUPER-GOAT-ROYALTIES-5.1.0-x64.tar.gz
-tar -xzvf SUPER-GOAT-ROYALTIES-5.1.0-x64.tar.gz
-
-# Run
-cd SUPER-GOAT-ROYALTIES-5.1.0
-./SUPER\ GOAT\ ROYALTIES
+# Clear Electron cache
+rm -rf ~/.cache/electron
+rm -rf ~/.cache/electron-builder
 ```
 
 ---
 
-## 🔨 Build from Source
+## Author
 
-### Prerequisites
-- Node.js 18+ (22 recommended)
-- npm 9+
-
-### Build Steps
-```bash
-# Clone the repository
-git clone https://github.com/DJSPEEDYGA/nextjs-commerce.git
-cd nextjs-commerce
-
-# Install dependencies
-npm install
-
-# Build for current platform
-npm run electron:build
-
-# Build for specific platforms
-npm run electron:build:win    # Windows
-npm run electron:build:mac    # macOS
-npm run electron:build:linux  # Linux
-npm run electron:build:all    # All platforms
-```
-
-### Output Files
-Build artifacts are placed in the `dist/` directory:
-
-| Platform | Files |
-|----------|-------|
-| Windows | `SUPER-GOAT-ROYALTIES-Setup-*.exe`, `SUPER-GOAT-ROYALTIES-Portable-*.exe` |
-| macOS | `SUPER-GOAT-ROYALTIES-*-x64.dmg`, `SUPER-GOAT-ROYALTIES-*-arm64.dmg` |
-| Linux | `SUPER-GOAT-ROYALTIES-*.AppImage`, `*.deb`, `*.tar.gz` |
+**DJSPEEDYGA**
+- Email: djspeedyga@lifeimitatesart.org
+- GitHub: https://github.com/DJSPEEDYGA
 
 ---
 
-## 🚀 Features
+## License
 
-- **242 API Endpoints** - Full REST API for all operations
-- **6 AI Engines** - NVIDIA NIM, OpenRouter, Gemini, DeepSeek, ACE SteerLM, OpenShell
-- **Voice Commands** - Speech recognition and text-to-speech
-- **Self-Healing System** - 52 monitored capabilities with automatic recovery
-- **Real-time Dashboard** - Live royalty tracking and analytics
-- **Multi-platform Support** - Windows, macOS, Linux
-
----
-
-## 🔧 Configuration
-
-### Environment Variables
-Create a `.env` file in the application directory:
-
-```env
-# Server Configuration
-PORT=3000
-NODE_ENV=production
-
-# AI Services (Optional - for enhanced features)
-NVIDIA_NIM_API_KEY=your_key
-OPENROUTER_API_KEY=your_key
-GEMINI_API_KEY=your_key
-
-# Database (Optional)
-DATABASE_URL=your_database_url
-```
-
-### Data Directory
-The application stores data in:
-- **Windows:** `%APPDATA%/SUPER GOAT Royalties/`
-- **macOS:** `~/Library/Application Support/SUPER GOAT Royalties/`
-- **Linux:** `~/.config/SUPER GOAT Royalties/`
-
----
-
-## 📞 Support
-
-- **GitHub Issues:** https://github.com/DJSPEEDYGA/nextjs-commerce/issues
-- **Documentation:** https://github.com/DJSPEEDYGA/nextjs-commerce/wiki
-
----
-
-## 📄 License
-
-MIT License - Copyright © 2024-2025 DJSPEEDYGA
+MIT License - Copyright © 2024 DJSPEEDYGA

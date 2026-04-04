@@ -984,6 +984,11 @@ app.get('/api/network/profiles', (req, res) => {
             profiles = NetworkProfiles.getAllProfiles();
         }
         res.json({ profiles, total: profiles.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Network Profiles Endpoints
 app.get('/api/network', (req, res) => {
     try {

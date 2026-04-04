@@ -348,6 +348,82 @@ app.post('/api/ai/generate-contract', async (req, res) => {
     }
 });
 
+// ==================== FRONTEND COMPATIBILITY ENDPOINTS ====================
+
+// AI Analyze (alias for revenue-analysis)
+app.post('/api/ai/analyze', async (req, res) => {
+    try {
+        const { type } = req.body;
+        const analysis = await nvidiaClient.analyzeRoyaltyData({
+            totalRevenue: revenueData.totalRevenue ?? 0,
+            growthRate: revenueData.growthRate ?? 0,
+            platforms: revenueData.platforms ?? {}
+        });
+        res.json({ analysis, type });
+    } catch (error) {
+        logger.error(`AI analyze failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// AI Contract (alias for generate-contract)
+app.post('/api/ai/contract', async (req, res) => {
+    try {
+        const { contractType, parties, terms } = req.body;
+        const contract = await nvidiaClient.generateContractTerms(
+            contractType || 'management',
+            parties || ['Artist', 'Manager'],
+            terms || {}
+        );
+        res.json({ contract });
+    } catch (error) {
+        logger.error(`AI contract failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// AI Market (alias for market-predictions)
+app.post('/api/ai/market', async (req, res) => {
+    try {
+        const { genre, platform, timeframe } = req.body;
+        const predictions = await nvidiaClient.predictMarketTrends(
+            genre || 'Hip-Hop',
+            platform || 'Spotify',
+            timeframe || '6 months'
+        );
+        res.json({ predictions });
+    } catch (error) {
+        logger.error(`AI market failed: ${error.message}`);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Catalog export (CSV)
+app.get('/api/catalog/export', (req, res) => {
+    try {
+        const csv = goatData.exportCatalogCSV();
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="goat_catalog.csv"');
+        res.send(csv);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Network opportunities
+app.get('/api/network/opportunities', (req, res) => {
+    try {
+        const opportunities = goatData.getSyncOpportunities ? goatData.getSyncOpportunities() : [
+            { id: 1, title: 'Film Sync Opportunity', type: 'film', status: 'open', value: '$5,000 - $15,000' },
+            { id: 2, title: 'TV Placement', type: 'tv', status: 'pending', value: '$2,000 - $8,000' },
+            { id: 3, title: 'Brand Partnership', type: 'brand', status: 'open', value: '$10,000 - $25,000' }
+        ];
+        res.json({ opportunities, total: opportunities.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // ==================== RAG ENDPOINTS ====================
 
 // RAG query endpoint

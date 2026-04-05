@@ -74,8 +74,8 @@ a:hover { color: var(--accent-light); }
   top: 0; left: 0; right: 0; bottom: 0;
   background: url('../goat-background.png') center center / cover no-repeat;
   z-index: -3;
-  opacity: 0.12;
-  filter: saturate(0.6) brightness(0.8);
+  opacity: 0.35;
+  filter: saturate(1.1) brightness(1.0);
 }
 
 .goat-bg-overlay {

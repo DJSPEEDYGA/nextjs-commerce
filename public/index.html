@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOAT Royalties - Ultimate AI Platform</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(90deg, #0f0f1a 0%, #1a1a2e 100%);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #ffd700;
+    }
+    .logo h1 { color: #ffd700; font-size: 2.2em; letter-spacing: 3px; }
+    .logo p { color: #888; font-size: 0.9em; }
+    .header-stats { display: flex; gap: 30px; }
+    .header-stat-value { color: #ffd700; font-size: 1.8em; font-weight: bold; }
+    .header-stat-label { color: #666; font-size: 0.8em; text-transform: uppercase; }
+    .container { display: flex; padding: 20px; gap: 20px; max-width: 1800px; margin: 0 auto; }
+    .sidebar { width: 280px; display: flex; flex-direction: column; gap: 20px; }
+    .panel { background: rgba(15, 15, 26, 0.9); border-radius: 12px; padding: 20px; border: 1px solid rgba(255, 215, 0, 0.2); }
+    .panel-title { color: #ffd700; font-size: 1.1em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 215, 0, 0.3); }
+    .boss-card { background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%); color: #000; padding: 15px; border-radius: 10px; margin-bottom: 10px; }
+    .boss-card h3 { color: #000; }
+    .agent-card { background: rgba(30, 30, 50, 0.8); padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #ffd700; display: flex; justify-content: space-between; }
+    .agent-name { font-weight: bold; color: #fff; }
+    .agent-role { font-size: 0.8em; color: #888; }
+    .status-online { color: #00ff00; font-size: 0.75em; }
+    .status-ready { color: #00bfff; font-size: 0.75em; }
+    .main { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+    .stat-card { background: linear-gradient(135deg, rgba(30, 30, 50, 0.9) 0%, rgba(20, 20, 35, 0.9) 100%); border-radius: 12px; padding: 20px; text-align: center; border: 1px solid rgba(255, 215, 0, 0.2); }
+    .stat-value { color: #ffd700; font-size: 2em; font-weight: bold; }
+    .stat-label { color: #888; font-size: 0.85em; margin-top: 5px; }
+    .hardware-panel { background: linear-gradient(135deg, rgba(20, 60, 80, 0.5) 0%, rgba(15, 15, 30, 0.9) 100%); border-radius: 12px; padding: 25px; border: 1px solid rgba(0, 191, 255, 0.3); }
+    .hardware-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 15px; }
+    .hw-value { color: #00bfff; font-size: 2.5em; font-weight: bold; }
+    .hw-label { color: #666; font-size: 0.9em; }
+    .chat-panel { background: rgba(15, 15, 26, 0.9); border-radius: 12px; padding: 20px; border: 1px solid rgba(255, 215, 0, 0.2); flex: 1; }
+    .chat-messages { height: 200px; overflow-y: auto; margin-bottom: 15px; padding: 10px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; }
+    .chat-message { padding: 10px; margin-bottom: 10px; border-radius: 8px; }
+    .chat-message.user { background: rgba(255, 215, 0, 0.2); text-align: right; }
+    .chat-message.nemo { background: rgba(0, 191, 255, 0.2); }
+    .chat-input { flex: 1; padding: 15px; border: none; border-radius: 8px; background: rgba(30, 30, 50, 0.8); color: #fff; font-size: 1em; }
+    .chat-btn { padding: 15px 30px; background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .chat-btn:hover { transform: scale(1.05); }
+    .revenue-section { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    .revenue-chart { background: rgba(15, 15, 26, 0.9); border-radius: 12px; padding: 20px; border: 1px solid rgba(255, 215, 0, 0.2); }
+    .revenue-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .revenue-amount { color: #00ff00; font-weight: bold; }
+    .wallet-card { background: linear-gradient(135deg, rgba(40, 40, 60, 0.9) 0%, rgba(25, 25, 40, 0.9) 100%); padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; }
+    .wallet-symbol { font-weight: bold; color: #ffd700; }
+    .wallet-balance { color: #00ff00; font-size: 1.2em; }
+    .chat-input-container { display: flex; gap: 10px; }
+    @media (max-width: 1200px) { .stats-grid, .hardware-grid { grid-template-columns: repeat(2, 1fr); } .revenue-section { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .container { flex-direction: column; } .sidebar { width: 100%; } }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <h1>🐐 GOAT ROYALTIES</h1>
+      <p>"Stay Paid and Play Harder"</p>
+    </div>
+    <div class="header-stats">
+      <div class="header-stat">
+        <div class="header-stat-value">2,200</div>
+        <div class="header-stat-label">TOPS AI Power</div>
+      </div>
+      <div class="header-stat">
+        <div class="header-stat-value">7</div>
+        <div class="header-stat-label">AI Agents</div>
+      </div>
+      <div class="header-stat">
+        <div class="header-stat-value">8</div>
+        <div class="header-stat-label">Jetson Units</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside class="sidebar">
+      <div class="panel">
+        <h2 class="panel-title">👑 THE BOSSES</h2>
+        <div id="bosses-list"></div>
+      </div>
+      <div class="panel">
+        <h2 class="panel-title">🤖 AI CREW</h2>
+        <div id="agents-list"></div>
+      </div>
+      <div class="panel">
+        <h2 class="panel-title">💰 CRYPTO WALLETS</h2>
+        <div id="wallets-list"></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="totalRevenue">$0</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">275</div>
+          <div class="stat-label">Tracks</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">+15%</div>
+          <div class="stat-label">Growth</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">ONLINE</div>
+          <div class="stat-label">System Status</div>
+        </div>
+      </div>
+
+      <div class="hardware-panel">
+        <h2 class="panel-title">🖥️ HARDWARE CLUSTER - NVIDIA Jetson Orin NX</h2>
+        <div class="hardware-grid">
+          <div><div class="hw-value">8</div><div class="hw-label">Total Units</div></div>
+          <div><div class="hw-value">4</div><div class="hw-label">Active Now</div></div>
+          <div><div class="hw-value">2,200</div><div class="hw-label">TOPS</div></div>
+          <div><div class="hw-value">512GB</div><div class="hw-label">Total RAM</div></div>
+        </div>
+      </div>
+
+      <div class="revenue-section">
+        <div class="revenue-chart">
+          <h2 class="panel-title">📈 REVENUE BY SOURCE</h2>
+          <div id="revenue-list"></div>
+        </div>
+        
+        <div class="chat-panel">
+          <h2 class="panel-title">💬 NEMO CHAT</h2>
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-message nemo"><strong>NEMO:</strong> Welcome Boss! Ask me about royalties, agents, hardware, or crypto!</div>
+          </div>
+          <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Talk to NEMO..." onkeypress="if(event.key==='Enter')sendMessage()">
+            <button class="chat-btn" onclick="sendMessage()">SEND</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    async function loadDashboard() {
+      try {
+        const data = await fetch('/api/dashboard').then(r => r.json());
+        document.getElementById('bosses-list').innerHTML = data.bosses.map(b => `<div class="boss-card"><h3>${b.aka}</h3><p>${b.role}</p></div>`).join('');
+        document.getElementById('agents-list').innerHTML = data.agents.map(a => `<div class="agent-card"><div><div class="agent-name">${a.name}</div><div class="agent-role">${a.role}</div></div><span class="status-${a.status.toLowerCase()}">${a.status}</span></div>`).join('');
+        document.getElementById('wallets-list').innerHTML = data.wallets.map(w => `<div class="wallet-card"><div><span class="wallet-symbol">${w.symbol}</span> ${w.name}</div><span class="wallet-balance">${w.balance.toLocaleString()}</span></div>`).join('');
+        document.getElementById('revenue-list').innerHTML = data.royalties.sources.map(r => `<div class="revenue-item"><span>${r.name}</span><span class="revenue-amount">$${r.amount.toLocaleString()}</span></div>`).join('');
+        document.getElementById('totalRevenue').textContent = '$' + data.royalties.totalRevenue.toLocaleString();
+      } catch (e) { console.error(e); }
+    }
+    
+    async function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      const chat = document.getElementById('chat-messages');
+      chat.innerHTML += `<div class="chat-message user"><strong>You:</strong> ${msg}</div>`;
+      input.value = '';
+      try {
+        const res = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({message:msg}) });
+        const data = await res.json();
+        chat.innerHTML += `<div class="chat-message nemo"><strong>${data.from}:</strong> ${data.message}</div>`;
+      } catch (e) { chat.innerHTML += `<div class="chat-message nemo"><strong>NEMO:</strong> Connection error</div>`; }
+      chat.scrollTop = chat.scrollHeight;
+    }
+    
+    loadDashboard();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOAT ULTIMATE STUDIO - 124-Channel SSL Console</title>
+  <link rel="stylesheet" href="css/goat-theme.css">
+  <link rel="stylesheet" href="css/marvel-theme.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    :root {
+      --ssl-dark: #0a0a0f;
+      --ssl-panel: #1a1a2e;
+      --ssl-surface: #12121e;
+      --ssl-gold: #d4a03c;
+      --ssl-green: #4ade80;
+      --ssl-red: #dc2626;
+      --ssl-blue: #60a5fa;
+      --ssl-orange: #f59e0b;
+      --ssl-purple: #a855f7;
+      --ssl-meter-green: #22c55e;
+      --ssl-meter-yellow: #eab308;
+      --ssl-meter-red: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: var(--ssl-dark);
+      color: #fff;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* Top Navigation Bar */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 20px;
+      background: linear-gradient(180deg, #1f1f35 0%, #151525 100%);
+      border-bottom: 2px solid var(--ssl-gold);
+      height: 60px;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-section img { height: 40px; border-radius: 8px; }
+    .logo-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--ssl-gold), #f5d78e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .logo-subtitle {
+      font-size: 0.7rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .project-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .project-name {
+      background: var(--ssl-surface);
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #333;
+      color: var(--ssl-green);
+      font-weight: 600;
+    }
+
+    .save-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    .save-indicator.saved { color: var(--ssl-green); }
+
+    .main-menu {
+      display: flex;
+      gap: 5px;
+    }
+
+    .menu-btn {
+      background: transparent;
+      border: 1px solid #333;
+      color: #aaa;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .menu-btn:hover {
+      background: var(--ssl-panel);
+      color: #fff;
+      border-color: var(--ssl-gold);
+    }
+
+    /* Transport Bar */
+    .transport-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: linear-gradient(180deg, #181828 0%, #0f0f1a 100%);
+      border-bottom: 1px solid #2a2a3e;
+    }
+
+    .transport-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .transport-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 8px;
+      background: #2a2a3e;
+      color: #aaa;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .transport-btn:hover { background: #3a3a4e; color: #fff; transform: scale(1.05); }
+    .transport-btn.playing { background: #16a34a; color: #fff; box-shadow: 0 0 20px rgba(22, 163, 74, 0.5); }
+    .transport-btn.recording { background: #dc2626; color: #fff; animation: pulse-record 1s infinite; }
+    .transport-btn.active { background: var(--ssl-gold); color: #000; }
+
+    @keyframes pulse-record {
+      0%, 100% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.5); }
+      50% { box-shadow: 0 0 30px rgba(220, 38, 38, 0.9); }
+    }
+
+    .time-display-section {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .main-time-display {
+      background: #0a0a14;
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: 1px solid #1a3a1a;
+      text-align: center;
+    }
+
+    .time-value {
+      font-family: 'Courier New', monospace;
+      font-size: 32px;
+      color: var(--ssl-green);
+      letter-spacing: 3px;
+    }
+
+    .time-label {
+      font-size: 0.7rem;
+      color: #555;
+      text-transform: uppercase;
+    }
+
+    .tempo-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tempo-display {
+      background: #0a0a14;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid #3a3a1a;
+      text-align: center;
+    }
+
+    .tempo-value {
+      font-size: 24px;
+      color: var(--ssl-orange);
+      font-weight: 700;
+    }
+
+    .tempo-input {
+      width: 60px;
+      background: transparent;
+      border: none;
+      color: var(--ssl-orange);
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .key-signature {
+      background: #0a0a14;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid #1a1a3a;
+    }
+
+    .key-value {
+      font-size: 18px;
+      color: var(--ssl-blue);
+      font-weight: 600;
+    }
+
+    .loop-metronome {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      padding: 8px 16px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn.active {
+      background: var(--ssl-purple);
+      color: #fff;
+      border-color: var(--ssl-purple);
+    }
+
+    /* Main Layout */
+    .main-container {
+      display: flex;
+      height: calc(100vh - 116px);
+    }
+
+    /* Left Sidebar - Plugin Rack */
+    .plugin-rack {
+      width: 280px;
+      background: linear-gradient(180deg, #12121e 0%, #0a0a14 100%);
+      border-right: 1px solid #2a2a3e;
+      overflow-y: auto;
+    }
+
+    .rack-section {
+      border-bottom: 1px solid #2a2a3e;
+    }
+
+    .rack-header {
+      padding: 12px 16px;
+      background: linear-gradient(90deg, var(--ssl-panel), transparent);
+      color: var(--ssl-gold);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .rack-header:hover { background: linear-gradient(90deg, #252540, transparent); }
+
+    .rack-content {
+      padding: 10px;
+      display: none;
+    }
+
+    .rack-content.expanded { display: block; }
+
+    .plugin-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #1a1a2e;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .plugin-item:hover {
+      border-color: var(--ssl-gold);
+      transform: translateX(4px);
+    }
+
+    .plugin-item.active {
+      border-color: var(--ssl-green);
+      background: rgba(74, 222, 128, 0.1);
+    }
+
+    .plugin-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.7rem;
+    }
+
+    .plugin-icon.waves { background: linear-gradient(135deg, #1e3a5f, #0a1628); color: #fff; }
+    .plugin-icon.izotope { background: linear-gradient(135deg, #5b2d8c, #2d1b4e); color: #fff; }
+    .plugin-icon.slate { background: linear-gradient(135deg, #8b4513, #4a2510); color: #fff; }
+    .plugin-icon.uad { background: linear-gradient(135deg, #2d5a3d, #1a3525); color: #fff; }
+    .plugin-icon.ssl { background: linear-gradient(135deg, #d4a03c, #8b6914); color: #000; }
+    .plugin-icon.antares { background: linear-gradient(135deg, #dc2626, #7f1d1d); color: #fff; }
+    .plugin-icon.native { background: linear-gradient(135deg, #1a1a2e, #0a0a14); color: #fff; border: 1px solid #333; }
+
+    .plugin-info { flex: 1; }
+    .plugin-name { font-size: 0.85rem; font-weight: 600; color: #fff; }
+    .plugin-category { font-size: 0.7rem; color: #666; }
+
+    .plugin-power {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #333;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .plugin-power.on { background: var(--ssl-green); border-color: var(--ssl-green); }
+
+    /* Center - Console Area */
+    .console-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Channel Strip Overview */
+    .console-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--ssl-panel);
+      border-bottom: 1px solid #2a2a3e;
+    }
+
+    .console-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .console-title h2 {
+      font-size: 1rem;
+      color: var(--ssl-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .channel-count {
+      background: var(--ssl-green);
+      color: #000;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .console-tools {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tool-btn {
+      padding: 6px 12px;
+      background: #2a2a3e;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #aaa;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tool-btn:hover { background: #3a3a4e; color: #fff; }
+    .tool-btn.active { background: var(--ssl-gold); color: #000; border-color: var(--ssl-gold); }
+
+    /* Channel Strips Grid */
+    .channels-container {
+      flex: 1;
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      background: var(--ssl-dark);
+      padding: 10px;
+      gap: 2px;
+    }
+
+    .channel-strip {
+      min-width: 60px;
+      max-width: 60px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+      border: 1px solid #2a2a3e;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s;
+    }
+
+    .channel-strip:hover { border-color: var(--ssl-gold); }
+    .channel-strip.selected { border-color: var(--ssl-green); box-shadow: 0 0 10px rgba(74, 222, 128, 0.3); }
+
+    .channel-header {
+      padding: 6px 4px;
+      text-align: center;
+      background: #2a2a3e;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .channel-number {
+      font-size: 0.65rem;
+      color: #666;
+    }
+
+    .channel-name {
+      font-size: 0.6rem;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .channel-meter {
+      height: 120px;
+      background: #0a0a14;
+      margin: 4px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      padding: 4px;
+    }
+
+    .meter-bar {
+      width: 8px;
+      background: linear-gradient(to top, var(--ssl-meter-green), var(--ssl-meter-yellow) 70%, var(--ssl-meter-red) 90%);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0a0a14;
+      transition: height 0.1s;
+    }
+
+    .channel-fader {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4px;
+    }
+
+    .fader-track {
+      flex: 1;
+      width: 30px;
+      background: #0a0a14;
+      border-radius: 4px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .fader-handle {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 20px;
+      background: linear-gradient(180deg, #555, #333);
+      border-radius: 4px;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fader-handle::after {
+      content: '';
+      width: 60%;
+      height: 2px;
+      background: var(--ssl-gold);
+    }
+
+    .fader-value {
+      font-size: 0.6rem;
+      color: var(--ssl-gold);
+      margin-top: 4px;
+    }
+
+    .channel-pan {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    .pan-knob {
+      width: 28px;
+      height: 28px;
+      background: radial-gradient(circle at 30% 30%, #555, #222);
+      border-radius: 50%;
+      border: 2px solid #333;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .pan-knob::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 8px;
+      background: var(--ssl-gold);
+    }
+
+    .channel-controls {
+      display: flex;
+      justify-content: center;
+      gap: 3px;
+      padding: 4px;
+    }
+
+    .ch-btn {
+      width: 16px;
+      height: 16px;
+      border: none;
+      border-radius: 3px;
+      font-size: 0.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: #2a2a3e;
+      color: #666;
+    }
+
+    .ch-btn.mute.active { background: var(--ssl-red); color: #fff; }
+    .ch-btn.solo.active { background: var(--ssl-orange); color: #000; }
+    .ch-btn.record { background: var(--ssl-red); color: #fff; }
+
+    .channel-select-btn {
+      width: 100%;
+      padding: 4px;
+      background: #2a2a3e;
+      border: none;
+      border-radius: 0 0 5px 5px;
+      color: #888;
+      font-size: 0.6rem;
+      cursor: pointer;
+    }
+
+    .channel-select-btn:hover { background: #3a3a4e; color: #fff; }
+
+    /* Master Channel */
+    .master-channel {
+      min-width: 100px;
+      max-width: 100px;
+      background: linear-gradient(180deg, #2a2a0a 0%, #1a1a00 100%);
+      border: 2px solid var(--ssl-gold);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .master-header {
+      padding: 8px 4px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--ssl-gold), #8b6914);
+      border-radius: 4px 4px 0 0;
+    }
+
+    .master-header h3 {
+      font-size: 0.7rem;
+      color: #000;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .master-meter {
+      height: 180px;
+      background: #0a0a14;
+      margin: 4px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px;
+    }
+
+    .master-meter .meter-bar {
+      width: 16px;
+    }
+
+    .master-fader .fader-track {
+      width: 50px;
+    }
+
+    .master-fader .fader-handle {
+      background: linear-gradient(180deg, var(--ssl-gold), #8b6914);
+    }
+
+    /* Right Sidebar - AI & Hardware */
+    .right-sidebar {
+      width: 320px;
+      background: linear-gradient(180deg, #12121e 0%, #0a0a14 100%);
+      border-left: 1px solid #2a2a3e;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NEMO AI Panel */
+    .ai-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #2a2a3e;
+    }
+
+    .ai-header {
+      padding: 12px 16px;
+      background: linear-gradient(90deg, rgba(168, 85, 247, 0.2), transparent);
+      border-bottom: 1px solid #2a2a3e;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--ssl-purple), #5b2d8c);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .ai-title h3 {
+      font-size: 0.9rem;
+      color: var(--ssl-purple);
+    }
+
+    .ai-title span {
+      font-size: 0.7rem;
+      color: #666;
+    }
+
+    .ai-chat {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ai-message {
+      padding: 10px 14px;
+      border-radius: 12px;
+      max-width: 90%;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .ai-message.assistant {
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #e0e0e0;
+      align-self: flex-start;
+    }
+
+    .ai-message.user {
+      background: rgba(212, 160, 60, 0.15);
+      border: 1px solid rgba(212, 160, 60, 0.3);
+      color: #e0e0e0;
+      align-self: flex-end;
+    }
+
+    .ai-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px;
+      border-top: 1px solid #2a2a3e;
+    }
+
+    .suggestion-chip {
+      padding: 6px 12px;
+      background: #2a2a3e;
+      border: 1px solid #3a3a4e;
+      border-radius: 16px;
+      font-size: 0.7rem;
+      color: #aaa;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .suggestion-chip:hover {
+      background: var(--ssl-purple);
+      color: #fff;
+      border-color: var(--ssl-purple);
+    }
+
+    .ai-input-area {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid #2a2a3e;
+    }
+
+    .ai-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: #1a1a2e;
+      border: 1px solid #3a3a4e;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 0.85rem;
+    }
+
+    .ai-input:focus { outline: none; border-color: var(--ssl-purple); }
+
+    .ai-send {
+      width: 40px;
+      height: 40px;
+      background: var(--ssl-purple);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Hardware Panel */
+    .hardware-panel {
+      height: 280px;
+      border-top: 1px solid #2a2a3e;
+    }
+
+    .hardware-header {
+      padding: 12px 16px;
+      background: linear-gradient(90deg, rgba(96, 165, 250, 0.2), transparent);
+      border-bottom: 1px solid #2a2a3e;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hardware-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hardware-title h3 {
+      font-size: 0.9rem;
+      color: var(--ssl-blue);
+    }
+
+    .hardware-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      color: var(--ssl-green);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--ssl-green);
+      border-radius: 50%;
+    }
+
+    .hardware-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .hardware-item {
+      padding: 10px;
+      background: #1a1a2e;
+      border: 1px solid #2a2a3e;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .hardware-item:hover { border-color: var(--ssl-blue); }
+    .hardware-item.connected { border-color: var(--ssl-green); background: rgba(74, 222, 128, 0.05); }
+
+    .hardware-icon {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    .hardware-name {
+      font-size: 0.7rem;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .hardware-status-text {
+      font-size: 0.6rem;
+      color: #666;
+    }
+
+    .hardware-item.connected .hardware-status-text { color: var(--ssl-green); }
+
+    /* Bottom Panel - Timeline */
+    .timeline-panel {
+      height: 200px;
+      background: var(--ssl-surface);
+      border-top: 1px solid #2a2a3e;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: var(--ssl-panel);
+      border-bottom: 1px solid #2a2a3e;
+    }
+
+    .timeline-tools {
+      display: flex;
+      gap: 6px;
+    }
+
+    .timeline-tool {
+      padding: 5px 10px;
+      background: #2a2a3e;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #888;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    .timeline-tool:hover { background: #3a3a4e; color: #fff; }
+    .timeline-tool.active { background: var(--ssl-gold); color: #000; }
+
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .zoom-slider {
+      width: 100px;
+      -webkit-appearance: none;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+    }
+
+    .zoom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      background: var(--ssl-gold);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .timeline-grid {
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: hidden;
+      position: relative;
+    }
+
+    .timeline-ruler {
+      height: 24px;
+      background: #1a1a2e;
+      border-bottom: 1px solid #2a2a3e;
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .timeline-marker {
+      position: absolute;
+      width: 1px;
+      height: 100%;
+      background: #333;
+    }
+
+    .timeline-beat {
+      min-width: 60px;
+      padding: 0 10px;
+      font-size: 0.65rem;
+      color: #666;
+      border-right: 1px solid #2a2a3e;
+    }
+
+    .playhead {
+      position: absolute;
+      top: 0;
+      width: 2px;
+      height: 100%;
+      background: var(--ssl-green);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .playhead::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -6px;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 8px solid var(--ssl-green);
+    }
+
+    .timeline-tracks {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .timeline-track {
+      height: 40px;
+      display: flex;
+      border-bottom: 1px solid #1a1a2e;
+    }
+
+    .track-timeline-info {
+      width: 150px;
+      padding: 8px;
+      background: #1a1a2e;
+      border-right: 1px solid #2a2a3e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .track-color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .track-timeline-name {
+      font-size: 0.75rem;
+      color: #fff;
+    }
+
+    .track-clips {
+      flex: 1;
+      position: relative;
+      background: #0f0f1a;
+    }
+
+    .audio-clip {
+      position: absolute;
+      top: 4px;
+      height: 32px;
+      background: linear-gradient(180deg, rgba(96, 165, 250, 0.4), rgba(96, 165, 250, 0.2));
+      border: 1px solid var(--ssl-blue);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .audio-clip:hover { background: linear-gradient(180deg, rgba(96, 165, 250, 0.6), rgba(96, 165, 250, 0.3)); }
+
+    .midi-clip {
+      position: absolute;
+      top: 4px;
+      height: 32px;
+      background: linear-gradient(180deg, rgba(168, 85, 247, 0.4), rgba(168, 85, 247, 0.2));
+      border: 1px solid var(--ssl-purple);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 1400px) {
+      .plugin-rack { width: 240px; }
+      .right-sidebar { width: 280px; }
+    }
+
+    @media (max-width: 1100px) {
+      .plugin-rack { display: none; }
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0a14; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #444; }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in { animation: fadeIn 0.3s ease-out; }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="logo-section">
+      <img src="goat-logo.png" alt="GOAT Logo">
+      <div>
+        <div class="logo-title">GOAT Ultimate Studio</div>
+        <div class="logo-subtitle">124-Channel SSL Console</div>
+      </div>
+    </div>
+    <div class="project-info">
+      <div class="project-name">🎵 Untitled Project</div>
+      <div class="save-indicator saved">● Saved</div>
+    </div>
+    <div class="main-menu">
+      <button class="menu-btn">File</button>
+      <button class="menu-btn">Edit</button>
+      <button class="menu-btn">View</button>
+      <button class="menu-btn">Track</button>
+      <button class="menu-btn">Mix</button>
+      <button class="menu-btn">Plugins</button>
+      <button class="menu-btn">Hardware</button>
+      <button class="menu-btn">Help</button>
+    </div>
+  </nav>
+
+  <!-- Transport Bar -->
+  <div class="transport-bar">
+    <div class="transport-controls">
+      <button class="transport-btn" id="rewindBtn" title="Rewind">⏮</button>
+      <button class="transport-btn" id="stopBtn" title="Stop">⏹</button>
+      <button class="transport-btn" id="playBtn" title="Play">▶</button>
+      <button class="transport-btn" id="recordBtn" title="Record">⏺</button>
+      <button class="transport-btn" id="loopBtn" title="Loop">🔁</button>
+    </div>
+
+    <div class="time-display-section">
+      <div class="main-time-display">
+        <div class="time-value" id="timeDisplay">00:00:00:00</div>
+        <div class="time-label">Time</div>
+      </div>
+      <div class="tempo-controls">
+        <div class="tempo-display">
+          <input type="number" class="tempo-input" id="tempoInput" value="120" min="20" max="300">
+          <div style="font-size: 0.65rem; color: #666;">BPM</div>
+        </div>
+        <div class="key-signature">
+          <div class="key-value">C Major</div>
+          <div style="font-size: 0.65rem; color: #666;">Key</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="loop-metronome">
+      <button class="toggle-btn" id="loopToggle">Loop</button>
+      <button class="toggle-btn" id="metronomeToggle">Metro</button>
+      <button class="toggle-btn" id="clickToggle">Click</button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Left Sidebar - Plugin Rack -->
+    <aside class="plugin-rack">
+      <!-- SSL Native -->
+      <div class="rack-section">
+        <div class="rack-header" onclick="toggleRack(this)">
+          <span>SSL Native</span>
+          <span>▼</span>
+        </div>
+        <div class="rack-content expanded">
+          <div class="plugin-item">
+            <div class="plugin-icon ssl">SSL</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Channel Strip 2</div>
+              <div class="plugin-category">Channel Strip</div>
+            </div>
+            <div class="plugin-power on"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon ssl">SSL</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Bus Compressor</div>
+              <div class="plugin-category">Dynamics</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon ssl">SSL</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Fusion</div>
+              <div class="plugin-category">Stereo</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon ssl">SSL</div>
+            <div class="plugin-info">
+              <div class="plugin-name">X-EQ 2</div>
+              <div class="plugin-category">Equalizer</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Waves -->
+      <div class="rack-section">
+        <div class="rack-header" onclick="toggleRack(this)">
+          <span>Waves Complete</span>
+          <span>▼</span>
+        </div>
+        <div class="rack-content">
+          <div class="plugin-item">
+            <div class="plugin-icon waves">W</div>
+            <div class="plugin-info">
+              <div class="plugin-name">SSL E-Channel</div>
+              <div class="plugin-category">Channel Strip</div>
+            </div>
+            <div class="plugin-power on"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon waves">W</div>
+            <div class="plugin-info">
+              <div class="plugin-name">SSL G-Master Buss</div>
+              <div class="plugin-category">Bus Compressor</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon waves">W</div>
+            <div class="plugin-info">
+              <div class="plugin-name">API 2500</div>
+              <div class="plugin-category">Compressor</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon waves">W</div>
+            <div class="plugin-info">
+              <div class="plugin-name">CLA-2A</div>
+              <div class="plugin-category">Optical Comp</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon waves">W</div>
+            <div class="plugin-info">
+              <div class="plugin-name">CLA-76</div>
+              <div class="plugin-category">FET Comp</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon waves">W</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Scheps 73</div>
+              <div class="plugin-category">Preamp/EQ</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- iZotope -->
+      <div class="rack-section">
+        <div class="rack-header" onclick="toggleRack(this)">
+          <span>iZotope</span>
+          <span>▼</span>
+        </div>
+        <div class="rack-content">
+          <div class="plugin-item">
+            <div class="plugin-icon izotope">iZ</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Ozone 11</div>
+              <div class="plugin-category">Mastering Suite</div>
+            </div>
+            <div class="plugin-power on"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon izotope">iZ</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Neutron 4</div>
+              <div class="plugin-category">Mixing Suite</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon izotope">iZ</div>
+            <div class="plugin-info">
+              <div class="plugin-name">RX 11</div>
+              <div class="plugin-category">Audio Repair</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon izotope">iZ</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Nectar 4</div>
+              <div class="plugin-category">Vocal Production</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slate Digital -->
+      <div class="rack-section">
+        <div class="rack-header" onclick="toggleRack(this)">
+          <span>Slate Digital</span>
+          <span>▼</span>
+        </div>
+        <div class="rack-content">
+          <div class="plugin-item">
+            <div class="plugin-icon slate">SD</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Virtual Mix Rack</div>
+              <div class="plugin-category">Module Rack</div>
+            </div>
+            <div class="plugin-power on"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon slate">SD</div>
+            <div class="plugin-info">
+              <div class="plugin-name">FG-Stress</div>
+              <div class="plugin-category">Compressor</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon slate">SD</div>
+            <div class="plugin-info">
+              <div class="plugin-name">FG-2A</div>
+              <div class="plugin-category">Optical Comp</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon slate">SD</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Fresh Air</div>
+              <div class="plugin-category">Dynamic EQ</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Universal Audio -->
+      <div class="rack-section">
+        <div class="rack-header" onclick="toggleRack(this)">
+          <span>Universal Audio</span>
+          <span>▼</span>
+        </div>
+        <div class="rack-content">
+          <div class="plugin-item">
+            <div class="plugin-icon uad">UA</div>
+            <div class="plugin-info">
+              <div class="plugin-name">LA-2A</div>
+              <div class="plugin-category">Optical Comp</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon uad">UA</div>
+            <div class="plugin-info">
+              <div class="plugin-name">1176</div>
+              <div class="plugin-category">FET Compressor</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon uad">UA</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Neve 1073</div>
+              <div class="plugin-category">Preamp/EQ</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon uad">UA</div>
+            <div class="plugin-info">
+              <div class="plugin-name">API 2500</div>
+              <div class="plugin-category">Bus Compressor</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon uad">UA</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Studer A800</div>
+              <div class="plugin-category">Tape Machine</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Antares -->
+      <div class="rack-section">
+        <div class="rack-header" onclick="toggleRack(this)">
+          <span>Antares</span>
+          <span>▼</span>
+        </div>
+        <div class="rack-content">
+          <div class="plugin-item">
+            <div class="plugin-icon antares">AT</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Auto-Tune Pro X</div>
+              <div class="plugin-category">Pitch Correction</div>
+            </div>
+            <div class="plugin-power on"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon antares">AT</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Auto-Tune EFX+</div>
+              <div class="plugin-category">Vocal Effects</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon antares">AT</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Harmony Engine</div>
+              <div class="plugin-category">Vocal Harmony</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Native Instruments -->
+      <div class="rack-section">
+        <div class="rack-header" onclick="toggleRack(this)">
+          <span>Native Instruments</span>
+          <span>▼</span>
+        </div>
+        <div class="rack-content">
+          <div class="plugin-item">
+            <div class="plugin-icon native">NI</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Kontakt 7</div>
+              <div class="plugin-category">Sampler</div>
+            </div>
+            <div class="plugin-power on"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon native">NI</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Massive X</div>
+              <div class="plugin-category">Synthesizer</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon native">NI</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Reaktor 6</div>
+              <div class="plugin-category">Modular</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon native">NI</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Battery 4</div>
+              <div class="plugin-category">Drum Sampler</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Virtual Instruments -->
+      <div class="rack-section">
+        <div class="rack-header" onclick="toggleRack(this)">
+          <span>Virtual Instruments</span>
+          <span>▼</span>
+        </div>
+        <div class="rack-content">
+          <div class="plugin-item">
+            <div class="plugin-icon" style="background: linear-gradient(135deg, #c41e3a, #5c0a16); color: #fff;">EW</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Hollywood Orchestra</div>
+              <div class="plugin-category">EastWest</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon" style="background: linear-gradient(135deg, #e056fd, #8e44ad); color: #fff;">AR</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Pigments 5</div>
+              <div class="plugin-category">Arturia</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff;">RO</div>
+            <div class="plugin-info">
+              <div class="plugin-name">TR-808</div>
+              <div class="plugin-category">Roland Cloud</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+          <div class="plugin-item">
+            <div class="plugin-icon" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff;">RO</div>
+            <div class="plugin-info">
+              <div class="plugin-name">Jupiter-8</div>
+              <div class="plugin-category">Roland Cloud</div>
+            </div>
+            <div class="plugin-power"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center - Console Area -->
+    <main class="console-area">
+      <div class="console-header">
+        <div class="console-title">
+          <h2>SSL 4000 E/G Series Console</h2>
+          <span class="channel-count">124 Channels</span>
+        </div>
+        <div class="console-tools">
+          <button class="tool-btn active">Mixer</button>
+          <button class="tool-btn">Editor</button>
+          <button class="tool-btn">Meter Bridge</button>
+          <button class="tool-btn">Routing</button>
+        </div>
+      </div>
+
+      <!-- Channel Strips -->
+      <div class="channels-container" id="channelsContainer">
+        <!-- Channels will be generated by JavaScript -->
+      </div>
+    </main>
+
+    <!-- Right Sidebar - AI & Hardware -->
+    <aside class="right-sidebar">
+      <!-- NEMO AI Panel -->
+      <div class="ai-panel">
+        <div class="ai-header">
+          <div class="ai-avatar">N</div>
+          <div class="ai-title">
+            <h3>NEMO AI Assistant</h3>
+            <span>Intelligent Mixing Engine</span>
+          </div>
+        </div>
+        <div class="ai-chat" id="aiChat">
+          <div class="ai-message assistant">
+            👋 Welcome to GOAT Ultimate Studio! I'm NEMO, your AI mixing assistant. I can help you with:
+            <br><br>
+            • Track analysis and suggestions<br>
+            • EQ and compression recommendations<br>
+            • Gain staging optimization<br>
+            • Mix balancing<br>
+            • Mastering preparation
+            <br><br>
+            What would you like to work on today?
+          </div>
+        </div>
+        <div class="ai-suggestions">
+          <span class="suggestion-chip" onclick="sendSuggestion('Analyze my mix')">Analyze Mix</span>
+          <span class="suggestion-chip" onclick="sendSuggestion('Suggest EQ settings')">Suggest EQ</span>
+          <span class="suggestion-chip" onclick="sendSuggestion('Auto balance levels')">Balance Levels</span>
+          <span class="suggestion-chip" onclick="sendSuggestion('Mastering chain')">Mastering</span>
+        </div>
+        <div class="ai-input-area">
+          <input type="text" class="ai-input" id="aiInput" placeholder="Ask NEMO anything...">
+          <button class="ai-send" onclick="sendAiMessage()">➤</button>
+        </div>
+      </div>
+
+      <!-- Hardware Panel -->
+      <div class="hardware-panel">
+        <div class="hardware-header">
+          <div class="hardware-title">
+            <h3>Hardware Controllers</h3>
+          </div>
+          <div class="hardware-status">
+            <div class="status-dot"></div>
+            <span>4 Connected</span>
+          </div>
+        </div>
+        <div class="hardware-grid">
+          <div class="hardware-item connected">
+            <div class="hardware-icon">🎚️</div>
+            <div class="hardware-name">SSL UF8</div>
+            <div class="hardware-status-text">Connected</div>
+          </div>
+          <div class="hardware-item connected">
+            <div class="hardware-icon">🎛️</div>
+            <div class="hardware-name">SSL UC1</div>
+            <div class="hardware-status-text">Connected</div>
+          </div>
+          <div class="hardware-item connected">
+            <div class="hardware-icon">🥁</div>
+            <div class="hardware-name">Akai MPC X</div>
+            <div class="hardware-status-text">Connected</div>
+          </div>
+          <div class="hardware-item connected">
+            <div class="hardware-icon">🎹</div>
+            <div class="hardware-name">Push 3</div>
+            <div class="hardware-status-text">Connected</div>
+          </div>
+          <div class="hardware-item">
+            <div class="hardware-icon">⌨️</div>
+            <div class="hardware-name">Komplete S88</div>
+            <div class="hardware-status-text">Disconnected</div>
+          </div>
+          <div class="hardware-item">
+            <div class="hardware-icon">🤖</div>
+            <div class="hardware-name">Maschine+</div>
+            <div class="hardware-status-text">Disconnected</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Timeline Panel -->
+  <div class="timeline-panel">
+    <div class="timeline-header">
+      <div class="timeline-tools">
+        <button class="timeline-tool active">Select</button>
+        <button class="timeline-tool">Draw</button>
+        <button class="timeline-tool">Split</button>
+        <button class="timeline-tool">Slip</button>
+        <button class="timeline-tool">Zoom</button>
+      </div>
+      <div class="zoom-controls">
+        <span style="color: #666; font-size: 0.7rem;">Zoom:</span>
+        <input type="range" class="zoom-slider" min="1" max="10" value="5">
+        <span style="color: #888; font-size: 0.7rem;">100%</span>
+      </div>
+    </div>
+    <div class="timeline-grid" id="timelineGrid">
+      <div class="timeline-ruler" id="timelineRuler">
+        <!-- Beat markers generated by JS -->
+      </div>
+      <div class="timeline-tracks" id="timelineTracks">
+        <!-- Tracks generated by JS -->
+      </div>
+      <div class="playhead" id="playhead" style="left: 120px;"></div>
+    </div>
+  </div>
+
+  <script>
+    // GOAT ULTIMATE STUDIO - Main JavaScript
+    
+    // Channel Strip Generation
+    const channelNames = [
+      'Kick', 'Snare', 'Hi-Hat', 'Tom 1', 'Tom 2', 'Overhead L', 'Overhead R', 'Room',
+      'Bass DI', 'Bass Amp', 'Guitar 1', 'Guitar 2', 'Guitar 3', 'Keys L', 'Keys R',
+      'Piano', 'Strings', 'Brass', 'Synth 1', 'Synth 2', 'Pad', 'Lead Vocal', 'BG Vox 1',
+      'BG Vox 2', 'BG Vox 3', 'Vocal FX', 'SFX 1', 'SFX 2', 'Ambience', 'Click'
+    ];
+    
+    const channelColors = [
+      '#dc2626', '#dc2626', '#dc2626', '#dc2626', '#dc2626', '#dc2626', '#dc2626', '#dc2626',
+      '#f59e0b', '#f59e0b', '#22c55e', '#22c55e', '#22c55e', '#a855f7', '#a855f7',
+      '#3b82f6', '#ec4899', '#f97316', '#06b6d4', '#06b6d4', '#6366f1', '#d4a03c',
+      '#84cc16', '#84cc16', '#84cc16', '#14b8a6', '#f43f5e', '#f43f5e', '#8b5cf6', '#6b7280'
+    ];
+
+    let selectedChannel = null;
+    let isPlaying = false;
+    let isRecording = false;
+    let currentTime = 0;
+    let tempo = 120;
+
+    // Generate Channel Strips
+    function generateChannels() {
+      const container = document.getElementById('channelsContainer');
+      container.innerHTML = '';
+      
+      // Generate 124 channels
+      for (let i = 1; i <= 124; i++) {
+        const nameIndex = (i - 1) % channelNames.length;
+        const color = channelColors[nameIndex];
+        const name = i <= 30 ? channelNames[nameIndex] : `CH ${i}`;
+        
+        const channel = document.createElement('div');
+        channel.className = 'channel-strip';
+        channel.dataset.channel = i;
+        channel.onclick = () => selectChannel(channel);
+        
+        // Random meter level for visual effect
+        const meterLevel = Math.random() * 70 + 10;
+        const faderPos = Math.random() * 50 + 25;
+        
+        channel.innerHTML = `
+          <div class="channel-header">
+            <div class="channel-number">${i}</div>
+            <div class="channel-name">${name}</div>
+          </div>
+          <div class="channel-meter">
+            <div class="meter-bar"><div class="meter-fill" style="height: ${100 - meterLevel}%"></div></div>
+            <div class="meter-bar"><div class="meter-fill" style="height: ${100 - meterLevel + Math.random() * 10}%"></div></div>
+          </div>
+          <div class="channel-fader">
+            <div class="fader-track">
+              <div class="fader-handle" style="top: ${faderPos}%"></div>
+            </div>
+            <div class="fader-value">${(faderPos / 100 * -60 + 10).toFixed(1)}</div>
+          </div>
+          <div class="channel-pan">
+            <div class="pan-knob" title="Pan"></div>
+          </div>
+          <div class="channel-controls">
+            <button class="ch-btn mute" title="Mute">M</button>
+            <button class="ch-btn solo" title="Solo">S</button>
+            <button class="ch-btn record" title="Record">R</button>
+          </div>
+          <button class="channel-select-btn">SEL</button>
+        `;
+        
+        container.appendChild(channel);
+      }
+      
+      // Add Master Channel
+      const masterChannel = document.createElement('div');
+      masterChannel.className = 'channel-strip master-channel';
+      masterChannel.innerHTML = `
+        <div class="master-header">
+          <h3>Master</h3>
+        </div>
+        <div class="master-meter">
+          <div class="meter-bar"><div class="meter-fill" style="height: 15%"></div></div>
+          <div class="meter-bar"><div class="meter-fill" style="height: 18%"></div></div>
+        </div>
+        <div class="channel-fader master-fader">
+          <div class="fader-track">
+            <div class="fader-handle" style="top: 20%"></div>
+          </div>
+          <div class="fader-value">0.0 dB</div>
+        </div>
+        <div class="channel-pan">
+          <div class="pan-knob"></div>
+        </div>
+        <div class="channel-controls">
+          <button class="ch-btn mute">M</button>
+          <button class="ch-btn solo">S</button>
+        </div>
+        <button class="channel-select-btn">MASTER</button>
+      `;
+      container.appendChild(masterChannel);
+    }
+
+    // Generate Timeline
+    function generateTimeline() {
+      const ruler = document.getElementById('timelineRuler');
+      const tracks = document.getElementById('timelineTracks');
+      
+      // Generate beat markers
+      for (let i = 0; i < 100; i++) {
+        const beat = document.createElement('div');
+        beat.className = 'timeline-beat';
+        beat.textContent = `${Math.floor(i/4) + 1}.${(i % 4) + 1}`;
+        ruler.appendChild(beat);
+      }
+      
+      // Generate track lanes
+      for (let i = 0; i < 8; i++) {
+        const track = document.createElement('div');
+        track.className = 'timeline-track';
+        track.innerHTML = `
+          <div class="track-timeline-info">
+            <div class="track-color-dot" style="background: ${channelColors[i]}"></div>
+            <div class="track-timeline-name">${channelNames[i]}</div>
+          </div>
+          <div class="track-clips">
+            ${generateRandomClips(i)}
+          </div>
+        `;
+        tracks.appendChild(track);
+      }
+    }
+
+    function generateRandomClips(trackIndex) {
+      let clips = '';
+      const numClips = Math.floor(Math.random() * 4) + 1;
+      let position = Math.random() * 20 + 5;
+      
+      for (let i = 0; i < numClips; i++) {
+        const width = Math.random() * 200 + 50;
+        const isMidi = trackIndex > 4;
+        
+        clips += `<div class="${isMidi ? 'midi-clip' : 'audio-clip'}" 
+          style="left: ${position}px; width: ${width}px;"></div>`;
+        position += width + Math.random() * 100 + 30;
+      }
+      
+      return clips;
+    }
+
+    // Select Channel
+    function selectChannel(channel) {
+      document.querySelectorAll('.channel-strip').forEach(ch => ch.classList.remove('selected'));
+      channel.classList.add('selected');
+      selectedChannel = channel.dataset.channel;
+    }
+
+    // Transport Controls
+    document.getElementById('playBtn').onclick = function() {
+      isPlaying = !isPlaying;
+      this.classList.toggle('playing');
+      this.innerHTML = isPlaying ? '⏸' : '▶';
+      if (isPlaying) startPlayback();
+    };
+
+    document.getElementById('recordBtn').onclick = function() {
+      isRecording = !isRecording;
+      this.classList.toggle('recording');
+    };
+
+    document.getElementById('stopBtn').onclick = function() {
+      isPlaying = false;
+      isRecording = false;
+      currentTime = 0;
+      document.getElementById('playBtn').classList.remove('playing');
+      document.getElementById('playBtn').innerHTML = '▶';
+      document.getElementById('recordBtn').classList.remove('recording');
+      updateTimeDisplay();
+    };
+
+    // Playback
+    function startPlayback() {
+      if (!isPlaying) return;
+      
+      currentTime += 0.025;
+      updateTimeDisplay();
+      
+      // Update playhead
+      const playhead = document.getElementById('playhead');
+      playhead.style.left = (120 + currentTime * 50) + 'px';
+      
+      // Animate meters
+      animateMeters();
+      
+      setTimeout(startPlayback, 25);
+    }
+
+    function updateTimeDisplay() {
+      const hours = Math.floor(currentTime / 3600);
+      const minutes = Math.floor((currentTime % 3600) / 60);
+      const seconds = Math.floor(currentTime % 60);
+      const frames = Math.floor((currentTime % 1) * 30);
+      
+      document.getElementById('timeDisplay').textContent = 
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}:${String(frames).padStart(2, '0')}`;
+    }
+
+    function animateMeters() {
+      document.querySelectorAll('.channel-strip:not(.master-channel) .meter-fill').forEach(fill => {
+        const currentHeight = parseFloat(fill.style.height) || 50;
+        const newHeight = Math.max(5, Math.min(95, currentHeight + (Math.random() - 0.5) * 20));
+        fill.style.height = newHeight + '%';
+      });
+    }
+
+    // Toggle Plugin Rack
+    function toggleRack(header) {
+      const content = header.nextElementSibling;
+      content.classList.toggle('expanded');
+      header.querySelector('span:last-child').textContent = content.classList.contains('expanded') ? '▼' : '▶';
+    }
+
+    // Toggle Buttons
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.onclick = function() {
+        this.classList.toggle('active');
+      };
+    });
+
+    // Channel Controls
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('ch-btn')) {
+        e.target.classList.toggle('active');
+        e.stopPropagation();
+      }
+      
+      if (e.target.classList.contains('plugin-power')) {
+        e.target.classList.toggle('on');
+      }
+    });
+
+    // AI Chat Functions
+    function sendAiMessage() {
+      const input = document.getElementById('aiInput');
+      const message = input.value.trim();
+      if (!message) return;
+      
+      addChatMessage(message, 'user');
+      input.value = '';
+      
+      // Simulate AI response
+      setTimeout(() => {
+        const responses = [
+          "I've analyzed your mix. The kick drum has some frequency buildup around 200Hz. Try cutting 3-4dB with a narrow Q to clean it up.",
+          "Looking at your vocal chain, I'd suggest adding a de-esser before the compressor to tame those sibilants. The EQ looks good but try a gentle 2dB boost at 12kHz for more air.",
+          "Your bass and kick are fighting for the same frequency space. Try sidechaining the bass to the kick with a 3:1 ratio and 10ms attack.",
+          "The mix is sounding great! For mastering, I recommend a gentle multiband compression starting at 2:1 ratio on the low end. This will tighten up the low frequencies.",
+          "I've run an analysis on your track. The stereo image is well-balanced, but the high frequencies could use some excitement. Try adding a subtle harmonic exciter on the master bus."
+        ];
+        
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        addChatMessage(randomResponse, 'assistant');
+      }, 1000);
+    }
+
+    function sendSuggestion(suggestion) {
+      document.getElementById('aiInput').value = suggestion;
+      sendAiMessage();
+    }
+
+    function addChatMessage(text, type) {
+      const chat = document.getElementById('aiChat');
+      const message = document.createElement('div');
+      message.className = `ai-message ${type} fade-in`;
+      message.textContent = text;
+      chat.appendChild(message);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    // Enter key for AI input
+    document.getElementById('aiInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') sendAiMessage();
+    });
+
+    // Tempo Control
+    document.getElementById('tempoInput').addEventListener('change', function() {
+      tempo = parseInt(this.value) || 120;
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      generateChannels();
+      generateTimeline();
+    });
+
+    // Console Tools
+    document.querySelectorAll('.tool-btn').forEach(btn => {
+      btn.onclick = function() {
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      };
+    });
+
+    // Timeline Tools
+    document.querySelectorAll('.timeline-tool').forEach(btn => {
+      btn.onclick = function() {
+        document.querySelectorAll('.timeline-tool').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      };
+    });
+
+    // Hardware item click
+    document.querySelectorAll('.hardware-item').forEach(item => {
+      item.onclick = function() {
+        this.classList.toggle('connected');
+        const status = this.querySelector('.hardware-status-text');
+        status.textContent = this.classList.contains('connected') ? 'Connected' : 'Disconnected';
+      };
+    });
+
+    // Fader drag functionality
+    let activeFader = null;
+    let startY = 0;
+    let startTop = 0;
+
+    document.addEventListener('mousedown', function(e) {
+      if (e.target.classList.contains('fader-handle')) {
+        activeFader = e.target;
+        startY = e.clientY;
+        startTop = parseFloat(activeFader.style.top) || 50;
+        e.preventDefault();
+      }
+    });
+
+    document.addEventListener('mousemove', function(e) {
+      if (activeFader) {
+        const deltaY = e.clientY - startY;
+        const newTop = Math.max(0, Math.min(100, startTop + deltaY));
+        activeFader.style.top = newTop + '%';
+        
+        // Update dB display
+        const valueDisplay = activeFader.parentElement.nextElementSibling;
+        if (valueDisplay) {
+          const dB = (newTop / 100 * -60 + 10).toFixed(1);
+          valueDisplay.textContent = dB;
+        }
+      }
+    });
+
+    document.addEventListener('mouseup', function() {
+      activeFader = null;
+    });
+
+    console.log('🐐 GOAT ULTIMATE STUDIO - 124-Channel SSL Console Initialized');
+    console.log('🎚️ SSL 4000 E/G Series Emulation Active');
+    console.log('🤖 NEMO AI Assistant Ready');
+  </script>
+</body>
+</html>

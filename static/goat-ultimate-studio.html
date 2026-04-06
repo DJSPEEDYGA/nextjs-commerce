@@ -3,543 +3,588 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GOAT ULTIMATE STUDIO - 124-Channel SSL Console</title>
-  <link rel="stylesheet" href="css/goat-theme.css">
-  <link rel="stylesheet" href="css/marvel-theme.css">
+  <title>GOAT ULTIMATE STUDIO - SSL Origin Evo 32</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
-    :root {
-      --ssl-dark: #0a0a0f;
-      --ssl-panel: #1a1a2e;
-      --ssl-surface: #12121e;
-      --ssl-gold: #d4a03c;
-      --ssl-green: #4ade80;
-      --ssl-red: #dc2626;
-      --ssl-blue: #60a5fa;
-      --ssl-orange: #f59e0b;
-      --ssl-purple: #a855f7;
-      --ssl-meter-green: #22c55e;
-      --ssl-meter-yellow: #eab308;
-      --ssl-meter-red: #ef4444;
-    }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
-      background: var(--ssl-dark);
+      background: #0a0a0a;
       color: #fff;
       font-family: 'Segoe UI', system-ui, sans-serif;
       overflow: hidden;
       height: 100vh;
+      user-select: none;
     }
 
-    /* Top Navigation Bar */
-    .top-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 20px;
-      background: linear-gradient(180deg, #1f1f35 0%, #151525 100%);
-      border-bottom: 2px solid var(--ssl-gold);
-      height: 60px;
+    /* AUTHENTIC SSL ORIGIN EVO STYLING */
+    :root {
+      --ssl-chassis: #1a1a1a;
+      --ssl-panel: #2a2a2a;
+      --ssl-surface: #1f1f1f;
+      --ssl-knob: #3a3a3a;
+      --ssl-knob-top: #4a4a4a;
+      --ssl-led-green: #00ff00;
+      --ssl-led-yellow: #ffff00;
+      --ssl-led-red: #ff0000;
+      --ssl-led-blue: #00aaff;
+      --ssl-gold: #c4a000;
+      --ssl-silver: #c0c0c0;
+      --ssl-black: #0a0a0a;
+      --ssl-wood: #4a3728;
+      --ssl-wood-dark: #3a2718;
+      --ssl-metal: #2a2a2a;
+      --ssl-metal-light: #3a3a3a;
+      --ssl-text: #e0e0e0;
+      --ssl-text-dim: #808080;
     }
 
-    .logo-section {
+    /* Main Console Container - Real Hardware Look */
+    .console-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: linear-gradient(180deg, #0f0f0f 0%, #080808 100%);
+      position: relative;
+    }
+
+    /* Wood Side Panels */
+    .wood-panel-left, .wood-panel-right {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      background: linear-gradient(90deg, var(--ssl-wood-dark) 0%, var(--ssl-wood) 50%, var(--ssl-wood-dark) 100%);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+      z-index: 100;
+    }
+
+    .wood-panel-left { left: 0; }
+    .wood-panel-right { right: 0; }
+
+    .wood-panel-left::before, .wood-panel-right::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.1) 2px,
+        rgba(0,0,0,0.1) 4px
+      );
+    }
+
+    /* Metal Chassis */
+    .metal-chassis {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 80px;
+      right: 80px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 50%, #1a1a1a 100%);
+      box-shadow: 
+        inset 0 2px 4px rgba(255,255,255,0.05),
+        inset 0 -2px 4px rgba(0,0,0,0.3);
+      z-index: 50;
+    }
+
+    /* Screw Holes */
+    .screw-hole {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: radial-gradient(circle at 30% 30%, #4a4a4a, #1a1a1a);
+      border-radius: 50%;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+    }
+
+    .screw-hole::after {
+      content: '+';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 6px;
+      color: #2a2a2a;
+      font-weight: bold;
+    }
+
+    /* Top Meter Bridge - Authentic SSL Style */
+    .meter-bridge {
+      height: 100px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+      border-bottom: 4px solid #2a2a2a;
       display: flex;
       align-items: center;
+      padding: 0 100px;
       gap: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 60;
     }
 
-    .logo-section img { height: 40px; border-radius: 8px; }
-    .logo-title {
-      font-size: 1.4rem;
+    .meter-bridge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #3a3a3a, transparent);
+    }
+
+    .ssl-logo {
+      width: 180px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+      border-radius: 8px;
+      border: 1px solid #3a3a3a;
+    }
+
+    .ssl-logo-text {
+      font-size: 1.1rem;
       font-weight: 800;
-      background: linear-gradient(135deg, var(--ssl-gold), #f5d78e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #c0c0c0;
       text-transform: uppercase;
       letter-spacing: 2px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     }
 
-    .logo-subtitle {
-      font-size: 0.7rem;
-      color: #888;
+    .ssl-logo-sub {
+      font-size: 0.6rem;
+      color: #666;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    .project-info {
+    .meter-bridge-meters {
+      flex: 1;
       display: flex;
-      align-items: center;
-      gap: 20px;
+      justify-content: center;
+      gap: 4px;
+      height: 70px;
     }
 
-    .project-name {
-      background: var(--ssl-surface);
-      padding: 8px 16px;
+    .stereo-meter {
+      display: flex;
+      gap: 3px;
+      height: 100%;
+      background: #0a0a0a;
+      padding: 6px;
       border-radius: 6px;
-      border: 1px solid #333;
-      color: var(--ssl-green);
-      font-weight: 600;
+      border: 2px solid #2a2a2a;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
     }
 
-    .save-indicator {
+    .stereo-meter .meter-bar {
+      width: 18px;
+      height: 100%;
+      background: linear-gradient(to top, #00ff00 0%, #00ff00 60%, #ffff00 60%, #ffff00 80%, #ff0000 80%, #ff0000 100%);
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .stereo-meter .meter-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: #0a0a0a;
+      transition: height 0.05s;
+    }
+
+    .meter-bridge-info {
+      width: 280px;
       display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #666;
-      font-size: 0.85rem;
-    }
-
-    .save-indicator.saved { color: var(--ssl-green); }
-
-    .main-menu {
-      display: flex;
-      gap: 5px;
-    }
-
-    .menu-btn {
-      background: transparent;
-      border: 1px solid #333;
-      color: #aaa;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-
-    .menu-btn:hover {
-      background: var(--ssl-panel);
-      color: #fff;
-      border-color: var(--ssl-gold);
-    }
-
-    /* Transport Bar */
-    .transport-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 20px;
-      background: linear-gradient(180deg, #181828 0%, #0f0f1a 100%);
-      border-bottom: 1px solid #2a2a3e;
-    }
-
-    .transport-controls {
-      display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 8px;
+    }
+
+    .timecode-display {
+      font-family: 'Courier New', monospace;
+      font-size: 2.2rem;
+      color: var(--ssl-led-green);
+      background: #000;
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: 2px solid #2a2a2a;
+      text-align: center;
+      letter-spacing: 4px;
+      text-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    /* Transport Panel - Real Hardware */
+    .transport-panel {
+      height: 80px;
+      background: linear-gradient(180deg, #2a2a2a 0%, #1f1f1f 100%);
+      border-bottom: 3px solid #3a3a3a;
+      display: flex;
+      align-items: center;
+      padding: 0 100px;
+      gap: 25px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 60;
+    }
+
+    .transport-buttons {
+      display: flex;
+      gap: 10px;
     }
 
     .transport-btn {
-      width: 40px;
-      height: 40px;
+      width: 55px;
+      height: 55px;
       border: none;
-      border-radius: 8px;
-      background: #2a2a3e;
-      color: #aaa;
-      font-size: 16px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+      color: #888;
+      font-size: 22px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s;
+      transition: all 0.1s;
+      box-shadow: 
+        0 4px 8px rgba(0,0,0,0.4),
+        inset 0 1px 2px rgba(255,255,255,0.1);
+      border: 1px solid #4a4a4a;
     }
 
-    .transport-btn:hover { background: #3a3a4e; color: #fff; transform: scale(1.05); }
-    .transport-btn.playing { background: #16a34a; color: #fff; box-shadow: 0 0 20px rgba(22, 163, 74, 0.5); }
-    .transport-btn.recording { background: #dc2626; color: #fff; animation: pulse-record 1s infinite; }
-    .transport-btn.active { background: var(--ssl-gold); color: #000; }
-
-    @keyframes pulse-record {
-      0%, 100% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.5); }
-      50% { box-shadow: 0 0 30px rgba(220, 38, 38, 0.9); }
+    .transport-btn:hover {
+      background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
     }
 
-    .time-display-section {
+    .transport-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .transport-btn.playing {
+      background: linear-gradient(180deg, #00cc00 0%, #009900 100%);
+      color: #fff;
+      box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
+      border-color: #00ff00;
+    }
+
+    .transport-btn.recording {
+      background: linear-gradient(180deg, #cc0000 0%, #990000 100%);
+      color: #fff;
+      animation: pulse-rec 1s infinite;
+      border-color: #ff0000;
+    }
+
+    @keyframes pulse-rec {
+      0%, 100% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); }
+      50% { box-shadow: 0 0 35px rgba(255, 0, 0, 0.9); }
+    }
+
+    .transport-info {
       display: flex;
+      gap: 35px;
       align-items: center;
-      gap: 30px;
     }
 
-    .main-time-display {
-      background: #0a0a14;
-      padding: 10px 24px;
+    .tempo-display, .time-signature {
+      background: #0a0a0a;
+      padding: 10px 18px;
       border-radius: 8px;
-      border: 1px solid #1a3a1a;
+      border: 2px solid #2a2a2a;
       text-align: center;
-    }
-
-    .time-value {
-      font-family: 'Courier New', monospace;
-      font-size: 32px;
-      color: var(--ssl-green);
-      letter-spacing: 3px;
-    }
-
-    .time-label {
-      font-size: 0.7rem;
-      color: #555;
-      text-transform: uppercase;
-    }
-
-    .tempo-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .tempo-display {
-      background: #0a0a14;
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: 1px solid #3a3a1a;
-      text-align: center;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
     }
 
     .tempo-value {
-      font-size: 24px;
-      color: var(--ssl-orange);
+      font-size: 1.6rem;
+      color: #ffa500;
       font-weight: 700;
+      text-shadow: 0 0 10px rgba(255, 165, 0, 0.3);
     }
 
     .tempo-input {
-      width: 60px;
+      width: 75px;
       background: transparent;
       border: none;
-      color: var(--ssl-orange);
-      font-size: 24px;
+      color: #ffa500;
+      font-size: 1.6rem;
       font-weight: 700;
       text-align: center;
     }
 
-    .key-signature {
-      background: #0a0a14;
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: 1px solid #1a1a3a;
+    .time-sig-value {
+      font-size: 1.3rem;
+      color: #00aaff;
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(0, 170, 255, 0.3);
     }
 
-    .key-value {
-      font-size: 18px;
-      color: var(--ssl-blue);
-      font-weight: 600;
-    }
-
-    .loop-metronome {
+    .transport-toggles {
       display: flex;
-      gap: 8px;
+      gap: 12px;
     }
 
     .toggle-btn {
-      padding: 8px 16px;
-      border: 1px solid #333;
-      border-radius: 6px;
-      background: transparent;
-      color: #666;
+      padding: 10px 18px;
+      background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+      border: 2px solid #4a4a4a;
+      border-radius: 8px;
+      color: #888;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-weight: 600;
       transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
     }
 
     .toggle-btn.active {
-      background: var(--ssl-purple);
+      background: linear-gradient(180deg, #0066cc 0%, #004499 100%);
+      border-color: #0077cc;
       color: #fff;
-      border-color: var(--ssl-purple);
+      box-shadow: 0 0 15px rgba(0, 119, 204, 0.5);
     }
 
-    /* Main Layout */
-    .main-container {
+    /* Main Console Area */
+    .main-console {
+      flex: 1;
       display: flex;
-      height: calc(100vh - 116px);
+      overflow: hidden;
+      padding: 0 100px;
+      position: relative;
+      z-index: 55;
     }
 
-    /* Left Sidebar - Plugin Rack */
+    /* Left Panel - Plugin Rack */
     .plugin-rack {
       width: 280px;
-      background: linear-gradient(180deg, #12121e 0%, #0a0a14 100%);
-      border-right: 1px solid #2a2a3e;
+      background: linear-gradient(180deg, #1f1f1f 0%, #151515 100%);
+      border-right: 3px solid #2a2a2a;
       overflow-y: auto;
-    }
-
-    .rack-section {
-      border-bottom: 1px solid #2a2a3e;
+      box-shadow: inset -2px 0 4px rgba(0,0,0,0.3);
     }
 
     .rack-header {
-      padding: 12px 16px;
-      background: linear-gradient(90deg, var(--ssl-panel), transparent);
-      color: var(--ssl-gold);
+      padding: 18px;
+      background: linear-gradient(180deg, #2a2a2a 0%, #1f1f1f 100%);
+      border-bottom: 3px solid #3a3a3a;
       font-weight: 700;
       text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 1px;
+      font-size: 0.85rem;
+      color: #aaa;
+      letter-spacing: 1.5px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .plugin-slot {
+      padding: 14px;
+      border-bottom: 1px solid #2a2a2a;
       cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      transition: background 0.2s;
+      background: linear-gradient(180deg, #1a1a1a 0%, #151515 100%);
     }
 
-    .rack-header:hover { background: linear-gradient(90deg, #252540, transparent); }
-
-    .rack-content {
-      padding: 10px;
-      display: none;
+    .plugin-slot:hover {
+      background: linear-gradient(180deg, #252525 0%, #1a1a1a 100%);
     }
 
-    .rack-content.expanded { display: block; }
-
-    .plugin-item {
+    .plugin-slot-header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      background: #1a1a2e;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid transparent;
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
-    .plugin-item:hover {
-      border-color: var(--ssl-gold);
-      transform: translateX(4px);
-    }
-
-    .plugin-item.active {
-      border-color: var(--ssl-green);
-      background: rgba(74, 222, 128, 0.1);
-    }
-
-    .plugin-icon {
-      width: 36px;
-      height: 36px;
+    .plugin-slot-number {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
       border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.75rem;
       font-weight: 700;
-      font-size: 0.7rem;
+      color: #888;
+      border: 1px solid #4a4a4a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    .plugin-icon.waves { background: linear-gradient(135deg, #1e3a5f, #0a1628); color: #fff; }
-    .plugin-icon.izotope { background: linear-gradient(135deg, #5b2d8c, #2d1b4e); color: #fff; }
-    .plugin-icon.slate { background: linear-gradient(135deg, #8b4513, #4a2510); color: #fff; }
-    .plugin-icon.uad { background: linear-gradient(135deg, #2d5a3d, #1a3525); color: #fff; }
-    .plugin-icon.ssl { background: linear-gradient(135deg, #d4a03c, #8b6914); color: #000; }
-    .plugin-icon.antares { background: linear-gradient(135deg, #dc2626, #7f1d1d); color: #fff; }
-    .plugin-icon.native { background: linear-gradient(135deg, #1a1a2e, #0a0a14); color: #fff; border: 1px solid #333; }
-
-    .plugin-info { flex: 1; }
-    .plugin-name { font-size: 0.85rem; font-weight: 600; color: #fff; }
-    .plugin-category { font-size: 0.7rem; color: #666; }
-
-    .plugin-power {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      border: 2px solid #333;
-      background: transparent;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .plugin-power.on { background: var(--ssl-green); border-color: var(--ssl-green); }
-
-    /* Center - Console Area */
-    .console-area {
+    .plugin-slot-name {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      font-size: 0.9rem;
+      color: #e0e0e0;
+      font-weight: 600;
     }
 
-    /* Channel Strip Overview */
-    .console-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 16px;
-      background: var(--ssl-panel);
-      border-bottom: 1px solid #2a2a3e;
-    }
-
-    .console-title {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .console-title h2 {
-      font-size: 1rem;
-      color: var(--ssl-gold);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .channel-count {
-      background: var(--ssl-green);
-      color: #000;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-
-    .console-tools {
-      display: flex;
-      gap: 8px;
-    }
-
-    .tool-btn {
-      padding: 6px 12px;
-      background: #2a2a3e;
-      border: 1px solid #333;
-      border-radius: 6px;
-      color: #aaa;
-      font-size: 0.75rem;
+    .plugin-slot-bypass {
+      width: 36px;
+      height: 22px;
+      background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+      border-radius: 11px;
+      position: relative;
       cursor: pointer;
-      transition: all 0.2s;
+      border: 2px solid #3a3a3a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    .tool-btn:hover { background: #3a3a4e; color: #fff; }
-    .tool-btn.active { background: var(--ssl-gold); color: #000; border-color: var(--ssl-gold); }
+    .plugin-slot-bypass.active {
+      background: linear-gradient(180deg, #00aa00, #008800);
+      border-color: #00ff00;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+    }
 
-    /* Channel Strips Grid */
-    .channels-container {
+    .plugin-slot-bypass::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: linear-gradient(180deg, #fff, #ddd);
+      border-radius: 50%;
+      top: 1px;
+      left: 2px;
+      transition: left 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .plugin-slot-bypass.active::after {
+      left: 16px;
+    }
+
+    /* Center - Channel Strips */
+    .channel-strips-container {
       flex: 1;
       display: flex;
       overflow-x: auto;
-      overflow-y: hidden;
-      background: var(--ssl-dark);
-      padding: 10px;
-      gap: 2px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+      padding: 15px;
+      gap: 6px;
     }
 
+    /* Authentic SSL Channel Strip */
     .channel-strip {
-      min-width: 60px;
-      max-width: 60px;
-      background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
-      border: 1px solid #2a2a3e;
-      border-radius: 6px;
+      width: 80px;
+      background: linear-gradient(180deg, #2a2a2a 0%, #1f1f1f 50%, #1a1a1a 100%);
+      border: 2px solid #3a3a3a;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
+      box-shadow: 
+        0 6px 12px rgba(0,0,0,0.5),
+        inset 0 1px 2px rgba(255,255,255,0.05);
       transition: all 0.2s;
     }
 
-    .channel-strip:hover { border-color: var(--ssl-gold); }
-    .channel-strip.selected { border-color: var(--ssl-green); box-shadow: 0 0 10px rgba(74, 222, 128, 0.3); }
+    .channel-strip:hover {
+      border-color: var(--ssl-gold);
+      box-shadow: 0 0 20px rgba(196, 160, 0, 0.3);
+    }
 
+    .channel-strip.selected {
+      border-color: var(--ssl-led-blue);
+      box-shadow: 0 0 25px rgba(0, 170, 255, 0.4);
+    }
+
+    /* Channel Number and Name */
     .channel-header {
-      padding: 6px 4px;
+      background: linear-gradient(180deg, #333 0%, #222 100%);
+      padding: 8px 6px;
       text-align: center;
-      background: #2a2a3e;
-      border-radius: 5px 5px 0 0;
+      border-radius: 8px 8px 0 0;
+      border-bottom: 2px solid #3a3a3a;
     }
 
     .channel-number {
       font-size: 0.65rem;
       color: #666;
+      font-weight: 700;
     }
 
     .channel-name {
       font-size: 0.6rem;
-      color: #fff;
+      color: #ccc;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-weight: 600;
     }
 
-    .channel-meter {
-      height: 120px;
-      background: #0a0a14;
-      margin: 4px;
-      border-radius: 4px;
-      display: flex;
-      justify-content: center;
-      gap: 2px;
-      padding: 4px;
+    /* Input Gain - Real Knob */
+    .input-section {
+      padding: 8px;
+      text-align: center;
     }
 
-    .meter-bar {
-      width: 8px;
-      background: linear-gradient(to top, var(--ssl-meter-green), var(--ssl-meter-yellow) 70%, var(--ssl-meter-red) 90%);
-      border-radius: 2px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .meter-fill {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #0a0a14;
-      transition: height 0.1s;
-    }
-
-    .channel-fader {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 4px;
-    }
-
-    .fader-track {
-      flex: 1;
-      width: 30px;
-      background: #0a0a14;
-      border-radius: 4px;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .fader-handle {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 20px;
-      background: linear-gradient(180deg, #555, #333);
-      border-radius: 4px;
-      cursor: grab;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .fader-handle::after {
-      content: '';
-      width: 60%;
-      height: 2px;
-      background: var(--ssl-gold);
-    }
-
-    .fader-value {
-      font-size: 0.6rem;
-      color: var(--ssl-gold);
-      margin-top: 4px;
-    }
-
-    .channel-pan {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px;
-    }
-
-    .pan-knob {
-      width: 28px;
-      height: 28px;
-      background: radial-gradient(circle at 30% 30%, #555, #222);
+    .gain-knob {
+      width: 45px;
+      height: 45px;
+      background: radial-gradient(circle at 30% 30%, #5a5a5a, #2a2a2a);
       border-radius: 50%;
-      border: 2px solid #333;
+      border: 3px solid #4a4a4a;
+      margin: 0 auto;
       cursor: pointer;
       position: relative;
+      box-shadow: 
+        0 4px 8px rgba(0,0,0,0.5),
+        inset 0 2px 4px rgba(255,255,255,0.1);
     }
 
-    .pan-knob::after {
+    .gain-knob::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 14px;
+      background: linear-gradient(180deg, var(--ssl-gold), #8b6914);
+      border-radius: 2px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .gain-label {
+      font-size: 0.55rem;
+      color: #888;
+      margin-top: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    /* EQ Section - Real SSL Style */
+    .eq-section {
+      padding: 8px;
+      border-top: 2px solid #2a2a2a;
+    }
+
+    .eq-knobs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 6px;
+    }
+
+    .eq-knob {
+      width: 26px;
+      height: 26px;
+      background: radial-gradient(circle at 30% 30%, #6a6a6a, #3a3a3a);
+      border-radius: 50%;
+      border: 2px solid #5a5a5a;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+    }
+
+    .eq-knob::after {
       content: '';
       position: absolute;
       top: 4px;
@@ -547,324 +592,608 @@
       transform: translateX(-50%);
       width: 2px;
       height: 8px;
-      background: var(--ssl-gold);
+      background: #fff;
+      border-radius: 1px;
     }
 
-    .channel-controls {
+    .eq-labels {
+      display: flex;
+      justify-content: space-around;
+      font-size: 0.5rem;
+      color: #666;
+      font-weight: 600;
+    }
+
+    /* Dynamics Section */
+    .dynamics-section {
+      padding: 8px;
+      border-top: 2px solid #2a2a2a;
+    }
+
+    .dynamics-led {
       display: flex;
       justify-content: center;
-      gap: 3px;
-      padding: 4px;
+      gap: 5px;
+      margin-bottom: 6px;
     }
 
-    .ch-btn {
-      width: 16px;
-      height: 16px;
-      border: none;
-      border-radius: 3px;
+    .led {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+    }
+
+    .led.green.active { 
+      background: #00ff00; 
+      box-shadow: 0 0 12px #00ff00, inset 0 1px 2px rgba(255,255,255,0.3);
+    }
+    .led.yellow.active { 
+      background: #ffff00; 
+      box-shadow: 0 0 12px #ffff00, inset 0 1px 2px rgba(255,255,255,0.3);
+    }
+    .led.red.active { 
+      background: #ff0000; 
+      box-shadow: 0 0 12px #ff0000, inset 0 1px 2px rgba(255,255,255,0.3);
+    }
+
+    .comp-threshold {
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle at 30% 30%, #5a5a5a, #2a2a2a);
+      border-radius: 50%;
+      border: 3px solid #4a4a4a;
+      margin: 0 auto;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+
+    .comp-threshold::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 12px;
+      background: linear-gradient(180deg, #ff6600, #cc4400);
+      border-radius: 2px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .dynamics-label {
       font-size: 0.5rem;
-      font-weight: 700;
-      cursor: pointer;
-      background: #2a2a3e;
-      color: #666;
-    }
-
-    .ch-btn.mute.active { background: var(--ssl-red); color: #fff; }
-    .ch-btn.solo.active { background: var(--ssl-orange); color: #000; }
-    .ch-btn.record { background: var(--ssl-red); color: #fff; }
-
-    .channel-select-btn {
-      width: 100%;
-      padding: 4px;
-      background: #2a2a3e;
-      border: none;
-      border-radius: 0 0 5px 5px;
       color: #888;
-      font-size: 0.6rem;
-      cursor: pointer;
-    }
-
-    .channel-select-btn:hover { background: #3a3a4e; color: #fff; }
-
-    /* Master Channel */
-    .master-channel {
-      min-width: 100px;
-      max-width: 100px;
-      background: linear-gradient(180deg, #2a2a0a 0%, #1a1a00 100%);
-      border: 2px solid var(--ssl-gold);
-      border-radius: 6px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .master-header {
-      padding: 8px 4px;
       text-align: center;
-      background: linear-gradient(180deg, var(--ssl-gold), #8b6914);
-      border-radius: 4px 4px 0 0;
-    }
-
-    .master-header h3 {
-      font-size: 0.7rem;
-      color: #000;
-      font-weight: 800;
+      margin-top: 4px;
+      font-weight: 600;
       text-transform: uppercase;
     }
 
-    .master-meter {
-      height: 180px;
-      background: #0a0a14;
-      margin: 4px;
-      border-radius: 4px;
-      display: flex;
-      justify-content: center;
-      gap: 4px;
+    /* Meter - Real SSL Style */
+    .channel-meter {
+      height: 120px;
       padding: 6px;
+      border-top: 2px solid #2a2a2a;
     }
 
-    .master-meter .meter-bar {
-      width: 16px;
-    }
-
-    .master-fader .fader-track {
-      width: 50px;
-    }
-
-    .master-fader .fader-handle {
-      background: linear-gradient(180deg, var(--ssl-gold), #8b6914);
-    }
-
-    /* Right Sidebar - AI & Hardware */
-    .right-sidebar {
-      width: 320px;
-      background: linear-gradient(180deg, #12121e 0%, #0a0a14 100%);
-      border-left: 1px solid #2a2a3e;
+    .meter-container {
+      height: 100%;
       display: flex;
-      flex-direction: column;
+      gap: 3px;
+      background: #0a0a0a;
+      padding: 6px;
+      border-radius: 6px;
+      border: 2px solid #2a2a2a;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
     }
 
-    /* NEMO AI Panel */
-    .ai-panel {
+    .meter-bar {
       flex: 1;
+      background: linear-gradient(to top, #00ff00 0%, #00ff00 60%, #ffff00 60%, #ffff00 80%, #ff0000 80%, #ff0000 100%);
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .meter-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #0a0a0a;
+      transition: height 0.05s;
+    }
+
+    /* Fader - Real SSL Style */
+    .fader-section {
+      flex: 1;
+      padding: 8px;
+      border-top: 2px solid #2a2a2a;
       display: flex;
       flex-direction: column;
-      border-bottom: 1px solid #2a2a3e;
-    }
-
-    .ai-header {
-      padding: 12px 16px;
-      background: linear-gradient(90deg, rgba(168, 85, 247, 0.2), transparent);
-      border-bottom: 1px solid #2a2a3e;
-      display: flex;
       align-items: center;
-      gap: 10px;
     }
 
-    .ai-avatar {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--ssl-purple), #5b2d8c);
-      border-radius: 50%;
+    .fader-track {
+      flex: 1;
+      width: 35px;
+      background: linear-gradient(180deg, #222, #111);
+      border-radius: 6px;
+      position: relative;
+      cursor: pointer;
+      border: 2px solid #3a3a3a;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .fader-groove {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      top: 12px;
+      bottom: 12px;
+      background: #000;
+      border-radius: 3px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+    }
+
+    .fader-cap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(180deg, #666 0%, #444 50%, #333 100%);
+      border-radius: 6px;
+      cursor: grab;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
+      border: 2px solid #555;
+      box-shadow: 
+        0 4px 8px rgba(0,0,0,0.5),
+        inset 0 1px 2px rgba(255,255,255,0.1);
+    }
+
+    .fader-cap::after {
+      content: '';
+      width: 70%;
+      height: 4px;
+      background: linear-gradient(180deg, var(--ssl-gold), #8b6914);
+      border-radius: 2px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .fader-db {
+      font-size: 0.55rem;
+      color: var(--ssl-gold);
+      margin-top: 6px;
+      font-weight: 700;
+      text-shadow: 0 0 5px rgba(196, 160, 0, 0.3);
+    }
+
+    /* Pan - Real Knob */
+    .pan-section {
+      padding: 8px;
+      border-top: 2px solid #2a2a2a;
+      text-align: center;
+    }
+
+    .pan-knob {
+      width: 32px;
+      height: 32px;
+      background: radial-gradient(circle at 30% 30%, #5a5a5a, #2a2a2a);
+      border-radius: 50%;
+      border: 2px solid #4a4a4a;
+      margin: 0 auto;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+
+    .pan-knob::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 10px;
+      background: linear-gradient(180deg, #00aaff, #0066cc);
+      border-radius: 2px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .pan-label {
+      font-size: 0.5rem;
+      color: #888;
+      margin-top: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    /* Mute/Solo/Select - Real Buttons */
+    .channel-buttons {
+      padding: 8px;
+      border-top: 2px solid #2a2a2a;
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .ch-btn {
+      width: 22px;
+      height: 22px;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.55rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      border: 1px solid #4a4a4a;
+    }
+
+    .ch-btn.select {
+      background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+      color: #888;
+    }
+
+    .ch-btn.select.active {
+      background: linear-gradient(180deg, #0066cc, #004499);
       color: #fff;
+      border-color: #0077cc;
+      box-shadow: 0 0 15px rgba(0, 119, 204, 0.5);
     }
 
-    .ai-title h3 {
-      font-size: 0.9rem;
-      color: var(--ssl-purple);
-    }
-
-    .ai-title span {
-      font-size: 0.7rem;
+    .ch-btn.solo {
+      background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
       color: #666;
     }
 
-    .ai-chat {
-      flex: 1;
-      padding: 12px;
-      overflow-y: auto;
+    .ch-btn.solo.active {
+      background: linear-gradient(180deg, #ffd700, #cc9900);
+      color: #000;
+      border-color: #ffcc00;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+
+    .ch-btn.mute {
+      background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+      color: #666;
+    }
+
+    .ch-btn.mute.active {
+      background: linear-gradient(180deg, #cc0000, #990000);
+      color: #fff;
+      border-color: #ff0000;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    }
+
+    .ch-btn.record {
+      background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+      color: #666;
+    }
+
+    .ch-btn.record.active {
+      background: linear-gradient(180deg, #ff0000, #cc0000);
+      color: #fff;
+      border-color: #ff3333;
+      animation: pulse-rec 1s infinite;
+    }
+
+    /* Master Channel - Gold Styling */
+    .master-channel {
+      width: 120px;
+      background: linear-gradient(180deg, #3a3a00 0%, #2a2a00 50%, #1a1a00 100%);
+      border: 3px solid var(--ssl-gold);
+      box-shadow: 0 0 30px rgba(196, 160, 0, 0.3);
+    }
+
+    .master-channel .channel-header {
+      background: linear-gradient(180deg, var(--ssl-gold) 0%, #8b7500 100%);
+      border-bottom: 3px solid #6b5500;
+    }
+
+    .master-channel .channel-header .channel-name {
+      color: #000;
+      font-weight: 800;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .master-channel .channel-meter {
+      height: 160px;
+    }
+
+    .master-channel .meter-container {
+      padding: 8px;
+    }
+
+    .master-channel .meter-bar {
+      width: 25px;
+    }
+
+    .master-fader .fader-track {
+      width: 60px;
+    }
+
+    .master-fader .fader-cap {
+      background: linear-gradient(180deg, var(--ssl-gold) 0%, #8b7500 100%);
+      border-color: var(--ssl-gold);
+      box-shadow: 0 0 20px rgba(196, 160, 0, 0.5);
+    }
+
+    /* Right Panel */
+    .right-panel {
+      width: 320px;
+      background: linear-gradient(180deg, #1f1f1f 0%, #151515 100%);
+      border-left: 3px solid #2a2a2a;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      box-shadow: inset 2px 0 4px rgba(0,0,0,0.3);
     }
 
-    .ai-message {
-      padding: 10px 14px;
-      border-radius: 12px;
-      max-width: 90%;
-      font-size: 0.85rem;
-      line-height: 1.4;
-    }
-
-    .ai-message.assistant {
-      background: rgba(168, 85, 247, 0.15);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      color: #e0e0e0;
-      align-self: flex-start;
-    }
-
-    .ai-message.user {
-      background: rgba(212, 160, 60, 0.15);
-      border: 1px solid rgba(212, 160, 60, 0.3);
-      color: #e0e0e0;
-      align-self: flex-end;
-    }
-
-    .ai-suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding: 10px;
-      border-top: 1px solid #2a2a3e;
-    }
-
-    .suggestion-chip {
-      padding: 6px 12px;
-      background: #2a2a3e;
-      border: 1px solid #3a3a4e;
-      border-radius: 16px;
-      font-size: 0.7rem;
-      color: #aaa;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .suggestion-chip:hover {
-      background: var(--ssl-purple);
-      color: #fff;
-      border-color: var(--ssl-purple);
-    }
-
-    .ai-input-area {
-      display: flex;
-      gap: 8px;
+    /* Virtual Keyboard */
+    .keyboard-container {
       padding: 12px;
-      border-top: 1px solid #2a2a3e;
+      border-bottom: 3px solid #2a2a2a;
     }
 
-    .ai-input {
+    .keyboard-header {
+      font-size: 0.85rem;
+      color: #888;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .piano-keys {
+      display: flex;
+      height: 90px;
+      position: relative;
+    }
+
+    .white-key {
       flex: 1;
-      padding: 10px 14px;
-      background: #1a1a2e;
-      border: 1px solid #3a3a4e;
-      border-radius: 20px;
-      color: #fff;
-      font-size: 0.85rem;
-    }
-
-    .ai-input:focus { outline: none; border-color: var(--ssl-purple); }
-
-    .ai-send {
-      width: 40px;
-      height: 40px;
-      background: var(--ssl-purple);
-      border: none;
-      border-radius: 50%;
-      color: #fff;
+      background: linear-gradient(180deg, #f5f5f5 0%, #ddd 100%);
+      border: 1px solid #999;
+      border-radius: 0 0 6px 6px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      transition: all 0.1s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
 
-    /* Hardware Panel */
-    .hardware-panel {
-      height: 280px;
-      border-top: 1px solid #2a2a3e;
+    .white-key:hover {
+      background: linear-gradient(180deg, #fff 0%, #eee 100%);
     }
 
-    .hardware-header {
-      padding: 12px 16px;
-      background: linear-gradient(90deg, rgba(96, 165, 250, 0.2), transparent);
-      border-bottom: 1px solid #2a2a3e;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .white-key:active, .white-key.active {
+      background: linear-gradient(180deg, #ddd 0%, #ccc 100%);
+      transform: translateY(3px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    .hardware-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .black-key {
+      position: absolute;
+      width: 24px;
+      height: 55px;
+      background: linear-gradient(180deg, #333 0%, #111 100%);
+      border-radius: 0 0 4px 4px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.1s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
     }
 
-    .hardware-title h3 {
-      font-size: 0.9rem;
-      color: var(--ssl-blue);
+    .black-key:hover {
+      background: linear-gradient(180deg, #444 0%, #222 100%);
     }
 
-    .hardware-status {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.7rem;
-      color: var(--ssl-green);
+    .black-key:active, .black-key.active {
+      background: linear-gradient(180deg, #222 0%, #000 100%);
+      transform: translateY(3px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--ssl-green);
-      border-radius: 50%;
-    }
-
-    .hardware-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      padding: 12px;
-    }
-
-    .hardware-item {
-      padding: 10px;
-      background: #1a1a2e;
-      border: 1px solid #2a2a3e;
-      border-radius: 8px;
+    /* Audio Drop Zone */
+    .audio-drop-zone {
+      margin: 12px;
+      padding: 24px;
+      border: 3px dashed #3a3a3a;
+      border-radius: 10px;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s;
+      background: linear-gradient(180deg, #1a1a1a, #151515);
     }
 
-    .hardware-item:hover { border-color: var(--ssl-blue); }
-    .hardware-item.connected { border-color: var(--ssl-green); background: rgba(74, 222, 128, 0.05); }
-
-    .hardware-icon {
-      font-size: 1.5rem;
-      margin-bottom: 4px;
+    .audio-drop-zone:hover, .audio-drop-zone.dragover {
+      border-color: var(--ssl-gold);
+      background: linear-gradient(180deg, rgba(196, 160, 0, 0.1), rgba(196, 160, 0, 0.05));
+      box-shadow: 0 0 20px rgba(196, 160, 0, 0.2);
     }
 
-    .hardware-name {
-      font-size: 0.7rem;
+    .audio-drop-zone h3 {
+      color: #888;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .audio-drop-zone p {
+      color: #555;
+      font-size: 0.75rem;
+    }
+
+    /* Sample Tracks */
+    .sample-tracks {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+
+    .sample-track {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background: linear-gradient(180deg, #2a2a2a, #1f1f1f);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #3a3a3a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .sample-track:hover {
+      background: linear-gradient(180deg, #333, #2a2a2a);
+      border-color: #4a4a4a;
+    }
+
+    .sample-track.playing {
+      border-left: 4px solid var(--ssl-led-green);
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+    }
+
+    .sample-waveform {
+      width: 45px;
+      height: 35px;
+      background: linear-gradient(90deg, 
+        transparent 0%, #00ff00 20%, #00ff00 25%, transparent 30%,
+        transparent 40%, #00ff00 50%, #00ff00 55%, transparent 60%,
+        transparent 70%, #00ff00 80%, #00ff00 85%, transparent 90%
+      );
+      border-radius: 6px;
+      margin-right: 12px;
+      opacity: 0.6;
+      border: 1px solid #2a2a2a;
+    }
+
+    .sample-track.playing .sample-waveform {
+      opacity: 1;
+      animation: waveform-pulse 0.5s infinite;
+    }
+
+    @keyframes waveform-pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .sample-info {
+      flex: 1;
+    }
+
+    .sample-name {
+      font-size: 0.8rem;
       color: #fff;
       font-weight: 600;
     }
 
-    .hardware-status-text {
-      font-size: 0.6rem;
+    .sample-duration {
+      font-size: 0.7rem;
       color: #666;
     }
 
-    .hardware-item.connected .hardware-status-text { color: var(--ssl-green); }
+    .sample-play-btn {
+      width: 35px;
+      height: 35px;
+      background: linear-gradient(180deg, var(--ssl-gold), #8b6914);
+      border: none;
+      border-radius: 50%;
+      color: #000;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
 
-    /* Bottom Panel - Timeline */
-    .timeline-panel {
-      height: 200px;
-      background: var(--ssl-surface);
-      border-top: 1px solid #2a2a3e;
+    .sample-play-btn:hover {
+      box-shadow: 0 0 15px rgba(196, 160, 0, 0.5);
+    }
+
+    /* AI Assistant */
+    .ai-section {
+      padding: 12px;
+      border-top: 3px solid #2a2a2a;
+    }
+
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .ai-avatar {
+      width: 35px;
+      height: 35px;
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    }
+
+    .ai-title {
+      font-size: 0.9rem;
+      color: #a78bfa;
+      font-weight: 700;
+    }
+
+    .ai-quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .ai-action-btn {
+      padding: 6px 12px;
+      background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+      border: 1px solid #4a4a4a;
+      border-radius: 14px;
+      color: #aaa;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 600;
+    }
+
+    .ai-action-btn:hover {
+      background: linear-gradient(180deg, #4a4a4a, #3a3a3a);
+      border-color: #8b5cf6;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+    }
+
+    /* Timeline at Bottom */
+    .timeline-section {
+      height: 180px;
+      background: #0a0a0a;
+      border-top: 4px solid #2a2a2a;
       display: flex;
       flex-direction: column;
+      position: relative;
+      z-index: 60;
     }
 
     .timeline-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 16px;
-      background: var(--ssl-panel);
-      border-bottom: 1px solid #2a2a3e;
+      padding: 8px 20px;
+      background: linear-gradient(180deg, #1a1a1a, #0f0f0f);
+      border-bottom: 2px solid #2a2a2a;
     }
 
     .timeline-tools {
@@ -873,827 +1202,640 @@
     }
 
     .timeline-tool {
-      padding: 5px 10px;
-      background: #2a2a3e;
-      border: 1px solid #333;
-      border-radius: 4px;
+      padding: 6px 12px;
+      background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+      border: 1px solid #4a4a4a;
+      border-radius: 6px;
       color: #888;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       cursor: pointer;
+      font-weight: 600;
     }
 
-    .timeline-tool:hover { background: #3a3a4e; color: #fff; }
-    .timeline-tool.active { background: var(--ssl-gold); color: #000; }
+    .timeline-tool:hover, .timeline-tool.active {
+      background: linear-gradient(180deg, #4a4a4a, #3a3a3a);
+      color: #fff;
+      border-color: #5a5a5a;
+    }
 
-    .zoom-controls {
+    .timeline-zoom {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
     }
 
     .zoom-slider {
       width: 100px;
       -webkit-appearance: none;
-      height: 4px;
-      background: #333;
-      border-radius: 2px;
+      height: 5px;
+      background: #2a2a2a;
+      border-radius: 3px;
     }
 
     .zoom-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       background: var(--ssl-gold);
       border-radius: 50%;
       cursor: pointer;
+      box-shadow: 0 0 10px rgba(196, 160, 0, 0.5);
     }
 
-    .timeline-grid {
+    .timeline-body {
       flex: 1;
       overflow-x: auto;
-      overflow-y: hidden;
       position: relative;
     }
 
     .timeline-ruler {
       height: 24px;
-      background: #1a1a2e;
-      border-bottom: 1px solid #2a2a3e;
-      position: sticky;
-      top: 0;
+      background: #1a1a1a;
       display: flex;
       align-items: center;
+      position: sticky;
+      top: 0;
+      border-bottom: 1px solid #2a2a2a;
     }
 
-    .timeline-marker {
-      position: absolute;
-      width: 1px;
-      height: 100%;
-      background: #333;
-    }
-
-    .timeline-beat {
-      min-width: 60px;
-      padding: 0 10px;
+    .ruler-marker {
+      min-width: 55px;
+      padding: 0 12px;
       font-size: 0.65rem;
       color: #666;
-      border-right: 1px solid #2a2a3e;
+      border-right: 1px solid #2a2a2a;
+      font-weight: 600;
     }
 
     .playhead {
       position: absolute;
       top: 0;
-      width: 2px;
+      width: 3px;
       height: 100%;
-      background: var(--ssl-green);
-      z-index: 10;
+      background: var(--ssl-led-green);
+      z-index: 100;
       pointer-events: none;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
     }
 
     .playhead::before {
       content: '';
       position: absolute;
       top: 0;
-      left: -6px;
-      border-left: 7px solid transparent;
-      border-right: 7px solid transparent;
-      border-top: 8px solid var(--ssl-green);
+      left: -7px;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 10px solid var(--ssl-led-green);
     }
 
     .timeline-tracks {
       flex: 1;
-      overflow-y: auto;
     }
 
     .timeline-track {
-      height: 40px;
+      height: 28px;
       display: flex;
-      border-bottom: 1px solid #1a1a2e;
+      border-bottom: 1px solid #1a1a1a;
     }
 
-    .track-timeline-info {
-      width: 150px;
-      padding: 8px;
-      background: #1a1a2e;
-      border-right: 1px solid #2a2a3e;
+    .track-label {
+      width: 110px;
+      padding: 0 10px;
+      background: #1a1a1a;
+      border-right: 2px solid #2a2a2a;
+      font-size: 0.7rem;
+      color: #888;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      font-weight: 600;
     }
 
-    .track-color-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+    .track-label-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
     }
 
-    .track-timeline-name {
-      font-size: 0.75rem;
-      color: #fff;
-    }
-
-    .track-clips {
+    .track-lane {
       flex: 1;
       position: relative;
-      background: #0f0f1a;
+      background: #0f0f0f;
     }
 
-    .audio-clip {
+    .track-clip {
       position: absolute;
       top: 4px;
-      height: 32px;
-      background: linear-gradient(180deg, rgba(96, 165, 250, 0.4), rgba(96, 165, 250, 0.2));
-      border: 1px solid var(--ssl-blue);
+      height: 20px;
       border-radius: 4px;
       cursor: pointer;
     }
 
-    .audio-clip:hover { background: linear-gradient(180deg, rgba(96, 165, 250, 0.6), rgba(96, 165, 250, 0.3)); }
-
-    .midi-clip {
-      position: absolute;
-      top: 4px;
-      height: 32px;
-      background: linear-gradient(180deg, rgba(168, 85, 247, 0.4), rgba(168, 85, 247, 0.2));
-      border: 1px solid var(--ssl-purple);
-      border-radius: 4px;
-      cursor: pointer;
+    .track-clip.audio {
+      background: linear-gradient(180deg, rgba(0,170,255,0.5), rgba(0,170,255,0.3));
+      border: 1px solid rgba(0,170,255,0.7);
     }
+
+    .track-clip.midi {
+      background: linear-gradient(180deg, rgba(168,85,247,0.5), rgba(168,85,247,0.3));
+      border: 1px solid rgba(168,85,247,0.7);
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: #1a1a1a; }
+    ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
 
     /* Responsive */
     @media (max-width: 1400px) {
       .plugin-rack { width: 240px; }
-      .right-sidebar { width: 280px; }
+      .right-panel { width: 280px; }
     }
 
     @media (max-width: 1100px) {
       .plugin-rack { display: none; }
     }
-
-    /* Custom Scrollbars */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #0a0a14; }
-    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #444; }
-
-    /* Animation */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .fade-in { animation: fadeIn 0.3s ease-out; }
   </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
-  <!-- Top Navigation -->
-  <nav class="top-nav">
-    <div class="logo-section">
-      <img src="goat-logo.png" alt="GOAT Logo">
-      <div>
-        <div class="logo-title">GOAT Ultimate Studio</div>
-        <div class="logo-subtitle">124-Channel SSL Console</div>
+  <!-- Wood Side Panels -->
+  <div class="wood-panel-left"></div>
+  <div class="wood-panel-right"></div>
+  
+  <!-- Metal Chassis -->
+  <div class="metal-chassis"></div>
+
+  <div class="console-container">
+    <!-- Meter Bridge -->
+    <div class="meter-bridge">
+      <div class="ssl-logo">
+        <div>
+          <div class="ssl-logo-text">GOAT ULTIMATE</div>
+          <div class="ssl-logo-sub">SSL Origin Evo 32</div>
+        </div>
+      </div>
+      <div class="meter-bridge-meters">
+        <div class="stereo-meter">
+          <div class="meter-bar" id="masterMeterL"></div>
+          <div class="meter-bar" id="masterMeterR"></div>
+        </div>
+      </div>
+      <div class="meter-bridge-info">
+        <div class="timecode-display" id="timecode">00:00:00:00</div>
       </div>
     </div>
-    <div class="project-info">
-      <div class="project-name">🎵 Untitled Project</div>
-      <div class="save-indicator saved">● Saved</div>
-    </div>
-    <div class="main-menu">
-      <button class="menu-btn">File</button>
-      <button class="menu-btn">Edit</button>
-      <button class="menu-btn">View</button>
-      <button class="menu-btn">Track</button>
-      <button class="menu-btn">Mix</button>
-      <button class="menu-btn">Plugins</button>
-      <button class="menu-btn">Hardware</button>
-      <button class="menu-btn">Help</button>
-    </div>
-  </nav>
 
-  <!-- Transport Bar -->
-  <div class="transport-bar">
-    <div class="transport-controls">
-      <button class="transport-btn" id="rewindBtn" title="Rewind">⏮</button>
-      <button class="transport-btn" id="stopBtn" title="Stop">⏹</button>
-      <button class="transport-btn" id="playBtn" title="Play">▶</button>
-      <button class="transport-btn" id="recordBtn" title="Record">⏺</button>
-      <button class="transport-btn" id="loopBtn" title="Loop">🔁</button>
-    </div>
-
-    <div class="time-display-section">
-      <div class="main-time-display">
-        <div class="time-value" id="timeDisplay">00:00:00:00</div>
-        <div class="time-label">Time</div>
+    <!-- Transport Panel -->
+    <div class="transport-panel">
+      <div class="transport-buttons">
+        <button class="transport-btn" id="rewindBtn" title="Rewind">⏮</button>
+        <button class="transport-btn" id="stopBtn" title="Stop">⏹</button>
+        <button class="transport-btn" id="playBtn" title="Play">▶</button>
+        <button class="transport-btn" id="recordBtn" title="Record">⏺</button>
+        <button class="transport-btn" id="loopBtn" title="Loop">🔁</button>
       </div>
-      <div class="tempo-controls">
+      <div class="transport-info">
         <div class="tempo-display">
           <input type="number" class="tempo-input" id="tempoInput" value="120" min="20" max="300">
           <div style="font-size: 0.65rem; color: #666;">BPM</div>
         </div>
-        <div class="key-signature">
-          <div class="key-value">C Major</div>
-          <div style="font-size: 0.65rem; color: #666;">Key</div>
+        <div class="time-signature">
+          <div class="time-sig-value">4/4</div>
+          <div style="font-size: 0.65rem; color: #666;">Time</div>
         </div>
+      </div>
+      <div class="transport-toggles">
+        <button class="toggle-btn" id="clickBtn">Click</button>
+        <button class="toggle-btn" id="loopToggle">Loop</button>
+        <button class="toggle-btn" id="snapToggle">Snap</button>
       </div>
     </div>
 
-    <div class="loop-metronome">
-      <button class="toggle-btn" id="loopToggle">Loop</button>
-      <button class="toggle-btn" id="metronomeToggle">Metro</button>
-      <button class="toggle-btn" id="clickToggle">Click</button>
-    </div>
-  </div>
-
-  <!-- Main Container -->
-  <div class="main-container">
-    <!-- Left Sidebar - Plugin Rack -->
-    <aside class="plugin-rack">
-      <!-- SSL Native -->
-      <div class="rack-section">
-        <div class="rack-header" onclick="toggleRack(this)">
-          <span>SSL Native</span>
-          <span>▼</span>
-        </div>
-        <div class="rack-content expanded">
-          <div class="plugin-item">
-            <div class="plugin-icon ssl">SSL</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Channel Strip 2</div>
-              <div class="plugin-category">Channel Strip</div>
-            </div>
-            <div class="plugin-power on"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon ssl">SSL</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Bus Compressor</div>
-              <div class="plugin-category">Dynamics</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon ssl">SSL</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Fusion</div>
-              <div class="plugin-category">Stereo</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon ssl">SSL</div>
-            <div class="plugin-info">
-              <div class="plugin-name">X-EQ 2</div>
-              <div class="plugin-category">Equalizer</div>
-            </div>
-            <div class="plugin-power"></div>
+    <!-- Main Console -->
+    <div class="main-console">
+      <!-- Plugin Rack -->
+      <aside class="plugin-rack">
+        <div class="rack-header">Plugin Rack</div>
+        <div class="plugin-slot">
+          <div class="plugin-slot-header">
+            <div class="plugin-slot-number">1</div>
+            <div class="plugin-slot-name">SSL Channel Strip 2</div>
+            <div class="plugin-slot-bypass active"></div>
           </div>
         </div>
-      </div>
-
-      <!-- Waves -->
-      <div class="rack-section">
-        <div class="rack-header" onclick="toggleRack(this)">
-          <span>Waves Complete</span>
-          <span>▼</span>
-        </div>
-        <div class="rack-content">
-          <div class="plugin-item">
-            <div class="plugin-icon waves">W</div>
-            <div class="plugin-info">
-              <div class="plugin-name">SSL E-Channel</div>
-              <div class="plugin-category">Channel Strip</div>
-            </div>
-            <div class="plugin-power on"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon waves">W</div>
-            <div class="plugin-info">
-              <div class="plugin-name">SSL G-Master Buss</div>
-              <div class="plugin-category">Bus Compressor</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon waves">W</div>
-            <div class="plugin-info">
-              <div class="plugin-name">API 2500</div>
-              <div class="plugin-category">Compressor</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon waves">W</div>
-            <div class="plugin-info">
-              <div class="plugin-name">CLA-2A</div>
-              <div class="plugin-category">Optical Comp</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon waves">W</div>
-            <div class="plugin-info">
-              <div class="plugin-name">CLA-76</div>
-              <div class="plugin-category">FET Comp</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon waves">W</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Scheps 73</div>
-              <div class="plugin-category">Preamp/EQ</div>
-            </div>
-            <div class="plugin-power"></div>
+        <div class="plugin-slot">
+          <div class="plugin-slot-header">
+            <div class="plugin-slot-number">2</div>
+            <div class="plugin-slot-name">Waves SSL E-Channel</div>
+            <div class="plugin-slot-bypass"></div>
           </div>
         </div>
-      </div>
-
-      <!-- iZotope -->
-      <div class="rack-section">
-        <div class="rack-header" onclick="toggleRack(this)">
-          <span>iZotope</span>
-          <span>▼</span>
-        </div>
-        <div class="rack-content">
-          <div class="plugin-item">
-            <div class="plugin-icon izotope">iZ</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Ozone 11</div>
-              <div class="plugin-category">Mastering Suite</div>
-            </div>
-            <div class="plugin-power on"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon izotope">iZ</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Neutron 4</div>
-              <div class="plugin-category">Mixing Suite</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon izotope">iZ</div>
-            <div class="plugin-info">
-              <div class="plugin-name">RX 11</div>
-              <div class="plugin-category">Audio Repair</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon izotope">iZ</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Nectar 4</div>
-              <div class="plugin-category">Vocal Production</div>
-            </div>
-            <div class="plugin-power"></div>
+        <div class="plugin-slot">
+          <div class="plugin-slot-header">
+            <div class="plugin-slot-number">3</div>
+            <div class="plugin-slot-name">iZotope Neutron 4</div>
+            <div class="plugin-slot-bypass"></div>
           </div>
         </div>
-      </div>
-
-      <!-- Slate Digital -->
-      <div class="rack-section">
-        <div class="rack-header" onclick="toggleRack(this)">
-          <span>Slate Digital</span>
-          <span>▼</span>
-        </div>
-        <div class="rack-content">
-          <div class="plugin-item">
-            <div class="plugin-icon slate">SD</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Virtual Mix Rack</div>
-              <div class="plugin-category">Module Rack</div>
-            </div>
-            <div class="plugin-power on"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon slate">SD</div>
-            <div class="plugin-info">
-              <div class="plugin-name">FG-Stress</div>
-              <div class="plugin-category">Compressor</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon slate">SD</div>
-            <div class="plugin-info">
-              <div class="plugin-name">FG-2A</div>
-              <div class="plugin-category">Optical Comp</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon slate">SD</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Fresh Air</div>
-              <div class="plugin-category">Dynamic EQ</div>
-            </div>
-            <div class="plugin-power"></div>
+        <div class="plugin-slot">
+          <div class="plugin-slot-header">
+            <div class="plugin-slot-number">4</div>
+            <div class="plugin-slot-name">Slate VMR</div>
+            <div class="plugin-slot-bypass"></div>
           </div>
         </div>
-      </div>
-
-      <!-- Universal Audio -->
-      <div class="rack-section">
-        <div class="rack-header" onclick="toggleRack(this)">
-          <span>Universal Audio</span>
-          <span>▼</span>
-        </div>
-        <div class="rack-content">
-          <div class="plugin-item">
-            <div class="plugin-icon uad">UA</div>
-            <div class="plugin-info">
-              <div class="plugin-name">LA-2A</div>
-              <div class="plugin-category">Optical Comp</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon uad">UA</div>
-            <div class="plugin-info">
-              <div class="plugin-name">1176</div>
-              <div class="plugin-category">FET Compressor</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon uad">UA</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Neve 1073</div>
-              <div class="plugin-category">Preamp/EQ</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon uad">UA</div>
-            <div class="plugin-info">
-              <div class="plugin-name">API 2500</div>
-              <div class="plugin-category">Bus Compressor</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon uad">UA</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Studer A800</div>
-              <div class="plugin-category">Tape Machine</div>
-            </div>
-            <div class="plugin-power"></div>
+        <div class="plugin-slot">
+          <div class="plugin-slot-header">
+            <div class="plugin-slot-number">5</div>
+            <div class="plugin-slot-name">UAD LA-2A</div>
+            <div class="plugin-slot-bypass"></div>
           </div>
         </div>
-      </div>
-
-      <!-- Antares -->
-      <div class="rack-section">
-        <div class="rack-header" onclick="toggleRack(this)">
-          <span>Antares</span>
-          <span>▼</span>
-        </div>
-        <div class="rack-content">
-          <div class="plugin-item">
-            <div class="plugin-icon antares">AT</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Auto-Tune Pro X</div>
-              <div class="plugin-category">Pitch Correction</div>
-            </div>
-            <div class="plugin-power on"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon antares">AT</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Auto-Tune EFX+</div>
-              <div class="plugin-category">Vocal Effects</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon antares">AT</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Harmony Engine</div>
-              <div class="plugin-category">Vocal Harmony</div>
-            </div>
-            <div class="plugin-power"></div>
+        <div class="plugin-slot">
+          <div class="plugin-slot-header">
+            <div class="plugin-slot-number">6</div>
+            <div class="plugin-slot-name">Antares Auto-Tune</div>
+            <div class="plugin-slot-bypass"></div>
           </div>
         </div>
-      </div>
-
-      <!-- Native Instruments -->
-      <div class="rack-section">
-        <div class="rack-header" onclick="toggleRack(this)">
-          <span>Native Instruments</span>
-          <span>▼</span>
-        </div>
-        <div class="rack-content">
-          <div class="plugin-item">
-            <div class="plugin-icon native">NI</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Kontakt 7</div>
-              <div class="plugin-category">Sampler</div>
-            </div>
-            <div class="plugin-power on"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon native">NI</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Massive X</div>
-              <div class="plugin-category">Synthesizer</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon native">NI</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Reaktor 6</div>
-              <div class="plugin-category">Modular</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon native">NI</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Battery 4</div>
-              <div class="plugin-category">Drum Sampler</div>
-            </div>
-            <div class="plugin-power"></div>
+        <div class="plugin-slot">
+          <div class="plugin-slot-header">
+            <div class="plugin-slot-number">7</div>
+            <div class="plugin-slot-name">FabFilter Pro-Q 3</div>
+            <div class="plugin-slot-bypass"></div>
           </div>
         </div>
-      </div>
-
-      <!-- Virtual Instruments -->
-      <div class="rack-section">
-        <div class="rack-header" onclick="toggleRack(this)">
-          <span>Virtual Instruments</span>
-          <span>▼</span>
-        </div>
-        <div class="rack-content">
-          <div class="plugin-item">
-            <div class="plugin-icon" style="background: linear-gradient(135deg, #c41e3a, #5c0a16); color: #fff;">EW</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Hollywood Orchestra</div>
-              <div class="plugin-category">EastWest</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon" style="background: linear-gradient(135deg, #e056fd, #8e44ad); color: #fff;">AR</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Pigments 5</div>
-              <div class="plugin-category">Arturia</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff;">RO</div>
-            <div class="plugin-info">
-              <div class="plugin-name">TR-808</div>
-              <div class="plugin-category">Roland Cloud</div>
-            </div>
-            <div class="plugin-power"></div>
-          </div>
-          <div class="plugin-item">
-            <div class="plugin-icon" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff;">RO</div>
-            <div class="plugin-info">
-              <div class="plugin-name">Jupiter-8</div>
-              <div class="plugin-category">Roland Cloud</div>
-            </div>
-            <div class="plugin-power"></div>
+        <div class="plugin-slot">
+          <div class="plugin-slot-header">
+            <div class="plugin-slot-number">8</div>
+            <div class="plugin-slot-name">Soundtoys 5</div>
+            <div class="plugin-slot-bypass"></div>
           </div>
         </div>
-      </div>
-    </aside>
-
-    <!-- Center - Console Area -->
-    <main class="console-area">
-      <div class="console-header">
-        <div class="console-title">
-          <h2>SSL 4000 E/G Series Console</h2>
-          <span class="channel-count">124 Channels</span>
-        </div>
-        <div class="console-tools">
-          <button class="tool-btn active">Mixer</button>
-          <button class="tool-btn">Editor</button>
-          <button class="tool-btn">Meter Bridge</button>
-          <button class="tool-btn">Routing</button>
-        </div>
-      </div>
+      </aside>
 
       <!-- Channel Strips -->
-      <div class="channels-container" id="channelsContainer">
-        <!-- Channels will be generated by JavaScript -->
-      </div>
-    </main>
-
-    <!-- Right Sidebar - AI & Hardware -->
-    <aside class="right-sidebar">
-      <!-- NEMO AI Panel -->
-      <div class="ai-panel">
-        <div class="ai-header">
-          <div class="ai-avatar">N</div>
-          <div class="ai-title">
-            <h3>NEMO AI Assistant</h3>
-            <span>Intelligent Mixing Engine</span>
-          </div>
-        </div>
-        <div class="ai-chat" id="aiChat">
-          <div class="ai-message assistant">
-            👋 Welcome to GOAT Ultimate Studio! I'm NEMO, your AI mixing assistant. I can help you with:
-            <br><br>
-            • Track analysis and suggestions<br>
-            • EQ and compression recommendations<br>
-            • Gain staging optimization<br>
-            • Mix balancing<br>
-            • Mastering preparation
-            <br><br>
-            What would you like to work on today?
-          </div>
-        </div>
-        <div class="ai-suggestions">
-          <span class="suggestion-chip" onclick="sendSuggestion('Analyze my mix')">Analyze Mix</span>
-          <span class="suggestion-chip" onclick="sendSuggestion('Suggest EQ settings')">Suggest EQ</span>
-          <span class="suggestion-chip" onclick="sendSuggestion('Auto balance levels')">Balance Levels</span>
-          <span class="suggestion-chip" onclick="sendSuggestion('Mastering chain')">Mastering</span>
-        </div>
-        <div class="ai-input-area">
-          <input type="text" class="ai-input" id="aiInput" placeholder="Ask NEMO anything...">
-          <button class="ai-send" onclick="sendAiMessage()">➤</button>
-        </div>
+      <div class="channel-strips-container" id="channelContainer">
+        <!-- Channels generated by JS -->
       </div>
 
-      <!-- Hardware Panel -->
-      <div class="hardware-panel">
-        <div class="hardware-header">
-          <div class="hardware-title">
-            <h3>Hardware Controllers</h3>
-          </div>
-          <div class="hardware-status">
-            <div class="status-dot"></div>
-            <span>4 Connected</span>
+      <!-- Right Panel -->
+      <aside class="right-panel">
+        <!-- Virtual Keyboard -->
+        <div class="keyboard-container">
+          <div class="keyboard-header">Virtual Keyboard</div>
+          <div class="piano-keys" id="pianoKeys">
+            <!-- Keys generated by JS -->
           </div>
         </div>
-        <div class="hardware-grid">
-          <div class="hardware-item connected">
-            <div class="hardware-icon">🎚️</div>
-            <div class="hardware-name">SSL UF8</div>
-            <div class="hardware-status-text">Connected</div>
-          </div>
-          <div class="hardware-item connected">
-            <div class="hardware-icon">🎛️</div>
-            <div class="hardware-name">SSL UC1</div>
-            <div class="hardware-status-text">Connected</div>
-          </div>
-          <div class="hardware-item connected">
-            <div class="hardware-icon">🥁</div>
-            <div class="hardware-name">Akai MPC X</div>
-            <div class="hardware-status-text">Connected</div>
-          </div>
-          <div class="hardware-item connected">
-            <div class="hardware-icon">🎹</div>
-            <div class="hardware-name">Push 3</div>
-            <div class="hardware-status-text">Connected</div>
-          </div>
-          <div class="hardware-item">
-            <div class="hardware-icon">⌨️</div>
-            <div class="hardware-name">Komplete S88</div>
-            <div class="hardware-status-text">Disconnected</div>
-          </div>
-          <div class="hardware-item">
-            <div class="hardware-icon">🤖</div>
-            <div class="hardware-name">Maschine+</div>
-            <div class="hardware-status-text">Disconnected</div>
-          </div>
-        </div>
-      </div>
-    </aside>
-  </div>
 
-  <!-- Timeline Panel -->
-  <div class="timeline-panel">
-    <div class="timeline-header">
-      <div class="timeline-tools">
-        <button class="timeline-tool active">Select</button>
-        <button class="timeline-tool">Draw</button>
-        <button class="timeline-tool">Split</button>
-        <button class="timeline-tool">Slip</button>
-        <button class="timeline-tool">Zoom</button>
-      </div>
-      <div class="zoom-controls">
-        <span style="color: #666; font-size: 0.7rem;">Zoom:</span>
-        <input type="range" class="zoom-slider" min="1" max="10" value="5">
-        <span style="color: #888; font-size: 0.7rem;">100%</span>
-      </div>
+        <!-- Audio Drop Zone -->
+        <div class="audio-drop-zone" id="audioDropZone">
+          <h3>📁 Drop Audio Files</h3>
+          <p>Drag & drop WAV, MP3, AIFF files here</p>
+          <input type="file" id="audioFileInput" accept="audio/*" multiple style="display: none;">
+        </div>
+
+        <!-- Sample Tracks -->
+        <div class="sample-tracks" id="sampleTracks">
+          <!-- Demo tracks -->
+          <div class="sample-track" data-sound="kick">
+            <div class="sample-waveform"></div>
+            <div class="sample-info">
+              <div class="sample-name">Kick Drum</div>
+              <div class="sample-duration">0.5s</div>
+            </div>
+            <button class="sample-play-btn">▶</button>
+          </div>
+          <div class="sample-track" data-sound="snare">
+            <div class="sample-waveform"></div>
+            <div class="sample-info">
+              <div class="sample-name">Snare</div>
+              <div class="sample-duration">0.3s</div>
+            </div>
+            <button class="sample-play-btn">▶</button>
+          </div>
+          <div class="sample-track" data-sound="hihat">
+            <div class="sample-waveform"></div>
+            <div class="sample-info">
+              <div class="sample-name">Hi-Hat</div>
+              <div class="sample-duration">0.2s</div>
+            </div>
+            <button class="sample-play-btn">▶</button>
+          </div>
+          <div class="sample-track" data-sound="bass">
+            <div class="sample-waveform"></div>
+            <div class="sample-info">
+              <div class="sample-name">Bass</div>
+              <div class="sample-duration">1.0s</div>
+            </div>
+            <button class="sample-play-btn">▶</button>
+          </div>
+        </div>
+
+        <!-- AI Assistant -->
+        <div class="ai-section">
+          <div class="ai-header">
+            <div class="ai-avatar">N</div>
+            <div class="ai-title">NEMO AI Assistant</div>
+          </div>
+          <div class="ai-quick-actions">
+            <button class="ai-action-btn">Analyze Mix</button>
+            <button class="ai-action-btn">Auto EQ</button>
+            <button class="ai-action-btn">Balance</button>
+            <button class="ai-action-btn">Master</button>
+          </div>
+        </div>
+      </aside>
     </div>
-    <div class="timeline-grid" id="timelineGrid">
-      <div class="timeline-ruler" id="timelineRuler">
-        <!-- Beat markers generated by JS -->
+
+    <!-- Timeline -->
+    <div class="timeline-section">
+      <div class="timeline-header">
+        <div class="timeline-tools">
+          <button class="timeline-tool active">Select</button>
+          <button class="timeline-tool">Draw</button>
+          <button class="timeline-tool">Split</button>
+          <button class="timeline-tool">Erase</button>
+        </div>
+        <div class="timeline-zoom">
+          <span style="color: #666; font-size: 0.75rem;">Zoom</span>
+          <input type="range" class="zoom-slider" min="1" max="10" value="5">
+        </div>
       </div>
-      <div class="timeline-tracks" id="timelineTracks">
-        <!-- Tracks generated by JS -->
+      <div class="timeline-body" id="timelineBody">
+        <div class="timeline-ruler" id="timelineRuler"></div>
+        <div class="timeline-tracks" id="timelineTracks"></div>
+        <div class="playhead" id="playhead" style="left: 120px;"></div>
       </div>
-      <div class="playhead" id="playhead" style="left: 120px;"></div>
     </div>
   </div>
 
   <script>
-    // GOAT ULTIMATE STUDIO - Main JavaScript
-    
-    // Channel Strip Generation
-    const channelNames = [
-      'Kick', 'Snare', 'Hi-Hat', 'Tom 1', 'Tom 2', 'Overhead L', 'Overhead R', 'Room',
-      'Bass DI', 'Bass Amp', 'Guitar 1', 'Guitar 2', 'Guitar 3', 'Keys L', 'Keys R',
-      'Piano', 'Strings', 'Brass', 'Synth 1', 'Synth 2', 'Pad', 'Lead Vocal', 'BG Vox 1',
-      'BG Vox 2', 'BG Vox 3', 'Vocal FX', 'SFX 1', 'SFX 2', 'Ambience', 'Click'
-    ];
-    
-    const channelColors = [
-      '#dc2626', '#dc2626', '#dc2626', '#dc2626', '#dc2626', '#dc2626', '#dc2626', '#dc2626',
-      '#f59e0b', '#f59e0b', '#22c55e', '#22c55e', '#22c55e', '#a855f7', '#a855f7',
-      '#3b82f6', '#ec4899', '#f97316', '#06b6d4', '#06b6d4', '#6366f1', '#d4a03c',
-      '#84cc16', '#84cc16', '#84cc16', '#14b8a6', '#f43f5e', '#f43f5e', '#8b5cf6', '#6b7280'
-    ];
+    // ==========================================
+    // GOAT ULTIMATE STUDIO - SSL Origin Evo 32
+    // Professional Audio Engine
+    // ==========================================
 
-    let selectedChannel = null;
+    // Audio Context
+    let audioContext = null;
+    let masterGain = null;
     let isPlaying = false;
     let isRecording = false;
-    let currentTime = 0;
+    let currentBeat = 0;
     let tempo = 120;
+    let playInterval = null;
+
+    // Initialize Audio
+    function initAudio() {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioContext.createGain();
+      masterGain.connect(audioContext.destination);
+      masterGain.gain.value = 0.8;
+    }
+
+    // Sound Synthesizer
+    function createSound(type, freq, duration = 0.5) {
+      if (!audioContext) initAudio();
+      if (audioContext.state === 'suspended') audioContext.resume();
+
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const filter = audioContext.createBiquadFilter();
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterGain);
+
+      // Sound types
+      switch(type) {
+        case 'kick':
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(150, audioContext.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(30, audioContext.currentTime + 0.1);
+          gain.gain.setValueAtTime(1, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+          filter.type = 'lowpass';
+          filter.frequency.value = 200;
+          break;
+        case 'snare':
+          osc.type = 'triangle';
+          osc.frequency.value = 200;
+          gain.gain.setValueAtTime(0.8, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+          filter.type = 'highpass';
+          filter.frequency.value = 100;
+          // Add noise for snare
+          const noise = audioContext.createBufferSource();
+          const noiseBuffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.2, audioContext.sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < output.length; i++) output[i] = Math.random() * 2 - 1;
+          noise.buffer = noiseBuffer;
+          const noiseGain = audioContext.createGain();
+          noise.connect(noiseGain);
+          noiseGain.connect(masterGain);
+          noiseGain.gain.setValueAtTime(0.5, audioContext.currentTime);
+          noiseGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+          noise.start(audioContext.currentTime);
+          noise.stop(audioContext.currentTime + 0.2);
+          break;
+        case 'hihat':
+          osc.type = 'square';
+          osc.frequency.value = 800;
+          gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+          filter.type = 'highpass';
+          filter.frequency.value = 7000;
+          break;
+        case 'bass':
+          osc.type = 'sawtooth';
+          osc.frequency.value = freq || 55;
+          gain.gain.setValueAtTime(0.6, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + (duration || 1));
+          filter.type = 'lowpass';
+          filter.frequency.value = 500;
+          break;
+        case 'piano':
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+          filter.type = 'lowpass';
+          filter.frequency.value = 2000;
+          break;
+        default:
+          osc.type = 'sine';
+          osc.frequency.value = freq || 440;
+          gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+      }
+
+      osc.start(audioContext.currentTime);
+      osc.stop(audioContext.currentTime + duration);
+
+      // Update meters
+      animateMeters();
+    }
+
+    // Play Note
+    function playNote(frequency, duration = 0.5, type = 'piano') {
+      createSound(type, frequency, duration);
+    }
+
+    // Channel Strip Data
+    const channelData = [];
+    const channelNames = [
+      'Kick', 'Snare', 'Hi-Hat', 'Tom 1', 'Tom 2', 'OH L', 'OH R', 'Room',
+      'Bass', 'Bass DI', 'GTR 1', 'GTR 2', 'GTR 3', 'Keys L', 'Keys R',
+      'Piano', 'Strings', 'Brass', 'Synth 1', 'Synth 2', 'Pad', 'Lead Vox',
+      'BG Vox 1', 'BG Vox 2', 'BG Vox 3', 'FX 1', 'FX 2', 'Ambience', 'Click', 'Talkback'
+    ];
+
+    const channelColors = [
+      '#ff4444', '#ff4444', '#ff4444', '#ff4444', '#ff4444', '#ff4444', '#ff4444', '#ff4444',
+      '#ffaa00', '#ffaa00', '#44ff44', '#44ff44', '#44ff44', '#aa44ff', '#aa44ff',
+      '#4488ff', '#ff44aa', '#ff8844', '#44ffff', '#44ffff', '#8844ff', '#ffcc00',
+      '#88ff44', '#88ff44', '#88ff44', '#44ffaa', '#ff4488', '#ff4488', '#8844aa', '#888888'
+    ];
 
     // Generate Channel Strips
     function generateChannels() {
-      const container = document.getElementById('channelsContainer');
+      const container = document.getElementById('channelContainer');
       container.innerHTML = '';
-      
-      // Generate 124 channels
-      for (let i = 1; i <= 124; i++) {
+
+      for (let i = 1; i <= 32; i++) {
         const nameIndex = (i - 1) % channelNames.length;
-        const color = channelColors[nameIndex];
-        const name = i <= 30 ? channelNames[nameIndex] : `CH ${i}`;
-        
         const channel = document.createElement('div');
         channel.className = 'channel-strip';
         channel.dataset.channel = i;
-        channel.onclick = () => selectChannel(channel);
-        
-        // Random meter level for visual effect
-        const meterLevel = Math.random() * 70 + 10;
-        const faderPos = Math.random() * 50 + 25;
         
         channel.innerHTML = `
           <div class="channel-header">
             <div class="channel-number">${i}</div>
-            <div class="channel-name">${name}</div>
+            <div class="channel-name">${channelNames[nameIndex]}</div>
+          </div>
+          <div class="input-section">
+            <div class="gain-knob" title="Input Gain"></div>
+            <div class="gain-label">GAIN</div>
+          </div>
+          <div class="eq-section">
+            <div class="eq-knobs">
+              <div class="eq-knob" title="HF"></div>
+              <div class="eq-knob" title="MF"></div>
+              <div class="eq-knob" title="LF"></div>
+            </div>
+            <div class="eq-labels">
+              <span>HF</span><span>MF</span><span>LF</span>
+            </div>
+          </div>
+          <div class="dynamics-section">
+            <div class="dynamics-led">
+              <div class="led green"></div>
+              <div class="led yellow"></div>
+              <div class="led red"></div>
+            </div>
+            <div class="comp-threshold" title="Threshold"></div>
+            <div class="dynamics-label">COMP</div>
           </div>
           <div class="channel-meter">
-            <div class="meter-bar"><div class="meter-fill" style="height: ${100 - meterLevel}%"></div></div>
-            <div class="meter-bar"><div class="meter-fill" style="height: ${100 - meterLevel + Math.random() * 10}%"></div></div>
-          </div>
-          <div class="channel-fader">
-            <div class="fader-track">
-              <div class="fader-handle" style="top: ${faderPos}%"></div>
+            <div class="meter-container">
+              <div class="meter-bar"><div class="meter-fill"></div></div>
+              <div class="meter-bar"><div class="meter-fill"></div></div>
             </div>
-            <div class="fader-value">${(faderPos / 100 * -60 + 10).toFixed(1)}</div>
           </div>
-          <div class="channel-pan">
+          <div class="fader-section">
+            <div class="fader-track">
+              <div class="fader-groove"></div>
+              <div class="fader-cap" style="top: 30%"></div>
+            </div>
+            <div class="fader-db">-10.0</div>
+          </div>
+          <div class="pan-section">
             <div class="pan-knob" title="Pan"></div>
+            <div class="pan-label">PAN</div>
           </div>
-          <div class="channel-controls">
-            <button class="ch-btn mute" title="Mute">M</button>
-            <button class="ch-btn solo" title="Solo">S</button>
-            <button class="ch-btn record" title="Record">R</button>
+          <div class="channel-buttons">
+            <button class="ch-btn select">S</button>
+            <button class="ch-btn solo">SOLO</button>
+            <button class="ch-btn mute">M</button>
           </div>
-          <button class="channel-select-btn">SEL</button>
         `;
         
         container.appendChild(channel);
+        channelData.push({ element: channel, fader: 0.7, pan: 0, muted: false, soloed: false });
       }
-      
-      // Add Master Channel
-      const masterChannel = document.createElement('div');
-      masterChannel.className = 'channel-strip master-channel';
-      masterChannel.innerHTML = `
-        <div class="master-header">
-          <h3>Master</h3>
+
+      // Master Channel
+      const master = document.createElement('div');
+      master.className = 'channel-strip master-channel';
+      master.innerHTML = `
+        <div class="channel-header">
+          <div class="channel-name">MASTER</div>
         </div>
-        <div class="master-meter">
-          <div class="meter-bar"><div class="meter-fill" style="height: 15%"></div></div>
-          <div class="meter-bar"><div class="meter-fill" style="height: 18%"></div></div>
-        </div>
-        <div class="channel-fader master-fader">
-          <div class="fader-track">
-            <div class="fader-handle" style="top: 20%"></div>
+        <div class="channel-meter">
+          <div class="meter-container">
+            <div class="meter-bar"><div class="meter-fill"></div></div>
+            <div class="meter-bar"><div class="meter-fill"></div></div>
           </div>
-          <div class="fader-value">0.0 dB</div>
         </div>
-        <div class="channel-pan">
+        <div class="fader-section master-fader">
+          <div class="fader-track">
+            <div class="fader-groove"></div>
+            <div class="fader-cap" style="top: 15%"></div>
+          </div>
+          <div class="fader-db">0.0</div>
+        </div>
+        <div class="pan-section">
           <div class="pan-knob"></div>
+          <div class="pan-label">STEREO</div>
         </div>
-        <div class="channel-controls">
+        <div class="channel-buttons">
+          <button class="ch-btn solo">SOLO</button>
           <button class="ch-btn mute">M</button>
-          <button class="ch-btn solo">S</button>
         </div>
-        <button class="channel-select-btn">MASTER</button>
       `;
-      container.appendChild(masterChannel);
+      container.appendChild(master);
+    }
+
+    // Generate Piano Keys
+    function generatePiano() {
+      const piano = document.getElementById('pianoKeys');
+      piano.innerHTML = '';
+      
+      const notes = [
+        { note: 'C', freq: 261.63, black: false },
+        { note: 'C#', freq: 277.18, black: true },
+        { note: 'D', freq: 293.66, black: false },
+        { note: 'D#', freq: 311.13, black: true },
+        { note: 'E', freq: 329.63, black: false },
+        { note: 'F', freq: 349.23, black: false },
+        { note: 'F#', freq: 369.99, black: true },
+        { note: 'G', freq: 392.00, black: false },
+        { note: 'G#', freq: 415.30, black: true },
+        { note: 'A', freq: 440.00, black: false },
+        { note: 'A#', freq: 466.16, black: true },
+        { note: 'B', freq: 493.88, black: false },
+        { note: 'C2', freq: 523.25, black: false }
+      ];
+
+      let whiteKeyIndex = 0;
+      notes.forEach((n, i) => {
+        if (n.black) {
+          const blackKey = document.createElement('div');
+          blackKey.className = 'black-key';
+          blackKey.style.left = `${whiteKeyIndex * (100/8) - 12}px`;
+          blackKey.onclick = () => playNote(n.freq, 0.5, 'piano');
+          piano.appendChild(blackKey);
+        } else {
+          const whiteKey = document.createElement('div');
+          whiteKey.className = 'white-key';
+          whiteKey.onclick = () => playNote(n.freq, 0.5, 'piano');
+          piano.appendChild(whiteKey);
+          whiteKeyIndex++;
+        }
+      });
     }
 
     // Generate Timeline
@@ -1701,61 +1843,89 @@
       const ruler = document.getElementById('timelineRuler');
       const tracks = document.getElementById('timelineTracks');
       
-      // Generate beat markers
-      for (let i = 0; i < 100; i++) {
-        const beat = document.createElement('div');
-        beat.className = 'timeline-beat';
-        beat.textContent = `${Math.floor(i/4) + 1}.${(i % 4) + 1}`;
-        ruler.appendChild(beat);
+      // Ruler
+      for (let i = 0; i < 50; i++) {
+        const marker = document.createElement('div');
+        marker.className = 'ruler-marker';
+        marker.textContent = `${Math.floor(i/4) + 1}.${(i % 4) + 1}`;
+        ruler.appendChild(marker);
       }
-      
-      // Generate track lanes
+
+      // Tracks
       for (let i = 0; i < 8; i++) {
         const track = document.createElement('div');
         track.className = 'timeline-track';
         track.innerHTML = `
-          <div class="track-timeline-info">
-            <div class="track-color-dot" style="background: ${channelColors[i]}"></div>
-            <div class="track-timeline-name">${channelNames[i]}</div>
+          <div class="track-label">
+            <div class="track-label-color" style="background: ${channelColors[i]}"></div>
+            ${channelNames[i]}
           </div>
-          <div class="track-clips">
-            ${generateRandomClips(i)}
+          <div class="track-lane">
+            ${generateClips()}
           </div>
         `;
         tracks.appendChild(track);
       }
     }
 
-    function generateRandomClips(trackIndex) {
+    function generateClips() {
       let clips = '';
-      const numClips = Math.floor(Math.random() * 4) + 1;
-      let position = Math.random() * 20 + 5;
-      
-      for (let i = 0; i < numClips; i++) {
-        const width = Math.random() * 200 + 50;
-        const isMidi = trackIndex > 4;
-        
-        clips += `<div class="${isMidi ? 'midi-clip' : 'audio-clip'}" 
-          style="left: ${position}px; width: ${width}px;"></div>`;
-        position += width + Math.random() * 100 + 30;
+      for (let i = 0; i < 3; i++) {
+        const left = Math.random() * 400 + 50;
+        const width = Math.random() * 150 + 50;
+        const isMidi = Math.random() > 0.5;
+        clips += `<div class="track-clip ${isMidi ? 'midi' : 'audio'}" style="left: ${left}px; width: ${width}px;"></div>`;
       }
-      
       return clips;
     }
 
-    // Select Channel
-    function selectChannel(channel) {
-      document.querySelectorAll('.channel-strip').forEach(ch => ch.classList.remove('selected'));
-      channel.classList.add('selected');
-      selectedChannel = channel.dataset.channel;
+    // Animate Meters
+    function animateMeters() {
+      document.querySelectorAll('.meter-bar').forEach(bar => {
+        const fill = bar.querySelector('.meter-fill') || bar;
+        if (fill === bar) {
+          // Master meter style
+          const currentHeight = parseFloat(bar.style.getPropertyValue('--meter-height')) || 50;
+          const newHeight = Math.max(10, Math.min(95, currentHeight + (Math.random() - 0.3) * 30));
+          bar.style.cssText = `--meter-height: ${newHeight}%`;
+          bar.style.background = `linear-gradient(to top, #00ff00 0%, #00ff00 60%, #ffff00 60%, #ffff00 80%, #ff0000 80%, #ff0000 100%)`;
+          bar.style.clipPath = `inset(${100-newHeight}% 0 0 0)`;
+        } else {
+          const currentHeight = parseFloat(fill.style.height) || 50;
+          const newHeight = Math.max(5, Math.min(95, currentHeight + (Math.random() - 0.3) * 25));
+          fill.style.height = newHeight + '%';
+        }
+      });
     }
 
     // Transport Controls
     document.getElementById('playBtn').onclick = function() {
+      if (!audioContext) initAudio();
+      if (audioContext.state === 'suspended') audioContext.resume();
+      
       isPlaying = !isPlaying;
       this.classList.toggle('playing');
-      this.innerHTML = isPlaying ? '⏸' : '▶';
-      if (isPlaying) startPlayback();
+      this.textContent = isPlaying ? '⏸' : '▶';
+      
+      if (isPlaying) {
+        playInterval = setInterval(() => {
+          currentBeat++;
+          updateTimecode();
+          animateMeters();
+        }, 60000 / tempo);
+      } else {
+        clearInterval(playInterval);
+      }
+    };
+
+    document.getElementById('stopBtn').onclick = function() {
+      isPlaying = false;
+      currentBeat = 0;
+      clearInterval(playInterval);
+      document.getElementById('playBtn').classList.remove('playing');
+      document.getElementById('playBtn').textContent = '▶';
+      document.getElementById('recordBtn').classList.remove('recording');
+      updateTimecode();
     };
 
     document.getElementById('recordBtn').onclick = function() {
@@ -1763,192 +1933,166 @@
       this.classList.toggle('recording');
     };
 
-    document.getElementById('stopBtn').onclick = function() {
-      isPlaying = false;
-      isRecording = false;
-      currentTime = 0;
-      document.getElementById('playBtn').classList.remove('playing');
-      document.getElementById('playBtn').innerHTML = '▶';
-      document.getElementById('recordBtn').classList.remove('recording');
-      updateTimeDisplay();
+    // Update Timecode
+    function updateTimecode() {
+      const beats = currentBeat;
+      const bars = Math.floor(beats / 4);
+      const beat = (beats % 4) + 1;
+      const ticks = 0;
+      document.getElementById('timecode').textContent = 
+        `${String(bars).padStart(2, '0')}:${String(beat).padStart(2, '0')}:${String(ticks).padStart(2, '0')}:00`;
+    }
+
+    // Tempo Control
+    document.getElementById('tempoInput').onchange = function() {
+      tempo = parseInt(this.value) || 120;
     };
-
-    // Playback
-    function startPlayback() {
-      if (!isPlaying) return;
-      
-      currentTime += 0.025;
-      updateTimeDisplay();
-      
-      // Update playhead
-      const playhead = document.getElementById('playhead');
-      playhead.style.left = (120 + currentTime * 50) + 'px';
-      
-      // Animate meters
-      animateMeters();
-      
-      setTimeout(startPlayback, 25);
-    }
-
-    function updateTimeDisplay() {
-      const hours = Math.floor(currentTime / 3600);
-      const minutes = Math.floor((currentTime % 3600) / 60);
-      const seconds = Math.floor(currentTime % 60);
-      const frames = Math.floor((currentTime % 1) * 30);
-      
-      document.getElementById('timeDisplay').textContent = 
-        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}:${String(frames).padStart(2, '0')}`;
-    }
-
-    function animateMeters() {
-      document.querySelectorAll('.channel-strip:not(.master-channel) .meter-fill').forEach(fill => {
-        const currentHeight = parseFloat(fill.style.height) || 50;
-        const newHeight = Math.max(5, Math.min(95, currentHeight + (Math.random() - 0.5) * 20));
-        fill.style.height = newHeight + '%';
-      });
-    }
-
-    // Toggle Plugin Rack
-    function toggleRack(header) {
-      const content = header.nextElementSibling;
-      content.classList.toggle('expanded');
-      header.querySelector('span:last-child').textContent = content.classList.contains('expanded') ? '▼' : '▶';
-    }
 
     // Toggle Buttons
     document.querySelectorAll('.toggle-btn').forEach(btn => {
-      btn.onclick = function() {
-        this.classList.toggle('active');
-      };
+      btn.onclick = function() { this.classList.toggle('active'); };
     });
 
-    // Channel Controls
+    // Channel Buttons
     document.addEventListener('click', function(e) {
       if (e.target.classList.contains('ch-btn')) {
         e.target.classList.toggle('active');
         e.stopPropagation();
       }
-      
-      if (e.target.classList.contains('plugin-power')) {
-        e.target.classList.toggle('on');
+      if (e.target.classList.contains('plugin-slot-bypass')) {
+        e.target.classList.toggle('active');
       }
     });
 
-    // AI Chat Functions
-    function sendAiMessage() {
-      const input = document.getElementById('aiInput');
-      const message = input.value.trim();
-      if (!message) return;
+    // Sample Tracks
+    document.querySelectorAll('.sample-track').forEach(track => {
+      track.onclick = function() {
+        const sound = this.dataset.sound;
+        createSound(sound);
+        document.querySelectorAll('.sample-track').forEach(t => t.classList.remove('playing'));
+        this.classList.add('playing');
+        setTimeout(() => this.classList.remove('playing'), 500);
+      };
+    });
+
+    // Audio Drop Zone
+    const dropZone = document.getElementById('audioDropZone');
+    const fileInput = document.getElementById('audioFileInput');
+
+    dropZone.onclick = () => fileInput.click();
+
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
+    dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+    dropZone.ondrop = (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      handleAudioFiles(e.dataTransfer.files);
+    };
+
+    fileInput.onchange = (e) => handleAudioFiles(e.target.files);
+
+    function handleAudioFiles(files) {
+      if (!audioContext) initAudio();
       
-      addChatMessage(message, 'user');
-      input.value = '';
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          audioContext.decodeAudioData(e.target.result, (buffer) => {
+            addLoadedTrack(file.name, buffer);
+          });
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    function addLoadedTrack(name, buffer) {
+      const container = document.getElementById('sampleTracks');
+      const track = document.createElement('div');
+      track.className = 'sample-track';
+      track.innerHTML = `
+        <div class="sample-waveform"></div>
+        <div class="sample-info">
+          <div class="sample-name">${name}</div>
+          <div class="sample-duration">${buffer.duration.toFixed(1)}s</div>
+        </div>
+        <button class="sample-play-btn">▶</button>
+      `;
+      track.onclick = function() {
+        playBuffer(buffer);
+        this.classList.add('playing');
+        setTimeout(() => this.classList.remove('playing'), 500);
+      };
+      container.appendChild(track);
+    }
+
+    function playBuffer(buffer) {
+      if (!audioContext) initAudio();
+      if (audioContext.state === 'suspended') audioContext.resume();
       
-      // Simulate AI response
-      setTimeout(() => {
-        const responses = [
-          "I've analyzed your mix. The kick drum has some frequency buildup around 200Hz. Try cutting 3-4dB with a narrow Q to clean it up.",
-          "Looking at your vocal chain, I'd suggest adding a de-esser before the compressor to tame those sibilants. The EQ looks good but try a gentle 2dB boost at 12kHz for more air.",
-          "Your bass and kick are fighting for the same frequency space. Try sidechaining the bass to the kick with a 3:1 ratio and 10ms attack.",
-          "The mix is sounding great! For mastering, I recommend a gentle multiband compression starting at 2:1 ratio on the low end. This will tighten up the low frequencies.",
-          "I've run an analysis on your track. The stereo image is well-balanced, but the high frequencies could use some excitement. Try adding a subtle harmonic exciter on the master bus."
-        ];
-        
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        addChatMessage(randomResponse, 'assistant');
-      }, 1000);
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(masterGain);
+      source.start();
+      animateMeters();
     }
 
-    function sendSuggestion(suggestion) {
-      document.getElementById('aiInput').value = suggestion;
-      sendAiMessage();
-    }
-
-    function addChatMessage(text, type) {
-      const chat = document.getElementById('aiChat');
-      const message = document.createElement('div');
-      message.className = `ai-message ${type} fade-in`;
-      message.textContent = text;
-      chat.appendChild(message);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    // Enter key for AI input
-    document.getElementById('aiInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') sendAiMessage();
-    });
-
-    // Tempo Control
-    document.getElementById('tempoInput').addEventListener('change', function() {
-      tempo = parseInt(this.value) || 120;
-    });
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-      generateChannels();
-      generateTimeline();
-    });
-
-    // Console Tools
-    document.querySelectorAll('.tool-btn').forEach(btn => {
-      btn.onclick = function() {
-        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-      };
-    });
-
-    // Timeline Tools
-    document.querySelectorAll('.timeline-tool').forEach(btn => {
-      btn.onclick = function() {
-        document.querySelectorAll('.timeline-tool').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-      };
-    });
-
-    // Hardware item click
-    document.querySelectorAll('.hardware-item').forEach(item => {
-      item.onclick = function() {
-        this.classList.toggle('connected');
-        const status = this.querySelector('.hardware-status-text');
-        status.textContent = this.classList.contains('connected') ? 'Connected' : 'Disconnected';
-      };
-    });
-
-    // Fader drag functionality
+    // Fader Drag
     let activeFader = null;
     let startY = 0;
     let startTop = 0;
 
-    document.addEventListener('mousedown', function(e) {
-      if (e.target.classList.contains('fader-handle')) {
+    document.addEventListener('mousedown', (e) => {
+      if (e.target.classList.contains('fader-cap')) {
         activeFader = e.target;
         startY = e.clientY;
-        startTop = parseFloat(activeFader.style.top) || 50;
+        startTop = parseFloat(activeFader.style.top) || 30;
         e.preventDefault();
       }
     });
 
-    document.addEventListener('mousemove', function(e) {
+    document.addEventListener('mousemove', (e) => {
       if (activeFader) {
         const deltaY = e.clientY - startY;
-        const newTop = Math.max(0, Math.min(100, startTop + deltaY));
+        const newTop = Math.max(5, Math.min(95, startTop + deltaY * 0.5));
         activeFader.style.top = newTop + '%';
         
-        // Update dB display
-        const valueDisplay = activeFader.parentElement.nextElementSibling;
-        if (valueDisplay) {
-          const dB = (newTop / 100 * -60 + 10).toFixed(1);
-          valueDisplay.textContent = dB;
+        const dbDisplay = activeFader.parentElement.nextElementSibling;
+        if (dbDisplay) {
+          const db = ((100 - newTop) / 100 * 20 - 10).toFixed(1);
+          dbDisplay.textContent = db;
         }
       }
     });
 
-    document.addEventListener('mouseup', function() {
-      activeFader = null;
+    document.addEventListener('mouseup', () => { activeFader = null; });
+
+    // Keyboard Shortcuts
+    const keyMap = {
+      'a': 261.63, 'w': 277.18, 's': 293.66, 'e': 311.13, 'd': 329.63,
+      'f': 349.23, 't': 369.99, 'g': 392.00, 'y': 415.30, 'h': 440.00,
+      'u': 466.16, 'j': 493.88, 'k': 523.25
+    };
+
+    document.addEventListener('keydown', (e) => {
+      if (keyMap[e.key.toLowerCase()] && !e.repeat) {
+        playNote(keyMap[e.key.toLowerCase()], 0.5, 'piano');
+      }
+      if (e.code === 'Space') {
+        e.preventDefault();
+        document.getElementById('playBtn').click();
+      }
     });
 
-    console.log('🐐 GOAT ULTIMATE STUDIO - 124-Channel SSL Console Initialized');
-    console.log('🎚️ SSL 4000 E/G Series Emulation Active');
-    console.log('🤖 NEMO AI Assistant Ready');
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      generateChannels();
+      generatePiano();
+      generateTimeline();
+      console.log('🐐 GOAT ULTIMATE STUDIO - SSL Origin Evo 32 Initialized');
+      console.log('🎹 Press A-K keys to play piano');
+      console.log('🎵 Drop audio files to load them');
+      console.log('▶️ Press Space to play/pause');
+    });
   </script>
 </body>
 </html>

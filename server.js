@@ -16,6 +16,8 @@ const MAX_PORT_ATTEMPTS = 10;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static files - Vercel compatible
 app.use(express.static('public'));
 app.use(express.static('static'));
 
@@ -344,6 +346,9 @@ async function startServer() {
   }
 }
 
-startServer();
+// Only start server if not in Vercel environment
+if (!process.env.VERCEL && require.main === module) {
+  startServer();
+}
 
 module.exports = app;

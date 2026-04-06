@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#d4a03c">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="css/goat-theme.css">
+  <link rel="stylesheet" href="css/marvel-theme.css">
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
@@ -41,6 +42,7 @@
       <a href="banking.html">🏦 Banking</a>
       <a href="wallet.html">💰 Wallet</a>
       <a href="screenwriting.html">🎬 Screenwriting</a>
+      <a href="studio.html">🎛️ GOAT Studio</a>
       <a href="#ai-stack">🤖 AI Stack</a>
       <a href="#store" style="position:relative;">🛒 Store <span class="cart-badge" id="cartBadge" style="display:none;">0</span></a>
     </div>
@@ -672,6 +674,67 @@
       el.style.boxShadow = '0 0 30px rgba(212,160,60,0.2)';
     }
   })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       MARVEL CARTOON EFFECTS - FLOATING GOAT HERO & PARTICLES
+       ═══════════════════════════════════════════════════════════════════════ -->
+  
+  <!-- Floating GOAT Hero -->
+  <img src="goat-hero-5.png" class="floating-hero" alt="GOAT Hero" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+  
+  <!-- Particle Effects Container -->
+  <div id="particleContainer"></div>
+  
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <img src="goat-hero-5.png" class="loading-logo" alt="GOAT">
+    <div class="loading-text">GOAT ROYALTIES LOADING...</div>
+  </div>
+
+  <script>
+    // Hide loading screen after page loads
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loader = document.getElementById('loadingScreen');
+        loader.style.opacity = '0';
+        loader.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => loader.style.display = 'none', 500);
+      }, 1500);
+    });
+
+    // Create floating particles
+    function createParticles() {
+      const container = document.getElementById('particleContainer');
+      const colors = ['#ffd700', '#e23636', '#ff6b35', '#d4a03c'];
+      
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.animationDelay = Math.random() * 10 + 's';
+        particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.width = (2 + Math.random() * 4) + 'px';
+        particle.style.height = particle.style.width;
+        container.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // Hero image rotation for dramatic effect
+    const heroImages = [
+      'goat-hero-1.png', 'goat-hero-2.png', 'goat-hero-3.png', 
+      'goat-hero-4.png', 'goat-hero-5.png', 'goat-hero-6.png',
+      'goat-hero-7.png', 'goat-hero-8.png', 'goat-hero-9.png'
+    ];
+    
+    // Change floating hero every 10 seconds
+    let heroIndex = 4;
+    setInterval(() => {
+      heroIndex = (heroIndex + 1) % heroImages.length;
+      document.querySelector('.floating-hero').src = heroImages[heroIndex];
+    }, 10000);
   </script>
 
 </body>

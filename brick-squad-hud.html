@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTA6 ATL BRICK SQUAD - GOAT Gaming</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Oswald', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0a0a0a 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            color: #fff;
+        }
+        
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #000 0%, #1a0a2e 50%, #2d1b4e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+        
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .gta6-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 120px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+        
+        .gta-text {
+            color: #ffd700;
+        }
+        
+        .gta-number {
+            color: #8b0000;
+            font-size: 180px;
+            text-shadow: 4px 4px 0 #ffd700;
+        }
+        
+        .brick-squad-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .atl {
+            color: #8b0000;
+        }
+        
+        .brick-squad {
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+        
+        .squad-badge {
+            font-size: 48px;
+            margin-top: 20px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .loading-bar {
+            width: 400px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-top: 40px;
+            overflow: hidden;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #8b0000);
+            width: 0%;
+            animation: load 3s ease-in-out forwards;
+        }
+        
+        @keyframes load {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        .loading-tips {
+            margin-top: 30px;
+            font-size: 18px;
+            color: rgba(255, 215, 0, 0.8);
+            font-style: italic;
+        }
+        
+        /* Main HUD */
+        #main-hud {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        #main-hud.visible {
+            opacity: 1;
+        }
+        
+        /* Top Left - Player Info */
+        .hud-top-left {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+        }
+        
+        .player-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd700, #8b0000);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        
+        .player-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffd700;
+        }
+        
+        .player-level {
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .player-squad {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #8b0000;
+            font-weight: 700;
+        }
+        
+        .currency-panel {
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #ffd700;
+        }
+        
+        .currency-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px 0;
+        }
+        
+        .currency-icon {
+            font-size: 20px;
+        }
+        
+        .currency-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffd700;
+        }
+        
+        /* Top Right - Minimap */
+        .hud-top-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .minimap-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+        }
+        
+        .minimap {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            border-radius: 5px;
+            position: relative;
+        }
+        
+        .minimap-player {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffd700;
+        }
+        
+        .minimap-marker {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .marker-mission {
+            background: #ff4444;
+            top: 30%;
+            left: 70%;
+            animation: ping 1.5s ease-in-out infinite;
+        }
+        
+        .marker-property {
+            background: #44ff44;
+            top: 60%;
+            left: 25%;
+        }
+        
+        .marker-shop {
+            background: #4444ff;
+            top: 20%;
+            left: 40%;
+        }
+        
+        @keyframes ping {
+            0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0); }
+        }
+        
+        .location-info {
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .district {
+            display: block;
+            font-size: 16px;
+            font-weight: 700;
+            color: #8b0000;
+        }
+        
+        .street {
+            display: block;
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        .server-info {
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ffd700;
+            text-align: center;
+        }
+        
+        .server-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffd700;
+        }
+        
+        .player-count {
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        /* Bottom Right - Status Bars */
+        .hud-bottom-right {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        .status-bars {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ffd700;
+        }
+        
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+        
+        .status-icon {
+            font-size: 18px;
+        }
+        
+        .status-fill {
+            width: 150px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #8b0000);
+            border-radius: 4px;
+        }
+        
+        .status-bar.health .status-fill::after { width: 100%; background: linear-gradient(90deg, #ff4444, #ff6666); }
+        .status-bar.armor .status-fill::after { width: 75%; background: linear-gradient(90deg, #4444ff, #6666ff); }
+        .status-bar.stamina .status-fill::after { width: 100%; background: linear-gradient(90deg, #ffd700, #8b0000); }
+        .status-bar.hunger .status-fill::after { width: 85%; background: linear-gradient(90deg, #ff8800, #ffaa44); }
+        .status-bar.thirst .status-fill::after { width: 90%; background: linear-gradient(90deg, #00aaff, #44ccff); }
+        
+        .status-value {
+            font-size: 12px;
+            color: #ffd700;
+            width: 30px;
+        }
+        
+        /* Bottom Center - Action Menu */
+        .hud-bottom-center {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .action-menu {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid #ffd700;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            background: rgba(139, 0, 0, 0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .action-item:hover {
+            background: rgba(139, 0, 0, 0.6);
+            transform: scale(1.05);
+        }
+        
+        .action-key {
+            background: #ffd700;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .action-label {
+            font-size: 14px;
+            color: #fff;
+        }
+        
+        /* Bottom Left - Vehicle Panel */
+        .hud-bottom-left {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+        }
+        
+        .vehicle-panel {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ffd700;
+            display: none;
+        }
+        
+        .vehicle-panel.active {
+            display: block;
+        }
+        
+        .vehicle-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        
+        .vehicle-stats {
+            margin-bottom: 10px;
+        }
+        
+        .stat-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            width: 35px;
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        .stat-fill {
+            width: 100px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #8b0000);
+            border-radius: 3px;
+        }
+        
+        .vehicle-stats .stat-bar:nth-child(1) .stat-fill::after { width: 95%; }
+        .vehicle-stats .stat-bar:nth-child(2) .stat-fill::after { width: 80%; }
+        .vehicle-stats .stat-bar:nth-child(3) .stat-fill::after { width: 70%; }
+        
+        .speedometer {
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .speed-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffd700;
+        }
+        
+        .speed-unit {
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px 40px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+            font-size: 24px;
+            color: #ffd700;
+            animation: fadeInOut 3s ease forwards;
+            z-index: 1000;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+        
+        /* Mission Panel */
+        .mission-panel {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #8b0000;
+            max-width: 250px;
+        }
+        
+        .mission-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .mission-objective {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .mission-objective.completed {
+            color: #44ff44;
+            text-decoration: line-through;
+        }
+        
+        .objective-check {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffd700;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mission-objective.completed .objective-check {
+            background: #44ff44;
+            border-color: #44ff44;
+        }
+        
+        .mission-reward {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 215, 0, 0.3);
+            font-size: 14px;
+        }
+        
+        .reward-label {
+            color: #aaa;
+        }
+        
+        .reward-value {
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        /* Radio Widget */
+        .radio-widget {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 25px;
+            border-radius: 30px;
+            border: 2px solid #ffd700;
+            display: none;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .radio-widget.active {
+            display: flex;
+        }
+        
+        .radio-station {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffd700;
+        }
+        
+        .radio-track {
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .radio-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .radio-btn {
+            background: rgba(139, 0, 0, 0.5);
+            border: none;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-btn:hover {
+            background: rgba(139, 0, 0, 0.8);
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="gta6-logo">
+            <span class="gta-text">GTA</span>
+            <span class="gta-number">6</span>
+        </div>
+        <div class="brick-squad-title">
+            <span class="atl">ATL</span>
+            <span class="brick-squad">BRICK SQUAD</span>
+        </div>
+        <div class="squad-badge">👑🔥💯</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div class="loading-tips">BRICK SQUAD - We Run This City!</div>
+    </div>
+
+    <!-- Main HUD -->
+    <div id="main-hud">
+        <!-- Top Left - Player Info -->
+        <div class="hud-top-left">
+            <div class="player-info">
+                <div class="player-avatar">🎮</div>
+                <div>
+                    <div class="player-name">DJSPEEDYGA</div>
+                    <div class="player-level">LVL 100</div>
+                    <div class="player-squad">🏆 BRICK SQUAD OG</div>
+                </div>
+            </div>
+            <div class="currency-panel">
+                <div class="currency-item">
+                    <span class="currency-icon">💰</span>
+                    <span class="currency-value">$10,000,000</span>
+                </div>
+                <div class="currency-item">
+                    <span class="currency-icon">🧱</span>
+                    <span class="currency-value">500,000 BRICK</span>
+                </div>
+                <div class="currency-item">
+                    <span class="currency-icon">₿</span>
+                    <span class="currency-value">2.5 BTC</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Right - Minimap -->
+        <div class="hud-top-right">
+            <div class="minimap-container">
+                <div class="minimap">
+                    <div class="minimap-player"></div>
+                    <div class="minimap-marker marker-mission"></div>
+                    <div class="minimap-marker marker-property"></div>
+                    <div class="minimap-marker marker-shop"></div>
+                </div>
+                <div class="location-info">
+                    <span class="district">BRICK SQUAD TERRITORY</span>
+                    <span class="street">Waka Blvd</span>
+                </div>
+            </div>
+            <div class="server-info">
+                <div class="server-name">BRICK SQUAD ATL</div>
+                <div class="player-count">47/128 Squaders</div>
+            </div>
+        </div>
+
+        <!-- Mission Panel -->
+        <div class="mission-panel">
+            <div class="mission-title">🎯 BRICK SQUAD MISSION</div>
+            <div class="mission-objective completed">
+                <div class="objective-check">✓</div>
+                <span>Meet at the Trap House</span>
+            </div>
+            <div class="mission-objective">
+                <div class="objective-check"></div>
+                <span>Collect the package</span>
+            </div>
+            <div class="mission-objective">
+                <div class="objective-check"></div>
+                <span>Deliver to Waka's Studio</span>
+            </div>
+            <div class="mission-reward">
+                <span class="reward-label">Reward: </span>
+                <span class="reward-value">🧱 50,000 BRICK + $25,000</span>
+            </div>
+        </div>
+
+        <!-- Bottom Left - Vehicle Panel -->
+        <div class="hud-bottom-left">
+            <div class="vehicle-panel active">
+                <div class="vehicle-name">🚗 BRICK SQUAD MOBILE</div>
+                <div class="vehicle-stats">
+                    <div class="stat-bar">
+                        <span class="stat-label">SPD</span>
+                        <div class="stat-fill"></div>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="stat-label">ACC</span>
+                        <div class="stat-fill"></div>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="stat-label">HND</span>
+                        <div class="stat-fill"></div>
+                    </div>
+                </div>
+                <div class="speedometer">
+                    <div class="speed-value" id="speed">0</div>
+                    <div class="speed-unit">MPH</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Center - Action Menu -->
+        <div class="hud-bottom-center">
+            <div class="action-menu">
+                <div class="action-item">
+                    <span class="action-key">I</span>
+                    <span class="action-label">Inventory</span>
+                </div>
+                <div class="action-item">
+                    <span class="action-key">P</span>
+                    <span class="action-label">Phone</span>
+                </div>
+                <div class="action-item">
+                    <span class="action-key">R</span>
+                    <span class="action-label">BRICK Radio</span>
+                </div>
+                <div class="action-item">
+                    <span class="action-key">M</span>
+                    <span class="action-label">Map</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Radio Widget -->
+        <div class="radio-widget" id="radio-widget">
+            <div>
+                <div class="radio-station">🎵 BRICK SQUAD FM</div>
+                <div class="radio-track" id="radio-track">Waka Flocka Flame - Hard In The Paint</div>
+            </div>
+            <div class="radio-controls">
+                <button class="radio-btn" id="prev-btn">⏮</button>
+                <button class="radio-btn" id="play-btn">▶️</button>
+                <button class="radio-btn" id="next-btn">⏭</button>
+            </div>
+        </div>
+
+        <!-- Bottom Right - Status Bars -->
+        <div class="hud-bottom-right">
+            <div class="status-bars">
+                <div class="status-bar health">
+                    <span class="status-icon">❤️</span>
+                    <div class="status-fill"></div>
+                    <span class="status-value">100</span>
+                </div>
+                <div class="status-bar armor">
+                    <span class="status-icon">🛡️</span>
+                    <div class="status-fill"></div>
+                    <span class="status-value">75</span>
+                </div>
+                <div class="status-bar stamina">
+                    <span class="status-icon">⚡</span>
+                    <div class="status-fill"></div>
+                </div>
+                <div class="status-bar hunger">
+                    <span class="status-icon">🍔</span>
+                    <div class="status-fill"></div>
+                </div>
+                <div class="status-bar thirst">
+                    <span class="status-icon">💧</span>
+                    <div class="status-fill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Loading Screen Transition
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.add('fade-out');
+            document.getElementById('main-hud').classList.add('visible');
+            showNotification('🎮 Welcome to BRICK SQUAD ATL!');
+        }, 3500);
+
+        // Notification System
+        function showNotification(msg) {
+            const n = document.createElement('div');
+            n.className = 'notification';
+            n.textContent = msg;
+            document.body.appendChild(n);
+            setTimeout(() => n.remove(), 3000);
+        }
+
+        // Speedometer Animation
+        let speed = 0;
+        let increasing = true;
+        
+        setInterval(() => {
+            if (increasing) {
+                speed += Math.random() * 10;
+                if (speed >= 180) increasing = false;
+            } else {
+                speed -= Math.random() * 10;
+                if (speed <= 0) {
+                    speed = 0;
+                    increasing = true;
+                }
+            }
+            document.getElementById('speed').textContent = Math.round(speed);
+        }, 100);
+
+        // Radio System
+        const radioTracks = [
+            'Waka Flocka Flame - Hard In The Paint',
+            'Waka Flocka Flame - No Hands',
+            'Gucci Mane - Lemonade',
+            'Future - Mask Off',
+            'Migos - Bad and Boujee',
+            'Young Thug - The London',
+            'Lil Baby - Drip Too Hard',
+            '21 Savage - Bank Account'
+        ];
+        
+        let currentTrack = 0;
+        let radioActive = false;
+
+        document.getElementById('play-btn').addEventListener('click', () => {
+            radioActive = !radioActive;
+            document.getElementById('play-btn').textContent = radioActive ? '⏸' : '▶️';
+            if (radioActive) {
+                showNotification('🎵 Now Playing: ' + radioTracks[currentTrack]);
+            }
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            currentTrack = (currentTrack + 1) % radioTracks.length;
+            document.getElementById('radio-track').textContent = radioTracks[currentTrack];
+            showNotification('🎵 ' + radioTracks[currentTrack]);
+        });
+
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            currentTrack = (currentTrack - 1 + radioTracks.length) % radioTracks.length;
+            document.getElementById('radio-track').textContent = radioTracks[currentTrack];
+            showNotification('🎵 ' + radioTracks[currentTrack]);
+        });
+
+        // Keyboard Controls
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toUpperCase();
+            
+            switch(key) {
+                case 'P':
+                    showNotification('📱 BRICK SQUAD Phone Opening...');
+                    break;
+                case 'R':
+                    const radioWidget = document.getElementById('radio-widget');
+                    radioWidget.classList.toggle('active');
+                    if (radioWidget.classList.contains('active')) {
+                        showNotification('🎵 BRICK SQUAD FM - Now Playing: ' + radioTracks[currentTrack]);
+                    }
+                    break;
+                case 'I':
+                    showNotification('🎒 Inventory Opened');
+                    break;
+                case 'M':
+                    showNotification('🗺️ Map Opening...');
+                    break;
+                case 'V':
+                    document.querySelector('.vehicle-panel').classList.toggle('active');
+                    break;
+            }
+        });
+
+        // Simulated location changes
+        const locations = [
+            { district: 'BRICK SQUAD TERRITORY', street: 'Waka Blvd' },
+            { district: 'TRAP CITY', street: 'Gucci Mane Ave' },
+            { district: 'ATL HEIGHTS', street: 'Future St' },
+            { district: 'MONEY VALLEY', street: 'Young Thug Way' },
+            { district: 'GOAT PLAZA', street: 'DJSPEEDYGA Lane' }
+        ];
+
+        let currentLocation = 0;
+        
+        setInterval(() => {
+            currentLocation = (currentLocation + 1) % locations.length;
+            document.querySelector('.district').textContent = locations[currentLocation].district;
+            document.querySelector('.street').textContent = locations[currentLocation].street;
+        }, 30000);
+    </script>
+</body>
+</html>

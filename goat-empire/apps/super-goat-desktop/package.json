@@ -1,0 +1,79 @@
+{
+  "name": "super-goat-royalty-app",
+  "version": "1.0.0",
+  "description": "Super GOAT Royalty App — All-in-one: Royalty tracking, Blockchain, Super LLM (215 models), Crypto Mining, DSP Distribution, Video Editing, AI. By DJ Speedy.",
+  "main": "src/main/main.js",
+  "author": "DJ Speedy (GOAT Force)",
+  "license": "Proprietary",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder -mwl",
+    "build:win": "electron-builder --win --x64 portable nsis",
+    "build:mac": "electron-builder --mac dmg",
+    "build:linux": "electron-builder --linux AppImage tar.gz",
+    "build:all": "electron-builder -mwl",
+    "pack": "electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "crypto-js": "^4.2.0",
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "cloud.goatforce.superroyaltyapp",
+    "productName": "Super GOAT Royalty App",
+    "copyright": "Copyright © 2025 DJ Speedy / GOAT Force",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "artifactName": "SuperGOATRoyaltyApp-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Super GOAT Royalty App"
+    },
+    "portable": {
+      "artifactName": "SuperGOATRoyaltyApp-Portable-${version}.${ext}"
+    },
+    "mac": {
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64"] }
+      ],
+      "category": "public.app-category.music",
+      "artifactName": "SuperGOATRoyaltyApp-${version}-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "Super GOAT Royalty App",
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": [
+        { "target": "AppImage", "arch": ["x64"] },
+        { "target": "tar.gz", "arch": ["x64"] }
+      ],
+      "category": "AudioVideo",
+      "artifactName": "SuperGOATRoyaltyApp-${version}-${arch}.${ext}"
+    }
+  }
+}

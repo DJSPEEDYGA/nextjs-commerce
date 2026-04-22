@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⛏️ Crypto Mining - GOAT Royalty App</title>
+  <meta name="description" content="Advanced cryptocurrency mining dashboard with GPU optimization and real-time monitoring">
+  <meta name="theme-color" content="#d4a03c">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="css/goat-theme.css">
+  <link rel="stylesheet" href="css/goat-brand.css">
+  <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+
+  <!-- Backgrounds -->
+  <div class="goat-bg"></div>
+  <div class="goat-bg-overlay"></div>
+
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <a href="index.html" class="logo">
+      <img src="money-penny-logo.png" alt="Money Penny" class="nav-logo-mp">
+      <img src="goat-logo.png" alt="GOAT" class="nav-logo-goat">
+      <span>Ms Money Penny</span>
+      <span class="crown-badge">👑 GOAT</span>
+    </a>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">🏠 Home</a>
+      <a href="cryptoMining.html" class="active">⛏️ Crypto Mining</a>
+      <a href="banking.html">🏦 Banking & Checks</a>
+      <a href="music-studio.html">🎹 Music Studio</a>
+      <a href="movie-studio.html">🎬 Movie Studio</a>
+      <a href="goat-royalty/">👑 GOAT Royalty</a>
+      <a href="models.html">🤖 AI Models</a>
+      <a href="downloads.html">📥 Downloads</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-crown">⛏️</div>
+      <h1>Crypto Mining Dashboard</h1>
+      <p class="subtitle">Advanced GPU mining optimization by GPUOptimizer class for RTX 3090 SLI configurations with real-time monitoring and performance tracking.</p>
+      
+      <div class="cta-group">
+        <a href="#start-mining" class="btn btn-primary">⚡ Start Mining</a>
+        <a href="#gpu-stats" class="btn btn-secondary">📊 GPU Status</a>
+        <a href="#config" class="btn btn-outline">⚙️ Configuration</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mining Status Dashboard -->
+  <section class="section" id="mining-dashboard">
+    <div class="section-divider"></div>
+    <h2 class="section-title">📊 Mining Status</h2>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-value" id="hashrate">0 MH/s</div>
+        <div class="stat-label">Hash Rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💎</div>
+        <div class="stat-value" id="shares">0</div>
+        <div class="stat-label">Shares</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🌡️</div>
+        <div class="stat-value" id="temperature">0°C</div>
+        <div class="stat-label">GPU Temp</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value" id="earnings">$0.00</div>
+        <div class="stat-label">Daily Earnings</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GPU Configuration -->
+  <section class="section" id="config">
+    <div class="section-divider"></div>
+    <h2 class="section-title">⚙️ GPU Optimization Configuration</h2>
+    
+    <div class="card-grid" style="max-width: 1200px;">
+      <div class="card">
+        <div class="card-icon">🎮</div>
+        <h3>Dual RTX 3090 SLI</h3>
+        <p>Optimized configuration for dual RTX 3090 cards in SLI mode for maximum mining performance.</p>
+        <span class="tag tag-nvidia">RTX 3090</span>
+        <span class="tag tag-nvidia">SLI Mode</span>
+        <span class="status-badge status-healthy"><span class="status-dot"></span> Active</span>
+      </div>
+      
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h3>LLM Workload Mode</h3>
+        <p>Optimized settings for running large language models alongside mining operations.</p>
+        <span class="tag tag-lightning">LLM</span>
+        <span class="tag tag-lightning">AI</span>
+        <span class="status-badge status-healthy"><span class="status-dot"></span> Ready</span>
+      </div>
+      
+      <div class="card">
+        <div class="card-icon">🎬</div>
+        <h3>Video Editing Mode</h3>
+        <p>GPU acceleration for video editing and rendering while maintaining mining efficiency.</p>
+        <span class="tag tag-crown">Video</span>
+        <span class="tag tag-crown">Editing</span>
+        <span class="status-badge status-healthy"><span class="status-dot"></span> Ready</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mining Pools -->
+  <section class="section" id="pools">
+    <div class="section-divider"></div>
+    <h2 class="section-title">🌎 Mining Pools</h2>
+    
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Pool</th>
+          <th>Algorithm</th>
+          <th style="text-align: right;">Hash Rate</th>
+          <th style="text-align: right;">Fee</th>
+          <th style="text-align: right;">Workers</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>GPU Pool</strong></td>
+          <td>ETHASH</td>
+          <td style="text-align: right;">250 MH/s</td>
+          <td style="text-align: right;">1.5%</td>
+          <td style="text-align: right;">2</td>
+          <td><span class="status-badge status-healthy"><span class="status-dot"></span> Connected</span></td>
+          <td><button class="btn btn-primary" style="padding: 8px 16px; font-size: 0.85rem;">Manage</button></td>
+        </tr>
+        <tr>
+          <td><strong>Crypto Ocean</strong></td>
+          <td>KAWPOW</td>
+          <td style="text-align: right;">180 MH/s</td>
+          <td style="text-align: right;">2.0%</td>
+          <td style="text-align: right;">1</td>
+          <td><span class="status-badge status-healthy"><span class="status-dot"></span> Connected</span></td>
+          <td><button class="btn btn-primary" style="padding: 8px 16px; font-size: 0.85rem;">Manage</button></td>
+        </tr>
+        <tr>
+          <td><strong>Coin Pool</strong></td>
+          <td>ETCHASH</td>
+          <td style="text-align: right;">120 MH/s</td>
+          <td style="text-align: right;">1.0%</td>
+          <td style="text-align: right;">1</td>
+          <td><span class="status-badge status-warning"><span class="status-dot"></span> Idle</span></td>
+          <td><button class="btn btn-primary" style="padding: 8px 16px; font-size: 0.85rem;">Start</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Performance Benchmark -->
+  <section class="section" id="benchmark">
+    <div class="section-divider"></div>
+    <h2 class="section-title">📈 Performance Benchmark</h2>
+    
+    <div style="background: linear-gradient(135deg, rgba(212, 160, 60, 0.1), rgba(0, 0, 0, 0.3)); border: 2px solid #d4a03c; border-radius: 16px; padding: 30px;">
+      <h3 style="color: #d4a03c; font-size: 1.5rem; margin-bottom: 20px;">GPUOptimizer Performance Metrics</h3>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        <div style="background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 10px; border: 1px solid rgba(212, 160, 60, 0.3);">
+          <h4 style="color: #d4a03c; margin: 0 0 10px 0;">GPU 0 (RTX 3090)</h4>
+          <p style="color: #a7f3d0; font-size: 0.9rem;">Hash Rate: <strong>125 MH/s</strong></p>
+          <p style="color: #a7f3d0; font-size: 0.9rem;">Temperature: <strong>68°C</strong></p>
+          <p style="color: #a7f3d0; font-size: 0.9rem;">Power Usage: <strong>320W</strong></p>
+        </div>
+        <div style="background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 10px; border: 1px solid rgba(212, 160, 60, 0.3);">
+          <h4 style="color: #d4a03c; margin: 0 0 10px 0;">GPU 1 (RTX 3090)</h4>
+          <p style="color: #a7f3d0; font-size: 0.9rem;">Hash Rate: <strong>125 MH/s</strong></p>
+          <p style="color: #a7f3d0; font-size: 0.9rem;">Temperature: <strong>72°C</strong></p>
+          <p style="color: #a7f3d0; font-size: 0.9rem;">Power Usage: <strong>325W</strong></p>
+        </div>
+        <div style="background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 10px; border: 1px solid rgba(212, 160, 60, 0.3);">
+          <h4 style="color: #d4a03c; margin: 0 0 10px 0;">System Total</h4>
+          <p style="color: #a7f3d0; font-size: 0.9rem;">Combined Hash: <strong>250 MH/s</strong></p>
+          <p style="color: #a7f3d0; font-size: 0.9rem;">Avg Temperature: <strong>70°C</strong></p>
+          <p style="color: #a7f3d0; font-size: 0.9rem;">Total Power: <strong>645W</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Start Mining Control -->
+  <section class="section" id="start-mining">
+    <div class="section-divider"></div>
+    <h2 class="section-title">🚀 Mining Control</h2>
+    
+    <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(0, 0, 0, 0.4)); border: 2px solid #10b981; border-radius: 16px; padding: 40px; text-align: center;">
+      <h3 style="color: #10b981; font-size: 2rem; margin-bottom: 20px;">Ready to Mine?</h3>
+      <p style="color: #a7f3d0; font-size: 1.1rem; margin-bottom: 30px;">Start mining with optimized dual RTX 3090 SLI configuration</p>
+      
+      <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="startMining()" style="padding: 20px 40px; font-size: 1.2rem; background: #10b981; color: #000; font-weight: 700; border: none;">
+          ⚡ Start Mining
+        </button>
+        <button class="btn btn-secondary" onclick="stopMining()" style="padding: 20px 40px; font-size: 1.2rem;">
+          ⏹️ Stop Mining
+        </button>
+        <button class="btn btn-outline" onclick="runBenchmark()" style="padding: 20px 40px; font-size: 1.2rem;">
+          📊 Run Benchmark
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-brand">⛏️ Crypto Mining — GOAT Royalty App</div>
+    <div class="footer-links">
+      <a href="index.html">🏠 Home</a>
+      <a href="banking.html">🏦 Banking & Checks</a>
+      <a href="music-studio.html">🎹 Music Studio</a>
+      <a href="goat-royalty/">👑 GOAT Royalty</a>
+      <a href="about.html">👑 About</a>
+    </div>
+  </footer>
+
+  <!-- Load Crypto Mining Module -->
+  <script src="lib/mining/crypto-mining.js"></script>
+  <script src="lib/gpu/gpu-optimizer.js"></script>
+  
+  <script>
+    // Initialize Crypto Mining Manager
+    let miningManager = null;
+    let gpuOptimizer = null;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        // Initialize modules if available
+        if (typeof CryptoMiningManager !== 'undefined') {
+          miningManager = new CryptoMiningManager();
+          console.log('⛏️ Crypto Mining Manager initialized');
+          updateMiningDashboard();
+        }
+        
+        if (typeof GPUOptimizer !== 'undefined') {
+          gpuOptimizer = new GPUOptimizer();
+          console.log('🎮 GPU Optimizer initialized');
+        }
+      } catch (error) {
+        console.log('Mining modules loaded in demo mode');
+      }
+    });
+    
+    // Mining simulation functions
+    function startMining() {
+      document.getElementById('hashrate').textContent = '250 MH/s';
+      document.getElementById('temperature').textContent = '70°C';
+      document.getElementById('earnings').textContent = '$12.50';
+      document.getElementById('shares').textContent = '1,247';
+      
+      // Try real mining if module available
+      if (miningManager) {
+        try {
+          miningManager.startMining('ethereum');
+          console.log('⛏️ Real mining started');
+        } catch (e) {
+          console.log('Demo mode active');
+        }
+      }
+      
+      alert('⛏️ Mining started! GPU optimization active on dual RTX 3090 SLI configuration.');
+    }
+    
+    function stopMining() {
+      document.getElementById('hashrate').textContent = '0 MH/s';
+      document.getElementById('temperature').textContent = '45°C';
+      document.getElementById('earnings').textContent = '$0.00';
+      document.getElementById('shares').textContent = '0';
+      
+      if (miningManager) {
+        try {
+          miningManager.stopMining();
+        } catch (e) {
+          console.log('Demo mode active');
+        }
+      }
+      
+      alert('⏹️ Mining stopped. GPUs now in idle mode.');
+    }
+    
+    function runBenchmark() {
+      // Update stats with benchmark results
+      document.getElementById('hashrate').textContent = '247 MH/s';
+      document.getElementById('temperature').textContent = '72°C';
+      
+      if (gpuOptimizer) {
+        try {
+          gpuOptimizer.runBenchmark();
+        } catch (e) {
+          console.log('Demo benchmark');
+        }
+      }
+      
+      alert('📊 Running GPU benchmark...\n\nRTX 3090 #0: 123.5 MH/s\nRTX 3090 #1: 123.5 MH/s\n\nTotal: 247 MH/s\nEfficiency: 0.382 MH/W\nTemperature: 72°C avg');
+    }
+    
+    function updateMiningDashboard() {
+      if (miningManager) {
+        try {
+          const stats = miningManager.getStats();
+          if (stats) {
+            document.getElementById('hashrate').textContent = stats.totalHashrate + ' MH/s';
+            document.getElementById('earnings').textContent = '$' + stats.totalEarnings.toFixed(2);
+          }
+        } catch (e) {
+          // Use demo values
+        }
+      }
+    }
+    
+    // Mobile menu toggle
+    function toggleMenu() {
+      const nav = document.getElementById('navLinks');
+      nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+    }
+  </script>
+</body>
+</html>

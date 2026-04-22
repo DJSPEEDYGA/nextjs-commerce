@@ -95,3 +95,41 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+// Money Making Routes
+const miningRoutes = require('./routes/services/money-making/mining');
+const revenueRoutes = require('./routes/services/money-making/revenue');
+const profitsRoutes = require('./routes/services/money-making/profits');
+const paymentsRoutes = require('./routes/services/money-making/payments');
+
+// Mount money making routes
+app.use('/api/money-making/mining', miningRoutes);
+app.use('/api/money-making/revenue', revenueRoutes);
+app.use('/api/money-making/profits', profitsRoutes);
+app.use('/api/money-making/payments', paymentsRoutes);
+
+// Money Making API Integration
+app.get('/api/money-making/dashboard', async (req, res) => {
+  try {
+    const CryptoMiningService = require('./services/money-making/cryptoMiningService');
+    const ProfitTrackingService = require('./services/money-making/profitTrackingService');
+    
+    const miningService = new CryptoMiningService();
+    const profitService = new ProfitTrackingService();
+    
+    const [miningStats, currentProfit] = await Promise.all([
+      miningService.getMiningStats(),
+      profitService.getCurrentProfit()
+    ]);
+    
+    res.json({
+      success: true,
+      data: {
+        mining: miningStats,
+        profits: currentProfit,
+        updatedAt: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});

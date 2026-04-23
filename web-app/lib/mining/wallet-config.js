@@ -2,8 +2,8 @@ const walletConfig = {
     wallets: {
         bitcoin: {
             address: '$lifeimitatesartinc',
-            cashApp: '$lifeimitatesartinc',
-            note: 'Cash App Bitcoin wallet - UPDATE WITH ACTUAL BTC ADDRESS'
+            cashApp: 'https://cash.app/launch/bitcoin/$lifeimitatesartinc/S035CDqqhR',
+            note: 'Cash App Bitcoin payment link'
         },
         ethereum: {
             address: 'YOUR_ETH_ADDRESS',  // UPDATE THIS

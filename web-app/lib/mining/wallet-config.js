@@ -9,6 +9,10 @@ const walletConfig = {
             address: 'YOUR_ETH_ADDRESS',  // UPDATE THIS
             note: 'MetaMask or other ETH wallet'
         },
+        paypal: {
+            address: 'https://www.paypal.biz/harveymiller',
+            note: 'PayPal payment link'
+        },
         litecoin: {
             address: '324A37mfy4RBLJY9shXYUeoJw1eERHx12n',
             note: 'LTC wallet - FOR NICEHASH PAYOUTS'

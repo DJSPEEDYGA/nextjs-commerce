@@ -4,7 +4,7 @@
 
 const express = require('express');
 const router = express.Router();
-const CryptoMiningService = require('../../services/money-making/cryptoMiningService');
+const CryptoMiningService = require('../../../services/money-making/cryptoMiningService');
 
 const miningService = new CryptoMiningService();
 

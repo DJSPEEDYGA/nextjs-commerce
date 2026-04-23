@@ -4,7 +4,7 @@
 
 const express = require('express');
 const router = express.Router();
-const PaymentGatewayService = require('../../services/money-making/paymentGatewayService');
+const PaymentGatewayService = require('../../../services/money-making/paymentGatewayService');
 
 const paymentService = new PaymentGatewayService();
 

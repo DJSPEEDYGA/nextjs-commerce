@@ -4,7 +4,7 @@
 
 const express = require('express');
 const router = express.Router();
-const RevenueDistributionService = require('../../services/money-making/revenueDistributionService');
+const RevenueDistributionService = require('../../../services/money-making/revenueDistributionService');
 
 const revenueService = new RevenueDistributionService();
 

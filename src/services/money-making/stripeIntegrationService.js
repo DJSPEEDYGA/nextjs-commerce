@@ -3,7 +3,16 @@
  * Handles credit card processing, subscriptions, and client payments
  */
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+let stripe = null;
+
+// Only initialize Stripe if API key is provided
+if (process.env.STRIPE_SECRET_KEY) {
+  try {
+    stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+  } catch (error) {
+    console.warn('Stripe initialization failed:', error.message);
+  }
+}
 
 class StripeIntegrationService {
   constructor() {
@@ -19,9 +28,14 @@ class StripeIntegrationService {
       pro: { id: 'price_pro', name: 'Pro', amount: 299, interval: 'month' },
       enterprise: { id: 'price_enterprise', name: 'Enterprise', amount: 999, interval: 'month' }
     };
+    
+    this.isConfigured = !!stripe;
   }
 
   async createPaymentIntent(amount, customerEmail, metadata = {}) {
+    if (!this.isConfigured) {
+      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY in environment variables.');
+    }
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(amount * 100), // Convert to cents
@@ -37,6 +51,9 @@ class StripeIntegrationService {
   }
 
   async createCustomer(email, name, paymentMethod = null) {
+    if (!this.isConfigured) {
+      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY in environment variables.');
+    }
     try {
       const customer = await stripe.customers.create({
         email: email,
@@ -52,6 +69,9 @@ class StripeIntegrationService {
   }
 
   async createSubscription(customerId, priceId, trialPeriodDays = 14) {
+    if (!this.isConfigured) {
+      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY in environment variables.');
+    }
     try {
       const subscription = await stripe.subscriptions.create({
         customer: customerId,
@@ -68,6 +88,9 @@ class StripeIntegrationService {
   }
 
   async processRefund(paymentIntentId, amount = null) {
+    if (!this.isConfigured) {
+      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY in environment variables.');
+    }
     try {
       const refund = await stripe.refunds.create({
         payment_intent: paymentIntentId,
@@ -81,6 +104,9 @@ class StripeIntegrationService {
   }
 
   async getPaymentHistory(customerId, limit = 50) {
+    if (!this.isConfigured) {
+      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY in environment variables.');
+    }
     try {
       const payments = await stripe.paymentIntents.list({
         customer: customerId,
@@ -94,6 +120,9 @@ class StripeIntegrationService {
   }
 
   async generateRevenueReport(startDate, endDate) {
+    if (!this.isConfigured) {
+      throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY in environment variables.');
+    }
     try {
       const charges = await stripe.charges.list({
         created: { gte: Math.floor(startDate.getTime() / 1000), lte: Math.floor(endDate.getTime() / 1000) },

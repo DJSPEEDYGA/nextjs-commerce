@@ -101,8 +101,11 @@ const revenueRoutes = require('./routes/services/money-making/revenue');
 const profitsRoutes = require('./routes/services/money-making/profits');
 const paymentsRoutes = require('./routes/services/money-making/payments');
 
-// Real Mining API Routes (NiceHash Integration)
-const realMiningRoutes = require('./routes/mining-api');
+// Real Mining API Routes (NiceHash Integration) - Disabled (not implemented)
+// const realMiningRoutes = require('./routes/mining-api');
+
+// Pool Mining API Routes (No API Keys Required)
+const poolMonitorRoutes = require('./routes/pool-monitoring-api');
 
 // Mount money making routes
 app.use('/api/money-making/mining', miningRoutes);
@@ -111,7 +114,10 @@ app.use('/api/money-making/profits', profitsRoutes);
 app.use('/api/money-making/payments', paymentsRoutes);
 
 // Mount real mining API routes
-app.use('/api/mining', realMiningRoutes);
+// app.use('/api/mining', realMiningRoutes); // Disabled - not implemented
+
+// Mount pool monitoring API routes
+app.use('/api/pool', poolMonitorRoutes);
 
 // Money Making API Integration
 app.get('/api/money-making/dashboard', async (req, res) => {

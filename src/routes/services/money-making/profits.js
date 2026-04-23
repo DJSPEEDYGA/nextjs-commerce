@@ -4,8 +4,8 @@
 
 const express = require('express');
 const router = express.Router();
-const ProfitTrackingService = require('../../services/money-making/profitTrackingService');
-const StripeIntegrationService = require('../../services/money-making/stripeIntegrationService');
+const ProfitTrackingService = require('../../../services/money-making/profitTrackingService');
+const StripeIntegrationService = require('../../../services/money-making/stripeIntegrationService');
 
 const profitService = new ProfitTrackingService();
 const stripeService = new StripeIntegrationService();

@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/auth');
+const { protect } = require('../middleware/auth'); // Changed from protect to protect
 const ChatService = require('../services/chatService');
 
 // Initialize chat service
@@ -16,7 +16,7 @@ const chatService = new ChatService();
  * @desc    Send a message to AI assistant
  * @access  Private
  */
-router.post('/', authenticate, async (req, res) => {
+router.post('/', protect, async (req, res) => {
   try {
     const { message, conversationHistory } = req.body;
 
@@ -49,7 +49,7 @@ router.post('/', authenticate, async (req, res) => {
  * @desc    Stream AI response in real-time
  * @access  Private
  */
-router.post('/stream', authenticate, async (req, res) => {
+router.post('/stream', protect, async (req, res) => {
   try {
     const { message, conversationHistory } = req.body;
 
@@ -91,7 +91,7 @@ router.post('/stream', authenticate, async (req, res) => {
  * @desc    Chat with royalty data context
  * @access  Private
  */
-router.post('/royalty-context', authenticate, async (req, res) => {
+router.post('/royalty-context', protect, async (req, res) => {
   try {
     const { message, royaltyData } = req.body;
 
@@ -124,7 +124,7 @@ router.post('/royalty-context', authenticate, async (req, res) => {
  * @desc    Chat with artist data context
  * @access  Private
  */
-router.post('/artist-context', authenticate, async (req, res) => {
+router.post('/artist-context', protect, async (req, res) => {
   try {
     const { message, artistData } = req.body;
 
@@ -157,7 +157,7 @@ router.post('/artist-context', authenticate, async (req, res) => {
  * @desc    Get AI suggestions for payment optimization
  * @access  Private
  */
-router.post('/payment-suggestions', authenticate, async (req, res) => {
+router.post('/payment-suggestions', protect, async (req, res) => {
   try {
     const { paymentData } = req.body;
 
@@ -190,7 +190,7 @@ router.post('/payment-suggestions', authenticate, async (req, res) => {
  * @desc    Get AI analysis of royalty trends
  * @access  Private
  */
-router.post('/analyze-trends', authenticate, async (req, res) => {
+router.post('/analyze-trends', protect, async (req, res) => {
   try {
     const { royaltyData } = req.body;
 
@@ -223,7 +223,7 @@ router.post('/analyze-trends', authenticate, async (req, res) => {
  * @desc    Get AI analysis of contract
  * @access  Private
  */
-router.post('/analyze-contract', authenticate, async (req, res) => {
+router.post('/analyze-contract', protect, async (req, res) => {
   try {
     const { contractText } = req.body;
 

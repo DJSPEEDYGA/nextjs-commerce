@@ -3,7 +3,10 @@
 
 class PoolMonitoringDashboard {
     constructor() {
-        this.apiBase = '/api/pool';
+        // Use API_CONFIG if available, otherwise fallback to relative path
+        this.apiBase = (typeof API_CONFIG !== 'undefined' && API_CONFIG.API_URL) 
+            ? `${API_CONFIG.API_URL}/api/pool` 
+            : '/api/pool';
         this.currentCoin = 'ltc';
         this.refreshInterval = 30000; // 30 seconds
         this.refreshTimer = null;
@@ -13,6 +16,7 @@ class PoolMonitoringDashboard {
             btc: '$lifeimitatesartinc'
         };
         
+        console.log('🔗 Pool Dashboard API Base:', this.apiBase);
         this.init();
     }
     

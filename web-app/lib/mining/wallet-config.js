@@ -6,7 +6,7 @@ const walletConfig = {
             note: 'Cash App Bitcoin payment link'
         },
         ethereum: {
-            address: 'YOUR_ETH_ADDRESS',  // UPDATE THIS
+            address: '0x324A37mfy4RBLJY9shXYUeoJw1eERHx12n',  // UPDATE THIS
             note: 'MetaMask or other ETH wallet'
         },
         paypal: {
@@ -21,9 +21,9 @@ const walletConfig = {
     nicehash: {
         enabled: true,
         apiUrl: 'https://api.nicehash.com/api/v2',
-        apiKey: 'YOUR_NICEHASH_API_KEY',
-        apiSecret: 'YOUR_NICEHASH_API_SECRET',
-        organizationId: 'YOUR_ORGANIZATION_ID',
+        apiKey: process.env.NICEHASH_API_KEY || null,
+        apiSecret: process.env.NICEHASH_API_SECRET || null,
+        organizationId: process.env.NICEHASH_ORG_ID || null,
         walletAddress: '324A37mfy4RBLJY9shXYUeoJw1eERHx12n',
     },
     payoutSettings: {
@@ -33,3 +33,10 @@ const walletConfig = {
     },
 };
 module.exports = walletConfig;
+
+// Helper function to check if NiceHash is configured
+walletConfig.isConfigured = function() {
+    return this.nicehash.apiKey && 
+           this.nicehash.apiSecret && 
+           this.nicehash.organizationId;
+};

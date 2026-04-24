@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⛏️ REAL Mining Software Downloads</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(212, 160, 60, 0.2), rgba(0, 0, 0, 0.8));
+            border-radius: 20px;
+            border: 2px solid #d4a03c;
+        }
+        
+        h1 {
+            color: #d4a03c;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .download-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(212, 160, 60, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .download-card:hover {
+            border-color: #d4a03c;
+            transform: translateY(-3px);
+        }
+        
+        .download-card h3 {
+            color: #d4a03c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .download-card .icon {
+            font-size: 2em;
+        }
+        
+        .download-card .description {
+            color: #888;
+            margin-bottom: 20px;
+        }
+        
+        .download-card .specs {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .download-card .specs div {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .download-card .specs div:last-child {
+            border-bottom: none;
+        }
+        
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #d4a03c, #b8860b);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212, 160, 60, 0.5);
+        }
+        
+        .warning-box {
+            background: rgba(255, 68, 68, 0.1);
+            border: 2px solid #ff4444;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .warning-box h2 {
+            color: #ff4444;
+            margin-bottom: 15px;
+        }
+        
+        .setup-guide {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .setup-guide h2 {
+            color: #00ff88;
+            margin-bottom: 15px;
+        }
+        
+        .code-block {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            overflow-x: auto;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 5px 10px;
+            background: rgba(212, 160, 60, 0.2);
+            border: 1px solid #d4a03c;
+            border-radius: 15px;
+            color: #d4a03c;
+            font-size: 0.8em;
+            margin: 5px;
+        }
+        
+        .recommended {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+        }
+        
+        .recommended .badge {
+            background: #ffd700;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⛏️ REAL Mining Software Downloads</h1>
+            <p style="color: #888; font-size: 1.2em;">Direct download links for working mining software</p>
+        </div>
+        
+        <div class="warning-box">
+            <h2>⚠️ IMPORTANT SECURITY WARNING</h2>
+            <p><strong>ONLY download from official GitHub releases!</strong></p>
+            <p>Never download mining software from third-party websites - they often contain malware that can steal your wallet and mining rewards.</p>
+            <p style="margin-top: 10px;"><strong>All download links below go directly to official GitHub releases.</strong></p>
+        </div>
+        
+        <div class="set-up">
+            <h2 style="color: #d4a03c; margin-bottom: 20px;">🎯 How to Use These Downloads</h2>
+            <ol style="color: #888; margin-left: 20px;">
+                <li style="margin: 10px 0;">Download the miner that matches your GPU type</li>
+                <li style="margin: 10px 0;">Extract the ZIP file to a folder</li>
+                <li style="margin: 10px 0;">Create a batch file (.bat) with your wallet address</li>
+                <li style="margin: 10px 0;">Double-click the batch file to start mining</li>
+                <li style="margin: 10px 0;">Check your earnings at: <a href="https://goatroyalty-01225.app.super.myninja.ai/REAL-CRYPTO-MINING.html" style="color: #d4a03c;">Wallet Balance Checker</a></li>
+            </ol>
+        </div>
+        
+        <h2 style="color: #d4a03c; margin-bottom: 20px;">📥 Mining Software Downloads</h2>
+        
+        <div class="download-grid">
+            <div class="download-card recommended">
+                <h3>
+                    <span class="icon">🔥</span>
+                    T-Rex Miner 
+                    <span class="badge">RECOMMENDED</span>
+                </h3>
+                <p class="description">Best performance for NVIDIA GPUs. Supports Ethash, KawPOW, Autolykos2, and more.</p>
+                
+                <div class="specs">
+                    <div><strong>GPU Type:</strong> NVIDIA</div>
+                    <div><strong>Algorithms:</strong> Ethash, KawPOW, Autolykos2</div>
+                    <div><strong>Fee:</strong> 1%</div>
+                    <div><strong>Best For:</strong> RTX 3060, 3070, 3080, 3090</div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <span class="tag">High Performance</span>
+                    <span class="tag">Low Fee</span>
+                    <span class="tag">Stable</span>
+                </div>
+                
+                <a href="https://github.com/trexminer/T-Rex/releases" target="_blank" class="download-btn">
+                    📥 Download from GitHub Releases
+                </a>
+                
+                <p style="margin-top: 15px; color: #888; font-size: 0.9em;">
+                    <strong>Direct Link to Latest Release:</strong><br>
+                    <a href="https://github.com/trexminer/T-Rex/releases/latest" target="_blank" style="color: #d4a03c;">https://github.com/trexminer/T-Rex/releases/latest</a>
+                </p>
+            </div>
+            
+            <div class="download-card">
+                <h3>
+                    <span class="icon">💎</span>
+                    lolMiner
+                </h3>
+                <p class="description">Excellent for AMD GPUs. Supports multiple algorithms including Etchash and KawPOW.</p>
+                
+                <div class="specs">
+                    <div><strong>GPU Type:</strong> AMD</div>
+                    <div><strong>Algorithms:</strong> Ethash, KawPOW, Autolykos2</div>
+                    <div><strong>Fee:</strong> 1%</div>
+                    <div><strong>Best For:</strong> RX 6600, 6700, 6800, 6900</div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <span class="tag">AMD Optimized</span>
+                    <span class="tag">Multi-Algorithm</span>
+                </div>
+                
+                <a href="https://github.com/lolMiner-lolMiner/lolMiner/releases" target="_blank" class="download-btn">
+                    📥 Download from GitHub Releases
+                </a>
+                
+                <p style="margin-top: 15px; color: #888; font-size: 0.9em;">
+                    <strong>Direct Link to Latest Release:</strong><br>
+                    <a href="https://github.com/lolMiner-lolMiner/lolMiner/releases/latest" target="_blank" style="color: #d4a03c;">https://github.com/lolMiner-lolMiner/lolMiner/releases/latest</a>
+                </p>
+            </div>
+            
+            <div class="download-card">
+                <h3>
+                    <span class="icon">🔌</span>
+                    NiceHash Miner
+                </h3>
+                <p class="description">Easiest to use - Automatic algorithm switching and profit optimization.</p>
+                
+                <div class="specs">
+                    <div><strong>GPU Type:</strong> NVIDIA & AMD</div>
+                    <div><strong>Features:</strong> Auto-switching</div>
+                    <div><strong>Fee:</strong> 3%</div>
+                    <div><strong>Best For:</strong> Beginners</div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <span class="tag">Easy Setup</span>
+                    <span class="tag">Auto-Switching</span>
+                    <span class="tag">All GPUs</span>
+                </div>
+                
+                <a href="https://github.com/nicehash/NiceHashQuickMiner/releases" target="_blank" class="download-btn">
+                    📥 Download NiceHash QuickMiner
+                </a>
+                
+                <p style="margin-top: 15px; color: #888; font-size: 0.9em;">
+                    <strong>Detailed Guide:</strong><br>
+                    <a href="https://www.nicehash.com/blog/post/how-to-start-mining-with-nicehash-in-under-5-minutes" target="_blank" style="color: #d4a03c;">How to start mining in 5 minutes</a>
+                </p>
+            </div>
+            
+            <div class="download-card">
+                <h3>
+                    <span class="icon">⚙️</span>
+                    GMiner
+                </h3>
+                <p class="description">High-performance miner for NVIDIA and AMD. Supports many algorithms.</p>
+                
+                <div class="specs">
+                    <div><strong>GPU Type:</strong> NVIDIA & AMD</div>
+                    <div><strong>Algorithms:</strong> Ethash, KawPOW, etc.</div>
+                    <div><strong>Fee:</strong> 2%</div>
+                    <div><strong>Best For:</strong> Advanced users</div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <span class="tag">Multi-Algorithm</span>
+                    <span class="tag">All GPUs</span>
+                </div>
+                
+                <a href="https://github.com/develsoftware/GMinerRelease/releases" target="_blank" class="download-btn">
+                    📥 Download from GitHub Releases
+                </a>
+                
+                <p style="margin-top: 15px; color: #888; font-size: 0.9em;">
+                    <strong>Direct Link to Latest Release:</strong><br>
+                    <a href="https://github.com/develsoftware/GMinerRelease/releases/latest" target="_blank" style="color: #d4a03c;">https://github.com/develsoftware/GMinerRelease/releases/latest</a>
+                </p>
+            </div>
+            
+            <div class="download-card">
+                <h3>
+                    <span class="icon">🖥️</span>
+                    XMRig
+                </h3>
+                <p class="description">Best for CPU mining. Monero and other CPU-friendly coins.</p>
+                
+                <div class="specs">
+                    <div><strong>Hardware:</strong> CPU</div>
+                    <div><strong>Algorithms:</strong> RandomX, CryptoNight</div>
+                    <div><strong>Fee:</strong> 1%</div>
+                    <div><strong>Best For:</strong> No GPU, CPU mining</div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <span class="tag">CPU Mining</span>
+                    <span class="tag">Monero</span>
+                    <span class="tag">Low Fee</span>
+                </div>
+                
+                <a href="https://github.com/xmrig/xmrig/releases" target="_blank" class="download-btn">
+                    📥 Download from GitHub Releases
+                </a>
+                
+                <p style="margin-top: 15px; color: #888; font-size: 0.9em;">
+                    <strong>Direct Link to Latest Release:</strong><br>
+                    <a href="https://github.com/xmrig/xmrig/releases/latest" target="_blank" style="color: #d4a03c;">https://github.com/xmrig/xmrig/releases/latest</a>
+                </p>
+            </div>
+        </div>
+        
+        <div class="setup-guide">
+            <h2>🎯 Quick Setup Guide for Your Wallet</h2>
+            <p style="margin-bottom: 15px;"><strong>Your LTC Wallet Address:</strong></p>
+            <div class="wallet-address" style="background: #0a0a0a; border: 1px solid #00ff88; border-radius: 10px; padding: 15px; font-family: 'Courier New', monospace; color: #00ff88; margin-bottom: 15px;">324A37mfy4RBLJY9shXYUeoJw1eERHx12n</div>
+            
+            <p style="margin-bottom: 10px;"><strong>For T-Rex Miner (create start.bat):</strong></p>
+            <div class="code-block">@echo off
+t-rex.exe -a ethash -o stratum+tcp://eu1.ethermine.org:4444 -u 324A37mfy4RBLJY9shXYUeoJw1eERHx12n -p x
+pause</div>
+            
+            <p style="margin-bottom: 10px;"><strong>For NiceHash (configure BTC wallet):</strong></p>
+            <div class="code-block">Add your BTC wallet address in NiceHash settings
+Auto-switching will optimize your earnings</div>
+            
+            <p style="margin-bottom: 10px;"><strong>For lolMiner (AMD GPUs):</strong></p>
+            <div class="code-block">@echo off
+lolMiner.exe --algo ETHASH --pool eu1.ethermine.org:14444 --user 324A37mfy4RBLJY9shXYUeoJw1eERHx12n
+pause</div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; color: #888; font-size: 0.9em;">
+            <p><strong>💡 Expected Earnings:</strong></p>
+            <p>RTX 3090: $15-25/day • RTX 3080: $12-20/day • RTX 3070: $8-15/day</p>
+            <p>Check your live earnings: <a href="https://goatroyalty-01225.app.super.myninja.ai/LIVE-EARNINGS-DASHBOARD.html" style="color: #d4a03c;">Live Earnings Dashboard</a></p>
+        </div>
+    </div>
+</body>
+</html>

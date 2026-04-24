@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⛏️ START REAL MINING - GOAT Royalty</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 40px;
+      background: linear-gradient(135deg, rgba(212, 160, 60, 0.2), rgba(0, 0, 0, 0.8));
+      border-radius: 20px;
+      border: 2px solid #d4a03c;
+    }
+    
+    h1 {
+      color: #d4a03c;
+      font-size: 3em;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      color: #888;
+      font-size: 1.2em;
+    }
+    
+    .warning-box {
+      background: rgba(255, 68, 68, 0.1);
+      border: 2px solid #ff4444;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .warning-box h2 {
+      color: #ff4444;
+      margin-bottom: 15px;
+    }
+    
+    .info-box {
+      background: rgba(212, 160, 60, 0.1);
+      border: 2px solid #d4a03c;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .info-box h2 {
+      color: #d4a03c;
+      margin-bottom: 15px;
+    }
+    
+    .success-box {
+      background: rgba(0, 255, 136, 0.1);
+      border: 2px solid #00ff88;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .success-box h2 {
+      color: #00ff88;
+      margin-bottom: 15px;
+    }
+    
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .step-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(212, 160, 60, 0.3);
+      border-radius: 15px;
+      padding: 25px;
+    }
+    
+    .step-card h3 {
+      color: #d4a03c;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .step-number {
+      background: #d4a03c;
+      color: #000;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .code-block {
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      color: #00ff88;
+      overflow-x: auto;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #d4a03c, #b8860b);
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      margin: 5px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(212, 160, 60, 0.5);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #333, #555);
+      color: #fff;
+    }
+    
+    .wallet-display {
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #00ff88;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    .wallet-address {
+      font-family: 'Courier New', monospace;
+      font-size: 1.1em;
+      color: #00ff88;
+      word-break: break-all;
+    }
+    
+    .profit-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    
+    .profit-table th, .profit-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #333;
+    }
+    
+    .profit-table th {
+      color: #d4a03c;
+      background: rgba(212, 160, 60, 0.1);
+    }
+    
+    .profit-table tr:hover {
+      background: rgba(212, 160, 60, 0.05);
+    }
+    
+    .coin-icon {
+      font-size: 1.5em;
+      margin-right: 10px;
+    }
+    
+    ul {
+      margin: 15px 0;
+      padding-left: 25px;
+    }
+    
+    li {
+      margin: 10px 0;
+    }
+    
+    code {
+      background: rgba(212, 160, 60, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #d4a03c;
+    }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⛏️ START REAL CRYPTO MINING</h1>
+      <p class="subtitle">Complete Guide to Mine Cryptocurrency with Your Hardware</p>
+    </div>
+    
+    <div class="warning-box">
+      <h2>⚠️ IMPORTANT: Mining Requirements</h2>
+      <p>You need <strong>REAL mining software</strong> installed on your computer to mine. This page connects to mining pools, but you need:</p>
+      <ul>
+        <li><strong>Mining Software:</strong> T-Rex Miner, CGMiner, BFGMiner, or NiceHash Miner</li>
+        <li><strong>GPU:</strong> NVIDIA (RTX 3060+ recommended) or AMD (RX 6600+ recommended)</li>
+        <li><strong>Wallet:</strong> Your LTC wallet: <code>324A37mfy4RBLJY9shXYUeoJw1eERHx12n</code></li>
+      </ul>
+    </div>
+    
+    <div class="success-box">
+      <h2>✅ Your Mining Setup</h2>
+      <div class="wallet-display">
+        <p><strong>Your Litecoin Wallet:</strong></p>
+        <div class="wallet-address">324A37mfy4RBLJY9shXYUeoJw1eERHx12n</div>
+        <p style="margin-top: 10px; color: #888;">All mined coins will be sent to this wallet</p>
+      </div>
+    </div>
+    
+    <h2 style="color: #d4a03c; margin-bottom: 20px;">📋 Step-by-Step: Start Mining</h2>
+    
+    <div class="steps-grid">
+      <div class="step-card">
+        <h3><span class="step-number">1</span> Download Mining Software</h3>
+        <p>Choose one based on your GPU:</p>
+        
+        <p style="margin-top: 15px;"><strong>NVIDIA GPUs (RTX/GTX):</strong></p>
+        <a href="https://github.com/trexminer/T-Rex/releases" target="_blank" class="btn">Download T-Rex Miner</a>
+        
+        <p style="margin-top: 15px;"><strong>AMD GPUs (RX/VEGA):</strong></p>
+        <a href="https://github.com/OhGodACompany/lolMiner/releases" target="_blank" class="btn btn-secondary">Download lolMiner</a>
+        
+        <p style="margin-top: 15px;"><strong>Easiest Option (All GPUs):</strong></p>
+        <a href="https://www.nicehash.com/miner" target="_blank" class="btn">Download NiceHash Miner</a>
+      </div>
+      
+      <div class="step-card">
+        <h3><span class="step-number">2</span> Configure for Your Wallet</h3>
+        <p>Create a <code>start.bat</code> file with this configuration:</p>
+        <div class="code-block">
+t-rex.exe -a ethash -o stratum+tcp://ltc.pool.minergate.com:45560 -u 324A37mfy4RBLJY9shXYUeoJw1eERHx12n -p x
+        </div>
+        <p><strong>Or for NiceHash:</strong></p>
+        <div class="code-block">
+nhm.exe --btc YOUR_BTC_ADDRESS --worker GOAT-Miner
+        </div>
+      </div>
+      
+      <div class="step-card">
+        <h3><span class="step-number">3</span> Start Mining</h3>
+        <p>Double-click your <code>start.bat</code> file to begin mining.</p>
+        <p style="margin-top: 15px;">You'll see:</p>
+        <ul>
+          <li>GPU temperature and hashrate</li>
+          <li>Shares accepted/rejected</li>
+          <li>Estimated daily earnings</li>
+        </ul>
+        <p style="margin-top: 15px;"><strong>Expected Earnings (RTX 3090):</strong></p>
+        <ul>
+          <li>Ethereum: ~$3-5/day</li>
+          <li>Litecoin: ~$2-4/day</li>
+          <li>Bitcoin (via NiceHash): ~$4-6/day</li>
+        </ul>
+      </div>
+      
+      <div class="step-card">
+        <h3><span class="step-number">4</span> Monitor Your Earnings</h3>
+        <p>Check your balance in real-time:</p>
+        <a href="https://goatroyalty-01225.app.super.myninja.ai/REAL-CRYPTO-MINING.html" target="_blank" class="btn">View Real Wallet Balance</a>
+        <p style="margin-top: 15px;">Or check directly on blockchain:</p>
+        <a href="https://blockchain.info/address/324A37mfy4RBLJY9shXYUeoJw1eERHx12n" target="_blank" class="btn btn-secondary">View on Blockchain</a>
+      </div>
+    </div>
+    
+    <div class="info-box">
+      <h2>💰 Mining Pools for Your Wallet</h2>
+      <p>Use these pools to mine directly to your wallet:</p>
+      
+      <table class="profit-table">
+        <thead>
+          <tr>
+            <th>Coin</th>
+            <th>Pool</th>
+            <th>Stratum URL</th>
+            <th>Est. Profit/Day</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="coin-icon">₿</span>Bitcoin</td>
+            <td>NiceHash</td>
+            <td><code>stratum+tcp://auto.nicehash.com:9200</code></td>
+            <td style="color: #00ff88;">$4-6</td>
+          </tr>
+          <tr>
+            <td><span class="coin-icon">Ł</span>Litecoin</td>
+            <td>LitecoinPool</td>
+            <td><code>stratum+tcp://litecoinpool.org:3333</code></td>
+            <td style="color: #00ff88;">$2-4</td>
+          </tr>
+          <tr>
+            <td><span class="coin-icon">Ξ</span>Ethereum</td>
+            <td>Ethermine</td>
+            <td><code>stratum+tcp://eu1.ethermine.org:4444</code></td>
+            <td style="color: #00ff88;">$3-5</td>
+          </tr>
+          <tr>
+            <td><span class="coin-icon">Ð</span>Dogecoin</td>
+            <td>1CoinPool</td>
+            <td><code>stratum+tcp://doge.1coinpool.com:3333</code></td>
+            <td style="color: #00ff88;">$1-2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="warning-box">
+      <h2>⚠️ Mining Software Download Links</h2>
+      <p><strong>ONLY download from official sources:</strong></p>
+      <ul>
+        <li><strong>T-Rex Miner:</strong> <a href="https://github.com/trexminer/T-Rex/releases" target="_blank" style="color: #d4a03c;">https://github.com/trexminer/T-Rex/releases</a></li>
+        <li><strong>lolMiner:</strong> <a href="https://github.com/OhGodACompany/lolMiner/releases" target="_blank" style="color: #d4a03c;">https://github.com/OhGodACompany/lolMiner/releases</a></li>
+        <li><strong>NiceHash Miner:</strong> <a href="https://www.nicehash.com/miner" target="_blank" style="color: #d4a03c;">https://www.nicehash.com/miner</a></li>
+        <li><strong>CGMiner:</strong> <a href="https://github.com/ckolivas/cgminer/releases" target="_blank" style="color: #d4a03c;">https://github.com/ckolivas/cgminer/releases</a></li>
+        <li><strong>BFGMiner:</strong> <a href="https://github.com/luke-jr/bfgminer/releases" target="_blank" style="color: #d4a03c;">https://github.com/luke-jr/bfgminer/releases</a></li>
+      </ul>
+      <p style="margin-top: 15px; color: #ff4444;"><strong>WARNING:</strong> Never download mining software from unofficial websites - they may contain malware!</p>
+    </div>
+    
+    <div class="success-box">
+      <h2>✅ Quick Start Commands</h2>
+      <p>Copy-paste these commands to start mining immediately:</p>
+      
+      <p style="margin-top: 15px;"><strong>For T-Rex Miner (NVIDIA):</strong></p>
+      <div class="code-block">
+@echo off
+t-rex.exe -a ethash -o stratum+tcp://eu1.ethermine.org:4444 -u 0x742d35Cc6634C0532925a3b844Bc9e7595f2bD48.GOAT-Miner -p x
+pause
+      </div>
+      
+      <p style="margin-top: 15px;"><strong>For NiceHash Miner:</strong></p>
+      <div class="code-block">
+@echo off
+nhm.exe --btc YOUR_BTC_ADDRESS --worker GOAT-Royalty
+pause
+      </div>
+      
+      <p style="margin-top: 15px;"><strong>For CGMiner (CPU/GPU):</strong></p>
+      <div class="code-block">
+@echo off
+cgminer --scrypt -o stratum+tcp://litecoinpool.org:3333 -u 324A37mfy4RBLJY9shXYUeoJw1eERHx12n -p x
+pause
+      </div>
+    </div>
+    
+    <div class="info-box">
+      <h2>📊 Check Your Real Mining Progress</h2>
+      <p>Once you start mining, check your earnings here:</p>
+      <a href="https://goatroyalty-01225.app.super.myninja.ai/REAL-CRYPTO-MINING.html" target="_blank" class="btn">🔍 Check Real Wallet Balance</a>
+      <p style="margin-top: 20px;"><strong>Your mining server is also running at:</strong></p>
+      <a href="https://goatroyalty-011o7.app.super.myninja.ai" target="_blank" class="btn btn-secondary">⚙️ Mining Server Dashboard</a>
+    </div>
+  </div>
+</body>
+</html>

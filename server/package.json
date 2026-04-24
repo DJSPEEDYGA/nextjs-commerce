@@ -1,0 +1,38 @@
+{
+  "name": "goat-royalty-api-server",
+  "version": "2.0.0",
+  "description": "GOAT Royalty Enhanced API Server with Local AI",
+  "main": "api-server.js",
+  "scripts": {
+    "start": "node api-server.js",
+    "dev": "nodemon api-server.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "goat-royalty",
+    "ai",
+    "ollama",
+    "document-processing",
+    "analytics",
+    "multi-agent"
+  ],
+  "author": "GOAT Royalty Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "pdf-parse": "^1.1.1",
+    "mammoth": "^1.6.0",
+    "xlsx": "^0.18.5",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

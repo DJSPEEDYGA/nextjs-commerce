@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOAT Royalty - Agent Crew Command Center</title>
+    <link rel="stylesheet" href="../css/goat-styles.css">
+    <link rel="stylesheet" href="../css/chat-interface.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ffd700, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #8b949e;
+            font-size: 1.1em;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr 300px;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Agent List */
+        .agent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ffd700;
+            transform: translateX(5px);
+        }
+
+        .agent-card.active {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .agent-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .agent-info h3 {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .agent-info .role {
+            color: #8b949e;
+            font-size: 0.85em;
+        }
+
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: #00ff88;
+        }
+
+        .status-dot.busy {
+            background: #ffaa00;
+        }
+
+        .status-dot.offline {
+            background: #ff4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            color: #1a1a2e;
+        }
+
+        .message.agent {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .message-content {
+            line-height: 1.6;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #ffd700;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .send-btn {
+            padding: 15px 30px;
+            border-radius: 25px;
+            border: none;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            color: #1a1a2e;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Task Panel */
+        .task-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid #ffd700;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .task-priority {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .priority-urgent {
+            background: #ff4444;
+        }
+
+        .priority-high {
+            background: #ffaa00;
+        }
+
+        .priority-medium {
+            background: #00aa88;
+        }
+
+        .priority-low {
+            background: #666666;
+        }
+
+        .task-description {
+            font-size: 0.9em;
+            color: #8b949e;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.9em;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.8);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .main-grid {
+                grid-template-columns: 300px 1fr 250px;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 GOAT Royalty Agent Crew</h1>
+            <p>Your AI-powered team for royalty management, analytics, and operations</p>
+        </div>
+
+        <div class="main-grid">
+            <!-- Agent List Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        👥 Agent Crew
+                    </div>
+                </div>
+                <div class="agent-list" id="agentList">
+                    <!-- Agents will be populated here -->
+                </div>
+            </div>
+
+            <!-- Chat Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span id="chatAgentName">💬 Money Penny</span>
+                        <small style="margin-left: 10px; color: #8b949e;">AI Orchestrator</small>
+                    </div>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message agent">
+                            <div class="message-header">
+                                <span>Money Penny</span>
+                                <span>Just now</span>
+                            </div>
+                            <div class="message-content">
+                                Hello! I'm Money Penny, your personal AI orchestrator. I coordinate all the agents in our crew and help you manage your GOAT Royalty platform. How can I assist you today?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="input-group">
+                            <input type="text" class="chat-input" id="chatInput" placeholder="Ask Money Penny or any agent..." onkeypress="handleKeyPress(event)">
+                            <button class="send-btn" onclick="sendMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        📋 Active Tasks
+                    </div>
+                </div>
+                <div class="task-list" id="taskList">
+                    <div class="task-item">
+                        <div class="task-header">
+                            <span>Contract Analysis</span>
+                            <span class="task-priority priority-high">HIGH</span>
+                        </div>
+                        <div class="task-description">Analyze new record deal contract</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-header">
+                            <span>Royalty Calculation</span>
+                            <span class="task-priority priority-medium">MED</span>
+                        </div>
+                        <div class="task-description">Calculate Q4 streaming royalties</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-header">
+                            <span>Fan Data Sync</span>
+                            <span class="task-priority priority-low">LOW</span>
+                        </div>
+                        <div class="task-description">Sync Spotify fan data</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Active Agents</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Tasks Completed Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">98%</div>
+                <div class="stat-label">AI Accuracy Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">System Uptime</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Agent Configuration
+        const agents = [
+            {
+                id: 'money-penny',
+                name: 'Money Penny',
+                role: 'Main Orchestrator',
+                avatar: '👩‍💼',
+                status: 'online',
+                model: 'llama3.1:8b',
+                capabilities: ['Task Orchestration', 'Agent Coordination', 'System Management']
+            },
+            {
+                id: 'goat-brain',
+                name: 'GOAT Brain',
+                role: 'AI Router',
+                avatar: '🧠',
+                status: 'online',
+                model: 'gemma3:4b',
+                capabilities: ['AI Request Routing', 'Model Selection', 'Response Generation']
+            },
+            {
+                id: 'goat-intel',
+                name: 'GOAT Intel',
+                role: 'Data Intelligence',
+                avatar: '🕵️',
+                status: 'online',
+                model: 'llama3.1:8b',
+                capabilities: ['Data Scraping', 'Analytics', 'Market Intelligence']
+            },
+            {
+                id: 'legal-agent',
+                name: 'Legal Agent',
+                role: 'Contract Analyst',
+                avatar: '⚖️',
+                status: 'busy',
+                model: 'mistral-nemo:12b',
+                capabilities: ['Contract Analysis', 'Risk Assessment', 'Compliance Check']
+            },
+            {
+                id: 'finance-agent',
+                name: 'Finance Agent',
+                role: 'Financial Advisor',
+                avatar: '💰',
+                status: 'online',
+                model: 'qwen2.5:14b',
+                capabilities: ['Revenue Tracking', 'Royalty Calculation', 'Financial Forecasting']
+            }
+        ];
+
+        let selectedAgent = 'money-penny';
+
+        // Initialize
+        function init() {
+            renderAgents();
+            updateChatHeader();
+        }
+
+        // Render Agents
+        function renderAgents() {
+            const agentList = document.getElementById('agentList');
+            agentList.innerHTML = agents.map(agent => `
+                <div class="agent-card ${agent.id === selectedAgent ? 'active' : ''}" onclick="selectAgent('${agent.id}')">
+                    <div class="agent-header">
+                        <div class="agent-avatar">${agent.avatar}</div>
+                        <div class="agent-info">
+                            <h3>${agent.name}</h3>
+                            <div class="role">${agent.role}</div>
+                        </div>
+                    </div>
+                    <div class="agent-status">
+                        <div class="status-dot ${agent.status}"></div>
+                        <span style="text-transform: capitalize;">${agent.status}</span>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.8em; color: #8b949e;">
+                        Model: ${agent.model}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Select Agent
+        function selectAgent(agentId) {
+            selectedAgent = agentId;
+            renderAgents();
+            updateChatHeader();
+            
+            // Add greeting message for the selected agent
+            const agent = agents.find(a => a.id === agentId);
+            addAgentMessage(agent.name, `Hello! I'm ${agent.name}, your ${agent.role}. I can help you with: ${agent.capabilities.join(', ')}. How can I assist you?`);
+        }
+
+        // Update Chat Header
+        function updateChatHeader() {
+            const agent = agents.find(a => a.id === selectedAgent);
+            document.getElementById('chatAgentName').textContent = `${agent.avatar} ${agent.name}`;
+        }
+
+        // Add Agent Message
+        function addAgentMessage(agentName, content) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message agent';
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <span>${agentName}</span>
+                    <span>Just now</span>
+                </div>
+                <div class="message-content">${content}</div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Add User Message
+        function addUserMessage(content) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <span>You</span>
+                    <span>Just now</span>
+                </div>
+                <div class="message-content">${content}</div>
+            `;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Send Message
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addUserMessage(message);
+            input.value = '';
+            
+            // Get agent response (simulate for now)
+            const agent = agents.find(a => a.id === selectedAgent);
+            
+            // Show typing indicator
+            addTypingIndicator();
+            
+            // Simulate AI response (in production, this would call your backend API)
+            setTimeout(() => {
+                removeTypingIndicator();
+                processQuery(message, agent);
+            }, 1000 + Math.random() * 2000);
+        }
+
+        // Process Query
+        function processQuery(query, agent) {
+            // Simple response generation (in production, this would call your AI backend)
+            const responses = {
+                'money-penny': {
+                    'contract': "I'll have the Legal Agent analyze that contract for you right away. They're reviewing it now and should have a detailed report within minutes.",
+                    'royalty': "Let me calculate those royalties using our Finance Agent. They'll pull the latest streaming data and provide you with accurate figures.",
+                    'analytics': "I'll coordinate with GOAT Intel to gather comprehensive analytics for you. What specific data points are you interested in?",
+                    'default': "I'm coordinating with the appropriate agent to handle your request. Our team is working on it and will provide detailed insights shortly."
+                },
+                'goat-brain': {
+                    'help': "I'm routing your request through the optimal AI engine. We're using Ollama with the Gemma3 model for fast, private processing.",
+                    'default': "Processing your query through our AI router. Selecting the best available model for optimal results."
+                },
+                'goat-intel': {
+                    'spotify': "I can pull real-time Spotify data for you. Just provide the artist ID or name and I'll gather follower counts, popularity metrics, and recent releases.",
+                    'youtube': "Let me search YouTube for trending content. What would you like me to find?",
+                    'tiktok': "I can scrape TikTok profile data for you. Provide the username and I'll extract recent video performance metrics.",
+                    'default': "I'm gathering intelligence from our data sources. What specific information do you need?"
+                },
+                'legal-agent': {
+                    'default': "I'm analyzing the legal aspects of your request. I can review contracts, assess risks, and ensure compliance with industry standards."
+                },
+                'finance-agent': {
+                    'default': "I'm processing financial data for you. I can track revenue, calculate royalties, and provide forecasting based on historical trends."
+                }
+            };
+            
+            // Find matching response
+            let response = responses[agent.id].default;
+            for (const [keyword, reply] of Object.entries(responses[agent.id])) {
+                if (keyword !== 'default' && query.toLowerCase().includes(keyword)) {
+                    response = reply;
+                    break;
+                }
+            }
+            
+            addAgentMessage(agent.name, response);
+        }
+
+        // Add Typing Indicator
+        function addTypingIndicator() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message agent';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="message-header">
+                    <span>AI Agent</span>
+                    <span>Typing...</span>
+                </div>
+                <div class="message-content">
+                    <span class="typing-dots">...</span>
+                </div>
+            `;
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Remove Typing Indicator
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        // Handle Key Press
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

@@ -16,6 +16,7 @@ const IdpModule = require('../src/modules/idp/IdpModule');
 const NlpModule = require('../src/modules/nlp/NlpModule');
 const AnalyticsModule = require('../src/modules/analytics/AnalyticsModule');
 const MultiAgentOrchestrator = require('../src/agents/MultiAgentOrchestrator');
+const agentApi = require('./agent-api');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -304,6 +305,9 @@ app.use('/app', express.static(path.join(__dirname, '../web-app')));
 app.get('/', (req, res) => {
   res.redirect('/app');
 });
+
+// Agent Crew API routes
+app.use('/api/agent-crew', agentApi);
 
 // ==================== WebSocket for Real-time Updates ====================
 

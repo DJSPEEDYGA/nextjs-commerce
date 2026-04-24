@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/goat-styles.css">
     <link rel="stylesheet" href="../css/chat-interface.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/agent-crew-communication.js"></script>
     <style>
         * {
             margin: 0;
@@ -486,6 +487,16 @@
     </div>
 
     <script>
+        // Session Management
+        function getSessionId() {
+            let sessionId = sessionStorage.getItem('agent_session_id');
+            if (!sessionId) {
+                sessionId = 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                sessionStorage.setItem('agent_session_id', sessionId);
+            }
+            return sessionId;
+        }
+
         // Agent Configuration
         const agents = [
             {
@@ -626,17 +637,30 @@
             addUserMessage(message);
             input.value = '';
             
-            // Get agent response (simulate for now)
+            // Get agent
             const agent = agents.find(a => a.id === selectedAgent);
             
             // Show typing indicator
             addTypingIndicator();
             
-            // Simulate AI response (in production, this would call your backend API)
-            setTimeout(() => {
+            try {
+                // Send message to real agent backend
+                const response = await agentCrew.sendMessage(selectedAgent, message, {
+                    context: {
+                        userId: 'user-' + Date.now(),
+                        sessionId: getSessionId()
+                    }
+                });
+                
                 removeTypingIndicator();
+                addAgentMessage(agent.name, response);
+            } catch (error) {
+                removeTypingIndicator();
+                console.error('Error sending message:', error);
+                
+                // Fallback to simulated response if backend is unavailable
                 processQuery(message, agent);
-            }, 1000 + Math.random() * 2000);
+            }
         }
 
         // Process Query

@@ -7,8 +7,26 @@ const express = require('express');
 const axios = require('axios');
 const http = require('http');
 const { Server } = require('socket.io');
+const RealAgentConnector = require('./real-agent-connector');
 
 const router = express.Router();
+
+// Initialize real agent connector
+const agentConnector = new RealAgentConnector({
+    backendUrl: process.env.AGENT_BACKEND_URL || 'http://localhost:5500',
+    secretCodes: {
+        'money-penny': process.env.MONEY_PENNY_CODE || 'MP-007-GOAT',
+        'goat-brain': process.env.GOAT_BRAIN_CODE || 'GB-BRAIN-111',
+        'goat-intel': process.env.GOAT_INTEL_CODE || 'GI-INTEL-007',
+        'legal-agent': process.env.LEGAL_AGENT_CODE || 'LA-LAW-999',
+        'finance-agent': process.env.FINANCE_AGENT_CODE || 'FA-CASH-777'
+    }
+});
+
+// Auto-initialize on module load
+agentConnector.initialize().catch(err => {
+    console.log('⚠️  Agent backend not available, using fallback mode');
+});
 
 // Configuration
 const AGENT_BACKEND_URL = process.env.AGENT_BACKEND_URL || 'http://localhost:5500';
@@ -51,24 +69,42 @@ router.get('/agents/:agentId', async (req, res) => {
 // Send message to agent
 router.post('/chat', async (req, res) => {
     try {
-        const { agentId, message, context } = req.body;
+        const { agentId, message, context, secretCode } = req.body;
         
+        // Try to use real agent connector
+        if (agentConnector.initialized) {
+            const result = await agentConnector.sendMessage(
+                agentId || 'money-penny',
+                message,
+                {
+                    context,
+                    secretCode: secretCode || agentConnector.config.secretCodes[agentId]
+                }
+            );
+            
+            res.json(result);
+            return;
+        }
+        
+        // Fallback to direct backend call if connector not initialized
         const response = await axios.post(`${AGENT_BACKEND_URL}/api/chat`, {
-            agent: agentId || 'money-penny',
+            agent_id: agentId || 'money-penny',
             message,
-            context
+            context,
+            secret_code: secretCode || process.env[`AGENT_${agentId.toUpperCase()}_CODE`]
         }, {
             timeout: TIMEOUT
         });
         
         res.json({
             success: true,
-            response: response.data.message,
+            response: response.data.message || response.data.response,
             agent: response.data.agent,
             timestamp: new Date().toISOString()
         });
     } catch (error) {
         // Fallback to local mock response if backend is unavailable
+        console.log('Backend unavailable, using fallback:', error.message);
         const mockResponse = getMockChatResponse(req.body.message, req.body.agentId);
         res.json(mockResponse);
     }

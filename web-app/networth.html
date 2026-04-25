@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Worth Tracker - GOAT Royalty App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; color: #d4a03c; }
+        nav a { color: #fff; text-decoration: none; margin-left: 20px; }
+        .networth-hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #1a1a1a, #252525); border-radius: 20px; margin: 30px 0; }
+        .networth-hero h2 { color: #888; font-size: 18px; margin-bottom: 10px; }
+        .networth-hero .value { font-size: 64px; font-weight: bold; color: #d4a03c; }
+        .networth-hero .change { color: #4ade80; font-size: 20px; margin-top: 10px; }
+        .breakdown-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 30px 0; }
+        .breakdown-card { background: #1a1a1a; border-radius: 12px; padding: 25px; border: 1px solid #333; }
+        .breakdown-card h3 { color: #888; font-size: 14px; margin-bottom: 15px; }
+        .breakdown-card .value { font-size: 28px; font-weight: bold; color: #fff; }
+        .breakdown-card .percentage { color: #d4a03c; font-size: 14px; }
+        .progress-bar { height: 6px; background: #333; border-radius: 3px; margin-top: 15px; }
+        .progress-fill { height: 100%; background: #d4a03c; border-radius: 3px; }
+        .btn { background: #d4a03c; color: #000; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🐐 GOAT Royalty</div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="earnings.html">Earnings</a>
+                <a href="networth.html">Net Worth</a>
+                <a href="settings.html">Settings</a>
+            </nav>
+        </header>
+
+        <div class="networth-hero">
+            <h2>Total Net Worth</h2>
+            <div class="value">$3,245,678.92</div>
+            <div class="change">+$245,678.92 (8.2%) this year</div>
+        </div>
+
+        <div class="breakdown-grid">
+            <div class="breakdown-card">
+                <h3>🎵 Music Royalties</h3>
+                <div class="value">$1,456,789.00</div>
+                <div class="percentage">44.9% of total</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 44.9%;"></div></div>
+            </div>
+            <div class="breakdown-card">
+                <h3>🏠 Real Estate</h3>
+                <div class="value">$890,000.00</div>
+                <div class="percentage">27.4% of total</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 27.4%;"></div></div>
+            </div>
+            <div class="breakdown-card">
+                <h3>💰 Crypto & Mining</h3>
+                <div class="value">$456,789.92</div>
+                <div class="percentage">14.1% of total</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 14.1%;"></div></div>
+            </div>
+            <div class="breakdown-card">
+                <h3>👕 Merchandise</h3>
+                <div class="value">$234,567.00</div>
+                <div class="percentage">7.2% of total</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 7.2%;"></div></div>
+            </div>
+            <div class="breakdown-card">
+                <h3>🎤 Touring</h3>
+                <div class="value">$178,533.00</div>
+                <div class="percentage">5.5% of total</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 5.5%;"></div></div>
+            </div>
+            <div class="breakdown-card">
+                <h3>📊 Investments</h3>
+                <div class="value">$29,000.00</div>
+                <div class="percentage">0.9% of total</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 0.9%;"></div></div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn">View Full Report</button>
+            <button class="btn" style="background: #333; color: #fff;">Export Data</button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Funnels - GOAT Royalty App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; color: #d4a03c; }
+        nav a { color: #fff; text-decoration: none; margin-left: 20px; }
+        .funnel-container { display: flex; flex-direction: column; align-items: center; margin: 40px 0; }
+        .funnel-stage { text-align: center; padding: 20px; margin: 10px 0; }
+        .funnel-bar { background: linear-gradient(135deg, #d4a03c, #e5b850); border-radius: 8px; padding: 25px; color: #000; font-weight: bold; }
+        .funnel-count { font-size: 28px; }
+        .funnel-label { font-size: 14px; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 40px 0; }
+        .metric-card { background: #1a1a1a; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #333; }
+        .metric-value { font-size: 32px; font-weight: bold; color: #d4a03c; }
+        .metric-label { color: #888; font-size: 14px; margin-top: 5px; }
+        .btn { background: #d4a03c; color: #000; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🐐 GOAT Royalty</div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="campaigns.html">Campaigns</a>
+                <a href="funnel.html">Funnels</a>
+                <a href="earnings.html">Earnings</a>
+            </nav>
+        </header>
+
+        <h1 style="margin: 30px 0; text-align: center;">Sales Funnel Analytics</h1>
+
+        <div class="funnel-container">
+            <div class="funnel-stage">
+                <div class="funnel-bar" style="width: 400px;">
+                    <div class="funnel-count">125,680</div>
+                    <div class="funnel-label">Visitors</div>
+                </div>
+            </div>
+            <div class="funnel-stage">
+                <div class="funnel-bar" style="width: 340px;">
+                    <div class="funnel-count">45,234</div>
+                    <div class="funnel-label">Leads (36%)</div>
+                </div>
+            </div>
+            <div class="funnel-stage">
+                <div class="funnel-bar" style="width: 280px;">
+                    <div class="funnel-count">12,456</div>
+                    <div class="funnel-label">Prospects (27.5%)</div>
+                </div>
+            </div>
+            <div class="funnel-stage">
+                <div class="funnel-bar" style="width: 220px;">
+                    <div class="funnel-count">3,789</div>
+                    <div class="funnel-label">Customers (30.4%)</div>
+                </div>
+            </div>
+            <div class="funnel-stage">
+                <div class="funnel-bar" style="width: 160px;">
+                    <div class="funnel-count">1,245</div>
+                    <div class="funnel-label">VIP Members (32.9%)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">3.0%</div>
+                <div class="metric-label">Overall Conversion</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">$24.50</div>
+                <div class="metric-label">Avg. Order Value</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">$8.23</div>
+                <div class="metric-label">Cost Per Lead</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">4.2x</div>
+                <div class="metric-label">ROAS</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">45 days</div>
+                <div class="metric-label">Avg. Conversion Time</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">$12.50</div>
+                <div class="metric-label">Customer LTV</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn">Optimize Funnel</button>
+            <button class="btn" style="background: #333; color: #fff;">Export Report</button>
+        </div>
+    </div>
+</body>
+</html>

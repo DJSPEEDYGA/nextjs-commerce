@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Campaigns - GOAT Royalty App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; color: #d4a03c; }
+        nav a { color: #fff; text-decoration: none; margin-left: 20px; }
+        .campaign-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin: 30px 0; }
+        .campaign-card { background: #1a1a1a; border-radius: 12px; padding: 25px; border: 1px solid #333; }
+        .campaign-card h3 { color: #d4a03c; margin-bottom: 10px; }
+        .progress-bar { height: 8px; background: #333; border-radius: 4px; margin: 15px 0; }
+        .progress-fill { height: 100%; background: #d4a03c; border-radius: 4px; }
+        .stats { display: flex; justify-content: space-between; margin-top: 15px; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 24px; font-weight: bold; }
+        .stat-label { color: #888; font-size: 12px; }
+        .status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+        .status.active { background: #22c55e; color: #fff; }
+        .status.paused { background: #f59e0b; color: #000; }
+        .status.completed { background: #3b82f6; color: #fff; }
+        .btn { background: #d4a03c; color: #000; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-top: 15px; }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🐐 GOAT Royalty</div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="campaigns.html">Campaigns</a>
+                <a href="earnings.html">Earnings</a>
+                <a href="settings.html">Settings</a>
+            </nav>
+        </header>
+
+        <h1 style="margin: 30px 0;">Marketing Campaigns</h1>
+
+        <div class="campaign-grid">
+            <div class="campaign-card">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <h3>🎵 New Album Push</h3>
+                    <span class="status active">Active</span>
+                </div>
+                <p style="color: #888; margin: 10px 0;">Promoting latest album release</p>
+                <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">125K</div>
+                        <div class="stat-label">Reach</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">8.5%</div>
+                        <div class="stat-label">CTR</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">$2.4K</div>
+                        <div class="stat-label">Spend</div>
+                    </div>
+                </div>
+                <button class="btn">View Details</button>
+            </div>
+
+            <div class="campaign-card">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <h3>🎸 Tour Announcement</h3>
+                    <span class="status active">Active</span>
+                </div>
+                <p style="color: #888; margin: 10px 0;">2025 Summer Tour tickets</p>
+                <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">89K</div>
+                        <div class="stat-label">Reach</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">12.3%</div>
+                        <div class="stat-label">CTR</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">$1.8K</div>
+                        <div class="stat-label">Spend</div>
+                    </div>
+                </div>
+                <button class="btn">View Details</button>
+            </div>
+
+            <div class="campaign-card">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <h3> merchandise Sale</h3>
+                    <span class="status paused">Paused</span>
+                </div>
+                <p style="color: #888; margin: 10px 0;">Holiday merch promotion</p>
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">45K</div>
+                        <div class="stat-label">Reach</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">5.2%</div>
+                        <div class="stat-label">CTR</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">$800</div>
+                        <div class="stat-label">Spend</div>
+                    </div>
+                </div>
+                <button class="btn">Resume</button>
+            </div>
+
+            <div class="campaign-card">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <h3>🎧 Spotify Playlist</h3>
+                    <span class="status completed">Completed</span>
+                </div>
+                <p style="color: #888; margin: 10px 0;">Playlist placement campaign</p>
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">200K</div>
+                        <div class="stat-label">Reach</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">15.8%</div>
+                        <div class="stat-label">CTR</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">$3.2K</div>
+                        <div class="stat-label">Spend</div>
+                    </div>
+                </div>
+                <button class="btn">View Report</button>
+            </div>
+        </div>
+
+        <button class="btn" style="font-size: 18px; padding: 15px 30px;">+ Create New Campaign</button>
+    </div>
+</body>
+</html>

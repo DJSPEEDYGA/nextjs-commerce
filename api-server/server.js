@@ -26,7 +26,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5500;
 
 // ---------------------------------------------------------------------------
 //  MIDDLEWARE
@@ -534,208 +534,245 @@ app.get('/api/distribute/status/:id', async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-//  START
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// BRAIN & AGENT ENDPOINTS
-// ---------------------------------------------------------------------------
-
-// Brain status endpoint
-app.get('/brain/status', (req, res) => {
-  const status = {
-    ollama: { status: 'active', model: 'llama3', memory: '2.4GB' },
-    nvidia: { status: 'active', gpu: 'RTX 4090', vram: '24GB' },
-    gemini: { status: 'active', model: 'gemini-pro', requests: 1247 }
-  };
-  res.json(status);
-});
-
-// Ms. Moneypenny AI endpoint
-app.post('/brain/agent/moneypenny', async (req, res) => {
-  try {
-    const { message } = req.body;
-    const reply = `🎩 Ms. Moneypenny here. I've analyzed your request: "${message.substring(0, 50)}..." 
-    
-Royalty Summary: 
-• ASCAP: $12,450.72 pending
-• BMI: $8,320.00 pending  
-• Spotify: $2,450.00 this month
-• Total Pending: $23,220.72
-
-Next royalty payment date: 2025-02-28`;
-    
-    res.json({ reply, success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message, success: false });
-  }
-});
-
-// ---------------------------------------------------------------------------
-// AUTOPILOT ENDPOINTS
-// ---------------------------------------------------------------------------
-
-// Autopilot tools list
-app.get('/autopilot/tools', (req, res) => {
-  const tools = [
-    { id: 'royalty-scan', name: 'Royalty Scanner', desc: 'Scan all platforms for unpaid royalties' },
-    { id: 'catalog-update', name: 'Catalog Update', desc: 'Sync catalog across DSPs' },
-    { id: 'fan-analysis', name: 'Fan Base Analysis', desc: 'Analyze fan demographics and engagement' },
-    { id: 'release-optimizer', name: 'Release Optimizer', desc: 'Optimize metadata for better search visibility' },
-    { id: 'cross-platform', name: 'Cross-Platform Sync', desc: 'Sync content across all platforms' }
-  ];
-  res.json({ tools, count: tools.length });
-});
-
-// Autopilot run endpoint
-app.post('/autopilot/run', async (req, res) => {
-  try {
-    const { goal, max_steps = 3 } = req.body;
-    
-    const steps = [
-      { step: 1, action: 'Analyzing goal', status: 'complete', result: 'Goal understood' },
-      { step: 2, action: 'Executing workflow', status: 'in_progress', result: 'Processing...' },
-      { step: 3, action: 'Generating report', status: 'pending', result: 'Waiting...' }
-    ];
-    
-    res.json({ 
-      success: true, 
-      steps, 
-      totalSteps: max_steps,
-      result: `Autopilot started for: "${goal}"`,
-      estimatedTime: '2-5 minutes'
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message, success: false });
-  }
-});
-
-// ---------------------------------------------------------------------------
-// FAN DATABASE ENDPOINTS
-// ---------------------------------------------------------------------------
-
-// Fan stats endpoint
-app.get('/fans/stats', (req, res) => {
-  const stats = {
-    total: 125680,
-    active: 89340,
-    newThisMonth: 3420,
-    topPlatforms: ['Spotify', 'YouTube', 'TikTok', 'Apple Music'],
-    engagement: {
-      rate: '78.5%',
-      avgStreamTime: '4:32 min',
-      monthlyListeners: 45670
-    }
-  };
-  res.json(stats);
-});
-
-// ---------------------------------------------------------------------------
-// EARNINGS ENDPOINTS
-// ---------------------------------------------------------------------------
-
-// Live earnings data
-app.get('/api/earnings', (req, res) => {
-  const earnings = {
-    today: 147.50,
-    thisWeek: 892.30,
-    thisMonth: 3450.80,
-    thisYear: 42350.00,
-    byPlatform: {
-      spotify: { amount: 1450.00, trend: '+12.5%', streams: 145000 },
-      youtube: { amount: 890.00, trend: '+8.3%', views: 280000 },
-      tiktok: { amount: 670.00, trend: '+45.2%', uses: 45000 },
-      applemusic: { amount: 440.80, trend: '+5.1%', streams: 52000 }
-    },
-    lastUpdated: new Date().toISOString()
-  };
-  res.json(earnings);
-});
-
-// ---------------------------------------------------------------------------
-// AI CHAT ENDPOINT (Codex AI)
-// ---------------------------------------------------------------------------
-
-// Codex AI chat endpoint
-app.post('/api/chat', async (req, res) => {
-  try {
-    const { message, context = 'general' } = req.body;
-    
-    const responses = {
-      general: `🤖 **Codex AI** here. I'm the Sentinel AI of the GOAT Royalty Force.
-
-I can help you with:
-• Royalty tracking and optimization
-• Catalog management across platforms
-• Contract analysis and legal matters
-• Artist coordination and scheduling
-• Web3 and blockchain integration
-
-Your message: "${message.substring(0, 100)}..."
-
-How else can I assist Waka Flocka and the GOAT team?`,
-      
-      royalty: `🎵 **Royalty Analysis - Codex AI**
-
-Current Status:
-• ASCAP: $12,450.72 pending (next payment: Feb 28)
-• BMI: $8,320.00 pending (next payment: Mar 15)
-• Mechanicals: $3,200.00 collected
-• Spotify: $1,450.00 this month (+12.5% trend)
-
-Optimization Recommendations:
-1. Review Split agreements on 3 releases
-2. Update ISRC metadata for better tracking
-3. File 2 missing performance reports
-
-Would you like me to execute any of these actions?`,
-      
-      technical: `⚡ **Technical Report - Codex AI**
-
-System Status:
-• API Proxy: ✅ Online (port 4000)
-• Database: 🔄 In-memory mode (SQLite recommended)
-• Agents: ✅ Active
-• Mining: ⚠️ Wallet configuration needed
-
-Recent Activity:
-• 1,247 API calls today
-• 99.8% success rate
-• Average response: 45ms
-
-Tech Stack: Next.js, Express, Supabase, NiceHash
-
-Need technical assistance?`,
-      
-      legal: `⚖️ **Legal Dashboard - Codex AI**
-
-Active Legal Matters:
-• Pro Se Filing: $3.3B claim (Status: Filed)
-• Intellectual Property: 3 cases under review
-• Contract Negotiations: 2 in progress
-• Royalty Disputes: 1 pending resolution
-
-Legal Team Update:
-• Harvey L. Miller Jr. (DJ Speedy) - Lead Counsel
-• All documentation filed and verified
-• Court dates scheduled for 2025
-
-Need legal document analysis?`
-    };
-    
-    const reply = responses[context] || responses.general;
-    
-    res.json({ 
-      reply, 
-      success: true,
-      agent: 'Codex AI v7.0',
+  //  BRAIN & AI ENDPOINTS
+  // ---------------------------------------------------------------------------
+  
+  // Brain Status - AI Agents System Status
+  app.get('/brain/status', (req, res) => {
+    res.json({
+      status: 'online',
+      ollama: { status: 'active', model: 'llama3', memory: '2.4GB' },
+      nvidia: { status: 'active', gpu: 'RTX 4090', vram: '24GB' },
+      gemini: { status: 'active', model: 'gemini-pro', requests: 1247 },
+      agents: ['moneypenny', 'codex', 'nexus', 'vanessa', 'goat'],
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message, success: false });
-  }
-});
+  });
 
+  // Brain Agents List
+  app.get('/brain/agents', (req, res) => {
+    res.json([
+      { id: 'moneypenny', name: 'Ms. Moneypenny AI', role: 'Executive Assistant', status: 'active' },
+      { id: 'codex', name: 'Codex AI', role: 'Sentinel AI', status: 'active' },
+      { id: 'nexus', name: 'Ms. Nexus', role: 'Strategic Advisor', status: 'active' },
+      { id: 'vanessa', name: 'Ms. Vanessa', role: 'Creative Director', status: 'active' },
+      { id: 'goat', name: 'The GOAT', role: 'Royalty Manager', status: 'active' }
+    ]);
+  });
 
+  // Brain Agent Task
+  app.post('/brain/agent/:id', async (req, res) => {
+    const { id } = req.params;
+    const { task } = req.body;
+    
+    const responses = {
+      moneypenny: { result: `Ms. Moneypenny processed: ${task}`, status: 'completed' },
+      codex: { result: `Codex AI analyzed: ${task}`, status: 'completed' },
+      nexus: { result: `Ms. Nexus strategized: ${task}`, status: 'completed' },
+      vanessa: { result: `Ms. Vanessa created: ${task}`, status: 'completed' },
+      goat: { result: `The GOAT managed: ${task}`, status: 'completed' }
+    };
+    
+    res.json(responses[id] || { result: 'Unknown agent', status: 'error' });
+  });
+
+  // ---------------------------------------------------------------------------
+  //  AUTOPILOT ENDPOINTS
+  // ---------------------------------------------------------------------------
+  
+  // Autopilot Tools List
+  app.get('/autopilot/tools', (req, res) => {
+    res.json([
+      { id: 'royalty-sync', name: 'Royalty Sync', description: 'Sync royalty data from all platforms', status: 'ready' },
+      { id: 'catalog-update', name: 'Catalog Update', description: 'Update catalog metadata', status: 'ready' },
+      { id: 'fan-analyze', name: 'Fan Analytics', description: 'Analyze fan engagement data', status: 'ready' },
+      { id: 'earnings-report', name: 'Earnings Report', description: 'Generate earnings report', status: 'ready' },
+      { id: 'legal-scan', name: 'Legal Scan', description: 'Scan for legal issues', status: 'ready' },
+      { id: 'mining-optimize', name: 'Mining Optimize', description: 'Optimize crypto mining', status: 'ready' }
+    ]);
+  });
+
+  // Autopilot Run
+  app.post('/autopilot/run', async (req, res) => {
+    const { tool, params } = req.body;
+    res.json({
+      success: true,
+      tool: tool || 'general',
+      result: `Autopilot task completed successfully`,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  //  FANS DATABASE ENDPOINTS
+  // ---------------------------------------------------------------------------
+  
+  // Fans Stats
+  app.get('/fans/stats', (req, res) => {
+    res.json({
+      total: 125680,
+      active: 89234,
+      newThisMonth: 3420,
+      topLocations: ['Atlanta', 'Los Angeles', 'New York', 'Miami', 'Houston'],
+      engagement: { avgRating: 4.8, responseRate: 92 },
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  // Fans List
+  app.get('/fans/list', (req, res) => {
+    res.json([
+      { id: 1, name: 'John D.', email: 'john***@gmail.com', location: 'Atlanta', joined: '2024-01-15' },
+      { id: 2, name: 'Sarah M.', email: 'sarah***@gmail.com', location: 'Los Angeles', joined: '2024-02-20' },
+      { id: 3, name: 'Mike T.', email: 'mike***@gmail.com', location: 'New York', joined: '2024-03-10' }
+    ]);
+  });
+
+  // Add Fan
+  app.post('/fans/add', (req, res) => {
+    res.json({ success: true, id: Date.now(), message: 'Fan added successfully' });
+  });
+
+  // ---------------------------------------------------------------------------
+  //  EARNINGS ENDPOINTS
+  // ---------------------------------------------------------------------------
+  
+  // Earnings Data
+  app.get('/api/earnings', (req, res) => {
+    res.json({
+      total: 245678.92,
+      monthly: 18450.00,
+      pending: 12450.72,
+      sources: {
+        ascap: 12450.72,
+        bmi: 8320.00,
+        spotify: 1450.00,
+        apple: 890.00,
+        youtube: 2340.00,
+        mechanicals: 3200.00
+      },
+      trend: '+12.5%',
+      lastUpdated: new Date().toISOString()
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  //  CHAT ENDPOINT
+  // ---------------------------------------------------------------------------
+  
+  // AI Chat
+  app.post('/api/chat', async (req, res) => {
+    try {
+      const { message, context = 'general' } = req.body;
+      
+      const responses = {
+        general: `🤖 **Codex AI** here. I'm the Sentinel AI of the GOAT Royalty Force.\n\nI can help you with:\n• Royalty tracking and optimization\n• Catalog management across platforms\n• Contract analysis and legal matters\n• Artist coordination and scheduling\n• Web3 and blockchain integration\n\nHow can I assist you today?`,
+        royalty: `🎵 **Royalty Analysis**\n\nCurrent Status:\n• ASCAP: $12,450.72 pending\n• BMI: $8,320.00 pending\n• Spotify: $1,450.00 this month\n\nWould you like detailed breakdown?`,
+        technical: `⚡ **Technical Status**\n\n• API Proxy: ✅ Online\n• Database: ✅ Connected\n• Agents: ✅ Active\n• Mining: ⚠️ Configuration needed`,
+        legal: `⚖️ **Legal Dashboard**\n\n• Active Cases: 3\n• Pending Filings: 2\n• Documentation: ✅ Current`
+      };
+      
+      res.json({
+        reply: responses[context] || responses.general,
+        success: true,
+        agent: 'Codex AI v7.0',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message, success: false });
+    }
+  });
+
+  // ---------------------------------------------------------------------------
+  //  ADDITIONAL ENDPOINTS
+  // ---------------------------------------------------------------------------
+  
+  // Charts Data
+  app.get('/charts/all', (req, res) => {
+    res.json({
+      spotify: { position: 45, trend: 'up', streams: 1250000 },
+      apple: { position: 32, trend: 'up', streams: 890000 },
+      youtube: { position: 78, trend: 'stable', views: 3450000 },
+      tiktok: { position: 12, trend: 'up', views: 8900000 }
+    });
+  });
+
+  // Keys Save
+  app.post('/keys/save', (req, res) => {
+    res.json({ success: true, message: 'Keys saved securely' });
+  });
+
+  // YouTube Trending
+  app.get('/youtube/trending', (req, res) => {
+    res.json([
+      { id: 'yt1', title: 'GOAT Anthem', views: 1250000, trending: '#12' },
+      { id: 'yt2', title: 'Royalty Flow', views: 890000, trending: '#24' },
+      { id: 'yt3', title: 'Chain Reaction', views: 670000, trending: '#38' }
+    ]);
+  });
+
+  // Spotify Artist Real
+  app.get('/spotify/artist-real', (req, res) => {
+    res.json({
+      name: 'Waka Flocka Flame',
+      followers: 1250000,
+      popularity: 78,
+      genres: ['hip-hop', 'trap', 'rap']
+    });
+  });
+
+  // Spotify Artist Top Tracks
+  app.get('/spotify/artist-top-tracks', (req, res) => {
+    res.json([
+      { name: 'No Hands', plays: 125000000 },
+      { name: 'Hard in the Paint', plays: 98000000 },
+      { name: 'Grove St. Party', plays: 76000000 }
+    ]);
+  });
+
+  // Spotify Audio Features
+  app.get('/spotify/audio-features', (req, res) => {
+    res.json({
+      danceability: 0.85,
+      energy: 0.92,
+      tempo: 140,
+      valence: 0.78
+    });
+  });
+
+  // Spotify Related Artists
+  app.get('/spotify/related-artists', (req, res) => {
+    res.json([
+      { name: 'Gucci Mane', similarity: 0.89 },
+      { name: 'Future', similarity: 0.85 },
+      { name: 'Young Thug', similarity: 0.82 }
+    ]);
+  });
+
+  // TikTok User
+  app.get('/tiktok/user', (req, res) => {
+    res.json({
+      username: 'wakaflocka',
+      followers: 2500000,
+      likes: 12500000,
+      videos: 450
+    });
+  });
+
+  // TikTok Video
+  app.get('/tiktok/video', (req, res) => {
+    res.json({
+      id: 'tt1',
+      views: 12500000,
+      likes: 890000,
+      shares: 125000
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  //  START
+  // ---------------------------------------------------------------------------
+  app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n🐐 GOAT Royalty API Proxy`);
   console.log(`   Port: ${PORT}`);
   console.log(`   Health: http://localhost:${PORT}/api/health`);

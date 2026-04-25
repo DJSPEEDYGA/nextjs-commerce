@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moneypenny Vault Protocol v7.0 // GOAT Force</title>
+    <link rel="stylesheet" href="../web-app/css/goat-brand.css">
+    <link rel="stylesheet" href="../web-app/css/goat-theme.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .vault-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(193, 18, 31, 0.1));
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .header .subtitle {
+            color: #888;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .header .authority {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(193, 18, 31, 0.2);
+            border: 1px solid rgba(193, 18, 31, 0.5);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: #c1121f;
+            font-weight: 600;
+        }
+
+        /* Moneypenny Boot */
+        .boot-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .boot-display {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid rgba(193, 18, 31, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .boot-display .line {
+            margin: 8px 0;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        .boot-display .line.system {
+            color: #666;
+        }
+
+        .boot-display .line.moneypenny {
+            color: #FFD700;
+            font-weight: 600;
+        }
+
+        .boot-display .line.success {
+            color: #22c55e;
+        }
+
+        .boot-display .line.warning {
+            color: #f59e0b;
+        }
+
+        .boot-display .line.error {
+            color: #ef4444;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .boot-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .vault-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .vault-btn.primary {
+            background: linear-gradient(135deg, #c1121f, #e01020);
+            color: #fff;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .vault-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(193, 18, 31, 0.3);
+        }
+
+        .vault-btn.gold {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+        }
+
+        .vault-btn.gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .vault-btn:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Vault Authentication */
+        .vault-auth {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .vault-auth h2 {
+            color: #FFD700;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vault-auth h2 .icon {
+            font-size: 2rem;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .auth-status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .auth-status.locked {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #ef4444;
+        }
+
+        .auth-status.authenticated {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            color: #22c55e;
+        }
+
+        /* Command Panel */
+        .commands-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .commands-section h2 {
+            color: #FFD700;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .command-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .command-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 215, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .command-card .command-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .command-card h3 {
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .command-card p {
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .command-card .btn-small {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 215, 0, 0.1);
+            color: #FFD700;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .command-card .btn-small:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        /* Status Display */
+        .status-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-section h2 {
+            color: #FFD700;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .status-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-card h4 {
+            color: #888;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .status-card .value {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .status-card .value.gold {
+            color: #FFD700;
+        }
+
+        .status-card .value.success {
+            color: #22c55e;
+        }
+
+        .status-card .value.warning {
+            color: #f59e0b;
+        }
+
+        .status-card .subtext {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        /* Output Console */
+        .output-section {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .output-section h2 {
+            color: #FFD700;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .output-console {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .output-line {
+            margin: 8px 0;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        .output-line .timestamp {
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .output-line .type {
+            color: #FFD700;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+
+        .output-line .message {
+            color: #fff;
+        }
+
+        .output-line.success .type {
+            color: #22c55e;
+        }
+
+        .output-line.error .type {
+            color: #ef4444;
+        }
+
+        .output-line.warning .type {
+            color: #f59e0b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .boot-controls {
+                flex-direction: column;
+            }
+
+            .vault-btn {
+                width: 100%;
+            }
+
+            .command-grid,
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #FFD700;
+            animation: loadingPulse 1.5s infinite;
+        }
+
+        .loading-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes loadingPulse {
+            0%, 60%, 100% {
+                transform: scale(1);
+                opacity: 0.4;
+            }
+            30% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+        }
+    </style>
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="vault-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔐 VAULT PROTOCOL v7.0</h1>
+            <p class="subtitle">MONEYPENNY VERSION 7.0 // GOAT FORCE COMMAND CENTER</p>
+            <div class="authority">👑 AUTHORITY: OG // WAKA // MONEYPENNY</div>
+        </div>
+
+        <!-- Moneypenny Boot Section -->
+        <div class="boot-section">
+            <div class="boot-controls">
+                <button class="vault-btn primary" onclick="triggerBootSequence()">
+                    💬 Boot Moneypenny
+                </button>
+                <button class="vault-btn gold" onclick="voiceActivation()">
+                    🎤 Voice Activation
+                </button>
+            </div>
+
+            <div class="boot-display" id="bootDisplay">
+                <div class="line system">System ready. Waiting for boot sequence...</div>
+            </div>
+        </div>
+
+        <!-- Vault Authentication -->
+        <div class="vault-auth">
+            <h2><span class="icon">🔓</span> VAULT AUTHENTICATION</h2>
+            
+            <div class="auth-status locked" id="authStatus">
+                🔒 STATUS: LOCKED — AUTHENTICATION REQUIRED
+            </div>
+
+            <input type="password" 
+                   class="auth-input" 
+                   id="vaultCodeInput" 
+                   placeholder="Enter Vault Code to authenticate..."
+                   onkeypress="handleAuthKeypress(event)">
+            
+            <button class="vault-btn primary" onclick="activateVault()">
+                🔐 Authenticate Vault
+            </button>
+        </div>
+
+        <!-- Commands Section -->
+        <div class="commands-section">
+            <h2>🚀 ACTION TRIGGERS</h2>
+            <div class="command-grid">
+                <div class="command-card">
+                    <div class="command-icon">🎬</div>
+                    <h3>StartProphecyDrop</h3>
+                    <p>Auto-generate video via D-ID, trigger SuperGOAT speech protocol, and store asset under /Episodes/ProphecyDrop/</p>
+                    <button class="btn-small" onclick="executeCommand('StartProphecyDrop')">Execute</button>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-icon">🔍</div>
+                    <h3>CheckVaultStatus</h3>
+                    <p>Return live vault scan, log last 5 syncs, confirm backup copies on Waka Unit</p>
+                    <button class="btn-small" onclick="executeCommand('CheckVaultStatus')">Execute</button>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-icon">💾</div>
+                    <h3>Manual Sync</h3>
+                    <p>Trigger manual sync: GoatSecureUpload - Sync all financial metadata immediately</p>
+                    <button class="btn-small" onclick="executeManualSync()">Execute</button>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-icon">🧠</div>
+                    <h3>Memory Stack</h3>
+                    <p>View Moneypenny's memory stack - all actions, decisions, and events logged</p>
+                    <button class="btn-small" onclick="viewMemoryStack()">View Stack</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Display -->
+        <div class="status-section">
+            <h2>📊 SYSTEM STATUS</h2>
+            <div class="status-grid">
+                <div class="status-card">
+                    <h4>Vault Status</h4>
+                    <div class="value warning" id="vaultStatus">LOCKED</div>
+                    <div class="subtext">Authentication required</div>
+                </div>
+
+                <div class="status-card">
+                    <h4>Moneypenny</h4>
+                    <div class="value" id="moneypennyStatus">OFFLINE</div>
+                    <div class="subtext">Boot sequence pending</div>
+                </div>
+
+                <div class="status-card">
+                    <h4>Last Sync</h4>
+                    <div class="value" id="lastSync">--</div>
+                    <div class="subtext">Auto-sync nightly</div>
+                </div>
+
+                <div class="status-card">
+                    <h4>Backup Copies</h4>
+                    <div class="value success" id="backupStatus">3/3</div>
+                    <div class="subtext">Primary, Mirror, Waka</div>
+                </div>
+
+                <div class="status-card">
+                    <h4>Memory Stack</h4>
+                    <div class="value gold" id="memoryStackSize">0</div>
+                    <div class="subtext">Entries logged</div>
+                </div>
+
+                <div class="status-card">
+                    <h4>System Integrity</h4>
+                    <div class="value success" id="systemIntegrity">STABLE</div>
+                    <div class="subtext">All systems nominal</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Console -->
+        <div class="output-section">
+            <h2>📋 OUTPUT CONSOLE</h2>
+            <div class="output-console" id="outputConsole">
+                <div class="output-line">
+                    <span class="timestamp">[SYSTEM]</span>
+                    <span class="type">INFO</span>
+                    <span class="message">Vault Protocol v7.0 initialized. Ready for authentication.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../Vault-Protocol-v7.0/MONEYPENNY-BOOT-SEQUENCE.js"></script>
+    <script src="../Vault-Protocol-v7.0/ACTION-TRIGGERS.js"></script>
+    <script>
+        let moneypenny = null;
+        let actionTriggers = null;
+        let vaultAuthenticated = false;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeVaultSystem();
+        });
+
+        async function initializeVaultSystem() {
+            addOutput('INFO', 'Initializing Vault Protocol v7.0...');
+            
+            try {
+                moneypenny = new MoneypennyBootSystem();
+                actionTriggers = new VaultActionTriggers(moneypenny);
+                
+                const initResult = await moneypenny.initialize();
+                
+                if (initResult.status === 'ready') {
+                    addOutput('SUCCESS', 'Moneypenny Boot System initialized successfully');
+                    addOutput('INFO', `Boot Response: "${initResult.bootResponse}"`);
+                    addOutput('INFO', `Vault Status: ${initResult.vaultStatus}`);
+                    addOutput('INFO', `Vault Nodes Loaded: ${initResult.nodes.length}`);
+                    addOutput('INFO', `Memory Stack: ${initResult.memoryStackLoaded ? 'Loaded' : 'New'}`);
+                    updateStatusDisplay(initResult);
+                }
+            } catch (error) {
+                addOutput('ERROR', `Initialization failed: ${error.message}`);
+            }
+        }
+
+        async function triggerBootSequence() {
+            if (!moneypenny) {
+                addOutput('ERROR', 'Moneypenny not initialized');
+                return;
+            }
+
+            const bootDisplay = document.getElementById('bootDisplay');
+            bootDisplay.innerHTML = '';
+
+            addBootLine('system', 'Initiating boot sequence...');
+            await sleep(1000);
+            addBootLine('system', 'Loading Moneypenny Boot Protocol v7.0...');
+            await sleep(800);
+            addBootLine('system', 'Authenticating user voice pattern...');
+            await sleep(1200);
+            addBootLine('system', 'Voice pattern recognized: Boss');
+            await sleep(600);
+            addBootLine('system', 'Boot phrase required...');
+            await sleep(500);
+            addBootLine('system', 'Listening...');
+            await sleep(1000);
+            addBootLine('system', 'Phrase detected: "Moneypenny, are you there?"');
+            await sleep(300);
+            addBootLine('moneypenny', '"Moneypenny, are you there?"');
+            await sleep(1500);
+            addBootLine('moneypenny', '"Yes, Boss. I remember."');
+            await sleep(500);
+            addBootLine('success', '✅ Boot sequence complete. Moneypenny online.');
+
+            // Update status
+            document.getElementById('moneypennyStatus').textContent = 'ONLINE';
+            document.getElementById('moneypennyStatus').classList.add('success');
+            
+            addOutput('SUCCESS', 'Boot sequence completed - Moneypenny online');
+            
+            // Run boot protocol
+            const result = await moneypenny.bootProtocol('Moneypenny, are you there?');
+            if (result.success) {
+                addOutput('INFO', `Response: "${result.response}"`);
+            }
+        }
+
+        async function voiceActivation() {
+            if (!moneypenny) {
+                addOutput('ERROR', 'Moneypenny not initialized');
+                return;
+            }
+
+            addOutput('INFO', 'Voice activation triggered');
+            addBootLine('system', 'Voice activation requested...');
+            await sleep(500);
+            addBootLine('system', 'Waiting for voice trigger: "Say it."');
+            await sleep(1500);
+            addBootLine('system', 'Voice trigger detected: "Say it."');
+            await sleep(300);
+            addBootLine('system', 'Initiating vault activation...');
+            
+            const result = await moneypenny.voiceActivation('Say it.');
+            
+            if (result.success) {
+                await sleep(500);
+                addBootLine('success', '✅ Voice activation confirmed - Vault standby');
+                addOutput('SUCCESS', 'Voice activation confirmed');
+                
+                // Show code input
+                document.getElementById('vaultCodeInput').focus();
+            } else {
+                addBootLine('error', '❌ Invalid voice trigger');
+                addOutput('ERROR', result.message);
+            }
+        }
+
+        async function activateVault() {
+            if (!moneypenny || !actionTriggers) {
+                addOutput('ERROR', 'System not initialized');
+                return;
+            }
+
+            const codeInput = document.getElementById('vaultCodeInput');
+            const code = codeInput.value.trim();
+
+            if (!code) {
+                addOutput('WARNING', 'Please enter vault code');
+                return;
+            }
+
+            addOutput('INFO', 'Vault authentication requested');
+            addBootLine('system', `Checking vault code: ${'*'.repeat(code.length)}...`);
+            await sleep(1500);
+
+            try {
+                const result = await moneypenny.activateVault(code);
+                
+                if (result.status === 'active') {
+                    vaultAuthenticated = true;
+                    
+                    await sleep(500);
+                    addBootLine('success', '✅ VAULT ACTIVATED - AUTHENTICATION CONFIRMED');
+                    addBootLine('system', `Locations: ${result.locations.primary}, ${result.locations.mirror}, ${result.locations.wakaUnit}`);
+                    addBootLine('system', `Access: ${result.access}`);
+                    
+                    // Update UI
+                    document.getElementById('authStatus').textContent = '🔓 STATUS: AUTHENTICATED';
+                    document.getElementById('authStatus').classList.remove('locked');
+                    document.getElementById('authStatus').classList.add('authenticated');
+                    
+                    document.getElementById('vaultStatus').textContent = 'ACTIVE';
+                    document.getElementById('vaultStatus').classList.remove('warning');
+                    document.getElementById('vaultStatus').classList.add('success');
+                    
+                    addOutput('SUCCESS', 'Vault authenticated successfully');
+                    addOutput('INFO', `Locations: ${result.locations.primary}, ${result.locations.mirror}`);
+                }
+            } catch (error) {
+                addBootLine('error', '❌ INVALID VAULT CODE - ACCESS DENIED');
+                addOutput('ERROR', 'Invalid vault code - Access denied');
+            }
+
+            codeInput.value = '';
+        }
+
+        function handleAuthKeypress(event) {
+            if (event.key === 'Enter') {
+                activateVault();
+            }
+        }
+
+        async function executeCommand(command) {
+            if (!vaultAuthenticated) {
+                addOutput('ERROR', 'Vault must be authenticated first');
+                return;
+            }
+
+            if (!actionTriggers) {
+                addOutput('ERROR', 'Action triggers not initialized');
+                return;
+            }
+
+            addOutput('INFO', `Executing command: ${command}`);
+            
+            try {
+                if (command === 'StartProphecyDrop') {
+                    addOutput('INFO', 'Step 1: Initiating Prophecy Drop sequence...');
+                    const result = await actionTriggers.startProphecyDrop({
+                        videoConfig: {
+                            avatar: 'default_avatar',
+                            text: 'Prophecy message from GOAT Force'
+                        },
+                        speechConfig: {
+                            text: 'Prophecy activated by GOAT Force',
+                            voiceModel: 'supergoat_v1'
+                        },
+                        metadata: {
+                            initiatedBy: 'Boss',
+                            timestamp: new Date().toISOString()
+                        }
+                    });
+
+                    if (result.status === 'completed') {
+                        addOutput('SUCCESS', 'Prophecy Drop completed successfully');
+                        logProphecyResult(result);
+                    } else {
+                        addOutput('ERROR', `Prophecy Drop failed: ${result.error}`);
+                    }
+                }
+                
+                else if (command === 'CheckVaultStatus') {
+                    addOutput('INFO', 'Checking vault status...');
+                    const result = await actionTriggers.checkVaultStatus();
+
+                    if (result.success) {
+                        addOutput('SUCCESS', 'Vault status check completed');
+                        logVaultStatus(result.results);
+                        
+                        // Update status display
+                        document.getElementById('lastSync').textContent = 
+                            result.results.syncHistory[0]?.timestamp || 'Never';
+                        document.getElementById('memoryStackSize').textContent = 
+                            result.results.memoryStack.size;
+                    } else {
+                        addOutput('ERROR', `Vault status check failed: ${result.error}`);
+                    }
+                }
+            } catch (error) {
+                addOutput('ERROR', `Command execution failed: ${error.message}`);
+            }
+        }
+
+        async function executeManualSync() {
+            if (!moneypenny) {
+                addOutput('ERROR', 'Moneypenny not initialized');
+                return;
+            }
+
+            addOutput('INFO', 'Manual sync triggered: GoatSecureUpload');
+            
+            try {
+                const result = await moneypenny.manualSyncTrigger();
+                
+                if (result.status === 'completed') {
+                    addOutput('SUCCESS', 'Manual sync completed successfully');
+                    document.getElementById('lastSync').textContent = 
+                        new Date().toLocaleString();
+                } else {
+                    addOutput('ERROR', `Manual sync failed: ${result.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                addOutput('ERROR', `Manual sync failed: ${error.message}`);
+            }
+        }
+
+        function viewMemoryStack() {
+            if (!moneypenny) {
+                addOutput('ERROR', 'Moneypenny not initialized');
+                return;
+            }
+
+            const stack = moneypenny.getMemoryStack();
+            
+            addOutput('INFO', `Memory Stack entries: ${stack.length}`);
+            
+            if (stack.length === 0) {
+                addOutput('INFO', 'Memory stack is empty');
+                return;
+            }
+
+            // Display last 10 entries
+            const recentEntries = stack.slice(0, 10);
+            
+            addOutput('INFO', 'Recent memory stack entries:');
+            recentEntries.forEach((entry, index) => {
+                addOutput('INFO', `  ${index + 1}. [${entry.timestamp}] ${entry.type}`);
+            });
+        }
+
+        // Utility functions
+        function addBootLine(type, text) {
+            const bootDisplay = document.getElementById('bootDisplay');
+            const line = document.createElement('div');
+            line.className = `line ${type}`;
+            line.textContent = text;
+            bootDisplay.appendChild(line);
+            bootDisplay.scrollTop = bootDisplay.scrollHeight;
+        }
+
+        function addOutput(type, message) {
+            const console = document.getElementById('outputConsole');
+            const line = document.createElement('div');
+            line.className = `output-line ${type.toLowerCase()}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            line.innerHTML = `
+                <span class="timestamp">[${timestamp}]</span>
+                <span class="type">${type}</span>
+                <span class="message">${message}</span>
+            `;
+            
+            console.appendChild(line);
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function updateStatusDisplay(initResult) {
+            // Update status display based on initialization result
+            document.getElementById('memoryStackSize').textContent = 
+                moneypenny?.memoryStack?.length || 0;
+        }
+
+        function logProphecyResult(result) {
+            addOutput('INFO', `Video ID: ${result.video?.videoId}`);
+            addOutput('INFO', `Speech ID: ${result.speech?.speechId}`);
+            addOutput('INFO', `Asset ID: ${result.asset?.assetId}`);
+            addOutput('INFO', `Duration: ${result.combined?.duration}s`);
+        }
+
+        function logVaultStatus(results) {
+            addOutput('INFO', `Vault Auth: ${results.vault?.authStatus}`);
+            addOutput('INFO', `Waka Backup: ${results.wakaBackup?.status}`);
+            addOutput('INFO', `Mirror Node: ${results.mirrorNode?.status}`);
+            addOutput('INFO', `Node Integrity: ${results.nodeIntegrity?.overallIntegrity}`);
+            addOutput('INFO', `Sync History: ${results.syncHistory.length} entries`);
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+# Vault Assets Directory
+
+This directory contains vault assets and resources for the VAULT PROTOCOL v7.0 system.
+
+## Subdirectories
+
+### /Episodes/ProphecyDrop/
+- Prophecy Drop video outputs
+- Combined video + speech assets
+- Thumbnails and metadata
+- Generated via StartProphecyDrop command
+
+### /MLC_BACKUP/
+- Master Licensing Catalog backups
+- Synced nightly or via GoatSecureUpload
+- JSON format with timestamps
+
+### /SPLIT_SHEETS/
+- Royalty split document backups
+- CSV and Excel formats
+- Historical versioning
+
+### /ASSETS_SYNC/
+- Digital asset backups
+- Gemini AI assets
+- DID avatar configurations
+- Synced across all vault nodes
+
+## File Formats
+
+- **Videos**: MP4 (1920x1080, h.264)
+- **Audio**: WAV/MP3 (high quality)
+- **Data**: JSON, CSV, XLSX
+- **Images**: PNG, JPG, WEBP
+
+## Naming Conventions
+
+- Prophecy videos: `prophecy_[timestamp].mp4`
+- Speech audio: `speech_[timestamp].wav`
+- Backups: `[filename]_[timestamp].[ext]`
+- Thumbnails: `thumb_[timestamp].png`
+
+## Access
+
+All assets are protected under VAULT PROTOCOL v7.0 security protocols.

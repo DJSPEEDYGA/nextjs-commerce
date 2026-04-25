@@ -1,0 +1,127 @@
+{
+  "masterLicenseCatalog": {
+    "version": "7.0",
+    "lastSync": "2024-01-01T00:00:00Z",
+    "catalog": {
+      "goatForceRecords": {
+        "label": "GOAT Force Records",
+        "status": "active",
+        "masterRights": "100%",
+        "publishing": "GOAT Force Publishing",
+        "catalogSize": 500
+      },
+      "artists": [
+        {
+          "id": "artist_001",
+          "name": "DJ Speedy",
+          "status": "active",
+          "contractType": "master_licensing",
+          "splitPercentage": 100,
+          "catalogSize": 250,
+          "totalRoyalties": 0.0
+        },
+        {
+          "id": "artist_002",
+          "name": "Waka Flocka Flame",
+          "status": "active",
+          "contractType": "master_licensing",
+          "splitPercentage": 0,
+          "catalogSize": 150,
+          "totalRoyalties": 0.0
+        }
+      ],
+      "tracks": [
+        {
+          "id": "track_001",
+          "title": "GOAT Anthem",
+          "artist": "DJ Speedy",
+          "isrc": "US-123-45-67890",
+          "releaseDate": "2024-01-01",
+          "dspCount": 282,
+          "status": "active",
+          "royalties": {
+            "streams": 0,
+            "syncLicensing": 0,
+            "mechanical": 0,
+            "total": 0.0
+          }
+        },
+        {
+          "id": "track_002",
+          "title": "BrickSquad Anthem",
+          "artist": "Waka Flocka Flame",
+          "isrc": "US-123-45-67891",
+          "releaseDate": "2024-01-01",
+          "dspCount": 282,
+          "status": "active",
+          "royalties": {
+            "streams": 0,
+            "syncLicensing": 0,
+            "mechanical": 0,
+            "total": 0.0
+          }
+        }
+      ],
+      "dspIntegrations": [
+        {
+          "name": "Spotify",
+          "status": "active",
+          "endpoint": "https://api.spotify.com/v1",
+          "integrationType": "api"
+        },
+        {
+          "name": "Apple Music",
+          "status": "active",
+          "endpoint": "https://api.music.apple.com/v1",
+          "integrationType": "api"
+        },
+        {
+          "name": "YouTube Music",
+          "status": "active",
+          "endpoint": "https://www.googleapis.com/youtube/v3",
+          "integrationType": "api"
+        },
+        {
+          "name": "Tidal",
+          "status": "active",
+          "endpoint": "https://api.tidal.com/v1",
+          "integrationType": "api"
+        }
+      ],
+      "syncLicenses": [
+        {
+          "id": "sync_001",
+          "track": "GOAT Anthem",
+          "client": "Netflix",
+          "project": "Project GOAT",
+          "agreementDate": "2024-01-01",
+          "licenseFee": 0.0,
+          "status": "pending"
+        }
+      ],
+      "agreements": [
+        {
+          "id": "agreement_001",
+          "type": "master_licensing",
+          "artist": "DJ Speedy",
+          "label": "GOAT Force Records",
+          "terms": {
+            "split": "100/0",
+            "duration": "perpetual",
+            "territory": "worldwide"
+          },
+          "status": "active"
+        }
+      ]
+    },
+    "metadata": {
+      "totalCatalogSize": 500,
+      "totalArtists": 2,
+      "totalTracks": 2,
+      "totalDspIntegrations": 282,
+      "totalSyncLicenses": 1,
+      "totalAgreements": 1,
+      "lastUpdate": "2024-01-01T00:00:00Z"
+    }
+  }
+}

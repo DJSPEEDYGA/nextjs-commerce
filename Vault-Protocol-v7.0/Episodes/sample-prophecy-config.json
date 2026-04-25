@@ -1,0 +1,85 @@
+{
+  "prophecyDrop": {
+    "command": "StartProphecyDrop",
+    "version": "7.0",
+    "timestamp": "2024-01-01T00:00:00Z",
+    "configuration": {
+      "videoConfig": {
+        "avatar": "default_avatar",
+        "text": "Prophecy message from GOAT Force",
+        "language": "en",
+        "voice": "default",
+        "resolution": "1920x1080",
+        "duration": 60,
+        "format": "mp4"
+      },
+      "speechConfig": {
+        "text": "Prophecy activated by GOAT Force",
+        "voiceModel": "supergoat_v1",
+        "emotion": "authoritative",
+        "speed": "normal",
+        "pitch": "normal",
+        "quality": "high",
+        "format": "wav"
+      },
+      "metadata": {
+        "initiatedBy": "Boss",
+        "artist": "DJ Speedy",
+        "series": "GOAT Prophecy",
+        "episode": 1,
+        "notes": "Sample prophecy drop configuration"
+      }
+    },
+    "output": {
+      "directory": "/Episodes/ProphecyDrop/",
+      "namingConvention": "prophecy_[timestamp].mp4",
+      "formats": ["mp4", "wav", "png"],
+      "thumbnailEnabled": true,
+      "ledgerEntry": true
+    },
+    "integration": {
+      "dapi": "D-ID API",
+      "speech": "SuperGOAT TTS",
+      "storage": "GOAT Vault Protocol",
+      "ledger": "GOAT_EPISODE_LEDGER.xlsx"
+    }
+  },
+  "templates": [
+    {
+      "name": "Trap Anthem",
+      "videoConfig": {
+        "avatar": "trap_avatar",
+        "text": "When the bass drops, the whole world stops",
+        "emotion": "aggressive"
+      },
+      "speechConfig": {
+        "voiceModel": "trap_v1",
+        "emotion": "aggressive"
+      }
+    },
+    {
+      "name": "Motivational",
+      "videoConfig": {
+        "avatar": "motivational_avatar",
+        "text": "You're the GOAT, never let them tell you different",
+        "emotion": "inspiring"
+      },
+      "speechConfig": {
+        "voiceModel": "motivational_v1",
+        "emotion": "inspiring"
+      }
+    },
+    {
+      "name": "Business Update",
+      "videoConfig": {
+        "avatar": "business_avatar",
+        "text": "Royalties are looking strong this quarter",
+        "emotion": "professional"
+      },
+      "speechConfig": {
+        "voiceModel": "business_v1",
+        "emotion": "professional"
+      }
+    }
+  ]
+}

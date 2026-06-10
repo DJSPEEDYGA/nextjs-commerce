@@ -36,8 +36,12 @@ router.get('/api/health', async (req, res) => {
  * @desc Quick health status for load balancers
  */
 router.get('/api/health/quick', async (req, res) => {
-    const status = await healthMonitor.getQuickStatus();
-    res.json(status);
+    try {
+        const status = await healthMonitor.getQuickStatus();
+        res.json(status);
+    } catch (error) {
+        res.status(500).json({ status: 'error', error: error.message });
+    }
 });
 
 /**
@@ -45,9 +49,13 @@ router.get('/api/health/quick', async (req, res) => {
  * @desc Prometheus-compatible metrics
  */
 router.get('/api/health/metrics', (req, res) => {
-    const metrics = healthMonitor.getPrometheusMetrics();
-    res.set('Content-Type', 'text/plain');
-    res.send(metrics);
+    try {
+        const metrics = healthMonitor.getPrometheusMetrics();
+        res.set('Content-Type', 'text/plain');
+        res.send(metrics);
+    } catch (error) {
+        res.status(500).send(`# Error generating metrics: ${error.message}`);
+    }
 });
 
 /**
@@ -55,8 +63,12 @@ router.get('/api/health/metrics', (req, res) => {
  * @desc Health check history
  */
 router.get('/api/health/history', (req, res) => {
-    const history = healthMonitor.getHealthHistory();
-    res.json({ history });
+    try {
+        const history = healthMonitor.getHealthHistory();
+        res.json({ history });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // ==================== USER AUTHENTICATION ROUTES ====================

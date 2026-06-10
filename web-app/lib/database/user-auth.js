@@ -120,7 +120,7 @@ class UserAuth {
             };
         } catch (error) {
             console.error('Registration error:', error);
-            return { success: false, error: 'Registration failed' };
+            return { success: false, error: `Registration failed: ${error.message}` };
         }
     }
 
@@ -175,7 +175,7 @@ class UserAuth {
             };
         } catch (error) {
             console.error('Login error:', error);
-            return { success: false, error: 'Login failed' };
+            return { success: false, error: `Login failed: ${error.message}` };
         }
     }
 
@@ -186,6 +186,7 @@ class UserAuth {
         try {
             return jwt.verify(token, JWT_SECRET);
         } catch (error) {
+            console.warn('JWT verification failed:', error.message);
             return null;
         }
     }
@@ -384,6 +385,9 @@ class UserAuth {
 }
 
 // Initialize tables on load
-initializeUserTables().catch(console.error);
+initializeUserTables().catch(err => {
+    console.error('Failed to initialize user authentication tables:', err.message);
+    console.error('Authentication features will not be available until this is resolved.');
+});
 
 module.exports = new UserAuth();

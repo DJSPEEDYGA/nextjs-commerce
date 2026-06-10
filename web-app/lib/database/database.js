@@ -34,8 +34,8 @@ try {
         }
     });
 } catch (e) {
-    console.log('📦 SQLite not available, using in-memory storage');
-    console.log('💡 To enable persistence, install a compatible sqlite3 package');
+    console.warn('📦 SQLite not available, using in-memory storage:', e.message);
+    console.warn('💡 To enable persistence, install a compatible sqlite3 package');
 }
 
 // In-memory fallback storage
@@ -51,6 +51,10 @@ const memoryStorage = {
  * Initialize database tables
  */
 function initializeTables() {
+    const logTableError = (tableName) => (err) => {
+        if (err) console.error(`Failed to create/index ${tableName}:`, err.message);
+    };
+
     db.serialize(() => {
         // Revenue tracking table
         db.run(`CREATE TABLE IF NOT EXISTS revenue (
@@ -64,7 +68,7 @@ function initializeTables() {
             metadata TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )`, logTableError('revenue'));
 
         // Mining statistics table
         db.run(`CREATE TABLE IF NOT EXISTS mining_stats (
@@ -79,7 +83,7 @@ function initializeTables() {
             started_at DATETIME,
             stopped_at DATETIME,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )`, logTableError('mining_stats'));
 
         // Mining earnings history
         db.run(`CREATE TABLE IF NOT EXISTS mining_earnings (
@@ -91,7 +95,7 @@ function initializeTables() {
             tx_hash TEXT,
             wallet_address TEXT,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )`, logTableError('mining_earnings'));
 
         // NFT portfolio table
         db.run(`CREATE TABLE IF NOT EXISTS nft_portfolio (
@@ -105,7 +109,7 @@ function initializeTables() {
             metadata TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )`, logTableError('nft_portfolio'));
 
         // NFT sales history
         db.run(`CREATE TABLE IF NOT EXISTS nft_sales (
@@ -116,7 +120,7 @@ function initializeTables() {
             tx_hash TEXT,
             sold_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (nft_id) REFERENCES nft_portfolio(id)
-        )`);
+        )`, logTableError('nft_sales'));
 
         // Collaboration projects
         db.run(`CREATE TABLE IF NOT EXISTS projects (
@@ -127,7 +131,7 @@ function initializeTables() {
             settings TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )`, logTableError('projects'));
 
         // Collaboration members
         db.run(`CREATE TABLE IF NOT EXISTS members (
@@ -139,7 +143,7 @@ function initializeTables() {
             status TEXT DEFAULT 'offline',
             last_active DATETIME DEFAULT CURRENT_TIMESTAMP,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )`, logTableError('members'));
 
         // Project members junction
         db.run(`CREATE TABLE IF NOT EXISTS project_members (
@@ -150,7 +154,7 @@ function initializeTables() {
             joined_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (project_id) REFERENCES projects(id),
             FOREIGN KEY (member_id) REFERENCES members(id)
-        )`);
+        )`, logTableError('project_members'));
 
         // Smart contracts
         db.run(`CREATE TABLE IF NOT EXISTS contracts (
@@ -165,7 +169,7 @@ function initializeTables() {
             deployed_at DATETIME,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )`, logTableError('contracts'));
 
         // Contract transactions
         db.run(`CREATE TABLE IF NOT EXISTS contract_transactions (
@@ -176,7 +180,7 @@ function initializeTables() {
             data TEXT,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (contract_id) REFERENCES contracts(id)
-        )`);
+        )`, logTableError('contract_transactions'));
 
         // AI Mastering jobs
         db.run(`CREATE TABLE IF NOT EXISTS mastering_jobs (
@@ -190,7 +194,7 @@ function initializeTables() {
             status TEXT DEFAULT 'pending',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             completed_at DATETIME
-        )`);
+        )`, logTableError('mastering_jobs'));
 
         // Market analysis data
         db.run(`CREATE TABLE IF NOT EXISTS market_trends (
@@ -201,7 +205,7 @@ function initializeTables() {
             audience TEXT,
             metadata TEXT,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )`, logTableError('market_trends'));
 
         // AI Agent decisions
         db.run(`CREATE TABLE IF NOT EXISTS agent_decisions (
@@ -212,7 +216,7 @@ function initializeTables() {
             success INTEGER DEFAULT 1,
             error TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )`, logTableError('agent_decisions'));
 
         // User settings
         db.run(`CREATE TABLE IF NOT EXISTS settings (
@@ -220,15 +224,15 @@ function initializeTables() {
             key TEXT UNIQUE NOT NULL,
             value TEXT,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+        )`, logTableError('settings'));
 
         // Create indexes for better query performance
-        db.run(`CREATE INDEX IF NOT EXISTS idx_revenue_platform ON revenue(platform)`);
-        db.run(`CREATE INDEX IF NOT EXISTS idx_revenue_created ON revenue(created_at)`);
-        db.run(`CREATE INDEX IF NOT EXISTS idx_mining_stats_miner ON mining_stats(miner_id)`);
-        db.run(`CREATE INDEX IF NOT EXISTS idx_mining_earnings_coin ON mining_earnings(coin)`);
-        db.run(`CREATE INDEX IF NOT EXISTS idx_nft_portfolio_chain ON nft_portfolio(chain)`);
-        db.run(`CREATE INDEX IF NOT EXISTS idx_agent_decisions_agent ON agent_decisions(agent_id)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_revenue_platform ON revenue(platform)`, logTableError('idx_revenue_platform'));
+        db.run(`CREATE INDEX IF NOT EXISTS idx_revenue_created ON revenue(created_at)`, logTableError('idx_revenue_created'));
+        db.run(`CREATE INDEX IF NOT EXISTS idx_mining_stats_miner ON mining_stats(miner_id)`, logTableError('idx_mining_stats_miner'));
+        db.run(`CREATE INDEX IF NOT EXISTS idx_mining_earnings_coin ON mining_earnings(coin)`, logTableError('idx_mining_earnings_coin'));
+        db.run(`CREATE INDEX IF NOT EXISTS idx_nft_portfolio_chain ON nft_portfolio(chain)`, logTableError('idx_nft_portfolio_chain'));
+        db.run(`CREATE INDEX IF NOT EXISTS idx_agent_decisions_agent ON agent_decisions(agent_id)`, logTableError('idx_agent_decisions_agent'));
 
         console.log('✅ Database tables initialized');
     });
@@ -239,6 +243,9 @@ function initializeTables() {
  */
 const dbAsync = {
     run: (sql, params = []) => {
+        if (!db || !dbAvailable) {
+            return Promise.reject(new Error('Database not available — SQLite failed to initialize'));
+        }
         return new Promise((resolve, reject) => {
             db.run(sql, params, function(err) {
                 if (err) reject(err);
@@ -248,6 +255,9 @@ const dbAsync = {
     },
 
     get: (sql, params = []) => {
+        if (!db || !dbAvailable) {
+            return Promise.reject(new Error('Database not available — SQLite failed to initialize'));
+        }
         return new Promise((resolve, reject) => {
             db.get(sql, params, (err, row) => {
                 if (err) reject(err);
@@ -257,6 +267,9 @@ const dbAsync = {
     },
 
     all: (sql, params = []) => {
+        if (!db || !dbAvailable) {
+            return Promise.reject(new Error('Database not available — SQLite failed to initialize'));
+        }
         return new Promise((resolve, reject) => {
             db.all(sql, params, (err, rows) => {
                 if (err) reject(err);

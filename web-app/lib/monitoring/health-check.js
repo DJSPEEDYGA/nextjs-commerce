@@ -132,7 +132,9 @@ class HealthMonitor {
             try {
                 const stats = fs.statSync(dbPath);
                 dbSize = (stats.size / 1024 / 1024).toFixed(2) + ' MB';
-            } catch {}
+            } catch (fsErr) {
+                console.warn('Could not read database file size:', fsErr.message);
+            }
 
             return {
                 status: 'healthy',

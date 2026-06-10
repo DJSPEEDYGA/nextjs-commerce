@@ -27,7 +27,7 @@ function loadDataFile(filename) {
             return data;
         }
     } catch (error) {
-        console.error(`Error loading ${filename}:`, error.message);
+        console.warn(`Failed to load data file ${filename}:`, error.message);
     }
     return null;
 }

@@ -84,6 +84,10 @@ export default function AIChat({ context = 'general', contextData }: AIChatProps
         body: JSON.stringify(body)
       });
 
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+      }
+
       const data = await response.json();
 
       if (data.success) {

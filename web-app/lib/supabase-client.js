@@ -73,6 +73,7 @@
         });
         return { ok: true, fan: data[0] };
       } catch (e) {
+        console.warn('saveFan failed:', e.message);
         return { ok: false, error: e.message };
       }
     },
@@ -82,6 +83,7 @@
         const data = await rest('fans?select=*&order=created_at.desc&limit=500');
         return { ok: true, fans: data };
       } catch (e) {
+        console.warn('listFans failed:', e.message);
         return { ok: false, error: e.message };
       }
     },
@@ -98,7 +100,7 @@
         });
         const count = parseInt(r.headers.get('content-range')?.split('/')[1] || '0');
         return { ok: true, count };
-      } catch (e) { return { ok:false, error:e.message }; }
+      } catch (e) { console.warn('countFans failed:', e.message); return { ok:false, error:e.message }; }
     },
 
     // ========== AGENT CONVERSATIONS ==========
@@ -110,6 +112,7 @@
         });
         return { ok: true, msg: data[0] };
       } catch (e) {
+        console.warn('saveAgentMessage failed:', e.message);
         return { ok: false, error: e.message };
       }
     },
@@ -119,6 +122,7 @@
         const data = await rest(`agent_messages?agent_id=eq.${agent_id}&select=*&order=created_at.desc&limit=${limit}`);
         return { ok: true, messages: data.reverse() };
       } catch (e) {
+        console.warn('loadAgentHistory failed:', e.message);
         return { ok: false, error: e.message };
       }
     },
@@ -140,16 +144,30 @@
 
     async signOut(){
       const c = getClient();
-      if (!c) return { ok:false };
-      await c.auth.signOut();
-      return { ok:true };
+      if (!c) return { ok:false, error:'SDK not loaded' };
+      try {
+        await c.auth.signOut();
+        return { ok:true };
+      } catch (e) {
+        console.warn('signOut failed:', e.message);
+        return { ok:false, error:e.message };
+      }
     },
 
     async currentUser(){
       const c = getClient();
       if (!c) return null;
-      const { data } = await c.auth.getUser();
-      return data?.user || null;
+      try {
+        const { data, error } = await c.auth.getUser();
+        if (error) {
+          console.warn('currentUser failed:', error.message);
+          return null;
+        }
+        return data?.user || null;
+      } catch (e) {
+        console.warn('currentUser failed:', e.message);
+        return null;
+      }
     },
 
     // ========== SETUP SQL (run once in Supabase SQL editor) ==========

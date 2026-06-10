@@ -182,7 +182,12 @@ const SyncOpportunities = {
             ...opportunity
         };
         data.opportunities.push(newOpp);
-        fs.writeFileSync(syncDataPath, JSON.stringify(data, null, 2));
+        try {
+            fs.writeFileSync(syncDataPath, JSON.stringify(data, null, 2));
+        } catch (err) {
+            console.error('Failed to persist sync opportunity:', err.message);
+            throw new Error(`Failed to save opportunity: ${err.message}`);
+        }
         return newOpp;
     },
     
@@ -198,7 +203,12 @@ const SyncOpportunities = {
                 ...updates, 
                 updatedAt: new Date().toISOString() 
             };
-            fs.writeFileSync(syncDataPath, JSON.stringify(data, null, 2));
+            try {
+                fs.writeFileSync(syncDataPath, JSON.stringify(data, null, 2));
+            } catch (err) {
+                console.error('Failed to persist sync opportunity update:', err.message);
+                throw new Error(`Failed to update opportunity: ${err.message}`);
+            }
             return data.opportunities[index];
         }
         return null;
@@ -230,7 +240,12 @@ const SyncOpportunities = {
                 ...song
             });
             
-            fs.writeFileSync(syncDataPath, JSON.stringify(data, null, 2));
+            try {
+                fs.writeFileSync(syncDataPath, JSON.stringify(data, null, 2));
+            } catch (err) {
+                console.error('Failed to persist song submission:', err.message);
+                throw new Error(`Failed to save submission: ${err.message}`);
+            }
             return song;
         }
         return null;

@@ -5,22 +5,22 @@
  */
 
 const GOAT_CREW_PROTOCOL = {
-    // Official calling codes
+    // Official calling codes — credentials loaded from environment variables
     ARCHITECT: {
-        code: 'ARCH-777-ROYAL',
-        password: 'GOAT-KINGDOM-FOR-2025',
+        code: process.env.CREW_ARCHITECT_CODE || '',
+        password: process.env.CREW_ARCHITECT_PASSWORD || '',
         status: 'LOCKED_IN',
         role: 'Master Builder & Digital Infrastructure Specialist'
     },
     MONEY_PENNY: {
-        code: 'PENNY-888-GOAT',
-        password: 'ROYALTY-EXCLUSIVE-2025',
+        code: process.env.CREW_MONEY_PENNY_CODE || '',
+        password: process.env.CREW_MONEY_PENNY_PASSWORD || '',
         status: 'LOCKED_IN',
         role: 'GOAT Royalty Store Manager'
     },
     NEXUS: {
-        code: 'NEXUS-999-CONNECT',
-        password: 'UNIVERSE-BRIDGE-2025',
+        code: process.env.CREW_NEXUS_CODE || '',
+        password: process.env.CREW_NEXUS_PASSWORD || '',
         status: 'LOCKED_IN',
         role: 'Connection Builder'
     }

@@ -2,8 +2,12 @@
 # REAL WORKING DOWNLOAD SCRIPT - NO DEMO
 # Run this on your 2TB machine
 
-# Your API Key
-export NGC_API_KEY="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"
+# NGC API Key — must be set in environment before running this script
+if [ -z "$NGC_API_KEY" ]; then
+  echo "ERROR: NGC_API_KEY environment variable is not set."
+  echo "Export it with: export NGC_API_KEY='nvapi-xxxxxxxx'"
+  exit 1
+fi
 
 # Login to NGC
 echo "$NGC_API_KEY" | docker login nvcr.io -u '$oauthtoken' --password-stdin

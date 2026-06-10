@@ -33,7 +33,7 @@ const PORT = process.env.PORT || 4000;
 // ---------------------------------------------------------------------------
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({
-  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
+  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : 'http://localhost:3000',
   credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
@@ -125,11 +125,15 @@ async function getSpotifyToken() {
 }
 
 app.get('/api/spotify/token', async (req, res) => {
+  const apiKey = req.headers['x-api-key'];
+  if (!apiKey || apiKey !== process.env.INTERNAL_API_KEY) {
+    return res.status(401).json({ ok: false, error: 'Unauthorized' });
+  }
   try {
     const token = await getSpotifyToken();
     res.json({ ok: true, token, expires_in: 3600 });
   } catch (e) {
-    res.status(500).json({ ok: false, error: e.message });
+    res.status(500).json({ ok: false, error: 'Failed to obtain token' });
   }
 });
 

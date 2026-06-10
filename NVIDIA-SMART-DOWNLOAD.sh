@@ -18,7 +18,11 @@
 set -e
 
 MODE="${1:-all}"
-export NGC_API_KEY="${NGC_API_KEY:-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}"
+if [ -z "$NGC_API_KEY" ]; then
+  echo "ERROR: NGC_API_KEY environment variable is not set."
+  echo "Export it with: export NGC_API_KEY='nvapi-xxxxxxxx'"
+  exit 1
+fi
 
 echo "╔════════════════════════════════════════════════════╗"
 echo "║  🚀 NVIDIA SMART DOWNLOAD v3.0                     ║"

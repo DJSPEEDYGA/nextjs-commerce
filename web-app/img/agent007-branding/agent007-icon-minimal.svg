@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Minimal Agent-007 icon for menu bar / system tray / favicon -->
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="100%" style="stop-color:#B8860B"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="#0a0e17" stroke="url(#g)" stroke-width="3"/>
+  <!-- Goat horns small -->
+  <path d="M24 22 C22 16 20 11 17 8 C19 12 20 17 21 21 Z" fill="url(#g)"/>
+  <path d="M40 22 C42 16 44 11 47 8 C45 12 44 17 43 21 Z" fill="url(#g)"/>
+  <!-- Head -->
+  <ellipse cx="32" cy="28" rx="8" ry="10" fill="#0a0e17" stroke="url(#g)" stroke-width="1.5"/>
+  <!-- Hat -->
+  <path d="M23 26 Q32 22 41 26 Q38 24 32 23 Q26 24 23 26Z" fill="url(#g)"/>
+  <!-- 007 -->
+  <text x="32" y="54" text-anchor="middle" font-family="Georgia,serif" font-size="12" font-weight="bold" fill="url(#g)">007</text>
+</svg>

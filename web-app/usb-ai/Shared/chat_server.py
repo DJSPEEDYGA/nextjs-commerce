@@ -4168,7 +4168,21 @@ def computer_control_action(payload):
                     "stderr": "",
                 }
             else:
-                command = ["say", text]
+                command = ["say"]
+                voice = str(payload.get("voice") or "").strip()
+                if voice:
+                    command += ["-v", voice]
+                rate = payload.get("rate")
+                if rate:
+                    try:
+                        command += ["-r", str(int(rate))]
+                    except (TypeError, ValueError):
+                        pass
+                # Route to a specific audio output device (e.g. Universal Audio interface).
+                audio_device = str(payload.get("audioDevice") or payload.get("audio_device") or "").strip()
+                if audio_device:
+                    command += ["-a", audio_device]
+                command.append(text)
                 proc = computer_run_process(command, dry_run=dry_run)
                 if proc["exitCode"] != 0:
                     raise PermissionError(proc["stderr"] or "Could not speak text")
@@ -4177,10 +4191,31 @@ def computer_control_action(payload):
                 result = {
                     "computerAction": "speak",
                     "chars": len(text),
+                    "voice": voice or "default",
+                    "audioDevice": audio_device or "system default",
                     "dryRun": dry_run,
                     "executed": not dry_run,
                     **proc,
                 }
+    elif computer_action in ("list_audio_devices", "audio_devices"):
+        if system_name != "Darwin":
+            raise PermissionError("Computer Control list_audio_devices is currently enabled on macOS only")
+        # `say -a "?"` prints all available audio output devices (incl. Universal Audio).
+        proc = computer_run_process(["say", "-a", "?"], dry_run=dry_run)
+        devices = []
+        for line in (proc.get("stdout") or "").splitlines():
+            line = line.strip()
+            if line:
+                devices.append(line)
+        result = {
+            "computerAction": "list_audio_devices",
+            "devices": devices,
+            "count": len(devices),
+            "note": "Use the device name with the 'audioDevice' param on speak to route Agent-007 through it.",
+            "dryRun": dry_run,
+            "executed": not dry_run,
+            **proc,
+        }
     elif computer_action in ("stop_speak", "stop_speech", "cancel_speak"):
         if system_name != "Darwin":
             raise PermissionError("Computer Control stop_speak is currently enabled on macOS only")
@@ -10211,7 +10246,8 @@ class ChatHandler(http.server.BaseHTTPRequestHandler):
             "agent007ComputerControl": bool(load_settings().get("computerControlEnabled")),
             "computerActions": [
                 "open_app", "activate_app", "quit_app", "open_path", "reveal_path",
-                "open_url", "screenshot", "speak", "type_text", "hotkey", "daw_transport",
+                "open_url", "screenshot", "speak", "stop_speak", "list_audio_devices",
+                "type_text", "hotkey", "daw_transport",
             ],
             "moneyPennyIntel": "http://127.0.0.1:5500",
             "goatWeb": goat_local_web_url(),
@@ -10568,6 +10604,8 @@ class ChatHandler(http.server.BaseHTTPRequestHandler):
                     "list_running_apps",
                     "screenshot",
                     "speak",
+                    "stop_speak",
+                    "list_audio_devices",
                     "type_text",
                     "hotkey",
                     "daw_transport",

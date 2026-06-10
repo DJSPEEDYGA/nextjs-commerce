@@ -6,6 +6,8 @@ const Contract = require('../models/Contract');
 const { protect, authorize } = require('../middleware/auth');
 const { validateDateRange } = require('../middleware/validation');
 const { asyncHandler, AppError } = require('../middleware/errorHandler');
+const { buildDateRangeFilter, applyArtistFilter } = require('../utils/queryFilters');
+const { groupBySum } = require('../utils/aggregationHelpers');
 
 const router = express.Router();
 
@@ -17,19 +19,10 @@ router.get('/dashboard',
   validateDateRange,
   asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
-    
-    let dateMatch = {};
-    if (startDate || endDate) {
-      dateMatch = {};
-      if (startDate) dateMatch.$gte = new Date(startDate);
-      if (endDate) dateMatch.$lte = new Date(endDate);
-    }
+    const dateMatch = buildDateRangeFilter(startDate, endDate);
 
-    // Artist filter for artists
-    let artistMatch = {};
-    if (req.user.role === 'artist' && req.artistProfile) {
-      artistMatch = { artist: req.artistProfile._id };
-    }
+    const artistMatch = {};
+    applyArtistFilter(artistMatch, req.user, req.artistProfile);
 
     const [
       royaltyStats,
@@ -40,7 +33,7 @@ router.get('/dashboard',
     ] = await Promise.all([
       // Royalty statistics
       Royalty.aggregate([
-        { $match: { ...artistMatch, ...(dateMatch.periodStart && { periodStart: dateMatch }) } },
+        { $match: { ...artistMatch, ...(dateMatch && { periodStart: dateMatch }) } },
         {
           $group: {
             _id: null,
@@ -55,7 +48,7 @@ router.get('/dashboard',
       
       // Payment statistics
       Payment.aggregate([
-        { $match: { ...artistMatch, ...(dateMatch.paymentDate && { paymentDate: dateMatch }) } },
+        { $match: { ...artistMatch, ...(dateMatch && { paymentDate: dateMatch }) } },
         {
           $group: {
             _id: null,
@@ -178,20 +171,11 @@ router.get('/artist-earnings',
   asyncHandler(async (req, res) => {
     const { startDate, endDate, artistId } = req.query;
     
-    let matchStage = {};
-    
-    if (startDate || endDate) {
-      matchStage.periodStart = {};
-      if (startDate) matchStage.periodStart.$gte = new Date(startDate);
-      if (endDate) matchStage.periodStart.$lte = new Date(endDate);
-    }
+    const matchStage = {};
+    const dateRange = buildDateRangeFilter(startDate, endDate);
+    if (dateRange) matchStage.periodStart = dateRange;
 
-    // Artist filter
-    if (req.user.role === 'artist' && req.artistProfile) {
-      matchStage.artist = req.artistProfile._id;
-    } else if (artistId) {
-      matchStage.artist = artistId;
-    }
+    applyArtistFilter(matchStage, req.user, req.artistProfile, 'artist', artistId);
 
     const artistEarnings = await Royalty.aggregate([
       { $match: matchStage },
@@ -241,14 +225,8 @@ router.get('/artist-earnings',
           totalPending: artist.totalPending,
           totalPaid: artist.totalPaid,
           royaltyCount: artist.royaltyCount,
-          bySource: artist.bySource.reduce((acc, item) => {
-            acc[item.source] = (acc[item.source] || 0) + item.amount;
-            return acc;
-          }, {}),
-          byWorkType: artist.byWorkType.reduce((acc, item) => {
-            acc[item.workType] = (acc[item.workType] || 0) + item.amount;
-            return acc;
-          }, {})
+          bySource: groupBySum(artist.bySource, 'source', 'amount'),
+          byWorkType: groupBySum(artist.byWorkType, 'workType', 'amount')
         }))
       }
     });
@@ -263,19 +241,11 @@ router.get('/platform-revenue',
   validateDateRange,
   asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
-    
-    let matchStage = {};
-    
-    if (startDate || endDate) {
-      matchStage.periodStart = {};
-      if (startDate) matchStage.periodStart.$gte = new Date(startDate);
-      if (endDate) matchStage.periodStart.$lte = new Date(endDate);
-    }
+    const matchStage = {};
+    const dateRange = buildDateRangeFilter(startDate, endDate);
+    if (dateRange) matchStage.periodStart = dateRange;
 
-    // Artist filter for artists
-    if (req.user.role === 'artist' && req.artistProfile) {
-      matchStage.artist = req.artistProfile._id;
-    }
+    applyArtistFilter(matchStage, req.user, req.artistProfile);
 
     const platformRevenue = await Royalty.aggregate([
       { $match: matchStage },
@@ -330,19 +300,11 @@ router.get('/payment-status',
   validateDateRange,
   asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
-    
-    let matchStage = {};
-    
-    if (startDate || endDate) {
-      matchStage.paymentDate = {};
-      if (startDate) matchStage.paymentDate.$gte = new Date(startDate);
-      if (endDate) matchStage.paymentDate.$lte = new Date(endDate);
-    }
+    const matchStage = {};
+    const dateRange = buildDateRangeFilter(startDate, endDate);
+    if (dateRange) matchStage.paymentDate = dateRange;
 
-    // Artist filter for artists
-    if (req.user.role === 'artist' && req.artistProfile) {
-      matchStage.artist = req.artistProfile._id;
-    }
+    applyArtistFilter(matchStage, req.user, req.artistProfile);
 
     const paymentStatus = await Payment.aggregate([
       { $match: matchStage },

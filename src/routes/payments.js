@@ -9,6 +9,10 @@ const {
   validateDateRange
 } = require('../middleware/validation');
 const { asyncHandler, AppError } = require('../middleware/errorHandler');
+const { parsePagination, paginationMeta } = require('../utils/pagination');
+const { buildDateRangeFilter, applyArtistFilter, enforceArtistOwnership } = require('../utils/queryFilters');
+const { findByIdOr404 } = require('../utils/routeHelpers');
+const { groupBySum, groupBySumWithCount } = require('../utils/aggregationHelpers');
 
 const router = express.Router();
 
@@ -20,36 +24,16 @@ router.get('/',
   validatePagination,
   validateDateRange,
   asyncHandler(async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePagination(req.query);
 
-    // Build query
-    let query = {};
-    
-    // Add date range filter
-    if (req.query.startDate || req.query.endDate) {
-      query.paymentDate = {};
-      if (req.query.startDate) query.paymentDate.$gte = new Date(req.query.startDate);
-      if (req.query.endDate) query.paymentDate.$lte = new Date(req.query.endDate);
-    }
+    const query = {};
+    const dateRange = buildDateRangeFilter(req.query.startDate, req.query.endDate);
+    if (dateRange) query.paymentDate = dateRange;
 
-    // Add artist filter for artists (only their own payments)
-    if (req.user.role === 'artist' && req.artistProfile) {
-      query.artist = req.artistProfile._id;
-    } else if (req.query.artist) {
-      query.artist = req.query.artist;
-    }
+    applyArtistFilter(query, req.user, req.artistProfile, 'artist', req.query.artist);
 
-    // Add status filter
-    if (req.query.status) {
-      query.status = req.query.status;
-    }
-
-    // Add method filter
-    if (req.query.method) {
-      query.method = req.query.method;
-    }
+    if (req.query.status) query.status = req.query.status;
+    if (req.query.method) query.method = req.query.method;
 
     const payments = await Payment.find(query)
       .populate('artist', 'name email')
@@ -66,12 +50,7 @@ router.get('/',
       success: true,
       data: {
         payments,
-        pagination: {
-          page,
-          limit,
-          total,
-          pages: Math.ceil(total / limit)
-        }
+        pagination: paginationMeta(total, { page, limit }),
       }
     });
   })
@@ -84,28 +63,18 @@ router.get('/:id',
   protect, 
   validateMongoId('id'),
   asyncHandler(async (req, res) => {
-    const payment = await Payment.findById(req.params.id)
-      .populate('artist', 'name email user')
-      .populate('royalties.royalty', 'workTitle workType amount')
-      .populate('createdBy', 'username profile')
-      .populate('processedBy', 'username');
+    const payment = await findByIdOr404(Payment, req.params.id, 'Payment', [
+      { path: 'artist', select: 'name email user' },
+      { path: 'royalties.royalty', select: 'workTitle workType amount' },
+      { path: 'createdBy', select: 'username profile' },
+      { path: 'processedBy', select: 'username' },
+    ]);
 
-    if (!payment) {
-      throw new AppError('Payment not found', 404);
-    }
-
-    // Check artist access
-    if (req.user.role === 'artist' && req.artistProfile) {
-      if (payment.artist._id.toString() !== req.artistProfile._id.toString()) {
-        throw new AppError('Not authorized to access this payment', 403);
-      }
-    }
+    enforceArtistOwnership(payment, req.user, req.artistProfile, 'payment');
 
     res.json({
       success: true,
-      data: {
-        payment
-      }
+      data: { payment },
     });
   })
 );
@@ -175,11 +144,7 @@ router.put('/:id/process',
   authorize('admin', 'manager'),
   validateMongoId('id'),
   asyncHandler(async (req, res) => {
-    const payment = await Payment.findById(req.params.id);
-
-    if (!payment) {
-      throw new AppError('Payment not found', 404);
-    }
+    const payment = await findByIdOr404(Payment, req.params.id, 'Payment');
 
     if (payment.status !== 'pending') {
       throw new AppError('Payment is not pending', 400);
@@ -190,9 +155,7 @@ router.put('/:id/process',
     res.json({
       success: true,
       message: 'Payment processing started',
-      data: {
-        payment
-      }
+      data: { payment },
     });
   })
 );
@@ -205,11 +168,7 @@ router.put('/:id/complete',
   authorize('admin', 'manager'),
   validateMongoId('id'),
   asyncHandler(async (req, res) => {
-    const payment = await Payment.findById(req.params.id);
-
-    if (!payment) {
-      throw new AppError('Payment not found', 404);
-    }
+    const payment = await findByIdOr404(Payment, req.params.id, 'Payment');
 
     if (payment.status !== 'processing') {
       throw new AppError('Payment is not being processed', 400);
@@ -248,11 +207,7 @@ router.put('/:id/fail',
       throw new AppError('Failure reason is required', 400);
     }
 
-    const payment = await Payment.findById(req.params.id);
-
-    if (!payment) {
-      throw new AppError('Payment not found', 404);
-    }
+    const payment = await findByIdOr404(Payment, req.params.id, 'Payment');
 
     if (payment.status !== 'processing') {
       throw new AppError('Payment is not being processed', 400);
@@ -284,11 +239,7 @@ router.put('/:id/refund',
       throw new AppError('Refund amount and reason are required', 400);
     }
 
-    const payment = await Payment.findById(req.params.id);
-
-    if (!payment) {
-      throw new AppError('Payment not found', 404);
-    }
+    const payment = await findByIdOr404(Payment, req.params.id, 'Payment');
 
     if (payment.status !== 'completed') {
       throw new AppError('Only completed payments can be refunded', 400);
@@ -325,19 +276,11 @@ router.get('/analytics',
   validateDateRange,
   asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
-    
-    let matchStage = {};
-    
-    if (startDate || endDate) {
-      matchStage.paymentDate = {};
-      if (startDate) matchStage.paymentDate.$gte = new Date(startDate);
-      if (endDate) matchStage.paymentDate.$lte = new Date(endDate);
-    }
+    const matchStage = {};
+    const dateRange = buildDateRangeFilter(startDate, endDate);
+    if (dateRange) matchStage.paymentDate = dateRange;
 
-    // Artist filter for artists
-    if (req.user.role === 'artist' && req.artistProfile) {
-      matchStage.artist = req.artistProfile._id;
-    }
+    applyArtistFilter(matchStage, req.user, req.artistProfile);
 
     const analytics = await Payment.aggregate([
       { $match: matchStage },
@@ -393,24 +336,8 @@ router.get('/analytics',
       byStatus: []
     };
 
-    // Group by method
-    const methodSummary = summary.byMethod.reduce((acc, item) => {
-      if (!acc[item.method]) {
-        acc[item.method] = 0;
-      }
-      acc[item.method] += item.amount;
-      return acc;
-    }, {});
-
-    // Group by status
-    const statusSummary = summary.byStatus.reduce((acc, item) => {
-      if (!acc[item.status]) {
-        acc[item.status] = { count: 0, amount: 0 };
-      }
-      acc[item.status].count += 1;
-      acc[item.status].amount += item.amount;
-      return acc;
-    }, {});
+    const methodSummary = groupBySum(summary.byMethod, 'method', 'amount');
+    const statusSummary = groupBySumWithCount(summary.byStatus, 'status', 'amount');
 
     res.json({
       success: true,

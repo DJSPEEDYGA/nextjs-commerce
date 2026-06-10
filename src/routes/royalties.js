@@ -8,6 +8,10 @@ const {
   validateDateRange
 } = require('../middleware/validation');
 const { asyncHandler, AppError } = require('../middleware/errorHandler');
+const { parsePagination, paginationMeta } = require('../utils/pagination');
+const { buildDateRangeFilter, applyArtistFilter, enforceArtistOwnership } = require('../utils/queryFilters');
+const { findByIdOr404 } = require('../utils/routeHelpers');
+const { groupBySum, groupBySumWithCount } = require('../utils/aggregationHelpers');
 
 const router = express.Router();
 
@@ -19,41 +23,17 @@ router.get('/',
   validatePagination,
   validateDateRange,
   asyncHandler(async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePagination(req.query);
 
-    // Build query
-    let query = {};
-    
-    // Add date range filter
-    if (req.query.startDate || req.query.endDate) {
-      query.periodStart = {};
-      if (req.query.startDate) query.periodStart.$gte = new Date(req.query.startDate);
-      if (req.query.endDate) query.periodStart.$lte = new Date(req.query.endDate);
-    }
+    const query = {};
+    const dateRange = buildDateRangeFilter(req.query.startDate, req.query.endDate);
+    if (dateRange) query.periodStart = dateRange;
 
-    // Add artist filter for artists (only their own royalties)
-    if (req.user.role === 'artist' && req.artistProfile) {
-      query.artist = req.artistProfile._id;
-    } else if (req.query.artist) {
-      query.artist = req.query.artist;
-    }
+    applyArtistFilter(query, req.user, req.artistProfile, 'artist', req.query.artist);
 
-    // Add status filter
-    if (req.query.status) {
-      query.status = req.query.status;
-    }
-
-    // Add source filter
-    if (req.query.source) {
-      query.source = req.query.source;
-    }
-
-    // Add work type filter
-    if (req.query.workType) {
-      query.workType = req.query.workType;
-    }
+    if (req.query.status) query.status = req.query.status;
+    if (req.query.source) query.source = req.query.source;
+    if (req.query.workType) query.workType = req.query.workType;
 
     const royalties = await Royalty.find(query)
       .populate('artist', 'name email')
@@ -69,12 +49,7 @@ router.get('/',
       success: true,
       data: {
         royalties,
-        pagination: {
-          page,
-          limit,
-          total,
-          pages: Math.ceil(total / limit)
-        }
+        pagination: paginationMeta(total, { page, limit }),
       }
     });
   })
@@ -87,29 +62,19 @@ router.get('/:id',
   protect, 
   validateMongoId('id'),
   asyncHandler(async (req, res) => {
-    const royalty = await Royalty.findById(req.params.id)
-      .populate('artist', 'name email user')
-      .populate('contract', 'title contractNumber')
-      .populate('createdBy', 'username profile')
-      .populate('approvedBy', 'username')
-      .populate('payments');
+    const royalty = await findByIdOr404(Royalty, req.params.id, 'Royalty', [
+      { path: 'artist', select: 'name email user' },
+      { path: 'contract', select: 'title contractNumber' },
+      { path: 'createdBy', select: 'username profile' },
+      { path: 'approvedBy', select: 'username' },
+      'payments',
+    ]);
 
-    if (!royalty) {
-      throw new AppError('Royalty not found', 404);
-    }
-
-    // Check artist access
-    if (req.user.role === 'artist' && req.artistProfile) {
-      if (royalty.artist._id.toString() !== req.artistProfile._id.toString()) {
-        throw new AppError('Not authorized to access this royalty', 403);
-      }
-    }
+    enforceArtistOwnership(royalty, req.user, req.artistProfile, 'royalty');
 
     res.json({
       success: true,
-      data: {
-        royalty
-      }
+      data: { royalty },
     });
   })
 );
@@ -156,13 +121,8 @@ router.put('/:id',
   authorize('admin', 'manager'),
   validateMongoId('id'),
   asyncHandler(async (req, res) => {
-    const royalty = await Royalty.findById(req.params.id);
+    const royalty = await findByIdOr404(Royalty, req.params.id, 'Royalty');
 
-    if (!royalty) {
-      throw new AppError('Royalty not found', 404);
-    }
-
-    // Don't allow updates to approved royalties
     if (royalty.status === 'approved' || royalty.status === 'paid') {
       throw new AppError('Cannot update approved or paid royalties', 400);
     }
@@ -191,11 +151,7 @@ router.put('/:id/approve',
   authorize('admin', 'manager'),
   validateMongoId('id'),
   asyncHandler(async (req, res) => {
-    const royalty = await Royalty.findById(req.params.id);
-
-    if (!royalty) {
-      throw new AppError('Royalty not found', 404);
-    }
+    const royalty = await findByIdOr404(Royalty, req.params.id, 'Royalty');
 
     if (royalty.status !== 'pending') {
       throw new AppError('Royalty is not pending approval', 400);
@@ -221,11 +177,7 @@ router.delete('/:id',
   authorize('admin', 'manager'),
   validateMongoId('id'),
   asyncHandler(async (req, res) => {
-    const royalty = await Royalty.findById(req.params.id);
-
-    if (!royalty) {
-      throw new AppError('Royalty not found', 404);
-    }
+    const royalty = await findByIdOr404(Royalty, req.params.id, 'Royalty');
 
     // Don't allow deletion of approved or paid royalties
     if (royalty.status === 'approved' || royalty.status === 'paid') {
@@ -256,19 +208,11 @@ router.get('/analytics',
   validateDateRange,
   asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
-    
-    let matchStage = {};
-    
-    if (startDate || endDate) {
-      matchStage.periodStart = {};
-      if (startDate) matchStage.periodStart.$gte = new Date(startDate);
-      if (endDate) matchStage.periodStart.$lte = new Date(endDate);
-    }
+    const matchStage = {};
+    const dateRange = buildDateRangeFilter(startDate, endDate);
+    if (dateRange) matchStage.periodStart = dateRange;
 
-    // Artist filter for artists
-    if (req.user.role === 'artist' && req.artistProfile) {
-      matchStage.artist = req.artistProfile._id;
-    }
+    applyArtistFilter(matchStage, req.user, req.artistProfile);
 
     const analytics = await Royalty.aggregate([
       { $match: matchStage },
@@ -306,24 +250,8 @@ router.get('/analytics',
       byStatus: []
     };
 
-    // Group by source
-    const sourceSummary = summary.bySource.reduce((acc, item) => {
-      if (!acc[item.source]) {
-        acc[item.source] = 0;
-      }
-      acc[item.source] += item.amount;
-      return acc;
-    }, {});
-
-    // Group by status
-    const statusSummary = summary.byStatus.reduce((acc, item) => {
-      if (!acc[item.status]) {
-        acc[item.status] = { count: 0, amount: 0 };
-      }
-      acc[item.status].count += 1;
-      acc[item.status].amount += item.amount;
-      return acc;
-    }, {});
+    const sourceSummary = groupBySum(summary.bySource, 'source', 'amount');
+    const statusSummary = groupBySumWithCount(summary.byStatus, 'status', 'amount');
 
     res.json({
       success: true,

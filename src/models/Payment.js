@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { buildDateRangeFilter } = require('../utils/queryFilters');
 
 const paymentSchema = new mongoose.Schema({
   artist: {
@@ -202,12 +203,8 @@ paymentSchema.methods.refund = function(refundAmount, refundReason) {
 // Static method to get payment summary
 paymentSchema.statics.getPaymentSummary = async function(artistId, startDate, endDate) {
   const matchStage = { artist: artistId };
-  
-  if (startDate || endDate) {
-    matchStage.paymentDate = {};
-    if (startDate) matchStage.paymentDate.$gte = new Date(startDate);
-    if (endDate) matchStage.paymentDate.$lte = new Date(endDate);
-  }
+  const dateRange = buildDateRangeFilter(startDate, endDate);
+  if (dateRange) matchStage.paymentDate = dateRange;
   
   const summary = await this.aggregate([
     { $match: matchStage },

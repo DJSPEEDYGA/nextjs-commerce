@@ -10,7 +10,7 @@
 
 const fs = require('fs').promises;
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 
 class DataProcessor {
   constructor(config) {
@@ -77,7 +77,7 @@ class DataProcessor {
 
     for (const [tool, description] of Object.entries(tools)) {
       try {
-        execSync(`which ${tool}`, { stdio: 'ignore' });
+        execFileSync('which', [tool], { stdio: 'ignore' });
         console.log(`✅ Found ${tool} (${description})`);
       } catch {
         console.log(`⚠️  ${tool} not found (${description}) - some features may be limited`);
@@ -132,7 +132,7 @@ class DataProcessor {
       
       // Try to extract PDF info
       try {
-        const pdfInfo = execSync(`pdfinfo "${file.id}"`, { 
+        const pdfInfo = execFileSync('pdfinfo', [file.id], { 
           encoding: 'utf8',
           timeout: 10000 
         });
@@ -160,7 +160,7 @@ class DataProcessor {
    */
   async extractPDFText(file) {
     try {
-      const text = execSync(`pdftotext "${file.id}" - -nopgbrk`, {
+      const text = execFileSync('pdftotext', [file.id, '-', '-nopgbrk'], {
         encoding: 'utf8',
         timeout: 30000
       });
@@ -196,7 +196,7 @@ class DataProcessor {
       metadata.format = 'EPUB';
       
       // Extract EPUB metadata
-      const epubInfo = execSync(`unzip -p "${file.id}" META-INF/container.xml`, {
+      const epubInfo = execFileSync('unzip', ['-p', file.id, 'META-INF/container.xml'], {
         encoding: 'utf8',
         timeout: 5000
       });
@@ -205,7 +205,7 @@ class DataProcessor {
       const rootFileMatch = epubInfo.match(/full-path="([^"]+)"/);
       if (rootFileMatch) {
         const rootFilePath = rootFileMatch[1];
-        const opfContent = execSync(`unzip -p "${file.id}" "${rootFilePath}"`, {
+        const opfContent = execFileSync('unzip', ['-p', file.id, rootFilePath], {
           encoding: 'utf8',
           timeout: 5000
         });
@@ -268,8 +268,8 @@ class DataProcessor {
   async processAudio(file, metadata = {}) {
     try {
       // Use ffprobe to extract audio metadata
-      const ffprobeOutput = execSync(
-        `ffprobe -v quiet -print_format json -show_format -show_streams "${file.id}"`,
+      const ffprobeOutput = execFileSync(
+        'ffprobe', ['-v', 'quiet', '-print_format', 'json', '-show_format', '-show_streams', file.id],
         { encoding: 'utf8', timeout: 10000 }
       );
       
@@ -552,14 +552,14 @@ class DataProcessor {
       const fileName = file.name.toLowerCase();
       
       if (fileName.endsWith('.doc')) {
-        const textContent = execSync(`antiword "${file.id}"`, {
+        const textContent = execFileSync('antiword', [file.id], {
           encoding: 'utf8',
           timeout: 30000
         });
         metadata.textLength = textContent.length;
         metadata.extractedText = textContent.substring(0, 1000);
       } else if (fileName.endsWith('.docx')) {
-        const textContent = execSync(`pandoc "${file.id}" -t plain`, {
+        const textContent = execFileSync('pandoc', [file.id, '-t', 'plain'], {
           encoding: 'utf8',
           timeout: 30000
         });
@@ -598,7 +598,7 @@ class DataProcessor {
   async processImage(file, metadata = {}) {
     try {
       // Use identify command to get image metadata
-      const identifyOutput = execSync(`identify -verbose "${file.id}"`, {
+      const identifyOutput = execFileSync('identify', ['-verbose', file.id], {
         encoding: 'utf8',
         timeout: 10000
       });

@@ -24,7 +24,7 @@ router.get('/test', requireEmailVerification, authorize(['admin']), async (req, 
     res.status(500).json({
       success: false,
       error: 'Failed to test Hostinger connection',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -42,7 +42,7 @@ router.get('/domains', requireEmailVerification, authorize(['admin']), async (re
     res.status(500).json({
       success: false,
       error: 'Failed to fetch domains',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -60,7 +60,7 @@ router.get('/domains/:domainName', requireEmailVerification, authorize(['admin']
     res.status(500).json({
       success: false,
       error: 'Failed to fetch domain details',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -78,7 +78,7 @@ router.get('/domains/:domainName/dns', requireEmailVerification, authorize(['adm
     res.status(500).json({
       success: false,
       error: 'Failed to fetch DNS records',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -96,7 +96,7 @@ router.post('/domains/:domainName/dns', requireEmailVerification, authorize(['ad
     res.status(500).json({
       success: false,
       error: 'Failed to create DNS record',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -118,7 +118,7 @@ router.put('/domains/:domainName/dns/:recordId', requireEmailVerification, autho
     res.status(500).json({
       success: false,
       error: 'Failed to update DNS record',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -139,7 +139,7 @@ router.delete('/domains/:domainName/dns/:recordId', requireEmailVerification, au
     res.status(500).json({
       success: false,
       error: 'Failed to delete DNS record',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -157,7 +157,7 @@ router.get('/domains/:domainName/ssl', requireEmailVerification, authorize(['adm
     res.status(500).json({
       success: false,
       error: 'Failed to fetch SSL information',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -175,7 +175,7 @@ router.post('/domains/:domainName/ssl', requireEmailVerification, authorize(['ad
     res.status(500).json({
       success: false,
       error: 'Failed to install SSL certificate',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -193,7 +193,7 @@ router.get('/hosting', requireEmailVerification, authorize(['admin']), async (re
     res.status(500).json({
       success: false,
       error: 'Failed to fetch hosting information',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -211,7 +211,7 @@ router.get('/hosting/stats', requireEmailVerification, authorize(['admin']), asy
     res.status(500).json({
       success: false,
       error: 'Failed to fetch hosting statistics',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -230,7 +230,7 @@ router.get('/hosting/bandwidth', requireEmailVerification, authorize(['admin']),
     res.status(500).json({
       success: false,
       error: 'Failed to fetch bandwidth usage',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -248,7 +248,7 @@ router.get('/hosting/disk-usage', requireEmailVerification, authorize(['admin'])
     res.status(500).json({
       success: false,
       error: 'Failed to fetch disk usage',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -266,7 +266,7 @@ router.get('/domains/:domainName/emails', requireEmailVerification, authorize(['
     res.status(500).json({
       success: false,
       error: 'Failed to fetch email accounts',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -284,7 +284,7 @@ router.post('/domains/:domainName/emails', requireEmailVerification, authorize([
     res.status(500).json({
       success: false,
       error: 'Failed to create email account',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -305,7 +305,7 @@ router.delete('/domains/:domainName/emails/:emailId', requireEmailVerification, 
     res.status(500).json({
       success: false,
       error: 'Failed to delete email account',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -323,7 +323,7 @@ router.get('/databases', requireEmailVerification, authorize(['admin']), async (
     res.status(500).json({
       success: false,
       error: 'Failed to fetch databases',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -341,7 +341,7 @@ router.post('/databases', requireEmailVerification, authorize(['admin']), async 
     res.status(500).json({
       success: false,
       error: 'Failed to create database',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -359,7 +359,7 @@ router.get('/ftp', requireEmailVerification, authorize(['admin']), async (req, r
     res.status(500).json({
       success: false,
       error: 'Failed to fetch FTP accounts',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -377,7 +377,7 @@ router.post('/ftp', requireEmailVerification, authorize(['admin']), async (req, 
     res.status(500).json({
       success: false,
       error: 'Failed to create FTP account',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -395,7 +395,7 @@ router.get('/domains/check/:domainName', requireEmailVerification, authorize(['a
     res.status(500).json({
       success: false,
       error: 'Failed to check domain availability',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });
@@ -413,7 +413,7 @@ router.get('/account', requireEmailVerification, authorize(['admin']), async (re
     res.status(500).json({
       success: false,
       error: 'Failed to fetch account information',
-      details: error.message
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

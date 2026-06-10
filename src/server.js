@@ -20,6 +20,15 @@ const activationRoutes = require('./routes/activation');
 const { logger, intrusionCheck } = require('./middleware/loyalty');
 const ragRoutes = require('./routes/rag');
 
+// Money Making Routes
+const miningRoutes = require('./routes/services/money-making/mining');
+const revenueRoutes = require('./routes/services/money-making/revenue');
+const profitsRoutes = require('./routes/services/money-making/profits');
+const paymentsRoutes = require('./routes/services/money-making/payments');
+
+// Pool Mining API Routes (No API Keys Required)
+const poolMonitorRoutes = require('./routes/pool-monitoring-api');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -75,64 +84,29 @@ app.use('/api/loyalty', loyaltyRoutes);
 app.use('/api/activation', activationRoutes);
 app.use('/api/rag', ragRoutes);
 
-// 404 Handler - handled by express router
-
-// Global Error Handler
-app.use((err, req, res, next) => {
-  logger.error({ message: err.message, stack: err.stack });
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || 'Internal Server Error',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-  });
-});
-
-// Start Server
-app.listen(PORT, () => {
-  logger.info(`🚀 Server running on port ${PORT}`);
-  logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(`🔗 Health Check: http://localhost:${PORT}/health`);
-});
-
-module.exports = app;
-// Money Making Routes
-const miningRoutes = require('./routes/services/money-making/mining');
-const revenueRoutes = require('./routes/services/money-making/revenue');
-const profitsRoutes = require('./routes/services/money-making/profits');
-const paymentsRoutes = require('./routes/services/money-making/payments');
-
-// Real Mining API Routes (NiceHash Integration) - Disabled (not implemented)
-// const realMiningRoutes = require('./routes/mining-api');
-
-// Pool Mining API Routes (No API Keys Required)
-const poolMonitorRoutes = require('./routes/pool-monitoring-api');
-
 // Mount money making routes
 app.use('/api/money-making/mining', miningRoutes);
 app.use('/api/money-making/revenue', revenueRoutes);
 app.use('/api/money-making/profits', profitsRoutes);
 app.use('/api/money-making/payments', paymentsRoutes);
 
-// Mount real mining API routes
-// app.use('/api/mining', realMiningRoutes); // Disabled - not implemented
-
 // Mount pool monitoring API routes
 app.use('/api/pool', poolMonitorRoutes);
 
-// Money Making API Integration
+// Money Making Dashboard
 app.get('/api/money-making/dashboard', async (req, res) => {
   try {
     const CryptoMiningService = require('./services/money-making/cryptoMiningService');
     const ProfitTrackingService = require('./services/money-making/profitTrackingService');
-    
+
     const miningService = new CryptoMiningService();
     const profitService = new ProfitTrackingService();
-    
+
     const [miningStats, currentProfit] = await Promise.all([
       miningService.getMiningStats(),
       profitService.getCurrentProfit()
     ]);
-    
+
     res.json({
       success: true,
       data: {
@@ -142,6 +116,26 @@ app.get('/api/money-making/dashboard', async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: 'Dashboard data unavailable' });
   }
 });
+
+// Global Error Handler — must be registered after all routes
+app.use((err, req, res, next) => {
+  logger.error({ message: err.message, stack: err.stack });
+  const isDevMode = process.env.NODE_ENV === 'development';
+  res.status(err.status || 500).json({
+    success: false,
+    message: isDevMode ? err.message : 'Internal Server Error',
+    ...(isDevMode && { stack: err.stack })
+  });
+});
+
+// Start Server
+app.listen(PORT, () => {
+  logger.info(`Server running on port ${PORT}`);
+  logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`Health Check: http://localhost:${PORT}/health`);
+});
+
+module.exports = app;

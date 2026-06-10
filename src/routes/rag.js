@@ -11,7 +11,10 @@
  */
 
 const express = require('express');
+const { protect } = require('../middleware/auth');
 const router = express.Router();
+
+router.use(protect);
 
 // Initialize RAG system
 let ragSystem = null;
@@ -89,7 +92,7 @@ router.post('/query', async (req, res) => {
     console.error('RAG query error:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'RAG query failed'
     });
   }
 });
@@ -123,7 +126,7 @@ router.post('/search', async (req, res) => {
     console.error('RAG search error:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Search failed'
     });
   }
 });
@@ -152,7 +155,7 @@ router.post('/documents', async (req, res) => {
     console.error('Add document error:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Failed to add document'
     });
   }
 });
@@ -174,7 +177,7 @@ router.delete('/documents/:id', async (req, res) => {
     console.error('Remove document error:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Failed to remove document'
     });
   }
 });
@@ -203,7 +206,7 @@ router.get('/documents', async (req, res) => {
     console.error('List documents error:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Failed to list documents'
     });
   }
 });
@@ -229,7 +232,7 @@ router.get('/history', async (req, res) => {
     console.error('Get history error:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Failed to retrieve history'
     });
   }
 });
@@ -252,7 +255,7 @@ router.get('/metrics', async (req, res) => {
     console.error('Get metrics error:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Failed to retrieve metrics'
     });
   }
 });
@@ -285,7 +288,7 @@ router.post('/rebuild', async (req, res) => {
     console.error('Rebuild error:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Failed to rebuild knowledge base'
     });
   }
 });
@@ -324,7 +327,7 @@ router.get('/status', async (req, res) => {
     console.error('Get status error:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: 'Failed to retrieve status'
     });
   }
 });

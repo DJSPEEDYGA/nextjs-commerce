@@ -5,8 +5,12 @@
  */
 
 const express = require('express');
+const path = require('path');
+const { protect } = require('../middleware/auth');
 const router = express.Router();
 const { OfflineDataService } = require('../services/offlineDataService');
+
+router.use(protect);
 
 let offlineDataInstance = null;
 
@@ -15,9 +19,14 @@ let offlineDataInstance = null;
  */
 router.post('/initialize', async (req, res) => {
   try {
+    const ALLOWED_ROOT = path.resolve('./offline-data');
+    const requestedRoot = path.resolve(req.body.rootDir || './offline-data');
+    if (!requestedRoot.startsWith(ALLOWED_ROOT)) {
+      return res.status(400).json({ success: false, error: 'Invalid rootDir' });
+    }
     const config = {
-      rootDir: req.body.rootDir || './offline-data',
-      credentialsPath: req.body.credentialsPath || './config/google-drive-credentials.json',
+      rootDir: requestedRoot,
+      credentialsPath: './config/google-drive-credentials.json',
       nvidiaApiKey: process.env.NVIDIA_BUILD_API_KEY
     };
     

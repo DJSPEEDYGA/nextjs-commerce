@@ -33,3 +33,5 @@ client/release/
 .browser_data/
 summarized_conversations/
 tmp/
+__pycache__/
+*.pyc

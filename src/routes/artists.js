@@ -10,6 +10,9 @@ const {
   validateDateRange
 } = require('../middleware/validation');
 const { asyncHandler, AppError } = require('../middleware/errorHandler');
+const { parsePagination, paginationMeta } = require('../utils/pagination');
+const { buildDateRangeFilter } = require('../utils/queryFilters');
+const { findByIdOr404 } = require('../utils/routeHelpers');
 
 const router = express.Router();
 
@@ -21,19 +24,11 @@ router.get('/',
   validatePagination,
   validateDateRange,
   asyncHandler(async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePagination(req.query);
 
-    // Build query
     const query = { isActive: true };
-    
-    // Add date range filter
-    if (req.query.startDate || req.query.endDate) {
-      query.createdAt = {};
-      if (req.query.startDate) query.createdAt.$gte = new Date(req.query.startDate);
-      if (req.query.endDate) query.createdAt.$lte = new Date(req.query.endDate);
-    }
+    const dateRange = buildDateRangeFilter(req.query.startDate, req.query.endDate);
+    if (dateRange) query.createdAt = dateRange;
 
     // Add search filter
     if (req.query.search) {
@@ -62,12 +57,7 @@ router.get('/',
       success: true,
       data: {
         artists: artists.map(artist => artist.getSummary()),
-        pagination: {
-          page,
-          limit,
-          total,
-          pages: Math.ceil(total / limit)
-        }
+        pagination: paginationMeta(total, { page, limit }),
       }
     });
   })
@@ -81,19 +71,14 @@ router.get('/:id',
   validateMongoId('id'),
   checkArtistAccess,
   asyncHandler(async (req, res) => {
-    const artist = await Artist.findById(req.params.id)
-      .populate('user', 'username email profile')
-      .populate('contracts');
-
-    if (!artist) {
-      throw new AppError('Artist not found', 404);
-    }
+    const artist = await findByIdOr404(Artist, req.params.id, 'Artist', [
+      { path: 'user', select: 'username email profile' },
+      'contracts',
+    ]);
 
     res.json({
       success: true,
-      data: {
-        artist
-      }
+      data: { artist },
     });
   })
 );
@@ -149,11 +134,7 @@ router.put('/:id',
   validateArtistUpdate,
   checkArtistAccess,
   asyncHandler(async (req, res) => {
-    const artist = await Artist.findById(req.params.id);
-
-    if (!artist) {
-      throw new AppError('Artist not found', 404);
-    }
+    const artist = await findByIdOr404(Artist, req.params.id, 'Artist');
 
     // Check if new name conflicts with existing artist
     if (req.body.name && req.body.name !== artist.name) {
@@ -188,11 +169,7 @@ router.delete('/:id',
   authorize('admin', 'manager'),
   validateMongoId('id'),
   asyncHandler(async (req, res) => {
-    const artist = await Artist.findById(req.params.id);
-
-    if (!artist) {
-      throw new AppError('Artist not found', 404);
-    }
+    const artist = await findByIdOr404(Artist, req.params.id, 'Artist');
 
     // Soft delete
     artist.isActive = false;
@@ -246,20 +223,12 @@ router.get('/:id/royalties',
   validateDateRange,
   checkArtistAccess,
   asyncHandler(async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePagination(req.query);
 
     const Royalty = require('../models/Royalty');
-    
-    // Build query
     const query = { artist: req.params.id };
-    
-    if (req.query.startDate || req.query.endDate) {
-      query.periodStart = {};
-      if (req.query.startDate) query.periodStart.$gte = new Date(req.query.startDate);
-      if (req.query.endDate) query.periodStart.$lte = new Date(req.query.endDate);
-    }
+    const dateRange = buildDateRangeFilter(req.query.startDate, req.query.endDate);
+    if (dateRange) query.periodStart = dateRange;
 
     // Add status filter
     if (req.query.status) {
@@ -278,12 +247,7 @@ router.get('/:id/royalties',
       success: true,
       data: {
         royalties,
-        pagination: {
-          page,
-          limit,
-          total,
-          pages: Math.ceil(total / limit)
-        }
+        pagination: paginationMeta(total, { page, limit }),
       }
     });
   })

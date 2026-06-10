@@ -199,21 +199,23 @@ function exportCatalogCSV() {
     return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
 }
 
-// API Keys Configuration (embedded for local use)
+// API Keys Configuration — loaded from environment variables or localStorage.
+// NEVER commit real keys to source control.
 const API_CONFIG = {
-    superninja: 'CUTSsX7.UBvzlbTUCFb8zQJm6j-8_X-5zy8p5QEsuYRENK1ONKE',
-    hostinger: 'VK2DgV31mpN5c6e8gJK50LJR1QgPwcyMYKthc7Gl8f14e176',
-    supabase: 'sbp_073f78daede405731dc30abb4eab334429203c2c',
-    googleAI: 'AIzaSyBNrZ-P8-n5NxzsceYDZUwrrkPSd3LtEks',
-    fashionApp: 'D7Vqj4g.t6ljK678nBb5z90vd8-thJf3A5BCCQ8kg-Shz2D5g5c'
+    superninja: (typeof process !== 'undefined' && process.env && process.env.SUPERNINJA_API_KEY) || (typeof localStorage !== 'undefined' && localStorage.getItem('SUPERNINJA_API_KEY')) || '',
+    hostinger: (typeof process !== 'undefined' && process.env && process.env.HOSTINGER_API_KEY) || (typeof localStorage !== 'undefined' && localStorage.getItem('HOSTINGER_API_KEY')) || '',
+    supabase: (typeof process !== 'undefined' && process.env && process.env.SUPABASE_API_KEY) || (typeof localStorage !== 'undefined' && localStorage.getItem('SUPABASE_API_KEY')) || '',
+    googleAI: (typeof process !== 'undefined' && process.env && process.env.GOOGLE_AI_KEY) || (typeof localStorage !== 'undefined' && localStorage.getItem('GOOGLE_AI_KEY')) || '',
+    fashionApp: (typeof process !== 'undefined' && process.env && process.env.FASHION_APP_KEY) || (typeof localStorage !== 'undefined' && localStorage.getItem('FASHION_APP_KEY')) || ''
 };
 
-// Server Configuration
+// Server Configuration — loaded from environment variables at runtime.
+// Do not hardcode server IPs in source control.
 const SERVER_CONFIG = {
-    ip: '93.127.214.171',
-    os: 'Ubuntu 24.04.3 LTS',
+    ip: (typeof process !== 'undefined' && process.env && process.env.SERVER_IP) || '',
+    os: (typeof process !== 'undefined' && process.env && process.env.SERVER_OS) || '',
     resources: { cpu: 2, ram: '8GB', disk: '386GB' },
-    location: 'Lithuania - Vilnius'
+    location: (typeof process !== 'undefined' && process.env && process.env.SERVER_LOCATION) || ''
 };
 
 module.exports = {

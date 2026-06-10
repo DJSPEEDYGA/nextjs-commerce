@@ -255,14 +255,17 @@ router.post('/forgot-password',
       });
     }
 
-    // Generate reset token
-    const resetToken = Math.random().toString(36).substring(2, 15);
+    // Generate cryptographically secure reset token
+    const resetToken = require('crypto').randomBytes(32).toString('hex');
     user.passwordResetToken = resetToken;
     user.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
     await user.save();
 
     // TODO: Send email with reset token
-    console.log(`Password reset token for ${email}: ${resetToken}`);
+    // WARNING: Never log reset tokens in production
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Password reset token for ${email}: ${resetToken}`);
+    }
 
     res.json({
       success: true,

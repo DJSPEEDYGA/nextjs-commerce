@@ -4,27 +4,20 @@
  * Designed by The Architect
  */
 
-const GOAT_CREW_PROTOCOL = {
-    // Official calling codes
-    ARCHITECT: {
-        code: 'ARCH-777-ROYAL',
-        password: 'GOAT-KINGDOM-FOR-2025',
-        status: 'LOCKED_IN',
-        role: 'Master Builder & Digital Infrastructure Specialist'
-    },
-    MONEY_PENNY: {
-        code: 'PENNY-888-GOAT',
-        password: 'ROYALTY-EXCLUSIVE-2025',
-        status: 'LOCKED_IN',
-        role: 'GOAT Royalty Store Manager'
-    },
-    NEXUS: {
-        code: 'NEXUS-999-CONNECT',
-        password: 'UNIVERSE-BRIDGE-2025',
-        status: 'LOCKED_IN',
-        role: 'Connection Builder'
-    }
-};
+// Crew credentials are now loaded from localStorage (set via the settings page
+// or an admin provisioning flow).  NEVER hardcode passwords in client-side JS.
+function _loadCrewProtocol() {
+    try {
+        const stored = localStorage.getItem('GOAT_CREW_PROTOCOL');
+        if (stored) return JSON.parse(stored);
+    } catch { /* ignore parse errors */ }
+    return {
+        ARCHITECT:   { code: '', password: '', status: 'LOCKED_IN', role: 'Master Builder & Digital Infrastructure Specialist' },
+        MONEY_PENNY: { code: '', password: '', status: 'LOCKED_IN', role: 'GOAT Royalty Store Manager' },
+        NEXUS:       { code: '', password: '', status: 'LOCKED_IN', role: 'Connection Builder' }
+    };
+}
+const GOAT_CREW_PROTOCOL = _loadCrewProtocol();
 
 /**
  * Authenticate and lock in crew member

@@ -1,0 +1,87 @@
+{
+  "name": "GOAT Production Bridge",
+  "version": "1.1.0",
+  "description": "Agent007 + GOAT: photo→video, Unreal, Twinmotion 2026.1, MetaHuman, Final Cut, GOAT studios.",
+  "goat_intel": "http://127.0.0.1:5500",
+  "goat_web": "http://127.0.0.1:8090",
+  "production_hub": "http://127.0.0.1:8090/production-hub.html",
+  "epic_stack": {
+    "ue_installer_dmg": "/Volumes/LLMs/GOAT-FORCE/AGENT007/Mac/EpicInstaller-19.2.3-unrealEngine-7e1c281229b445a0b78e98ae17f54f3d.dmg",
+    "twinmotion_app": "/Volumes/LLMs/Twinmotion2026.1/Twinmotion.app",
+    "twinmotion_version": "2026.1.0",
+    "launch_twinmotion_command": "/Volumes/LLMs/GOAT-FORCE/AGENT007/Mac/Launch Twinmotion.command",
+    "launch_epic_pipeline_command": "/Volumes/LLMs/GOAT-FORCE/AGENT007/Mac/Launch Epic GOAT Pipeline.command"
+  },
+  "pipeline_order": [
+    "GOAT camera / photo capture",
+    "Unreal Engine 5 + MetaHuman",
+    "Twinmotion 2026.1 cinematic",
+    "GOAT Movie Studio or Final Cut Pro",
+    "GOAT Music / Vocal / Mastering"
+  ],
+  "tools": [
+    {
+      "id": "goat_photo_to_video",
+      "name": "Photo to Motion Video",
+      "endpoint": "POST /production/photo-to-video"
+    },
+    {
+      "id": "goat_unreal_handoff",
+      "name": "Unreal MetaHuman Handoff",
+      "endpoint": "POST /production/unreal-handoff"
+    },
+    {
+      "id": "goat_twinmotion_handoff",
+      "name": "Twinmotion Handoff",
+      "endpoint": "POST /production/twinmotion-handoff"
+    },
+    {
+      "id": "goat_twinmotion_launch",
+      "name": "Launch Twinmotion",
+      "endpoint": "POST /production/twinmotion-launch"
+    },
+    {
+      "id": "goat_fcp_export",
+      "name": "Final Cut XML Export",
+      "endpoint": "POST /production/fcp-export"
+    },
+    {
+      "id": "goat_epic_stack",
+      "name": "Epic Stack Status",
+      "endpoint": "GET /production/epic-stack"
+    }
+  ],
+  "asset_manifest": "/Volumes/LLMs/GOAT-FORCE/AGENT007/Shared/AGENT007_ASSET_MANIFEST.json",
+  "thor": {
+    "install": "/Volumes/FKD1/USB-Uncensored-LLM-main/Thor/install-agent007-thor.sh",
+    "verify": "/Volumes/FKD1/USB-Uncensored-LLM-main/Thor/verify-agent007-thor.sh",
+    "capabilities": "/Volumes/FKD1/USB-Uncensored-LLM-main/Thor/THOR-CAPABILITIES.md"
+  },
+  "training": {
+    "fine_tune": "/Volumes/LLMs/GOAT-FORCE/MASTER-LLM/training/FINE-TUNE-OPENAI-CURRICULUM.json",
+    "n8n": "/Volumes/LLMs/GOAT-FORCE/MASTER-LLM/training/N8N-AI-AUTOMATION-CURRICULUM.json",
+    "library_sync": "POST http://127.0.0.1:3333/api/library/sync"
+  },
+  "fkd1_staging": "/Volumes/FKD1/USB-Uncensored-LLM-main",
+  "studios": {
+    "movie": "http://127.0.0.1:8090/movie-studio.html",
+    "music": "http://127.0.0.1:8090/music-studio.html",
+    "vocal": "http://127.0.0.1:8090/vocal-studio.html",
+    "unreal": "http://127.0.0.1:8090/unreal-copilot.html",
+    "production": "http://127.0.0.1:8090/production-hub.html"
+  },
+  "goatUeStack": {
+    "manifest": "BackupVault/Goat-Stack/GOAT-UE-METAHUMAN-MANIFEST.json",
+    "profileApi": "GET /api/goat/ue-stack/profile",
+    "syncApi": "POST /api/goat/ue-stack/sync",
+    "sourceDirs": [
+      "/Volumes/WFHD/LM-Studio-0.4.15-2-arm64/nextjs-commerce-main/drive-download-20260530T005318Z-3-001",
+      "/Volumes/The C Room/SPEEDY 2/LM-Studio-0.4.15-2-arm64/nextjs-commerce-main/drive-download-20260530T005318Z-3-001"
+    ],
+    "unreal": {
+      "branch": "//UE5/Release-5.4",
+      "syncTool": "UnrealGameSync",
+      "project": "D:\\P4License\\EngineTest\\EngineTest.uproject"
+    }
+  }
+}

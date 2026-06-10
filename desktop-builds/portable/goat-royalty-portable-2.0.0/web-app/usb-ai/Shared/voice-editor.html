@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent007 Voice Editor</title>
+<style>
+:root{
+  --bg:#0b0f14;--bg2:#121820;--bg3:#1a2330;--border:#2a3545;
+  --text:#e8edf5;--sub:#8b98a8;--accent:#6366f1;--green:#3fb950;--gold:#d4a03c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+header{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--bg2)}
+header h1{font-size:18px;font-weight:700}
+header p{font-size:12px;color:var(--sub)}
+.spacer{flex:1}
+a,button{font:inherit}
+.btn{padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;text-decoration:none;font-size:13px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+main{max-width:920px;margin:0 auto;padding:18px;display:grid;gap:16px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px}
+.card h2{font-size:14px;margin-bottom:10px;color:var(--gold)}
+label{display:block;font-size:11px;color:var(--sub);margin:8px 0 4px}
+input[type=text],input[type=number],textarea{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+textarea{min-height:72px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.voice-list{display:grid;gap:10px}
+.voice-item{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--bg)}
+.voice-item.default{border-color:var(--green);box-shadow:0 0 0 1px rgba(63,185,80,0.25)}
+.voice-meta{flex:1}
+.voice-meta strong{display:block;font-size:14px}
+.voice-meta span{font-size:11px;color:var(--sub)}
+.voice-actions{display:flex;flex-wrap:wrap;gap:6px}
+.status{font-size:12px;color:var(--sub);min-height:18px}
+.status.good{color:var(--green)}
+.status.warn{color:var(--gold)}
+.hint{font-size:11px;color:var(--sub);line-height:1.5;margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Agent007 Voice Editor</h1>
+    <p>Add owner-approved reference voices for preview and read-aloud in Agent007 chat.</p>
+  </div>
+  <div class="spacer"></div>
+  <a class="btn" href="/">Back to Agent007</a>
+</header>
+<main>
+  <div class="card">
+    <h2>Add a voice</h2>
+    <div class="row">
+      <div>
+        <label for="voice-name">Display name</label>
+        <input id="voice-name" type="text" placeholder="Raspy (You)">
+      </div>
+      <div>
+        <label for="voice-id">Voice ID (optional)</label>
+        <input id="voice-id" type="text" placeholder="raspy">
+      </div>
+    </div>
+    <label for="source-path">Path on this Mac / USB (WAV, MP3, M4A…)</label>
+    <input id="source-path" type="text" placeholder="/Volumes/LLMs/Voiceovers/.../file.wav">
+    <label for="voice-file">Or upload audio</label>
+    <input id="voice-file" type="file" accept="audio/*,.wav,.mp3,.m4a,.aac,.flac,.ogg">
+    <div class="row">
+      <div>
+        <label for="mac-say">Mac say voice (read-aloud styling)</label>
+        <input id="mac-say" type="text" value="Alex">
+      </div>
+      <div>
+        <label for="voice-rate">Rate</label>
+        <input id="voice-rate" type="number" min="0.5" max="2" step="0.02" value="1">
+      </div>
+    </div>
+    <label><input id="voice-default" type="checkbox"> Set as default Agent007 voice</label>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn primary" onclick="addVoice()">Add voice</button>
+      <button class="btn" onclick="bootstrapVoices(true)">Re-import USB voiceovers</button>
+    </div>
+    <p class="hint">Reference WAVs are used for preview and identity. Read-aloud uses macOS <code>say</code> with your rate/Mac voice until full clone TTS is installed.</p>
+    <div id="status" class="status"></div>
+  </div>
+
+  <div class="card">
+    <h2>Your voice library</h2>
+    <div id="voice-list" class="voice-list"></div>
+  </div>
+</main>
+<script>
+const API = '';
+function api(path){ return (API || '') + path; }
+function setStatus(text, tone){
+  const el = document.getElementById('status');
+  el.textContent = text || '';
+  el.className = 'status' + (tone ? ' ' + tone : '');
+}
+
+async function loadLibrary(){
+  const r = await fetch(api('/api/voice/library'));
+  const data = await r.json();
+  renderVoices(data);
+  return data;
+}
+
+function renderVoices(data){
+  const list = document.getElementById('voice-list');
+  const voices = data.voices || [];
+  if (!voices.length){
+    list.innerHTML = '<p class="hint">No voices yet. Add one above or re-import USB voiceovers.</p>';
+    return;
+  }
+  list.innerHTML = voices.map(v => `
+    <div class="voice-item ${v.isDefault ? 'default' : ''}">
+      <div class="voice-meta">
+        <strong>${escapeHtml(v.name)}${v.isDefault ? ' ★ default' : ''}</strong>
+        <span>id: ${escapeHtml(v.id)} · ${v.hasAudio ? 'audio ready' : 'missing file'}</span>
+      </div>
+      <div class="voice-actions">
+        <button class="btn" onclick="previewVoice('${v.id}')">Preview</button>
+        <button class="btn" onclick="testSpeak('${v.id}')">Test read-aloud</button>
+        <button class="btn" onclick="setDefault('${v.id}')">Make default</button>
+        <button class="btn" onclick="useInAgent007('${v.id}')">Use in Agent007</button>
+        <button class="btn" onclick="removeVoice('${v.id}')">Remove</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(s){
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+let previewAudio = null;
+function previewVoice(id){
+  if (previewAudio){ previewAudio.pause(); previewAudio = null; }
+  previewAudio = new Audio(api(`/api/voice/library/${id}/audio`));
+  previewAudio.play().catch(err => setStatus(err.message, 'warn'));
+  setStatus('Playing reference sample…', 'good');
+}
+
+async function testSpeak(id){
+  setStatus('Generating read-aloud…', '');
+  const r = await fetch(api('/api/voice/speak'), {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ voiceId: id, text: 'This is Agent007 using your registered voice profile.' })
+  });
+  const data = await r.json();
+  if (!r.ok || !data.ok){ setStatus(data.error || 'Speak failed', 'warn'); return; }
+  if (previewAudio){ previewAudio.pause(); }
+  previewAudio = new Audio(api(data.audioUrl));
+  previewAudio.play();
+  setStatus(`Read-aloud (${data.mode}): ${data.voiceName}`, 'good');
+}
+
+async function setDefault(id){
+  const r = await fetch(api('/api/voice/library'), {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ action:'setDefault', voiceId: id })
+  });
+  const data = await r.json();
+  if (!r.ok){ setStatus(data.error || 'Failed', 'warn'); return; }
+  renderVoices(data);
+  setStatus('Default voice updated.', 'good');
+}
+
+async function removeVoice(id){
+  if (!confirm('Remove this voice from the library?')) return;
+  const r = await fetch(api('/api/voice/library'), {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ action:'remove', voiceId: id })
+  });
+  const data = await r.json();
+  if (!r.ok){ setStatus(data.error || 'Failed', 'warn'); return; }
+  renderVoices(data);
+  setStatus('Voice removed.', 'good');
+}
+
+function useInAgent007(id){
+  const key = `custom:${id}`;
+  localStorage.setItem('speechVoiceName', key);
+  setStatus(`Saved ${key}. Open Agent007 and pick this voice in the dropdown.`, 'good');
+}
+
+async function addVoice(){
+  const name = document.getElementById('voice-name').value.trim();
+  const sourcePath = document.getElementById('source-path').value.trim();
+  const fileInput = document.getElementById('voice-file');
+  const file = fileInput.files && fileInput.files[0];
+  if (!name && !file){ setStatus('Enter a name or choose a file.', 'warn'); return; }
+
+  if (file){
+    const fd = new FormData();
+    fd.append('name', name || file.name.replace(/\.[^.]+$/, ''));
+    fd.append('voiceId', document.getElementById('voice-id').value.trim());
+    fd.append('macSayVoice', document.getElementById('mac-say').value.trim() || 'Alex');
+    fd.append('rate', document.getElementById('voice-rate').value || '1');
+    fd.append('isDefault', document.getElementById('voice-default').checked ? 'true' : 'false');
+    fd.append('audio', file);
+    setStatus('Uploading…', '');
+    const r = await fetch(api('/api/voice/library'), { method:'POST', body: fd });
+    const data = await r.json();
+    if (!r.ok){ setStatus(data.error || 'Upload failed', 'warn'); return; }
+    renderVoices(data.library || data);
+    setStatus('Voice added from upload.', 'good');
+    fileInput.value = '';
+    return;
+  }
+
+  if (!sourcePath){ setStatus('Enter a file path or upload audio.', 'warn'); return; }
+  setStatus('Registering from path…', '');
+  const r = await fetch(api('/api/voice/library'), {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      name: name || undefined,
+      sourcePath,
+      voiceId: document.getElementById('voice-id').value.trim() || undefined,
+      macSayVoice: document.getElementById('mac-say').value.trim() || 'Alex',
+      rate: parseFloat(document.getElementById('voice-rate').value || '1'),
+      isDefault: document.getElementById('voice-default').checked
+    })
+  });
+  const data = await r.json();
+  if (!r.ok){ setStatus(data.error || 'Register failed', 'warn'); return; }
+  renderVoices(data.library || data);
+  setStatus('Voice registered.', 'good');
+}
+
+async function bootstrapVoices(force){
+  setStatus('Importing voiceovers from USB…', '');
+  const r = await fetch(api('/api/voice/library/bootstrap'), {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ force: !!force })
+  });
+  const data = await r.json();
+  if (!r.ok){ setStatus(data.error || 'Bootstrap failed', 'warn'); return; }
+  renderVoices(data);
+  setStatus(`Library ready — ${data.voiceCount || 0} voice(s).`, 'good');
+}
+
+(async () => {
+  await bootstrapVoices(false);
+})();
+</script>
+</body>
+</html>

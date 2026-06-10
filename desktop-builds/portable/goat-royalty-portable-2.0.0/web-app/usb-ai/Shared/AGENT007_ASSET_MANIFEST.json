@@ -1,0 +1,76 @@
+{
+  "version": "1.1.0",
+  "updated": "2026-06-02",
+  "staging": {
+    "primary_usb": "/Volumes/LLMs",
+    "secondary_usb": "/Volumes/FKD1/USB-Uncensored-LLM-main",
+    "master_registry": "/Volumes/LLMs/GOAT-FORCE/MASTER-LLM/MASTER_LLM_REGISTRY.json"
+  },
+  "thor": {
+    "install": "/Volumes/FKD1/USB-Uncensored-LLM-main/Thor/install-agent007-thor.sh",
+    "start": "/Volumes/FKD1/USB-Uncensored-LLM-main/Thor/start-agent007-thor.sh",
+    "start_goat": "/Volumes/FKD1/USB-Uncensored-LLM-main/Thor/start-agent007-goat-thor.sh",
+    "verify": "/Volumes/FKD1/USB-Uncensored-LLM-main/Thor/verify-agent007-thor.sh",
+    "build_master_mac": "/Volumes/FKD1/USB-Uncensored-LLM-main/Thor/build-master-on-mac.sh",
+    "capabilities_doc": "/Volumes/FKD1/USB-Uncensored-LLM-main/Thor/THOR-CAPABILITIES.md",
+    "fast_start": "/Volumes/FKD1/USB-Uncensored-LLM-main/Thor/THOR-TODAY-FAST-START.md",
+    "jetson_kit": "/Volumes/FKD1/USB-Uncensored-LLM-main/Jetson-Thor-Deploy-Kit",
+    "final_home_note": "500TB + NVIDIA Thor — use install script on device, not Jetson installer on Agent007 USB"
+  },
+  "launchers": {
+    "agent007_mac": "/Volumes/LLMs/GOAT-FORCE/AGENT007/Mac/Launch Agent007.command",
+    "agent007_fkd1": "/Volumes/FKD1/USB-Uncensored-LLM-main/Launch Agent007.command",
+    "agent007_goat_mac": "/Volumes/FKD1/USB-Uncensored-LLM-main/Launch Agent007 for GOAT Royalty.command",
+    "twinmotion": "/Volumes/LLMs/GOAT-FORCE/AGENT007/Mac/Launch Twinmotion.command",
+    "epic_pipeline": "/Volumes/LLMs/GOAT-FORCE/AGENT007/Mac/Launch Epic GOAT Pipeline.command"
+  },
+  "installers": {
+    "mac": [
+      { "name": "Codex", "path": "/Volumes/LLMs/Codex-latest-x64.dmg" },
+      { "name": "AnythingLLM", "path": "/Volumes/LLMs/AnythingLLMDesktop.dmg" },
+      { "name": "VS Code", "path": "/Volumes/LLMs/VSCode-darwin-universal.dmg" },
+      { "name": "Claude Desktop", "path": "/Volumes/LLMs/Claude.dmg", "note": "Official installer only" },
+      { "name": "Google Chrome", "path": "/Volumes/LLMs/googlechrome.dmg" },
+      { "name": "Epic UE", "path": "/Volumes/FKD1/USB-Uncensored-LLM-main/EpicInstaller-19.2.3.dmg" }
+    ],
+    "windows": [
+      { "name": "Codex", "path": "/Volumes/LLMs/Codex Installer.exe" },
+      { "name": "Super GOAT Setup", "path": "/Volumes/FKD1/USB-Uncensored-LLM-main/Super-GOAT-Royalty-2.0.0-Setup.exe" },
+      { "name": "Super GOAT Portable", "path": "/Volumes/FKD1/USB-Uncensored-LLM-main/Super-GOAT-Royalty-2.0.0-Portable.exe" },
+      { "name": "Win11 ISO", "path": "/Volumes/FKD1/Windows-11-Installer-Build/Win11_25H2_English_x64_v2.iso" }
+    ],
+    "linux": [
+      { "name": "Super GOAT AppImage", "path": "/Volumes/FKD1/USB-Uncensored-LLM-main/Super-GOAT-Royalty-2.0.0.AppImage" },
+      { "name": "Super GOAT deb", "path": "/Volumes/FKD1/USB-Uncensored-LLM-main/Super-GOAT-Royalty-2.0.0.deb" }
+    ]
+  },
+  "training": {
+    "fine_tune_openai": "/Volumes/LLMs/GOAT-FORCE/MASTER-LLM/training/FINE-TUNE-OPENAI-CURRICULUM.json",
+    "n8n_automation": "/Volumes/LLMs/GOAT-FORCE/MASTER-LLM/training/N8N-AI-AUTOMATION-CURRICULUM.json"
+  },
+  "production_sdks": [
+    { "name": "Pro Tools PTSL SDK", "path": "/Volumes/FKD1/USB-Uncensored-LLM-main/PTSL_SDK_CPP.2026.04.0.1301892.zip", "use": "Future DAW scripting beyond hotkey transport" }
+  ],
+  "models_and_runtimes": {
+    "agent007_models": "/Volumes/FKD1/USB-Uncensored-LLM-main/Agent007Models",
+    "ollama_data": "/Volumes/FKD1/USB-Uncensored-LLM-main/Agent007Models/ollama_data",
+    "gguf": "/Volumes/FKD1/USB-Uncensored-LLM-main/Agent007Models/huggingface_gguf",
+    "basic_tools_zips": "/Volumes/LLMs/GOAT-FORCE/Tools/Basic-Tools",
+    "agent007_29tb_audio_script": "/Volumes/FKD1/USB-Uncensored-LLM-main/AGENT007-29-8TB-AUDIO-LOCAL-LLM-1CLICK.sh"
+  },
+  "libraryGifts": {
+    "pdfBooksWorld": {
+      "catalog": "https://www.pdfbooksworld.com/books",
+      "manifest": "/Volumes/LLMs/GOAT-FORCE/MASTER-LLM/library/pdfbooksworld-gift.json",
+      "inbox": "/Volumes/LLMs/GOAT-FORCE/MASTER-LLM/library/inbox",
+      "from": "OG gift to the stack"
+    }
+  },
+  "vaults": [
+    "/Volumes/FKD1/USB-Uncensored-LLM-main/BackupVault",
+    "/Volumes/LLMs/GOAT-FORCE/AGENT007/BackupVault"
+  ],
+  "excluded_from_integration": [
+    "claude-activation-unlocker — use official Claude.dmg only; no crack tools in GOAT/Agent007 policy"
+  ]
+}

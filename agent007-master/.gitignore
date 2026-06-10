@@ -1,0 +1,14 @@
+# The master folder is a deploy KIT. These are generated/pulled on each machine
+# and must NOT be committed (they're duplicates of repo content or multi-GB).
+core/
+web-app/
+.venv/
+config/agent007.env
+*.pyc
+__pycache__/
+.DS_Store
+
+# Models live on disk, never in git.
+models/*.safetensors
+models/*.gguf
+models/*.bin

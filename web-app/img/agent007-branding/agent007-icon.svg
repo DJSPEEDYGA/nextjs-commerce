@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="50%" style="stop-color:#D4A03C"/>
+      <stop offset="100%" style="stop-color:#B8860B"/>
+    </linearGradient>
+    <linearGradient id="darkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#0a0a0f"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="250" fill="url(#darkGrad)" stroke="url(#goldGrad)" stroke-width="6"/>
+  <!-- Inner ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="url(#goldGrad)" stroke-width="2" opacity="0.4"/>
+  <!-- Crosshair / gun barrel -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="url(#goldGrad)" stroke-width="3" opacity="0.6"/>
+  <line x1="256" y1="70" x2="256" y2="140" stroke="url(#goldGrad)" stroke-width="2" opacity="0.5"/>
+  <line x1="256" y1="372" x2="256" y2="442" stroke="url(#goldGrad)" stroke-width="2" opacity="0.5"/>
+  <line x1="70" y1="256" x2="140" y2="256" stroke="url(#goldGrad)" stroke-width="2" opacity="0.5"/>
+  <line x1="372" y1="256" x2="442" y2="256" stroke="url(#goldGrad)" stroke-width="2" opacity="0.5"/>
+  <!-- GOAT horns -->
+  <path d="M200 180 C180 130 160 90 140 70 C155 100 165 140 175 175 Z" fill="url(#goldGrad)" filter="url(#glow)"/>
+  <path d="M312 180 C332 130 352 90 372 70 C357 100 347 140 337 175 Z" fill="url(#goldGrad)" filter="url(#glow)"/>
+  <!-- Spy silhouette (head + shoulders) -->
+  <ellipse cx="256" cy="230" rx="45" ry="55" fill="#1a1a2e" stroke="url(#goldGrad)" stroke-width="2"/>
+  <!-- Hat brim -->
+  <path d="M195 220 Q256 200 317 220 Q310 210 256 205 Q202 210 195 220Z" fill="url(#goldGrad)" opacity="0.9"/>
+  <!-- Hat top -->
+  <path d="M215 220 Q256 185 297 220 Q290 200 256 195 Q222 200 215 220Z" fill="#2a2a3e"/>
+  <!-- Shoulders -->
+  <path d="M180 340 C200 290 230 280 256 280 C282 280 312 290 332 340 L332 370 L180 370 Z" fill="#1a1a2e" stroke="url(#goldGrad)" stroke-width="2"/>
+  <!-- Bow tie -->
+  <path d="M240 310 L256 320 L272 310 L272 325 L256 315 L240 325 Z" fill="url(#goldGrad)"/>
+  <!-- 007 text -->
+  <text x="256" y="408" text-anchor="middle" font-family="Georgia, serif" font-size="56" font-weight="bold" fill="url(#goldGrad)" filter="url(#glow)">007</text>
+  <!-- GOAT FORCE arc text (bottom, below 007) -->
+  <path id="botArc" d="M126 256 A190 190 0 0 0 386 256" fill="none"/>
+  <text font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFD700" letter-spacing="4" opacity="0.85">
+    <textPath href="#botArc" startOffset="50%" text-anchor="middle">GOAT FORCE ISSUED</textPath>
+  </text>
+</svg>

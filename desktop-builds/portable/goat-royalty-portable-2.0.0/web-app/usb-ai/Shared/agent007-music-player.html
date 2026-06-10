@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AGENT007 Sound Studio — GOAT</title>
+  <style>
+    :root {
+      --bg: #070707;
+      --panel: #12100a;
+      --gold: #d4af37;
+      --cyan: #5ee7ff;
+      --text: #f2efe6;
+      --muted: #9a9588;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(ellipse at top, #1a1408 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #2a2418;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    h1 { margin: 0; font-size: 1.25rem; letter-spacing: 0.08em; color: var(--gold); }
+    .sub { color: var(--muted); font-size: 0.85rem; }
+    main { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 80px); }
+    @media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+    aside {
+      border-right: 1px solid #2a2418;
+      padding: 16px;
+      background: rgba(0,0,0,0.35);
+    }
+    .filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .filter button {
+      background: #1c1810;
+      border: 1px solid #3a3220;
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .filter button.active { border-color: var(--cyan); color: var(--cyan); }
+    #search {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #3a3220;
+      background: #0d0b08;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    #list { list-style: none; margin: 0; padding: 0; max-height: 70vh; overflow: auto; }
+    #list li {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    #list li:hover { background: #1a1610; }
+    #list li.active { border-color: var(--gold); background: #1f1a0e; }
+    #list .meta { color: var(--muted); font-size: 11px; margin-top: 4px; }
+    section { padding: 24px; }
+    .now {
+      background: linear-gradient(135deg, #1a1408, #0e0c08);
+      border: 1px solid #3a3220;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .now h2 { margin: 0 0 8px; font-size: 1.4rem; color: var(--cyan); }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    audio, video { width: 100%; margin-top: 16px; border-radius: 12px; background: #000; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .actions button, .actions a {
+      background: var(--gold);
+      color: #111;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .actions a.secondary { background: transparent; color: var(--cyan); border: 1px solid var(--cyan); }
+    #stats { color: var(--muted); font-size: 12px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>AGENT007 SOUND STUDIO</h1>
+      <div class="sub">Music · Voices · EDEN clips — local drive only</div>
+    </div>
+    <div class="sub" id="header-stats">Loading catalog…</div>
+  </header>
+  <main>
+    <aside>
+      <input id="search" type="search" placeholder="Search tracks, Graham, EDEN…">
+      <div class="filter" id="filters"></div>
+      <ul id="list"></ul>
+    </aside>
+    <section>
+      <div class="now">
+        <div class="badge" id="kind-badge">—</div>
+        <h2 id="title">Pick a sound</h2>
+        <div id="path" class="sub"></div>
+        <div id="player"></div>
+        <div class="actions">
+          <button type="button" id="reveal-btn" disabled>Reveal in Finder</button>
+          <a class="secondary" href="/" id="agent007-link">Back to Agent007</a>
+        </div>
+      </div>
+      <div id="stats"></div>
+    </section>
+  </main>
+  <script>
+    const API = location.origin;
+    let catalog = { items: [], stats: {} };
+    let filter = "all";
+    let active = null;
+
+    const KINDS = [
+      ["all", "All"],
+      ["music", "Music"],
+      ["voice", "Graham / Voice"],
+      ["eden-video", "EDEN Video"],
+      ["audio", "Audio"],
+      ["video", "Video"],
+      ["eden-doc", "EDEN PDF"],
+    ];
+
+    function esc(s) {
+      return String(s || "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[c]);
+    }
+
+    function streamUrl(path) {
+      return `${API}/api/agent007/sounds/stream?path=${encodeURIComponent(path)}`;
+    }
+
+    function renderFilters() {
+      const el = document.getElementById("filters");
+      el.innerHTML = KINDS.map(([k, label]) =>
+        `<button type="button" data-kind="${k}" class="${filter === k ? "active" : ""}">${label}</button>`
+      ).join("");
+      el.querySelectorAll("button").forEach((btn) => {
+        btn.onclick = () => { filter = btn.dataset.kind; renderList(); renderFilters(); };
+      });
+    }
+
+    function filteredItems() {
+      const q = document.getElementById("search").value.trim().toLowerCase();
+      return catalog.items.filter((item) => {
+        if (filter !== "all" && item.kind !== filter) return false;
+        if (!q) return true;
+        return (item.name + item.kind + item.relativePath).toLowerCase().includes(q);
+      });
+    }
+
+    function renderList() {
+      const list = document.getElementById("list");
+      const items = filteredItems();
+      list.innerHTML = items.map((item) => {
+        const dur = item.durationSec ? `${item.durationSec}s` : "";
+        const size = item.sizeBytes ? `${(item.sizeBytes / 1024 / 1024).toFixed(1)} MB` : "";
+        return `<li data-path="${esc(item.path)}" class="${active && active.path === item.path ? "active" : ""}">
+          <div>${esc(item.name)}</div>
+          <div class="meta">${esc(item.kind)} · ${esc([dur, size].filter(Boolean).join(" · "))}</div>
+        </li>`;
+      }).join("") || "<li class='meta'>No matches — plug WFHD or SPEEDY 2 and say wire drive in Agent007.</li>";
+      list.querySelectorAll("li[data-path]").forEach((li) => {
+        li.onclick = () => playItem(catalog.items.find((i) => i.path === li.dataset.path));
+      });
+    }
+
+    function playItem(item) {
+      if (!item) return;
+      active = item;
+      document.getElementById("kind-badge").textContent = item.kind;
+      document.getElementById("title").textContent = item.name;
+      document.getElementById("path").textContent = item.path;
+      const player = document.getElementById("player");
+      const url = streamUrl(item.path);
+      const ext = (item.extension || "").toLowerCase();
+      if ([".mp4", ".mov", ".webm", ".m4v", ".mkv"].includes(ext)) {
+        player.innerHTML = `<video controls src="${url}"></video>`;
+      } else if (ext === ".pdf") {
+        player.innerHTML = `<p class="sub">PDF — use Reveal in Finder or OPEN-EDEN PDF shortcuts on drive.</p>`;
+      } else {
+        player.innerHTML = `<audio controls autoplay src="${url}"></audio>`;
+      }
+      document.getElementById("reveal-btn").disabled = false;
+      renderList();
+    }
+
+    document.getElementById("reveal-btn").onclick = async () => {
+      if (!active) return;
+      await fetch(`${API}/api/tools`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "computer", computerAction: "reveal_path", path: active.path }),
+      });
+    };
+
+    document.getElementById("search").oninput = () => renderList();
+
+    async function load() {
+      const res = await fetch(`${API}/api/agent007/sounds/catalog`);
+      catalog = await res.json();
+      document.getElementById("header-stats").textContent =
+        `${catalog.itemCount || 0} files · ${(catalog.roots || []).length} drive(s)`;
+      const stats = catalog.stats || {};
+      document.getElementById("stats").innerHTML =
+        `<strong>What Agent007 does with your sounds:</strong><br>
+        • <strong>Music</strong> (${stats.music || 0}) — play here, EM8 bed for EDEN trailers, catalog fingerprints<br>
+        • <strong>Voice</strong> (${stats.voice || 0}) — Graham speak, voice library, transcribe in chat<br>
+        • <strong>EDEN video</strong> (${stats["eden-video"] || 0}) — stitch trailers, prompt pack, GOAT Imagine<br>
+        • Transcribe any attach in Agent007 chat · DAW transport when Producer Mode ON`;
+      renderFilters();
+      renderList();
+      const em8 = catalog.items.find((i) => i.name.includes("EM8"));
+      if (em8) playItem(em8);
+    }
+    load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200">
+  <defs>
+    <linearGradient id="goldText" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE55C"/>
+      <stop offset="50%" style="stop-color:#D4A03C"/>
+      <stop offset="100%" style="stop-color:#9A7218"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.6"/></filter>
+  </defs>
+  <rect width="800" height="200" fill="#0a0a0f"/>
+  <!-- Goat horns flanking -->
+  <path d="M60 100 C45 60 35 35 25 20 C38 45 45 75 52 100 C45 125 38 155 25 180 C35 165 45 140 60 100Z" fill="url(#goldText)"/>
+  <path d="M740 100 C755 60 765 35 775 20 C762 45 755 75 748 100 C755 125 762 155 775 180 C765 165 755 140 740 100Z" fill="url(#goldText)"/>
+  <!-- AGENT text -->
+  <text x="400" y="90" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="56" font-weight="900" fill="url(#goldText)" letter-spacing="8" filter="url(#shadow)">AGENT</text>
+  <!-- 007 big -->
+  <text x="400" y="160" text-anchor="middle" font-family="Georgia, serif" font-size="70" font-weight="bold" fill="url(#goldText)" letter-spacing="12" filter="url(#shadow)">- 007 -</text>
+  <!-- GOAT FORCE tag -->
+  <text x="400" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#8a8070" letter-spacing="6">GOAT ROYALTY FORCE · LOCAL AI</text>
+</svg>

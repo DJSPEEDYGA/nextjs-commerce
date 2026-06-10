@@ -261,18 +261,33 @@ async function sendChat() {
   msgs.scrollTop = msgs.scrollHeight;
 
   let reply;
+  // Try Agent-007 first (port 3333), then fall back to direct Ollama /api/chat
   try {
-    const r = await fetch('/api/chat', {
+    const a7r = await fetch('http://localhost:3333/v1/chat/completions', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ model: 'gemma2:2b', messages: [{role:'system',content:a.systemPrompt},{role:'user',content:msg}], stream: false }),
       signal: AbortSignal.timeout(30000)
     });
-    if (r.ok) {
-      const data = await r.json();
-      reply = (data.message && data.message.content) || data.response || fallback(a, msg);
-    } else { reply = fallback(a, msg); }
-  } catch (e) { reply = fallback(a, msg); }
+    if (a7r.ok) {
+      const data = await a7r.json();
+      reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || (data.message && data.message.content) || data.response || fallback(a, msg);
+    } else { throw new Error('Agent-007 unavailable'); }
+  } catch (e) {
+    // Fallback: direct Ollama endpoint
+    try {
+      const r = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ model: 'gemma2:2b', messages: [{role:'system',content:a.systemPrompt},{role:'user',content:msg}], stream: false }),
+        signal: AbortSignal.timeout(30000)
+      });
+      if (r.ok) {
+        const data = await r.json();
+        reply = (data.message && data.message.content) || data.response || fallback(a, msg);
+      } else { reply = fallback(a, msg); }
+    } catch (e2) { reply = fallback(a, msg); }
+  }
 
   const thinking = document.getElementById('thinking');
   if (thinking) thinking.remove();

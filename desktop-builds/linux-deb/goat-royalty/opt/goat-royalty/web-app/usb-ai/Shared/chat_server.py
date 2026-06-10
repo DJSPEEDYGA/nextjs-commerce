@@ -1262,7 +1262,33 @@ DAW_ALLOWED_TRANSPORT_APPS = {
 }
 DAW_ALLOWED_TRANSPORT_COMMANDS = {
     "play_pause": {"keyCode": 49, "label": "space"},
+    "play": {"keyCode": 49, "label": "space"},
+    "pause": {"keyCode": 49, "label": "space"},
+    "stop": {"keyCode": 49, "label": "space"},
     "return_to_start": {"keyCode": 36, "label": "return"},
+    "rewind": {"keyCode": 36, "label": "return"},
+    "record": {"keystroke": "r", "label": "r"},
+    "arm_track": {"keystroke": "r", "label": "r", "note": "arms selected track in most DAWs"},
+    "undo": {"keystroke": "z", "modifiers": ["command"], "label": "cmd+z"},
+    "redo": {"keystroke": "z", "modifiers": ["command", "shift"], "label": "cmd+shift+z"},
+    "save": {"keystroke": "s", "modifiers": ["command"], "label": "cmd+s"},
+    "save_as": {"keystroke": "s", "modifiers": ["command", "shift"], "label": "cmd+shift+s"},
+    "bounce": {"keystroke": "b", "modifiers": ["command"], "label": "cmd+b"},
+    "export": {"keystroke": "e", "modifiers": ["command", "shift"], "label": "cmd+shift+e"},
+    "solo": {"keystroke": "s", "label": "s"},
+    "mute": {"keystroke": "m", "label": "m"},
+    "loop": {"keystroke": "l", "label": "l", "note": "toggle loop/cycle in most DAWs"},
+    "metronome": {"keystroke": "k", "label": "k", "note": "toggle metronome/click"},
+    "zoom_in": {"keystroke": "=", "modifiers": ["command"], "label": "cmd+="},
+    "zoom_out": {"keystroke": "-", "modifiers": ["command"], "label": "cmd+-"},
+    "select_all": {"keystroke": "a", "modifiers": ["command"], "label": "cmd+a"},
+    "duplicate": {"keystroke": "d", "modifiers": ["command"], "label": "cmd+d"},
+    "split": {"keystroke": "t", "modifiers": ["command"], "label": "cmd+t", "note": "split/cut at playhead"},
+    "delete": {"keyCode": 51, "label": "delete"},
+    "marker": {"keystroke": "'", "label": "apostrophe", "note": "drop marker at playhead"},
+    "next_marker": {"keystroke": "'", "modifiers": ["shift"], "label": "shift+apostrophe"},
+    "prev_marker": {"keystroke": "'", "modifiers": ["option"], "label": "opt+apostrophe"},
+    "normalize": {"keystroke": "a", "modifiers": ["command", "shift"], "label": "cmd+shift+a", "note": "normalize selection"},
 }
 OLLAMA_SYSTEM_MAX_CHARS = 1200
 OLLAMA_PROJECT_MEMORY_MAX_CHARS = 2500
@@ -3829,12 +3855,26 @@ def computer_daw_transport(payload, dry_run=False):
     if platform.system() != "Darwin":
         raise PermissionError("DAW transport control is currently enabled on macOS only")
 
+    # Build AppleScript based on command type (keyCode, keystroke, or keystroke+modifiers)
+    activate_line = f'tell application "{computer_escape_applescript_text(app)}" to activate\n'
+    if "keyCode" in command:
+        key_line = f'  key code {command["keyCode"]}\n'
+    elif "keystroke" in command:
+        modifiers = command.get("modifiers", [])
+        if modifiers:
+            mod_clause = " using {" + ", ".join(f"{m} down" for m in modifiers) + "}"
+        else:
+            mod_clause = ""
+        key_line = f'  keystroke "{computer_escape_applescript_text(command["keystroke"])}"{mod_clause}\n'
+    else:
+        raise ValueError("DAW transport command has no keyCode or keystroke defined")
+
     script = (
-        f'tell application "{computer_escape_applescript_text(app)}" to activate\n'
-        'delay 0.2\n'
-        'tell application "System Events"\n'
-        f'  key code {command["keyCode"]}\n'
-        'end tell\n'
+        activate_line
+        + 'delay 0.2\n'
+        + 'tell application "System Events"\n'
+        + key_line
+        + 'end tell\n'
     )
     proc = computer_run_process(["osascript", "-e", script], dry_run=dry_run)
     if proc["exitCode"] != 0:

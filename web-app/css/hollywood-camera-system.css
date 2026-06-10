@@ -1,0 +1,103 @@
+/* Hollywood Camera System — Styles */
+.hollywood-camera-system {
+  padding: 40px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.hcs-header { text-align: center; margin-bottom: 30px; }
+.hcs-header h2 { font-size: 2rem; color: #d4a03c; margin-bottom: 6px; }
+.hcs-subtitle { color: #8a8070; font-size: 1rem; }
+
+/* Camera Cards */
+.hcs-cameras {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 30px;
+}
+.hcs-camera-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #1b2838;
+  border: 1px solid #2a3a4a;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.hcs-camera-card:hover { border-color: #d4a03c; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,160,60,0.1); }
+.hcs-camera-card.active { border-color: #f0c040; background: linear-gradient(135deg, rgba(212,160,60,0.08), #1b2838); }
+.hcs-camera-icon { font-size: 2rem; }
+.hcs-camera-info { flex: 1; }
+.hcs-camera-info h4 { color: #f5f0e8; font-size: 0.95rem; margin: 0 0 4px; }
+.hcs-sensor { font-size: 0.75rem; color: #5dade2; margin-right: 8px; }
+.hcs-dr { font-size: 0.75rem; color: #2ecc71; }
+.hcs-camera-tier { font-size: 0.65rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; letter-spacing: 0.5px; }
+.hcs-tier-flagship { background: rgba(212,160,60,0.2); color: #f0c040; }
+.hcs-tier-professional { background: rgba(93,173,226,0.2); color: #5dade2; }
+.hcs-tier-ultra { background: rgba(155,89,182,0.2); color: #bb8fce; }
+
+/* Details Panel */
+.hcs-details { margin-bottom: 30px; }
+.hcs-details-inner { background: #0d1b2a; border: 1px solid #2a3a4a; border-radius: 16px; padding: 24px; }
+.hcs-detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #2a3a4a; }
+.hcs-detail-header h3 { color: #d4a03c; margin: 0; font-size: 1.3rem; }
+.hcs-detail-icon { font-size: 2.5rem; }
+.hcs-manufacturer { color: #8a8070; font-size: 0.85rem; }
+.hcs-detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.hcs-spec { background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 8px; border: 1px solid #1a2a3a; }
+.hcs-spec label { display: block; color: #6a6050; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.hcs-spec span { color: #f5f0e8; font-size: 0.85rem; }
+.hcs-detail-films { margin-bottom: 14px; }
+.hcs-detail-films label, .hcs-detail-strengths label { color: #8a8070; font-size: 0.8rem; display: block; margin-bottom: 6px; }
+.hcs-film-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.hcs-film-tag { background: rgba(212,160,60,0.12); color: #f0c040; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; }
+.hcs-detail-strengths ul { list-style: none; padding: 0; margin: 0; }
+.hcs-detail-strengths li { color: #b8b0a0; font-size: 0.85rem; padding: 3px 0; }
+.hcs-detail-strengths li::before { content: '✓ '; color: #2ecc71; }
+
+/* Render Presets */
+.hcs-presets { margin-bottom: 30px; }
+.hcs-presets h3 { color: #d4a03c; margin-bottom: 16px; font-size: 1.3rem; }
+.hcs-presets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.hcs-preset-card {
+  background: #1b2838;
+  border: 1px solid #2a3a4a;
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hcs-preset-card:hover { border-color: #5dade2; }
+.hcs-preset-card.active { border-color: #f0c040; background: rgba(212,160,60,0.06); }
+.hcs-preset-icon { font-size: 1.5rem; }
+.hcs-preset-card strong { color: #f5f0e8; font-size: 0.85rem; }
+.hcs-preset-card small { color: #8a8070; font-size: 0.72rem; }
+.hcs-preset-use { color: #5dade2 !important; }
+
+/* LUTs */
+.hcs-luts { margin-bottom: 30px; }
+.hcs-luts h3 { color: #d4a03c; margin-bottom: 16px; font-size: 1.3rem; }
+.hcs-luts-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.hcs-lut-pill { padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; cursor: default; }
+.hcs-lut-technical { background: rgba(93,173,226,0.15); color: #5dade2; border: 1px solid rgba(93,173,226,0.3); }
+.hcs-lut-creative { background: rgba(243,156,18,0.15); color: #f39c12; border: 1px solid rgba(243,156,18,0.3); }
+.hcs-lut-film_emulation { background: rgba(155,89,182,0.15); color: #bb8fce; border: 1px solid rgba(155,89,182,0.3); }
+
+/* Aspect Ratios */
+.hcs-aspect-ratios h3 { color: #d4a03c; margin-bottom: 16px; font-size: 1.3rem; }
+.hcs-ar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+.hcs-ar-card { text-align: center; padding: 12px; background: #1b2838; border: 1px solid #2a3a4a; border-radius: 10px; }
+.hcs-ar-preview { width: 100%; max-width: 90px; margin: 0 auto 8px; background: rgba(212,160,60,0.15); border: 1px solid #d4a03c; border-radius: 4px; min-height: 30px; }
+.hcs-ar-card strong { display: block; color: #f5f0e8; font-size: 0.85rem; margin-bottom: 2px; }
+.hcs-ar-card small { color: #8a8070; font-size: 0.7rem; }
+
+@media (max-width: 768px) {
+  .hcs-cameras { grid-template-columns: 1fr; }
+  .hcs-presets-grid { grid-template-columns: repeat(2, 1fr); }
+  .hcs-detail-grid { grid-template-columns: 1fr; }
+}

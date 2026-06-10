@@ -1290,6 +1290,53 @@ DAW_ALLOWED_TRANSPORT_COMMANDS = {
     "prev_marker": {"keystroke": "'", "modifiers": ["option"], "label": "opt+apostrophe"},
     "normalize": {"keystroke": "a", "modifiers": ["command", "shift"], "label": "cmd+shift+a", "note": "normalize selection"},
 }
+# ---------------------------------------------------------------------------
+# Hollywood Camera System — cinema-grade profiles for render pipeline
+# ---------------------------------------------------------------------------
+HOLLYWOOD_CAMERA_PROFILES = {
+    "arri_alexa35": {
+        "name": "ARRI Alexa 35", "sensor": "4.6K Super 35", "resolution": (4608, 3164),
+        "dynamic_range": 17, "fps_max": 120, "color": "ARRI LogC4 / Wide Gamut 4",
+        "recording": ["ARRIRAW", "ProRes 4444 XQ", "ProRes 4444"],
+        "iso_native": 800, "mount": "LPL",
+    },
+    "red_v_raptor_xl": {
+        "name": "RED V-Raptor XL", "sensor": "8K Vista Vision", "resolution": (8192, 4320),
+        "dynamic_range": 16.5, "fps_max": 600, "color": "REDWideGamutRGB / Log3G10 (IPP2)",
+        "recording": ["REDCODE RAW", "ProRes"],
+        "iso_native": 800, "mount": "Canon RF / PL",
+    },
+    "sony_venice2": {
+        "name": "Sony VENICE 2", "sensor": "8.6K Full Frame", "resolution": (8640, 5760),
+        "dynamic_range": 16, "fps_max": 120, "color": "S-Gamut3.Cine / S-Log3",
+        "recording": ["X-OCN 16-bit RAW", "ProRes 4444", "XAVC"],
+        "iso_native": (500, 2500), "mount": "PL / E-mount",
+    },
+    "imax_msm9802": {
+        "name": "IMAX MSM 9802", "sensor": "65mm Film (18K equiv)", "resolution": (18000, 12500),
+        "dynamic_range": 20, "fps_max": 48, "color": "Photochemical (Kodak Vision3)",
+        "recording": ["65mm Film Negative"],
+        "iso_native": 500, "mount": "IMAX custom",
+    },
+    "panavision_dxl2": {
+        "name": "Panavision DXL2", "sensor": "8K Vista Vision", "resolution": (8192, 4320),
+        "dynamic_range": 16.5, "fps_max": 120, "color": "Light Iron Color2",
+        "recording": ["REDCODE RAW"],
+        "iso_native": 1600, "mount": "Panavision PV",
+    },
+}
+
+CINEMA_RENDER_PRESETS = {
+    "dci_4k": {"name": "DCI 4K Theatrical", "res": (4096, 2160), "fps": 24, "codec": "ProRes 4444 XQ", "color": "DCI-P3"},
+    "imax_laser": {"name": "IMAX Laser", "res": (5120, 3620), "fps": 48, "codec": "JPEG 2000", "color": "Rec.2020"},
+    "dolby_vision": {"name": "Dolby Vision HDR", "res": (3840, 2160), "fps": 24, "codec": "HEVC", "color": "Rec.2020 / DV"},
+    "netflix_4k": {"name": "Netflix 4K", "res": (3840, 2160), "fps": 23.976, "codec": "HEVC 10-bit", "color": "Rec.709"},
+    "music_video": {"name": "Music Video 4K", "res": (3840, 2160), "fps": 29.97, "codec": "ProRes 422 HQ", "color": "Rec.709"},
+    "social_vertical": {"name": "Social (TikTok/Reels)", "res": (1080, 1920), "fps": 30, "codec": "H.264", "color": "sRGB"},
+    "vfx_exr": {"name": "VFX Plates (EXR)", "res": (4608, 3164), "fps": 24, "codec": "OpenEXR", "color": "ACES AP0"},
+    "previz_ue": {"name": "Previz (Unreal Engine)", "res": (3840, 2160), "fps": 60, "codec": "H.264 CQP18", "color": "sRGB"},
+}
+
 OLLAMA_SYSTEM_MAX_CHARS = 1200
 OLLAMA_PROJECT_MEMORY_MAX_CHARS = 2500
 OLLAMA_HISTORY_BUDGET_CHARS = 2500

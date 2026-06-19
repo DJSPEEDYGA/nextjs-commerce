@@ -72,7 +72,7 @@
     "music-metadata": "^9.0.0",
     "node-cron": "^3.0.3",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^7.0.11",
+    "nodemailer": "^9.0.1",
     "openai": "^6.9.1",
     "otplib": "^13.3.0",
     "pdf-parse": "^1.1.1",

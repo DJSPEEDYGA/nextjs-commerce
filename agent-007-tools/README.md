@@ -2,12 +2,33 @@
   <img src="AGENT-007-LOGO.svg" alt="AGENT-007 Logo" width="300"/>
 </p>
 
-# AGENT-007 Multi-Drive Storage Tools
+# AGENT-007 — Local AI Operations Center
 
 Scripts for deploying, downloading, and managing the **AGENT-007** AI system across
 **multiple drives/storage locations**.
 
-## Quick Start — Choose Your Drives
+## Quick Start — The Main Launcher
+
+```bash
+bash AGENT-007-LAUNCH.sh
+```
+
+This is the **one script to rule them all**. It:
+1. Loads your storage config (which drives store what)
+2. Detects and mounts your NAS if available
+3. Starts all services (Ollama, Drawing Bridge, GOAT, etc.)
+4. Shows status of everything
+
+Other launcher modes:
+```bash
+bash AGENT-007-LAUNCH.sh --status      # check what's running
+bash AGENT-007-LAUNCH.sh --storage     # pick which drives store what
+bash AGENT-007-LAUNCH.sh --nas-setup   # set up NAS folders
+bash AGENT-007-LAUNCH.sh --test        # launch + run all tests
+bash AGENT-007-LAUNCH.sh --stop        # stop everything
+```
+
+## Choose Your Drives
 
 ```bash
 bash AGENT-007-CHOOSE-STORAGE.sh
@@ -56,8 +77,11 @@ Run `AGENT-007-CHOOSE-STORAGE.sh`, pick drive 1 for the model categories, drive 
 
 | File | Purpose |
 |------|---------|
+| **`AGENT-007-LAUNCH.sh`** | **Main launcher — starts everything** |
 | `AGENT-007-CHOOSE-STORAGE.sh` | Interactive drive picker (Mac/Linux) |
 | `AGENT-007-CHOOSE-STORAGE.ps1` | Interactive drive picker (Windows) |
+| `AGENT-007-SETUP-NAS.sh` | Create Agent-007 folders on NAS |
+| `AGENT-007-AUTOMOUNT-NAS.sh` | Auto-mount NAS on boot (macOS/Linux) |
 | `agent-007-storage-common.sh` | Shared library all scripts source |
 | `AGENT-007-START-ALL-LLM-DOWNLOADS.sh` | Download/verify Ollama + GGUF models |
 | `AGENT-007-START-ALL-LLM-DOWNLOADS-ONE-FOLDER.sh` | One-folder variant of model downloads |
@@ -72,6 +96,19 @@ Run `AGENT-007-CHOOSE-STORAGE.sh`, pick drive 1 for the model categories, drive 
 | `STOP-AGENT-007-*.sh` | Service stoppers |
 | `TEST-AGENT-007-*.sh` | Test scripts |
 | `agent-007-image-runtimes.env` | Image runtime environment (auto-generated) |
+
+## NAS Setup (WD My Cloud / Network Storage)
+
+```bash
+# 1. Set up auto-mount so NAS connects on every boot
+bash AGENT-007-AUTOMOUNT-NAS.sh
+
+# 2. Create Agent-007 folder structure on the NAS
+bash AGENT-007-SETUP-NAS.sh /Volumes/SPEEDYSCLOUD
+
+# 3. Pick the NAS for data categories (outputs, cache, backups, etc.)
+bash AGENT-007-CHOOSE-STORAGE.sh
+```
 
 ## Environment Variables
 
